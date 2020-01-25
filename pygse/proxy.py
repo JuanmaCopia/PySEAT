@@ -280,7 +280,6 @@ class IntProxy(ProxyObject):
             result = SMTInt.concreteValue(model.evaluate(self.real))
         return result
 
-
 class BoolProxy(ProxyObject):
     """
     Bool Proxy object for variables that behave like bools.

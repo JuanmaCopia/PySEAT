@@ -2,8 +2,8 @@
 import copy
 from collections.abc import Iterable
 
-from branching_steps import LazyStep, ConditionalStep
 from exception_mod import MaxDepthException, ClassNotDocumentedError, UnsatBranchError
+from branching_steps import LazyStep, ConditionalStep
 
 import proxy as proxy
 
@@ -26,7 +26,6 @@ class SEEngine:
     _total_paths = 0
     _pruned = 0
     _pruned_by_error = 0
-
 
     _is_method = False
     _function = None    # Function under exloration
@@ -63,13 +62,9 @@ class SEEngine:
         unexplored_paths = True
 
         while unexplored_paths:
-            cls._path_condition = []
-            cls._current_bp = 0
-            cls._current_depth = 0
+            
+            cls.reset_exploration()
             cls._total_paths += 1
-
-
-            cls.reset_vectors()
 
             args = [cls.instantiate(a) for a in cls._func_args_types]
 
@@ -91,10 +86,12 @@ class SEEngine:
                 unexplored_paths = False
     
     @classmethod
-    def reset_vectors(cls):
+    def reset_exploration(cls):
+        cls._path_condition = []
+        cls._current_bp = 0
+        cls._current_depth = 0
         for k in cls._class_params_map.keys():
             k._vector = [None]
-
 
     @classmethod
     def execute_program(cls, args):
@@ -121,7 +118,6 @@ class SEEngine:
         except AttributeError as e:
             raise e
         else:
-
             result = {}
             result["self"] = the_self 
             result["returnv"] = returnv
@@ -164,7 +160,6 @@ class SEEngine:
             # callable
             return obj
 
-
     @classmethod
     def remove_explored_branching_points(cls):
         # Advance last branch 
@@ -183,18 +178,12 @@ class SEEngine:
 
     @classmethod
     def get_next_lazy_step(cls, lazy_class, vector):
-        # TODO: Think about it: Backup last lazy step with a copy
-        # if is last lazy step()       Esto quizas se pueda hacer siempre, total el ultimo es el que va a quedar
-        # backup = copy.deepcopy(cls._self_class._vector)
 
         if cls._max_depth < cls._current_depth:
             raise MaxDepthException
         cls._current_depth += 1
 
-        # if is the branching point already exist
         if cls._current_bp < len(cls._branching_points):
-
-            # Getting the corresponding index
             branch_point = cls._branching_points[cls._current_bp]
             assert(isinstance(branch_point, LazyStep))
             index = branch_point.get_branch()    
@@ -203,7 +192,6 @@ class SEEngine:
             if index < len(vector):
                 return vector[index]
             # Else return a new structure
-
             # TODO: is it ok to raise an exception? what else is possible?
             try:
                 init_types = cls._class_params_map[lazy_class]

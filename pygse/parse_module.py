@@ -9,9 +9,13 @@ from proxy import ProxyObject, is_user_defined
 def parse_command_line_args():
     parser = argparse.ArgumentParser(add_help=True)
     parser.add_argument("file", action="store", help="Syntax: <program_file>")
-    parser.add_argument("-c", "--class_name", action="store", help="Syntax: <class_name>")
+    parser.add_argument(
+        "-c", "--class_name", action="store", help="Syntax: <class_name>"
+    )
     parser.add_argument("method", action="store", help="Syntax: <method_name>")
-    parser.add_argument("-d", "--depth", action="store", type=int, default=10, help="Depth limit")
+    parser.add_argument(
+        "-d", "--depth", action="store", type=int, default=10, help="Depth limit"
+    )
 
     return parser.parse_args()
 
@@ -32,7 +36,7 @@ def get_objects2(module_name, method_name, max_depth=10, class_name=None):
     result["primitives"] = {x.emulated_class: x for x in ProxyObject.__subclasses__()}
     result["function_args"] = parse_type_contract(result["function"])
     result["max_depth"] = max_depth
-    
+
     return result
 
 def get_objects(args):
@@ -52,14 +56,11 @@ def get_objects(args):
     result["primitives"] = {x.emulated_class: x for x in ProxyObject.__subclasses__()}
     result["function_args"] = parse_type_contract(result["function"])
     result["max_depth"] = args.depth
-    
-    return result
 
+    return result
 
 def parse_type_contract(function):
     try:
-        #con = contracts.find_all_contracts(function)
-        #types = con[contracts.TypeContract].types
         t_contract = TypeContract.parse(function)
         args = t_contract.types["args"]
         # TODO: return also kwargs
@@ -74,20 +75,18 @@ def parse_type_contract(function):
                 res.append(arg[0])
             else:
                 res.append(arg)
-
         return res
-
     except ContractError as error:
-        exc_name, exc_msg = repr(error).split('(', 1)
-        print("ACA ESTA EL ERROR")
+        exc_name, exc_msg = repr(error).split("(", 1)
         print("\n{}: {}\n".format(exc_name, exc_msg[1:-2]))
 
-def get_user_defined_objects(user_def_class):    
+
+def get_user_defined_objects(user_def_class):
     class_to_types = {}
     class_to_types[user_def_class] = get_init_param_types(user_def_class)
 
     objects_added = copy.deepcopy(class_to_types[user_def_class])
-    
+
     added = True if objects_added else False
 
     while added:
@@ -102,10 +101,8 @@ def get_user_defined_objects(user_def_class):
             for nc in new_classes:
                 class_to_types[nc] = get_init_param_types(nc)
                 objects_added.extend(class_to_types[nc])
-                
+
     return class_to_types
-
-
 
 
 def get_init_param_types(user_def_class):
