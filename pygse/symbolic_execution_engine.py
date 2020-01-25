@@ -27,29 +27,27 @@ class SEEngine:
     _pruned = 0
     _pruned_by_error = 0
 
-    _is_method = False
+    _is_method = True
     _function = None    # Function under exloration
     _func_args_types = [] # Initial arguments, they could be symbolic or a instrumented reference object
     _max_depth = 10
 
     _self_class = None
     _real_to_proxy = {}
-    _class_params_map = {}
+    _class_to_params = {}
 
     @classmethod
-    def initialize(cls, function, func_args_types, max_depth, class_params_map, primitives, self_class=None):
-        # TODO: Add kwargs
-        cls._function = function
-        cls._func_args_types = func_args_types
-        cls._max_depth = max_depth
-
-        if self_class:
+    def initialize(cls, target_data: dict):
+        cls._self_class = target_data["class"]
+        cls._function = target_data["function"]
+        cls._args_types = target_data["args_types"]
+        cls._return_type = target_data["return_type"]
+        cls._repok = target_data["repok"]
+        cls._class_to_params = target_data["class_to_params"]
+        cls._real_to_proxy = target_data["real_to_proxy"]
+        cls._max_depth = target_data["max_depth"]
+        if cls._self_class:
             cls._is_method = True
-
-        cls._class_params_map = class_params_map
-        cls._self_class = self_class
-        cls._real_to_proxy =  primitives
-        
 
     @classmethod
     def exploration(cls):
@@ -66,7 +64,7 @@ class SEEngine:
             cls.reset_exploration()
             cls._total_paths += 1
 
-            args = [cls.instantiate(a) for a in cls._func_args_types]
+            args = [cls.instantiate(a) for a in cls._args_types]
 
             try:
                 result = cls.execute_program(args)
@@ -90,7 +88,7 @@ class SEEngine:
         cls._path_condition = []
         cls._current_bp = 0
         cls._current_depth = 0
-        for k in cls._class_params_map.keys():
+        for k in cls._class_to_params.keys():
             k._vector = [None]
 
     @classmethod
@@ -194,7 +192,7 @@ class SEEngine:
             # Else return a new structure
             # TODO: is it ok to raise an exception? what else is possible?
             try:
-                init_types = cls._class_params_map[lazy_class]
+                init_types = cls._class_to_params[lazy_class]
             except KeyError:
                 raise ClassNotDocumentedError(lazy_class)
             else:
@@ -288,7 +286,7 @@ class SEEngine:
     
     @classmethod
     def create_instance(cls, user_def_class):
-        class_args = copy.deepcopy(cls._class_params_map[user_def_class])
+        class_args = copy.deepcopy(cls._class_to_params[user_def_class])
         for i, ptype in enumerate(class_args):
             # If supported symbolic type_
             if ptype in cls._real_to_proxy.keys():
