@@ -5,14 +5,7 @@ from symbolic_execution_engine import SEEngine
 
 def symbolically_execute_method(module_name, class_name, method_name, max_depth=10):
     r = get_objects2(module_name, method_name, max_depth, class_name)
-    SEEngine.initialize(
-        r["function"],
-        r["function_args"],
-        r["max_depth"],
-        r["class_to_params"],
-        r["primitives"],
-        r["class"],
-    )
+    SEEngine.initialize(r)
     executions_results = SEEngine.exploration()
     for result in executions_results:
         helper_print_dict(result)

@@ -19,25 +19,25 @@ def parse_command_line_args():
     return parser.parse_args()
 
 
-# def get_objects2(module_name, method_name, max_depth=10, class_name=None):
-#     result = {}
-#     result["module"] = importlib.import_module(module_name)
-
-#     if class_name:
-#         result["class"] = getattr(result["module"], class_name)
-#         result["function"] = getattr(result["class"], method_name)
-#         result["is_method"] = True
-#         result["class_to_params"] = get_user_defined_objects(result["class"])
-#     else:
-#         result["class"] = None
-#         result["is_method"] = False
-#         result["function"] = getattr(result["module"], method_name)
-
-#     result["primitives"] = {x.emulated_class: x for x in ProxyObject.__subclasses__()}
-#     result["function_args"] = parse_type_contract(result["function"])
-#     result["max_depth"] = max_depth
-
-#     return result
+def get_objects2(module_name, method_name, max_depth=10, class_name=None):
+    result = {}
+    result["module"] = importlib.import_module(module_name)
+    result["class"] = getattr(result["module"], class_name)
+    result["function"] = getattr(result["class"], method_name)
+    result["args_types"] = parse_args_types(
+        result["function"], result["class"], result["module"]
+    )
+    result["return_type"] = parse_return(result["function"])
+    result["repok"] = parse_repok(result["class"])
+    result["class_to_params"] = get_user_defined_objects(
+        result["class"], result["module"]
+    )
+    result["real_to_proxy"] = {
+        x.emulated_class: x for x in ProxyObject.__subclasses__()
+    }
+    result["max_depth"] = max_depth
+    result["is_method"] = True
+    return result
 
 
 def get_objects(args):
