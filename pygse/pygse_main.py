@@ -4,17 +4,11 @@ from symbolic_execution_engine import SEEngine
 
 
 args = parse_command_line_args()
-r = get_objects(args)
 
-if r["is_method"]:
-    SEEngine.initialize(
-        r["function"],
-        r["function_args"],
-        r["max_depth"],
-        r["class_to_params"],
-        r["primitives"],
-        r["class"],
-    )
+target_data = get_objects(args)
+
+if target_data["is_method"]:
+    SEEngine.initialize(target_data)
 
 executions_results = SEEngine.exploration()
 for result in executions_results:
