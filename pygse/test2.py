@@ -1,4 +1,3 @@
-from __future__ import annotations
 from symbolic_execution_engine import SEEngine
 
 class X:
@@ -7,8 +6,9 @@ class X:
     _is_user_defined = True
     _n = 0
 
-    def __init__(self, data: int):
+    def __init__(self, data: int, nxt: "X"):
         self.data = data
+        self.next = nxt
         self._next_is_initialized = False
         self.marked = False
         self.concretized = False
@@ -17,13 +17,15 @@ class X:
         r = "X" + str(X._n) + "=" + self.data.__repr__() + "->X"
         return r
 
+    def rep_ok(self):
+        return True
 class A:
 
     _vector = [None]
     _is_user_defined = True
     _n = 0
 
-    def __init__(self, data: int, nxt: A):
+    def __init__(self, data: int, x: "X", nxt: "A"):
         self.data = data
         self.next = nxt
         self.marked = False
@@ -62,6 +64,8 @@ class A:
             aux = aux.next
         return result
 
+    def rep_ok(self):
+        return True
 
 class B:
 
@@ -69,7 +73,7 @@ class B:
     _is_user_defined = True
     _n = 0
 
-    def __init__(self, data: int, a: A, nxt: B):
+    def __init__(self, data: int, a: "A", nxt: "B"):
         self.data = data
         self.a = a
         self.next = nxt
@@ -109,6 +113,8 @@ class B:
             aux = aux.next
         return result
 
+    def rep_ok(self):
+        return True
 
 class C:
 
@@ -116,7 +122,7 @@ class C:
     _is_user_defined = True
     _n = 0
 
-    def __init__(self, a: A, b: B, nxt: C):
+    def __init__(self, a: "A", b: "B", nxt: "C"):
         self.a = a
         self.b = b
         self.next = nxt
@@ -180,10 +186,5 @@ class C:
             current.marked2 = True
             suma_B += current.data
             current = current._get_next()
-
-        # val = suma_A > suma_B
-        # if val:
-        #    return True
-        # return False
         return suma_A > suma_B
 

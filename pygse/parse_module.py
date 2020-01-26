@@ -45,10 +45,12 @@ def get_objects(args):
     result["module"] = importlib.import_module(args.file.strip())
     result["class"] = getattr(result["module"], args.class_name.strip())
     result["function"] = getattr(result["class"], args.method.strip())
-    result["args_types"] = parse_method_types(result["function"], result["class"])
+    result["args_types"] = parse_method_types(
+        result["function"], result["class"], result["module"]
+    )
     result["return_type"] = parse_return(result["function"])
     result["repok"] = parse_repok(result["class"])
-    result["class_to_params"] = get_user_defined_objects(result["class"])
+    result["class_to_params"] = get_user_defined_objects(result["class"], result["module"])
     result["real_to_proxy"] = {
         x.emulated_class: x for x in ProxyObject.__subclasses__()
     }
@@ -57,24 +59,29 @@ def get_objects(args):
     return result
 
 
-def parse_method_types(function, self_class):
+def set_classes(types, module):
+    for i, t in enumerate(types):
+        if isinstance(t, str):
+            types[i] = getattr(module, t)
+    return types
+
+def parse_method_types(function, self_class, module):
     types = function.__annotations__
     if "self" not in types:
         types["self"] = self_class
     if "return" in types:
         del types["return"]
-    result = list(types.values())
-    return result
+    return set_classes(list(types.values()), module)
 
 
-def parse_types(function):
+def parse_types(function, module):
     types = function.__annotations__
     if types:
         if "self" in types:
             del types["self"]
         if "return" in types:
             del types["return"]
-        return list(types.values())
+        return set_classes(list(types.values()), module)
     return []
 
 
@@ -88,9 +95,9 @@ def parse_repok(class_obj):
     return getattr(class_obj, "rep_ok")
 
 
-def get_user_defined_objects(user_def_class):
+def get_user_defined_objects(user_def_class, module):
     class_to_types = {}
-    class_to_types[user_def_class] = parse_types(user_def_class.__init__)
+    class_to_types[user_def_class] = parse_types(user_def_class.__init__, module)
 
     objects_added = copy.deepcopy(class_to_types[user_def_class])
 
@@ -106,7 +113,7 @@ def get_user_defined_objects(user_def_class):
         if new_classes:
             added = True
             for nc in new_classes:
-                class_to_types[nc] = parse_types(nc.__init__)
+                class_to_types[nc] = parse_types(nc.__init__, module)
                 objects_added.extend(class_to_types[nc])
 
     return class_to_types
