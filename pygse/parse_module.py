@@ -45,12 +45,14 @@ def get_objects(args):
     result["module"] = importlib.import_module(args.file.strip())
     result["class"] = getattr(result["module"], args.class_name.strip())
     result["function"] = getattr(result["class"], args.method.strip())
-    result["args_types"] = parse_method_types(
+    result["args_types"] = parse_args_types(
         result["function"], result["class"], result["module"]
     )
     result["return_type"] = parse_return(result["function"])
     result["repok"] = parse_repok(result["class"])
-    result["class_to_params"] = get_user_defined_objects(result["class"], result["module"])
+    result["class_to_params"] = get_user_defined_objects(
+        result["class"], result["module"]
+    )
     result["real_to_proxy"] = {
         x.emulated_class: x for x in ProxyObject.__subclasses__()
     }
@@ -65,7 +67,8 @@ def set_classes(types, module):
             types[i] = getattr(module, t)
     return types
 
-def parse_method_types(function, self_class, module):
+
+def parse_args_types(function, self_class, module):
     types = function.__annotations__
     if "self" not in types:
         types["self"] = self_class
@@ -74,7 +77,7 @@ def parse_method_types(function, self_class, module):
     return set_classes(list(types.values()), module)
 
 
-def parse_types(function, module):
+def parse_args_types_whitout_self(function, module):
     types = function.__annotations__
     if types:
         if "self" in types:
@@ -97,7 +100,9 @@ def parse_repok(class_obj):
 
 def get_user_defined_objects(user_def_class, module):
     class_to_types = {}
-    class_to_types[user_def_class] = parse_types(user_def_class.__init__, module)
+    
+    types = parse_args_types_whitout_self(user_def_class.__init__, module)
+    class_to_types[user_def_class] = types
 
     objects_added = copy.deepcopy(class_to_types[user_def_class])
 
@@ -113,7 +118,7 @@ def get_user_defined_objects(user_def_class, module):
         if new_classes:
             added = True
             for nc in new_classes:
-                class_to_types[nc] = parse_types(nc.__init__, module)
+                class_to_types[nc] = parse_args_types_whitout_self(nc.__init__, module)
                 objects_added.extend(class_to_types[nc])
 
     return class_to_types
