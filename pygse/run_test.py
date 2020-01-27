@@ -1,14 +1,15 @@
 from parse_module import parse_command_line_args, get_objects2
-from reports import report_statistics, helper_print_dict
+from reports import report_statistics, helper_print_dict, print_formatted_result
 from symbolic_execution_engine import SEEngine
 
 
 def symbolically_execute_method(module_name, class_name, method_name, max_depth=10):
-    r = get_objects2(module_name, method_name, max_depth, class_name)
-    SEEngine.initialize(r)
+    target_data = get_objects2(module_name, method_name, max_depth, class_name)
+    SEEngine.initialize(target_data)
     executions_results = SEEngine.explore()
     for result in executions_results:
-        helper_print_dict(result)
+        # helper_print_dict(result)
+        print_formatted_result(target_data["function"], result, target_data["verbose"])
     report_statistics(SEEngine.statistics())
 
 

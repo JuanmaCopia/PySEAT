@@ -166,7 +166,7 @@ class C:
         self._b_is_initialized = True
 
     def __repr__(self):
-        r = "A:  " + self.a.__repr__() + "\n" + "         B:  " + self.b.__repr__()
+        r = "A:  " + self.a.__repr__() + "\n           B:  " + self.b.__repr__()
         return r
 
     def rep_ok(self):

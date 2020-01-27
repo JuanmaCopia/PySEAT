@@ -15,50 +15,52 @@ def parse_command_line_args():
     parser.add_argument(
         "-d", "--depth", action="store", type=int, default=10, help="Depth limit"
     )
+    parser.add_argument('-v', '--verbose', action='store_true', help='an optional argument')
 
     return parser.parse_args()
 
 
 def get_objects2(module_name, method_name, max_depth=10, class_name=None):
-    result = {}
-    result["module"] = importlib.import_module(module_name)
-    result["class"] = getattr(result["module"], class_name)
-    result["function"] = getattr(result["class"], method_name)
-    result["args_types"] = parse_args_types(
-        result["function"], result["class"], result["module"]
+    target_data = {}
+    target_data["module"] = importlib.import_module(module_name)
+    target_data["class"] = getattr(target_data["module"], class_name)
+    target_data["function"] = getattr(target_data["class"], method_name)
+    target_data["args_types"] = parse_args_types(
+        target_data["function"], target_data["class"], target_data["module"]
     )
-    result["return_type"] = parse_return(result["function"])
-    result["repok"] = parse_repok(result["class"])
-    result["class_to_params"] = get_user_defined_objects(
-        result["class"], result["module"]
+    target_data["return_type"] = parse_return(target_data["function"])
+    target_data["repok"] = parse_repok(target_data["class"])
+    target_data["class_to_params"] = get_user_defined_objects(
+        target_data["class"], target_data["module"]
     )
-    result["real_to_proxy"] = {
+    target_data["real_to_proxy"] = {
         x.emulated_class: x for x in ProxyObject.__subclasses__()
     }
-    result["max_depth"] = max_depth
-    result["is_method"] = True
-    return result
+    target_data["max_depth"] = max_depth
+    target_data["is_method"] = True
+    return target_data
 
 
 def get_objects(args):
-    result = {}
-    result["module"] = importlib.import_module(args.file.strip())
-    result["class"] = getattr(result["module"], args.class_name.strip())
-    result["function"] = getattr(result["class"], args.method.strip())
-    result["args_types"] = parse_args_types(
-        result["function"], result["class"], result["module"]
+    target_data = {}
+    target_data["module"] = importlib.import_module(args.file.strip())
+    target_data["class"] = getattr(target_data["module"], args.class_name.strip())
+    target_data["function"] = getattr(target_data["class"], args.method.strip())
+    target_data["args_types"] = parse_args_types(
+        target_data["function"], target_data["class"], target_data["module"]
     )
-    result["return_type"] = parse_return(result["function"])
-    result["repok"] = parse_repok(result["class"])
-    result["class_to_params"] = get_user_defined_objects(
-        result["class"], result["module"]
+    target_data["return_type"] = parse_return(target_data["function"])
+    target_data["repok"] = parse_repok(target_data["class"])
+    target_data["class_to_params"] = get_user_defined_objects(
+        target_data["class"], target_data["module"]
     )
-    result["real_to_proxy"] = {
+    target_data["real_to_proxy"] = {
         x.emulated_class: x for x in ProxyObject.__subclasses__()
     }
-    result["max_depth"] = args.depth
-    result["is_method"] = True
-    return result
+    target_data["max_depth"] = args.depth
+    target_data["is_method"] = True
+    target_data["verbose"] = args.verbose
+    return target_data
 
 
 def set_classes(types, module):

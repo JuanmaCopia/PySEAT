@@ -28,9 +28,9 @@ class Node:
     def to_str(self):
         self.marked = True
         if not self._next_is_initialized:
-            return self.elem.__repr__() + "-> CLOUD"
+            return self.elem.__repr__() + "->CLOUD"
         if self.next is None:
-            return self.elem.__repr__() + "-> None"
+            return self.elem.__repr__() + "->None"
         else:
             if self.next.marked:
                 return self.elem.__repr__() + "->" + self.next.elem.__repr__() + "*"
@@ -69,7 +69,7 @@ class Node:
             return True
 
     def rep_ok(self):
-        return self.acyclic()
+        return True
 
     def acyclic(self):
         self.unmark_all()
