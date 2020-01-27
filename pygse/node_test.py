@@ -18,6 +18,7 @@ class Node:
             self._next_is_initialized = True
             self.next = SEEngine.get_next_lazy_step(Node, Node._vector)
             # Verify.ignore_if(not self.precondition())
+            SEEngine.ignore_if(not self.rep_ok(), self)
         return self.next
 
     def _set_next(self, value):
@@ -36,12 +37,16 @@ class Node:
             return self.elem.__repr__() + "->" + self.next.to_str()
 
     def __repr__(self):
+        self.unmark_all()
         result = self.to_str()
+        self.unmark_all()
+        return result
+
+    def unmark_all(self):
         aux = self
         while aux is not None and aux.marked:
             aux.marked = False
             aux = aux.next
-        return result
 
     def swap_node(self):
         if self._get_next() is not None:
@@ -67,20 +72,28 @@ class Node:
         return self.acyclic()
 
     def acyclic(self):
+        self.unmark_all()
         current = self
         while current:
             if current.marked:
                 return False
             current.marked = True
+            # This make the repok conservative
+            if not current._next_is_initialized:
+                return True
             current = current.next
         return True
 
     def is_circular(self):
+        self.unmark_all()
         current = self
         while current and not current.marked:
             current.marked = True
+            # This make the repok conservative
+            if not current._next_is_initialized:
+                return True
             current = current.next
-            if current == None:
+            if current is None:
                 return False
         return True
 

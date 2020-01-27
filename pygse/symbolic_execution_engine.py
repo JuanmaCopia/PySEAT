@@ -2,7 +2,8 @@
 import copy
 from collections.abc import Iterable
 
-from exception_mod import MaxDepthException, ClassNotDocumentedError, UnsatBranchError
+from exception_mod import MaxDepthException, ClassNotDocumentedError
+from exception_mod import UnsatBranchError, RepOkFailException, ReturnValueRepOkFail
 from branching_steps import LazyStep, ConditionalStep
 
 import proxy as proxy
@@ -24,8 +25,9 @@ class SEEngine:
     _current_bp = 0
     _current_depth = 0
     _total_paths = 0
-    _pruned = 0
+    _pruned_by_depth = 0
     _pruned_by_error = 0
+    _pruned_by_repok = 0
 
     _is_method = True
     _function = None    # Function under exloration
@@ -71,10 +73,12 @@ class SEEngine:
             except UnsatBranchError as e:
                 raise e
             except MaxDepthException:
-                cls._pruned += 1
+                cls._pruned_by_depth += 1
             except ClassNotDocumentedError as e:
                 cls._pruned_by_error += 1
                 raise e
+            except RepOkFailException:
+                cls._pruned_by_repok += 1
             else:
                 yield(result)
             
@@ -109,6 +113,7 @@ class SEEngine:
                 # boolean expression
                 if proxy.is_symbolic_bool(returnv):
                     returnv = returnv.__bool__()
+
                 # TODO: make it work for a non method function    
                 #else:
                     # function = cls._function
@@ -117,6 +122,8 @@ class SEEngine:
             raise e
         else:
             result = {}
+            if not cls.check_repok(returnv):
+                result["Return repok failed"] = "The returned value failed at Repok"
             result["self"] = the_self 
             result["returnv"] = returnv
             result["path_codition"] = cls._path_condition
@@ -124,6 +131,14 @@ class SEEngine:
             result["conc_ret"] = cls._concretize(copy.deepcopy(result["returnv"]), result["model"])
             result["conc_self"] = cls._concretize(copy.deepcopy(result["self"]), result["model"])
         return result
+
+
+    @classmethod
+    def check_repok(cls, obj):
+        if proxy.is_user_defined(type(obj)):
+            return obj.rep_ok()
+        return True 
+
 
     @classmethod
     def _concretize(cls, obj, model):
@@ -273,6 +288,12 @@ class SEEngine:
         return bool_value
 
     @classmethod
+    def ignore_if(cls, value, instance):
+        if value:
+            raise RepOkFailException(type(instance))
+            
+
+    @classmethod
     def instantiate(cls, param_type):
         if param_type in cls._real_to_proxy.keys():
             return cls._real_to_proxy[param_type]()
@@ -319,7 +340,9 @@ class SEEngine:
     @classmethod
     def statistics(cls):
         data = {}
-        data["explored"] = cls._total_paths - cls._pruned
+        data["explored"] = cls._total_paths - cls._pruned_by_depth - cls._pruned_by_repok - cls._pruned_by_error
         data["total_paths"] = cls._total_paths
-        data["pruned_paths"] = cls._pruned
+        data["pruned_by_repok"] = cls._pruned_by_repok
+        data["pruned_by_depth"] = cls._pruned_by_depth
+        data["pruned_by_error"] = cls._pruned_by_error
         return data
