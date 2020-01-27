@@ -2,10 +2,7 @@
 import copy
 from collections.abc import Iterable
 
-from exception_mod import MaxDepthException, ClassNotDocumentedError
-from exception_mod import UnsatBranchError, RepOkFailException, ReturnValueRepOkFail
 from branching_steps import LazyStep, ConditionalStep
-
 import proxy as proxy
 
 # TODO: Check what happen when a class is not documented
@@ -17,6 +14,58 @@ import proxy as proxy
 # and its types. It also can document class atributes to support them.
 # TODO: Check what happen with objects like list and dict... in instanciation
 # method
+
+class Error(Exception):
+    """Base class for exceptions in this module."""
+    pass
+
+class MaxDepthException(Error):
+    """Exception raised when the maximum exploration depth
+    is reached.
+    """
+
+    def __init__(self):
+        self.message = "Max exploration depth reached"
+
+class ClassNotDocumentedError(Error):
+    """Exception raised when an user defined class has
+    no docstring on his init method.
+    """
+
+    def __init__(self, the_class):
+        self.the_class = the_class
+        self.message = "Docstring not found in: " + the_class.__name__
+
+class UnsatBranchError(Error):
+    """Exception raised when a branch is not satisfacible.
+    """
+
+    def __init__(self):
+        self.message = "Unsat branch"
+
+class RepOkFailException(Error):
+    """Exception raised when the maximum exploration depth
+    is reached.
+
+    Attributes:
+        message -- explanation of the error
+        cls -- Class
+    """
+
+    def __init__(self, cls):
+        self.message = str(cls) + "repok fail"
+
+
+class ReturnValueRepOkFail(Error):
+    """Exception raised when the maximum exploration depth
+    is reached.
+
+    Attributes:
+        message -- explanation of the error
+    """
+
+    def __init__(self):
+        self.message = "The returned value does not pass the repok()"
 
 class SEEngine:
 
@@ -38,6 +87,8 @@ class SEEngine:
     _real_to_proxy: dict
     _class_to_params: dict
 
+    _warnings: list
+
     @classmethod
     def initialize(cls, target_data: dict):
         cls._self_class = target_data["class"]
@@ -58,6 +109,7 @@ class SEEngine:
         cls._pruned_by_depth = 0
         cls._pruned_by_error = 0
         cls._pruned_by_repok = 0
+        cls._warnings = []
 
     @classmethod
     def explore(cls): 
@@ -93,6 +145,7 @@ class SEEngine:
     @classmethod
     def reset_exploration(cls):
         cls._path_condition = []
+        cls._warnings = []
         cls._current_bp = 0
         cls._current_depth = 0
         for k in cls._class_to_params.keys():
@@ -100,6 +153,7 @@ class SEEngine:
 
     @classmethod
     def execute_program(cls, args):
+        result = {}
         try:
             if cls._is_method:
                 # if its a method i know that args[0] is the self
@@ -117,6 +171,11 @@ class SEEngine:
                 if proxy.is_symbolic_bool(returnv):
                     returnv = returnv.__bool__()
 
+                if not cls.check_repok(returnv):
+                    cls._warnings.append("Return value RepOk fail")
+
+                if not cls.check_repok(the_self):
+                    cls._warnings.append("Self RepOk fail")
                 # TODO: make it work for a non method function    
                 #else:
                     # function = cls._function
@@ -124,15 +183,18 @@ class SEEngine:
         except AttributeError as e:
             raise e
         else:
-            result = {}
-            if not cls.check_repok(returnv):
-                result["Return repok failed"] = "The returned value failed at Repok"
             result["self"] = the_self 
             result["returnv"] = returnv
-            result["path_codition"] = cls._path_condition
+            result["path_condition"] = cls._path_condition
             result["model"] = proxy.smt.get_model(cls._path_condition)
             result["conc_ret"] = cls._concretize(copy.deepcopy(result["returnv"]), result["model"])
             result["conc_self"] = cls._concretize(copy.deepcopy(result["self"]), result["model"])
+            if args:
+                result["conc_args"] = cls._concretize(copy.deepcopy(args), result["model"])
+            else:
+                result["conc_args"] = ""
+            result["warnings"] = cls._warnings
+            result["execution_number"] = cls._total_paths
         return result
 
 
