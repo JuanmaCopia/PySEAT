@@ -20,23 +20,23 @@ import proxy as proxy
 
 class SEEngine:
 
-    _branching_points = []
-    _path_condition = []
-    _current_bp = 0
-    _current_depth = 0
-    _total_paths = 0
-    _pruned_by_depth = 0
-    _pruned_by_error = 0
-    _pruned_by_repok = 0
+    _branching_points: list
+    _path_condition: list
+    _current_bp: int
+    _current_depth: int
+    _total_paths: int
+    _pruned_by_depth: int
+    _pruned_by_error: int
+    _pruned_by_repok: int
 
-    _is_method = True
+    _is_method: bool
     _function = None    # Function under exloration
     _func_args_types = [] # Initial arguments, they could be symbolic or a instrumented reference object
-    _max_depth = 10
+    _max_depth: int
 
-    _self_class = None
-    _real_to_proxy = {}
-    _class_to_params = {}
+    _self_class: type
+    _real_to_proxy: dict
+    _class_to_params: dict
 
     @classmethod
     def initialize(cls, target_data: dict):
@@ -50,11 +50,14 @@ class SEEngine:
         cls._max_depth = target_data["max_depth"]
         if cls._self_class:
             cls._is_method = True
-
-    @classmethod
-    def exploration(cls):
-        for r in cls.explore():
-            yield r
+        cls._branching_points = []
+        cls._path_condition = []
+        cls._current_bp = 0
+        cls._current_depth = 0
+        cls._total_paths = 0
+        cls._pruned_by_depth = 0
+        cls._pruned_by_error = 0
+        cls._pruned_by_repok = 0
 
     @classmethod
     def explore(cls): 

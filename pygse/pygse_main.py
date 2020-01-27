@@ -10,7 +10,7 @@ target_data = get_objects(args)
 if target_data["is_method"]:
     SEEngine.initialize(target_data)
 
-executions_results = SEEngine.exploration()
+executions_results = SEEngine.explore()
 for result in executions_results:
     helper_print_dict(result)
 
