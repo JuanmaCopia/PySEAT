@@ -20,7 +20,7 @@ def parse_command_line_args():
     return parser.parse_args()
 
 
-def get_objects2(module_name, method_name, max_depth=10, class_name=None):
+def get_objects2(module_name, method_name, max_depth=10, verbose=None, class_name=None):
     target_data = {}
     target_data["module"] = importlib.import_module(module_name)
     target_data["class"] = getattr(target_data["module"], class_name)
@@ -38,6 +38,7 @@ def get_objects2(module_name, method_name, max_depth=10, class_name=None):
     }
     target_data["max_depth"] = max_depth
     target_data["is_method"] = True
+    target_data["verbose"] = verbose
     return target_data
 
 

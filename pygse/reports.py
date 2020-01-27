@@ -32,8 +32,8 @@ def print_formatted_result(function, result, verbose):
         print("      > Path Condition:")
         for c in result["path_condition"]:
             print("            " + str(c))
-        print("      > Return: " + result["returnv"].__repr__())
-        print("      > Self  : " + result["self"].__repr__())
+        print("      > Symbolic return: " + result["returnv"].__repr__())
+        print("      > Symbolic self:\n           " + result["self"].__repr__())
 
 
 def report_statistics(stat):

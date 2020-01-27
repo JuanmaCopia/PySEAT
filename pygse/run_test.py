@@ -4,7 +4,7 @@ from symbolic_execution_engine import SEEngine
 
 
 def symbolically_execute_method(module_name, class_name, method_name, max_depth=10):
-    target_data = get_objects2(module_name, method_name, max_depth, class_name)
+    target_data = get_objects2(module_name, method_name, max_depth, True, class_name)
     SEEngine.initialize(target_data)
     executions_results = SEEngine.explore()
     for result in executions_results:
