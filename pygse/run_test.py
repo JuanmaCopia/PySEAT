@@ -14,8 +14,8 @@ def symbolically_execute_method(module_name, class_name, method_name, max_depth=
 
 
 symbolically_execute_method("node_test", "Node", "swap_node", 10)
-#symbolically_execute_method("node_test", "Node", "is_sorted", 10)
-#symbolically_execute_method("test2", "C", "test_method", 4)
-#symbolically_execute_method("linked_list_test", "LinkedList", "insert", 10)
-#symbolically_execute_method("linked_list_test", "LinkedList", "size", 10)
-#symbolically_execute_method("linked_list_test", "LinkedList", "search", 10)
+symbolically_execute_method("node_test", "Node", "is_sorted", 10)
+symbolically_execute_method("test2", "C", "test_method", 4)
+symbolically_execute_method("linked_list_test", "LinkedList", "insert", 10)
+symbolically_execute_method("linked_list_test", "LinkedList", "size", 10)
+symbolically_execute_method("linked_list_test", "LinkedList", "search", 10)

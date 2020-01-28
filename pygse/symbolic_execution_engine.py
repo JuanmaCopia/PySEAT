@@ -114,7 +114,9 @@ class SEEngine:
     @classmethod
     def explore(cls): 
         unexplored_paths = True
-        while unexplored_paths:     
+        while unexplored_paths:
+            cls.reset_exploration()
+            
             args = [cls.instantiate(a) for a in cls._args_types]
 
             result = cls.execute_program(args)
@@ -136,8 +138,7 @@ class SEEngine:
 
     @classmethod
     def execute_program(cls, args):
-        cls.reset_exploration()
-        cls._total_paths += 1
+        cls._total_paths += 1    
         result = {}
         result["status"] = "OK"
         result["execution_number"] = cls._total_paths
