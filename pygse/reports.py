@@ -5,35 +5,73 @@ def helper_print_dict(dictionary):
     print("")
 
 
-def print_formatted_result(function, result, verbose):
-    print("")
+def get_concrete_return(result):
+    if result["conc_ret"] is not None:
+        return result["conc_ret"].__repr__()
+    else:
+        if result["exception"]:
+            return "Exception: " + str(result["exception"])
+        return "None"
+
+
+def get_function_profile(function, result):
     concrete_args = result["conc_args"]
     if concrete_args:
-        func = function.__name__ + "(" + result["conc_args"].__repr__() + ")"
-    else:
-        func = function.__name__ + "(self)"
-    print(
-        "#"
-        + str(result["execution_number"])
-        + ": "
-        + func
+        conc_args = ""
+        if len(concrete_args) == 1:
+            conc_args = concrete_args[0].__repr__()
+        else:
+            for x in concrete_args:
+                conc_args += str(x) + ","
+            conc_args = conc_args[:-1]
+        return (
+            function.__name__
+            + "("
+            + result["conc_self"].__repr__()
+            + ", "
+            + conc_args
+            + ")"
+            + "  ->  "
+            + get_concrete_return(result)
+        )
+    return (
+        function.__name__
+        + "("
+        + result["conc_self"].__repr__()
+        + ")"
         + "  ->  "
-        + result["conc_ret"].__repr__()
+        + get_concrete_return(result)
     )
 
-    print("      > self end state:\n           " + result["conc_self"].__repr__())
-    warns = result["warnings"]
-    if warns:
-        print("      > Warnings:")
-        for w in warns:
-            print("          - " + w)
+
+def print_formatted_result(function, result, verbose):
     verbose = True
-    if verbose:
-        print("      > Path Condition:")
-        for c in result["path_condition"]:
-            print("            " + str(c))
-        print("      > Symbolic return: " + result["returnv"].__repr__())
-        print("      > Symbolic self:\n           " + result["self"].__repr__())
+    if result["status"] != "PRUNED":
+        print("")
+        print(
+            "#"
+            + str(result["execution_number"])
+            + " ["
+            + result["status"]
+            + "]: "
+            + get_function_profile(function, result)
+        )
+        if not result["exception"]:
+            warns = result["warnings"]
+            if warns:
+                print("      > Warnings:")
+                for w in warns:
+                    print("          - " + w)
+
+            if verbose:
+                print("      > Path Condition:")
+                for c in result["path_condition"]:
+                    print("            " + str(c))
+                print("      > Symbolic return: " + result["returnv"].__repr__())
+                print(
+                    "      > Symbolic self:\n           "
+                    + str(result["self"].__repr__())
+                )
 
 
 def report_statistics(stat):

@@ -73,11 +73,15 @@ def set_classes(types, module):
 
 def parse_args_types(function, self_class, module):
     types = function.__annotations__
+    not_self = False
     if "self" not in types:
-        types["self"] = self_class
+        not_self = True
     if "return" in types:
         del types["return"]
-    return set_classes(list(types.values()), module)
+    types_list = set_classes(list(types.values()), module)
+    if not_self:
+        types_list.insert(0, self_class)
+    return types_list
 
 
 def parse_args_types_whitout_self(function, module):
