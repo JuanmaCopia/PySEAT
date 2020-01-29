@@ -32,9 +32,8 @@ class ClassNotDocumentedError(Error):
     no docstring on his init method.
     """
 
-    def __init__(self, the_class):
-        self.the_class = the_class
-        self.message = "Docstring not found in: " + the_class.__name__
+    def __init__(self, message):
+        self.message = message
 
 class UnsatBranchError(Error):
     """Exception raised when a branch is not satisfacible.
@@ -52,8 +51,8 @@ class RepOkFailException(Error):
         cls -- Class
     """
 
-    def __init__(self, cls):
-        self.message = str(cls) + "repok fail"
+    def __init__(self, message, cls):
+        self.message = message
 
 
 class ReturnValueRepOkFail(Error):
@@ -113,30 +112,15 @@ class SEEngine:
 
     @classmethod
     def explore(cls): 
-
         unexplored_paths = True
-
         while unexplored_paths:
-            
             cls.reset_exploration()
-            cls._total_paths += 1
-
+            
             args = [cls.instantiate(a) for a in cls._args_types]
 
-            try:
-                result = cls.execute_program(args)
-            except UnsatBranchError as e:
-                raise e
-            except MaxDepthException:
-                cls._pruned_by_depth += 1
-            except ClassNotDocumentedError as e:
-                cls._pruned_by_error += 1
-                raise e
-            except RepOkFailException:
-                cls._pruned_by_repok += 1
-            else:
-                yield(result)
-            
+            result = cls.execute_program(args)
+            yield(result)
+
             cls.remove_explored_branching_points()
 
             if not cls._branching_points:
@@ -153,7 +137,14 @@ class SEEngine:
 
     @classmethod
     def execute_program(cls, args):
+        cls._total_paths += 1    
         result = {}
+        result["status"] = "OK"
+        result["execution_number"] = cls._total_paths
+        result["exception"] = None
+        result["conc_args"] = None
+        result["conc_ret"] = None
+        returnv = None
         try:
             if cls._is_method:
                 # if its a method i know that args[0] is the self
@@ -170,33 +161,64 @@ class SEEngine:
                 # boolean expression
                 if proxy.is_symbolic_bool(returnv):
                     returnv = returnv.__bool__()
-
-                if not cls.check_repok(returnv):
-                    cls._warnings.append("Return value RepOk fail")
-
-                if not cls.check_repok(the_self):
-                    cls._warnings.append("Self RepOk fail")
-                # TODO: make it work for a non method function    
-                #else:
-                    # function = cls._function
-                    # returnv = function(*nargs)
-        except AttributeError as e:
+            # TODO: make it work for a non method function    
+            #else:
+                # function = cls._function
+                # returnv = function(*args)
+        except UnsatBranchError:
+            result["status"] = "PRUNED"
+            cls._pruned_by_error += 1
+        except MaxDepthException:
+            result["status"] = "PRUNED"
+            cls._pruned_by_depth += 1
+        except RepOkFailException:
+            result["status"] = "PRUNED"
+            cls._pruned_by_repok += 1  
+        except ClassNotDocumentedError as e:
+            cls._pruned_by_error += 1
             raise e
+        except AttributeError as e:
+            cls._pruned_by_error += 1
+            raise e
+        except KeyError as e:
+            cls._pruned_by_error += 1
+            raise e
+        except TypeError as e:
+            raise TypeError("LALA")
+        except Exception as e:
+            result["exception"] = e
         else:
-            result["self"] = the_self 
-            result["returnv"] = returnv
+
+            if not cls.check_repok(returnv):
+                result["status"] = "FAIL"
+                cls._warnings.append("Return value RepOk fail")
+            if not cls.check_repok(the_self):
+                result["status"] = "FAIL"
+                cls._warnings.append("Self RepOk fail")
+
+            result["warnings"] = cls._warnings
             result["path_condition"] = cls._path_condition
             result["model"] = proxy.smt.get_model(cls._path_condition)
-            result["conc_ret"] = cls._concretize(copy.deepcopy(result["returnv"]), result["model"])
+            result["self"] = the_self 
             result["conc_self"] = cls._concretize(copy.deepcopy(result["self"]), result["model"])
             if args:
                 result["conc_args"] = cls._concretize(copy.deepcopy(args), result["model"])
-            else:
-                result["conc_args"] = ""
-            result["warnings"] = cls._warnings
-            result["execution_number"] = cls._total_paths
-        return result
+            result["returnv"] = returnv
+            result["conc_ret"] = cls._concretize(copy.deepcopy(result["returnv"]), result["model"])
+        finally:
+            if result["exception"]:
+                if not cls.expected(result["exception"]):
+                    result["status"] = "FAIL"
+                result["model"] = proxy.smt.get_model(cls._path_condition)
+                result["self"] = the_self 
+                result["conc_self"] = cls._concretize(copy.deepcopy(result["self"]), result["model"])
+                if args:
+                    result["conc_args"] = cls._concretize(copy.deepcopy(args), result["model"])
+            return result
 
+    @classmethod
+    def expected(cls, exception):
+        return True
 
     @classmethod
     def check_repok(cls, obj):
@@ -271,20 +293,22 @@ class SEEngine:
                 return vector[index]
             # Else return a new structure
             # TODO: is it ok to raise an exception? what else is possible?
-            try:
-                init_types = cls._class_to_params[lazy_class]
-            except KeyError:
-                raise ClassNotDocumentedError(lazy_class)
-            else:
-                init_args = [cls.instantiate_only_primitives(a) for a in init_types]
-                n = lazy_class(*init_args)
-                vector.append(n)
 
+            n = cls.create_new_object(lazy_class)    
+            vector.append(n)
             return n
         # Else create the new branching point
         cls._branching_points.append(LazyStep(len(vector)))
         cls._current_bp += 1
         return None   
+
+
+    @classmethod
+    def create_new_object(cls, lazy_class):
+        init_types = cls.get_init_types(lazy_class)
+        init_args = [cls.instantiate_only_primitives(a) for a in init_types]
+        return lazy_class(*init_args)
+
 
     @classmethod
     def evaluate(cls, bool_proxy):
@@ -332,7 +356,9 @@ class SEEngine:
         if true_cond == "sat" and not false_cond == "sat":
             return True
         if false_cond == "sat" and not true_cond == "sat":
-            return False    
+            return False 
+        if true_cond != "sat" and false_cond != "sat":
+            raise UnsatBranchError()
 
     @classmethod
     def get_next_conditional_step(cls):
@@ -355,7 +381,7 @@ class SEEngine:
     @classmethod
     def ignore_if(cls, value, instance):
         if value:
-            raise RepOkFailException(type(instance))
+            raise RepOkFailException(type(instance), "Repok Failed")
             
 
     @classmethod
@@ -371,8 +397,17 @@ class SEEngine:
         return param_type()
     
     @classmethod
-    def create_instance(cls, user_def_class):
+    def get_init_types(cls, user_def_class):
         class_args = copy.deepcopy(cls._class_to_params[user_def_class])
+        number_params = user_def_class.__init__.__code__.co_argcount
+        if (number_params - 1 != len(class_args)):
+            raise ClassNotDocumentedError("Docstring not found in: " + str(user_def_class))
+        return class_args
+
+    @classmethod
+    def create_instance(cls, user_def_class):
+        class_args = cls.get_init_types(user_def_class)
+
         for i, ptype in enumerate(class_args):
             # If supported symbolic type_
             if ptype in cls._real_to_proxy.keys():
