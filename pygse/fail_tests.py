@@ -6,12 +6,19 @@ class Node:
     _vector = [None]
     _is_user_defined = True
 
-    def __init__(self, elem: int = None, next: "Node" = None):
+    def __init__(self, elem, next):
         self.elem = elem
         self.next = next
         self._next_is_initialized = False
         self.marked = False
         self.concretized = False
+
+    # def __init__(self, elem: int = None, next: "Node" = None):
+    #     self.elem = elem
+    #     self.next = next
+    #     self._next_is_initialized = False
+    #     self.marked = False
+    #     self.concretized = False
 
     def get_elem(self):
         return self.elem
@@ -78,10 +85,15 @@ class LinkedList:
     _vector = [None]
     _is_user_defined = True
 
-    def __init__(self, head: "Node" = None):
+    def __init__(self, head):
         self.head = head
         self._head_is_initialized = False
         self.concretized = False
+
+    # def __init__(self, head: "Node" = None):
+    #     self.head = head
+    #     self._head_is_initialized = False
+    #     self.concretized = False
 
     def _get_head(self):
         if not self._head_is_initialized:
@@ -119,7 +131,7 @@ class LinkedList:
             raise ValueError("elem not in list")
         return current
 
-    def delete(self, elem: int):
+    def delete(self, elem):
         current = self._get_head()
         previous = None
         found = False

@@ -32,9 +32,8 @@ class ClassNotDocumentedError(Error):
     no docstring on his init method.
     """
 
-    def __init__(self, the_class):
-        self.the_class = the_class
-        self.message = "Docstring not found in: " + the_class.__name__
+    def __init__(self, message):
+        self.message = message
 
 class UnsatBranchError(Error):
     """Exception raised when a branch is not satisfacible.
@@ -181,6 +180,11 @@ class SEEngine:
         except AttributeError as e:
             cls._pruned_by_error += 1
             raise e
+        except KeyError as e:
+            cls._pruned_by_error += 1
+            raise e
+        except TypeError as e:
+            raise TypeError("LALA")
         except Exception as e:
             result["exception"] = e
         else:
@@ -289,20 +293,22 @@ class SEEngine:
                 return vector[index]
             # Else return a new structure
             # TODO: is it ok to raise an exception? what else is possible?
-            try:
-                init_types = cls._class_to_params[lazy_class]
-            except KeyError:
-                raise ClassNotDocumentedError(lazy_class)
-            else:
-                init_args = [cls.instantiate_only_primitives(a) for a in init_types]
-                n = lazy_class(*init_args)
-                vector.append(n)
 
+            n = cls.create_new_object(lazy_class)    
+            vector.append(n)
             return n
         # Else create the new branching point
         cls._branching_points.append(LazyStep(len(vector)))
         cls._current_bp += 1
         return None   
+
+
+    @classmethod
+    def create_new_object(cls, lazy_class):
+        init_types = cls.get_init_types(lazy_class)
+        init_args = [cls.instantiate_only_primitives(a) for a in init_types]
+        return lazy_class(*init_args)
+
 
     @classmethod
     def evaluate(cls, bool_proxy):
@@ -391,8 +397,17 @@ class SEEngine:
         return param_type()
     
     @classmethod
-    def create_instance(cls, user_def_class):
+    def get_init_types(cls, user_def_class):
         class_args = copy.deepcopy(cls._class_to_params[user_def_class])
+        number_params = user_def_class.__init__.__code__.co_argcount
+        if (number_params - 1 != len(class_args)):
+            raise ClassNotDocumentedError("Docstring not found in: " + str(user_def_class))
+        return class_args
+
+    @classmethod
+    def create_instance(cls, user_def_class):
+        class_args = cls.get_init_types(user_def_class)
+
         for i, ptype in enumerate(class_args):
             # If supported symbolic type_
             if ptype in cls._real_to_proxy.keys():
