@@ -81,8 +81,14 @@ def parse_args_types(function, self_class, module):
     types_list = set_classes(list(types.values()), module)
     if not_self:
         types_list.insert(0, self_class)
+
+    number_params = function.__code__.co_argcount
+    if (number_params != len(types_list)):
+        raise Exception("Parameters whitout a type in function: " + str(function.__name__))    
     return types_list
 
+
+        
 
 def parse_args_types_whitout_self(function, module):
     types = function.__annotations__
