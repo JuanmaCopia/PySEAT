@@ -8,7 +8,8 @@ from enum import Enum
 
 # TODO: Check in lazy initializations that the object has to be
 # a tracked one, that is to say or a parameter, o the self, or 
-# a previously created one
+# a previously created one. New objects created in the method
+# under test should be treated as initialized in alll its fields
 # TODO: Manage exceptions raised when the types are not specified or 
 # incorrectly specified
 # TODO: Support preconditions and posconditions
