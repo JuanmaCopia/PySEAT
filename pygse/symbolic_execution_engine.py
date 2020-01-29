@@ -4,16 +4,17 @@ from collections.abc import Iterable
 
 from branching_steps import LazyStep, ConditionalStep
 import proxy as proxy
+from enum import Enum
 
-# TODO: Check what happen when a class is not documented
-# TODO: Check what happen when de contract doesnt document the right amount of parameters
-# in init methon and also in the function to explore
+# TODO: Check in lazy initializations that the object has to be
+# a tracked one, that is to say or a parameter, o the self, or 
+# a previously created one
+# TODO: Manage exceptions raised when the types are not specified or 
+# incorrectly specified
 # TODO: Support preconditions and posconditions
-# TODO: Make symbolic all attr of an instance, not only the ones on the contract
-# In order to do this the entire class should be documented with all it's attributes
-# and its types. It also can document class atributes to support them.
 # TODO: Check what happen with objects like list and dict... in instanciation
 # method
+# TODO: Support other symbolic types like list, tuple, dict, slices
 
 class Error(Exception):
     """Base class for exceptions in this module."""
@@ -66,6 +67,28 @@ class ReturnValueRepOkFail(Error):
     def __init__(self):
         self.message = "The returned value does not pass the repok()"
 
+
+class Status(Enum):
+    OK = 0
+    PRUNED = 1
+    FAIL = 2
+
+class ExecutionStats:
+    def __init__(self, exec_number: int):
+        self.number = exec_number
+        self.status = Status.PRUNED
+        self.self_structure = None
+        self.concrete_self = None
+        self.args = []
+        self.concrete_args = []
+        self.exception = None
+        self.returnv = None
+        self.concrete_return = None
+        self.end_self_state = None
+        self.model = None
+        self.pathcondition = []
+        self.errors = []
+
 class SEEngine:
 
     _branching_points: list
@@ -86,7 +109,9 @@ class SEEngine:
     _real_to_proxy: dict
     _class_to_params: dict
 
-    _warnings: list
+    _successes: int
+    _failures: int
+    _complete_exec: int
 
     @classmethod
     def initialize(cls, target_data: dict):
@@ -108,7 +133,9 @@ class SEEngine:
         cls._pruned_by_depth = 0
         cls._pruned_by_error = 0
         cls._pruned_by_repok = 0
-        cls._warnings = []
+        cls._successes = 0
+        cls._failures = 0
+        cls._complete_exec = 1
 
     @classmethod
     def explore(cls): 
@@ -129,7 +156,6 @@ class SEEngine:
     @classmethod
     def reset_exploration(cls):
         cls._path_condition = []
-        cls._warnings = []
         cls._current_bp = 0
         cls._current_depth = 0
         for k in cls._class_to_params.keys():
@@ -138,16 +164,9 @@ class SEEngine:
     @classmethod
     def execute_program(cls, args):
         cls._total_paths += 1    
-        result = {}
-        result["status"] = "OK"
-        result["execution_number"] = cls._total_paths
-        result["exception"] = None
-        result["conc_args"] = None
-        result["conc_ret"] = None
-        returnv = None
+        stats = ExecutionStats(cls._complete_exec)
         try:
             if cls._is_method:
-                # if its a method i know that args[0] is the self
                 the_self = args[0]
                 args = args[1:]
                 method = getattr(the_self, cls._function.__name__)
@@ -155,70 +174,60 @@ class SEEngine:
                     returnv = method(*args)
                 else:
                     returnv = method()
-                # If the method returns a boolean expression, it
-                # isnt evaluated, so neither added to path condition..
-                # with the next line we force to evaluate tha missing
-                # boolean expression
                 if proxy.is_symbolic_bool(returnv):
                     returnv = returnv.__bool__()
-            # TODO: make it work for a non method function    
-            #else:
-                # function = cls._function
-                # returnv = function(*args)
+            # TODO: make it work for a non method function
         except UnsatBranchError:
-            result["status"] = "PRUNED"
             cls._pruned_by_error += 1
         except MaxDepthException:
-            result["status"] = "PRUNED"
             cls._pruned_by_depth += 1
         except RepOkFailException:
-            result["status"] = "PRUNED"
-            cls._pruned_by_repok += 1  
-        except ClassNotDocumentedError as e:
-            cls._pruned_by_error += 1
-            raise e
-        except AttributeError as e:
-            cls._pruned_by_error += 1
-            raise e
-        except KeyError as e:
-            cls._pruned_by_error += 1
-            raise e
-        except TypeError as e:
-            raise TypeError("LALA")
+            cls._pruned_by_repok += 1
         except Exception as e:
-            result["exception"] = e
+            if not cls.expected(e):
+                stats.status = Status.FAIL
+            else:
+                stats.status = Status.OK
+            stats.exception = e
         else:
+            stats.status = Status.OK
+
+        finally:
+            if stats.status == Status.PRUNED:
+                return stats
+            cls._complete_exec += 1
+            stats.pathcondition = cls._path_condition
+            stats.model = proxy.smt.get_model(cls._path_condition)
+            stats.self_structure = the_self
+            stats.concrete_self = cls._concretize(copy.deepcopy(the_self), stats.model)
+            if args:
+                stats.concrete_args = cls._concretize(copy.deepcopy(args), stats.model)
+
+            if stats.exception:
+                cls.status_count(stats.status)
+                return stats
 
             if not cls.check_repok(returnv):
-                result["status"] = "FAIL"
-                cls._warnings.append("Return value RepOk fail")
+                stats.status = Status.FAIL
+                stats.errors.append("Return value RepOk fail")
             if not cls.check_repok(the_self):
-                result["status"] = "FAIL"
-                cls._warnings.append("Self RepOk fail")
+                stats.status = Status.FAIL
+                stats.errors.append("Self RepOk fail")
+            stats.returnv = returnv
+            stats.concrete_return = cls._concretize(copy.deepcopy(stats.returnv), stats.model)
+            cls.status_count(stats.status)
+            return stats
 
-            result["warnings"] = cls._warnings
-            result["path_condition"] = cls._path_condition
-            result["model"] = proxy.smt.get_model(cls._path_condition)
-            result["self"] = the_self 
-            result["conc_self"] = cls._concretize(copy.deepcopy(result["self"]), result["model"])
-            if args:
-                result["conc_args"] = cls._concretize(copy.deepcopy(args), result["model"])
-            result["returnv"] = returnv
-            result["conc_ret"] = cls._concretize(copy.deepcopy(result["returnv"]), result["model"])
-        finally:
-            if result["exception"]:
-                if not cls.expected(result["exception"]):
-                    result["status"] = "FAIL"
-                result["model"] = proxy.smt.get_model(cls._path_condition)
-                result["self"] = the_self 
-                result["conc_self"] = cls._concretize(copy.deepcopy(result["self"]), result["model"])
-                if args:
-                    result["conc_args"] = cls._concretize(copy.deepcopy(args), result["model"])
-            return result
+    @classmethod
+    def status_count(cls, status):
+        if status == Status.OK:
+            cls._successes += 1
+        else:
+            cls._failures += 1
 
     @classmethod
     def expected(cls, exception):
-        return True
+        return isinstance(exception, ValueError)
 
     @classmethod
     def check_repok(cls, obj):
@@ -239,7 +248,6 @@ class SEEngine:
         elif isinstance(obj, tuple):
             return tuple([cls._concretize(x, model) for x in obj])
         elif proxy.is_user_defined(obj):
-            # User defined (abstract) class
             # obj.__dict__ returns all instance-only defined attributes
             if obj.concretized:
                 return obj
@@ -262,23 +270,20 @@ class SEEngine:
 
     @classmethod
     def remove_explored_branching_points(cls):
-        # Advance last branch 
         if not cls._branching_points:
             return None
+
         last_bp = cls._branching_points[-1]
         last_bp.advance_branch()
-        # While is not empty and..
+
         while cls._branching_points and last_bp.all_branches_covered():
-            # Delete last branching point
             del cls._branching_points[-1]
-            # Advance branch in the new last branching point
             if cls._branching_points:
                 last_bp = cls._branching_points[-1]
                 last_bp.advance_branch()
 
     @classmethod
     def get_next_lazy_step(cls, lazy_class, vector):
-
         if cls._max_depth < cls._current_depth:
             raise MaxDepthException
         cls._current_depth += 1
@@ -288,16 +293,14 @@ class SEEngine:
             assert(isinstance(branch_point, LazyStep))
             index = branch_point.get_branch()    
             cls._current_bp += 1
-            # if is one of the previously created structures
+
             if index < len(vector):
                 return vector[index]
-            # Else return a new structure
-            # TODO: is it ok to raise an exception? what else is possible?
 
             n = cls.create_new_object(lazy_class)    
             vector.append(n)
             return n
-        # Else create the new branching point
+
         cls._branching_points.append(LazyStep(len(vector)))
         cls._current_bp += 1
         return None   
@@ -330,17 +333,6 @@ class SEEngine:
         return condition_value
 
     @classmethod
-    def is_pathcondition_sat(cls):
-        conditions = True
-        for c in cls._path_condition:
-            conditions = proxy.smt.And(conditions, c)
-        result  = proxy.smt.check(conditions)
-        if result == "sat":
-            return True
-        else:
-            return False
-
-    @classmethod
     def _get_partial_solve(cls, bool_proxy):
         """
         :returns: None if constrains haven't define a concrete value yet,
@@ -352,7 +344,6 @@ class SEEngine:
             conditions = proxy.smt.And(conditions, c)
         true_cond  = proxy.smt.check(proxy.smt.And(conditions, bool_proxy.formula))
         false_cond = proxy.smt.check(proxy.smt.And(conditions, proxy.smt.Not(bool_proxy.formula)))
-        # TODO: Que pasa si es indecidible?
         if true_cond == "sat" and not false_cond == "sat":
             return True
         if false_cond == "sat" and not true_cond == "sat":
@@ -363,11 +354,9 @@ class SEEngine:
     @classmethod
     def get_next_conditional_step(cls):
         if cls._max_depth < cls._current_depth:
-            raise MaxDepthException
-        
+            raise MaxDepthException  
         cls._current_depth += 1
 
-        # if is the branching point already exist
         if cls._current_bp < len(cls._branching_points):
             assert(isinstance(cls._branching_points[cls._current_bp], ConditionalStep))
             bool_value = cls._branching_points[cls._current_bp].get_branch()
@@ -392,8 +381,6 @@ class SEEngine:
             return None
         elif proxy.is_user_defined(param_type):
             return cls.create_instance(param_type)
-        # TODO: Check if this is working
-        # with this I intend to catch types not suported, like dictionaries
         return param_type()
     
     @classmethod
@@ -415,8 +402,6 @@ class SEEngine:
             elif proxy.is_user_defined(ptype):
                 class_args[i] = None
             else:
-                # TODO: Check if this is working
-                # with this I intend to catch types not suported, like dictionaries
                 class_args[i] = ptype()
 
         if not class_args:
@@ -432,9 +417,6 @@ class SEEngine:
             return cls._real_to_proxy[arg]()
         elif arg == type(None) or proxy.is_user_defined(arg):
             return None
-        # Else
-        # TODO: Check if this is working
-        # with this I intend to catch types not suported, like dictionaries
         return arg()
 
     @classmethod
@@ -445,4 +427,6 @@ class SEEngine:
         data["pruned_by_repok"] = cls._pruned_by_repok
         data["pruned_by_depth"] = cls._pruned_by_depth
         data["pruned_by_error"] = cls._pruned_by_error
+        data["successes"] = cls._successes
+        data["failures"] = cls._failures
         return data

@@ -175,4 +175,4 @@ class LinkedList:
         if self.head:
             return self.head.__repr__()
         else:
-            return "empty"
+            return "Empty"

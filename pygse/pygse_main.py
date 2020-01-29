@@ -9,10 +9,11 @@ target_data = get_objects(args)
 if target_data["is_method"]:
     SEEngine.initialize(target_data)
 
-    executions_results = SEEngine.explore()
-    for result in executions_results:
-        print_formatted_result(target_data["function"], result, target_data["verbose"])
-        # helper_print_dict(result)
+    executions_stats = SEEngine.explore()
+    for run_stats in executions_stats:
+        print_formatted_result(
+            target_data["function"], run_stats, target_data["verbose"]
+        )
 
     report_statistics(SEEngine.statistics())
 else:
