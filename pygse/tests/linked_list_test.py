@@ -1,4 +1,4 @@
-from symbolic_execution_engine import SEEngine
+import pygse.symbolic_execution_engine as see
 
 
 class Node:
@@ -25,8 +25,8 @@ class Node:
     def _get_next(self):
         if not self._next_is_initialized:
             self._next_is_initialized = True
-            self.next = SEEngine.get_next_lazy_step(Node, Node._vector)
-            SEEngine.ignore_if(not self.rep_ok(), self)
+            self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
+            see.SEEngine.ignore_if(not self.rep_ok(), self)
         return self.next
 
     def _set_next(self, value):
@@ -86,8 +86,8 @@ class LinkedList:
     def _get_head(self):
         if not self._head_is_initialized:
             self._head_is_initialized = True
-            self.head = SEEngine.get_next_lazy_step(Node, Node._vector)
-            SEEngine.ignore_if(not self.rep_ok(), self)
+            self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
+            see.SEEngine.ignore_if(not self.rep_ok(), self)
         return self.head
 
     def _set_head(self, value):

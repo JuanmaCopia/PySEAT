@@ -1,4 +1,4 @@
-from symbolic_execution_engine import Status
+from pygse.stats import Status
 
 
 INDENT = "        "
@@ -58,7 +58,6 @@ def print_list(l: list):
 
 
 def print_formatted_result(function, stats, verbose):
-    verbose = True
     if stats.status != Status.PRUNED:
         print("\n" + get_header_str(stats) + get_function_profile_str(function, stats))
         if not stats.exception:
@@ -71,12 +70,14 @@ def print_formatted_result(function, stats, verbose):
                 print(INDENT + "Symbolic self:    " + stats.self_structure.__repr__())
 
 
-def report_statistics(stat):
+def report_statistics(stats):
     print("")
-    print(str(stat["explored"]) + " of " + str(stat["total_paths"]) + " paths explored")
-    print(str(stat["successes"]) + " passed")
-    print(str(stat["failures"]) + " failures")
-    print(str(stat["pruned_by_depth"]) + " pruned by depth")
-    print(str(stat["pruned_by_repok"]) + " pruned by repok")
-    print(str(stat["pruned_by_error"]) + " pruned by error")
+    print(
+        str(stats.complete_exec) + " of " + str(stats.total_paths) + " paths explored"
+    )
+    print(str(stats.successes) + " passed")
+    print(str(stats.failures) + " failures")
+    print(str(stats.pruned_by_depth) + " pruned by depth")
+    print(str(stats.pruned_by_error) + " pruned by repok")
+    print(str(stats.pruned_by_repok) + " pruned by error")
     print("")

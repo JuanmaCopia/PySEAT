@@ -1,8 +1,10 @@
-from .solver_base import SMTSolverBase, SMTCantFoundModel, SMTModelBase
+from pygse.smt.solver_base import SMTSolverBase, SMTCantFoundModel, SMTModelBase
 import z3
 
+
 class SMTSolver(SMTSolverBase):
-    exceptions = (z3.Z3Exception)
+    exceptions = z3.Z3Exception
+
     def __init__(self, formula=(), *args, **kwargs):
         self.solver = z3.Solver()
         self.checked, self.check_result = True, "sat"
@@ -30,7 +32,8 @@ class SMTSolver(SMTSolverBase):
         return z3.simplify(*args)
 
     def solve(self, *args, **kwargs):
-        if not self.checked: self.check()
+        if not self.checked:
+            self.check()
         if self.check_result == "sat":
             if not self.modeled:
                 self.modeled = True
@@ -43,5 +46,4 @@ class SMTSolver(SMTSolverBase):
 class SMTModel(SMTModelBase):
     def evaluate(self, exp):
         return self.model.evaluate(exp, model_completion=True)
-
 

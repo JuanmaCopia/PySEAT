@@ -1,4 +1,4 @@
-from symbolic_execution_engine import SEEngine
+import pygse.symbolic_execution_engine as see
 
 
 class Node:
@@ -16,9 +16,9 @@ class Node:
     def _get_next(self):
         if not self._next_is_initialized:
             self._next_is_initialized = True
-            self.next = SEEngine.get_next_lazy_step(Node, Node._vector)
+            self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             # Verify.ignore_if(not self.precondition())
-            SEEngine.ignore_if(not self.rep_ok(), self)
+            see.SEEngine.ignore_if(not self.rep_ok(), self)
         return self.next
 
     def _set_next(self, value):

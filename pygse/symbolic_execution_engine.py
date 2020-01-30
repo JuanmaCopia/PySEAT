@@ -1,176 +1,81 @@
-
 import copy
 from collections.abc import Iterable
 
-from branching_steps import LazyStep, ConditionalStep
-import proxy as proxy
-from enum import Enum
+from pygse.branching_steps import LazyStep, ConditionalStep
+from pygse.stats import Status, ExecutionStats, GlobalStats
+from pygse.engine_errors import UnsatBranchError, MissingTypesError, RepOkFailException
+from pygse.engine_errors import MaxDepthException
+
+import pygse.proxy as proxy
 
 # TODO: Check in lazy initializations that the object has to be
-# a tracked one, that is to say or a parameter, o the self, or 
+# a tracked one, that is to say or a parameter, o the self, or
 # a previously created one. New objects created in the method
 # under test should be treated as initialized in alll its fields
-# TODO: Manage exceptions raised when the types are not specified or 
+# TODO: Manage exceptions raised when the types are not specified or
 # incorrectly specified
 # TODO: Support preconditions and posconditions
 # TODO: Check what happen with objects like list and dict... in instanciation
 # method
 # TODO: Support other symbolic types like list, tuple, dict, slices
 
-class Error(Exception):
-    """Base class for exceptions in this module."""
-    pass
-
-class MaxDepthException(Error):
-    """Exception raised when the maximum exploration depth
-    is reached.
-    """
-
-    def __init__(self):
-        self.message = "Max exploration depth reached"
-
-class ClassNotDocumentedError(Error):
-    """Exception raised when an user defined class has
-    no docstring on his init method.
-    """
-
-    def __init__(self, message):
-        self.message = message
-
-class UnsatBranchError(Error):
-    """Exception raised when a branch is not satisfacible.
-    """
-
-    def __init__(self):
-        self.message = "Unsat branch"
-
-class RepOkFailException(Error):
-    """Exception raised when the maximum exploration depth
-    is reached.
-
-    Attributes:
-        message -- explanation of the error
-        cls -- Class
-    """
-
-    def __init__(self, message, cls):
-        self.message = message
-
-
-class ReturnValueRepOkFail(Error):
-    """Exception raised when the maximum exploration depth
-    is reached.
-
-    Attributes:
-        message -- explanation of the error
-    """
-
-    def __init__(self):
-        self.message = "The returned value does not pass the repok()"
-
-
-class Status(Enum):
-    OK = 0
-    PRUNED = 1
-    FAIL = 2
-
-class ExecutionStats:
-    def __init__(self, exec_number: int):
-        self.number = exec_number
-        self.status = Status.PRUNED
-        self.self_structure = None
-        self.concrete_self = None
-        self.args = []
-        self.concrete_args = []
-        self.exception = None
-        self.returnv = None
-        self.concrete_return = None
-        self.end_self_state = None
-        self.model = None
-        self.pathcondition = []
-        self.errors = []
 
 class SEEngine:
 
-    _branching_points: list
-    _path_condition: list
-    _current_bp: int
-    _current_depth: int
-    _total_paths: int
-    _pruned_by_depth: int
-    _pruned_by_error: int
-    _pruned_by_repok: int
+    _branching_points = []
+    _path_condition = []
+    _current_bp = 0
+    _current_depth = 0
+    _max_depth = 0
 
-    _is_method: bool
-    _function = None    # Function under exloration
-    _func_args_types = [] # Initial arguments, they could be symbolic or a instrumented reference object
-    _max_depth: int
-
-    _self_class: type
-    _real_to_proxy: dict
-    _class_to_params: dict
-
-    _successes: int
-    _failures: int
-    _complete_exec: int
+    _globalstats = None
+    _sut = None
+    _real_to_proxy = {}
 
     @classmethod
-    def initialize(cls, target_data: dict):
-        cls._self_class = target_data["class"]
-        cls._function = target_data["function"]
-        cls._args_types = target_data["args_types"]
-        cls._return_type = target_data["return_type"]
-        cls._repok = target_data["repok"]
-        cls._class_to_params = target_data["class_to_params"]
-        cls._real_to_proxy = target_data["real_to_proxy"]
-        cls._max_depth = target_data["max_depth"]
-        if cls._self_class:
-            cls._is_method = True
+    def initialize(cls, sut_data, max_depth):
+        cls._sut = sut_data
         cls._branching_points = []
         cls._path_condition = []
         cls._current_bp = 0
         cls._current_depth = 0
-        cls._total_paths = 0
-        cls._pruned_by_depth = 0
-        cls._pruned_by_error = 0
-        cls._pruned_by_repok = 0
-        cls._successes = 0
-        cls._failures = 0
-        cls._complete_exec = 1
-
+        cls._globalstats = GlobalStats()
+        cls._max_depth = max_depth
+        cls._real_to_proxy = {x.emulated_class: x for x in proxy.ProxyObject.__subclasses__()}
+    
     @classmethod
-    def explore(cls): 
+    def explore(cls):
         unexplored_paths = True
         while unexplored_paths:
             cls.reset_exploration()
-            
-            args = [cls.instantiate(a) for a in cls._args_types]
+
+            args = [cls.instantiate(a) for a in cls._sut.types]
 
             result = cls.execute_program(args)
-            yield(result)
+            yield (result)
 
             cls.remove_explored_branching_points()
 
             if not cls._branching_points:
                 unexplored_paths = False
-    
+
     @classmethod
     def reset_exploration(cls):
         cls._path_condition = []
         cls._current_bp = 0
         cls._current_depth = 0
-        for k in cls._class_to_params.keys():
+        for k in cls._sut.class_params_map.keys():
             k._vector = [None]
 
     @classmethod
     def execute_program(cls, args):
-        cls._total_paths += 1    
-        stats = ExecutionStats(cls._complete_exec)
+        cls._globalstats.total_paths += 1
+        stats = ExecutionStats(cls._globalstats.complete_exec)
         try:
-            if cls._is_method:
+            if cls._sut.is_method:
                 the_self = args[0]
                 args = args[1:]
-                method = getattr(the_self, cls._function.__name__)
+                method = getattr(the_self, cls._sut.function.__name__)
                 if args:
                     returnv = method(*args)
                 else:
@@ -179,11 +84,11 @@ class SEEngine:
                     returnv = returnv.__bool__()
             # TODO: make it work for a non method function
         except UnsatBranchError:
-            cls._pruned_by_error += 1
+            cls._globalstats.pruned_by_error += 1
         except MaxDepthException:
-            cls._pruned_by_depth += 1
+            cls._globalstats.pruned_by_depth += 1
         except RepOkFailException:
-            cls._pruned_by_repok += 1
+            cls._globalstats.pruned_by_repok += 1
         except Exception as e:
             if not cls.expected(e):
                 stats.status = Status.FAIL
@@ -196,7 +101,7 @@ class SEEngine:
         finally:
             if stats.status == Status.PRUNED:
                 return stats
-            cls._complete_exec += 1
+            cls._globalstats.complete_exec += 1
             stats.pathcondition = cls._path_condition
             stats.model = proxy.smt.get_model(cls._path_condition)
             stats.self_structure = the_self
@@ -205,7 +110,7 @@ class SEEngine:
                 stats.concrete_args = cls._concretize(copy.deepcopy(args), stats.model)
 
             if stats.exception:
-                cls.status_count(stats.status)
+                cls._globalstats.status_count(stats.status)
                 return stats
 
             if not cls.check_repok(returnv):
@@ -215,16 +120,11 @@ class SEEngine:
                 stats.status = Status.FAIL
                 stats.errors.append("Self RepOk fail")
             stats.returnv = returnv
-            stats.concrete_return = cls._concretize(copy.deepcopy(stats.returnv), stats.model)
-            cls.status_count(stats.status)
+            stats.concrete_return = cls._concretize(
+                copy.deepcopy(stats.returnv), stats.model
+            )
+            cls._globalstats.status_count(stats.status)
             return stats
-
-    @classmethod
-    def status_count(cls, status):
-        if status == Status.OK:
-            cls._successes += 1
-        else:
-            cls._failures += 1
 
     @classmethod
     def expected(cls, exception):
@@ -234,12 +134,11 @@ class SEEngine:
     def check_repok(cls, obj):
         if proxy.is_user_defined(type(obj)):
             return obj.rep_ok()
-        return True 
-
+        return True
 
     @classmethod
     def _concretize(cls, obj, model):
-        #FIXME: Hay que iterar sobre builtins que puedan contener ProxyObjects
+        # FIXME: Hay que iterar sobre builtins que puedan contener ProxyObjects
         if obj is None:
             return None
         elif proxy.is_symbolic(obj):
@@ -265,7 +164,7 @@ class SEEngine:
                     pass
             return obj
         else:
-            # i think this is executed when the object is a builtin or a 
+            # i think this is executed when the object is a builtin or a
             # callable
             return obj
 
@@ -291,34 +190,64 @@ class SEEngine:
 
         if cls._current_bp < len(cls._branching_points):
             branch_point = cls._branching_points[cls._current_bp]
-            assert(isinstance(branch_point, LazyStep))
-            index = branch_point.get_branch()    
+            assert isinstance(branch_point, LazyStep)
+            index = branch_point.get_branch()
             cls._current_bp += 1
 
             if index < len(vector):
                 return vector[index]
 
-            n = cls.create_new_object(lazy_class)    
+            n = cls.create_instance(lazy_class)
             vector.append(n)
             return n
 
         cls._branching_points.append(LazyStep(len(vector)))
         cls._current_bp += 1
-        return None   
-
+        return None
 
     @classmethod
-    def create_new_object(cls, lazy_class):
-        init_types = cls.get_init_types(lazy_class)
-        init_args = [cls.instantiate_only_primitives(a) for a in init_types]
-        return lazy_class(*init_args)
+    def instantiate(cls, typ):
+        if typ in cls._real_to_proxy.keys():
+            return cls._real_to_proxy[typ]()
+        elif isinstance(typ, type(None)):
+            return None
+        elif proxy.is_user_defined(typ):
+            instance = cls.create_instance(typ)
+            typ._vector = [None, instance]
+            return instance
+        return typ()
 
+    @classmethod
+    def create_instance(cls, user_def_class):
+        init_types = cls.get_init_types(user_def_class)
+        init_args = [cls.make_symbolic(a) for a in init_types]
+        if init_args:
+            return user_def_class(*init_args)
+        return user_def_class()
+
+    @classmethod
+    def get_init_types(cls, user_def_class):
+        init_types = copy.deepcopy(cls._sut.class_params_map[user_def_class])
+        number_params = user_def_class.__init__.__code__.co_argcount
+        if number_params - 1 != len(init_types):
+            raise MissingTypesError(
+                "Incomplete type annotations in: " + str(user_def_class)
+            )
+        return init_types
+
+    @classmethod
+    def make_symbolic(cls, typ):
+        if typ in cls._real_to_proxy.keys():
+            return cls._real_to_proxy[typ]()
+        elif isinstance(typ, type(None)) or proxy.is_user_defined(typ):
+            return None
+        return typ()
 
     @classmethod
     def evaluate(cls, bool_proxy):
         partial_solve = cls._get_partial_solve(bool_proxy)
-        if partial_solve != None:
-           return partial_solve
+        if partial_solve is not None:
+            return partial_solve
 
         condition = bool_proxy.formula
         condition_value = cls.get_next_conditional_step()
@@ -343,23 +272,25 @@ class SEEngine:
         conditions = True
         for c in cls._path_condition:
             conditions = proxy.smt.And(conditions, c)
-        true_cond  = proxy.smt.check(proxy.smt.And(conditions, bool_proxy.formula))
-        false_cond = proxy.smt.check(proxy.smt.And(conditions, proxy.smt.Not(bool_proxy.formula)))
-        if true_cond == "sat" and not false_cond == "sat":
+        true_cond = proxy.smt.check(proxy.smt.And(conditions, bool_proxy.formula))
+        false_cond = proxy.smt.check(
+            proxy.smt.And(conditions, proxy.smt.Not(bool_proxy.formula))
+        )
+        if true_cond and not false_cond:
             return True
-        if false_cond == "sat" and not true_cond == "sat":
-            return False 
-        if true_cond != "sat" and false_cond != "sat":
+        if false_cond and not true_cond:
+            return False
+        if not true_cond and not false_cond:
             raise UnsatBranchError()
 
     @classmethod
     def get_next_conditional_step(cls):
         if cls._max_depth < cls._current_depth:
-            raise MaxDepthException  
+            raise MaxDepthException
         cls._current_depth += 1
 
         if cls._current_bp < len(cls._branching_points):
-            assert(isinstance(cls._branching_points[cls._current_bp], ConditionalStep))
+            assert isinstance(cls._branching_points[cls._current_bp], ConditionalStep)
             bool_value = cls._branching_points[cls._current_bp].get_branch()
         else:
             cls._branching_points.append(ConditionalStep())
@@ -372,62 +303,7 @@ class SEEngine:
     def ignore_if(cls, value, instance):
         if value:
             raise RepOkFailException(type(instance), "Repok Failed")
-            
-
-    @classmethod
-    def instantiate(cls, param_type):
-        if param_type in cls._real_to_proxy.keys():
-            return cls._real_to_proxy[param_type]()
-        elif param_type == type(None):
-            return None
-        elif proxy.is_user_defined(param_type):
-            return cls.create_instance(param_type)
-        return param_type()
-    
-    @classmethod
-    def get_init_types(cls, user_def_class):
-        class_args = copy.deepcopy(cls._class_to_params[user_def_class])
-        number_params = user_def_class.__init__.__code__.co_argcount
-        if (number_params - 1 != len(class_args)):
-            raise ClassNotDocumentedError("Docstring not found in: " + str(user_def_class))
-        return class_args
-
-    @classmethod
-    def create_instance(cls, user_def_class):
-        class_args = cls.get_init_types(user_def_class)
-
-        for i, ptype in enumerate(class_args):
-            # If supported symbolic type_
-            if ptype in cls._real_to_proxy.keys():
-                class_args[i] = cls._real_to_proxy[ptype]()
-            elif proxy.is_user_defined(ptype):
-                class_args[i] = None
-            else:
-                class_args[i] = ptype()
-
-        if not class_args:
-            new_instance = user_def_class()
-        else:
-            new_instance = user_def_class(*class_args)
-        user_def_class._vector = [None, new_instance]
-        return new_instance
-
-    @classmethod
-    def instantiate_only_primitives(cls, arg):
-        if arg in cls._real_to_proxy.keys():
-            return cls._real_to_proxy[arg]()
-        elif arg == type(None) or proxy.is_user_defined(arg):
-            return None
-        return arg()
 
     @classmethod
     def statistics(cls):
-        data = {}
-        data["explored"] = cls._total_paths - cls._pruned_by_depth - cls._pruned_by_repok - cls._pruned_by_error
-        data["total_paths"] = cls._total_paths
-        data["pruned_by_repok"] = cls._pruned_by_repok
-        data["pruned_by_depth"] = cls._pruned_by_depth
-        data["pruned_by_error"] = cls._pruned_by_error
-        data["successes"] = cls._successes
-        data["failures"] = cls._failures
-        return data
+        return cls._globalstats

@@ -1,18 +1,12 @@
 #coding:utf-8
-import types as _types
-import copy
-import re
-from collections.abc import Iterable
-from ast import literal_eval
-import itertools
-from proxy_decorators import forward_to_rfun, check_comparable_types
-from proxy_decorators import check_equality, check_self_and_other_have_same_type
+from pygse.proxy_decorators import forward_to_rfun, check_comparable_types
+from pygse.proxy_decorators import check_equality, check_self_and_other_have_same_type
 # Import objets for the SMT Solver
-from smt.smt import SMT, SMTException
-from smt.sort_z3 import SMTInt, SMTBool, SMTChar, SMTArray
-from smt.solver_z3 import SMTSolver
+from pygse.smt.smt import SMT, SMTException
+from pygse.smt.sort_z3 import SMTInt, SMTBool, SMTChar, SMTArray
+from pygse.smt.solver_z3 import SMTSolver
 
-from symbolic_execution_engine import SEEngine
+import pygse.symbolic_execution_engine as see
 
 # Gideline para crear/modificar proxys:
 #   *) Si queremos saber si una variable tiene algo preguntar si es != None.
@@ -298,7 +292,7 @@ class BoolProxy(ProxyObject):
         if isinstance(self.formula, bool):
             return self.formula
         # If self.formula isn't a builtin bool we have to solve it
-        return SEEngine.evaluate(self)
+        return see.SEEngine.evaluate(self)
         
 
     def __nonzero__(self):
@@ -310,7 +304,7 @@ class BoolProxy(ProxyObject):
                   else returns that concrete value (True or False).
         It tries to obtain a bool value if possible. Without branching.
         """
-        return SEEngine._get_partial_solve(self)
+        return see.SEEngine._get_partial_solve(self)
 
     def __repr__(self):
         ps = self._get_partial_solve()

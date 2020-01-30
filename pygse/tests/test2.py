@@ -1,4 +1,4 @@
-from symbolic_execution_engine import SEEngine
+import pygse.symbolic_execution_engine as see
 
 class X:
 
@@ -37,7 +37,7 @@ class A:
     def _get_next(self):
         if not self._next_is_initialized:
             self._next_is_initialized = True
-            self.next = SEEngine.get_next_lazy_step(A, A._vector)
+            self.next = see.SEEngine.get_next_lazy_step(A, A._vector)
             # Verify.ignore_if(not self.precondition())
         return self.next
 
@@ -86,7 +86,7 @@ class B:
     def _get_next(self):
         if not self._next_is_initialized:
             self._next_is_initialized = True
-            self.next = SEEngine.get_next_lazy_step(B, B._vector)
+            self.next = see.SEEngine.get_next_lazy_step(B, B._vector)
             # Verify.ignore_if(not self.precondition())
         return self.next
 
@@ -135,7 +135,7 @@ class C:
     def _get_next(self):
         if not self._next_is_initialized:
             self._next_is_initialized = True
-            self.next = SEEngine.get_next_lazy_step(C, C._vector)
+            self.next = see.SEEngine.get_next_lazy_step(C, C._vector)
             # Verify.ignore_if(not self.precondition())
         return self.next
 
@@ -146,7 +146,7 @@ class C:
     def _get_a(self):
         if not self._a_is_initialized:
             self._a_is_initialized = True
-            self.a = SEEngine.get_next_lazy_step(A, A._vector)
+            self.a = see.SEEngine.get_next_lazy_step(A, A._vector)
             # Verify.ignore_if(not self.precondition())
         return self.a
 
@@ -157,7 +157,7 @@ class C:
     def _get_b(self):
         if not self._b_is_initialized:
             self._b_is_initialized = True
-            self.b = SEEngine.get_next_lazy_step(B, B._vector)
+            self.b = see.SEEngine.get_next_lazy_step(B, B._vector)
             # Verify.ignore_if(not self.precondition())
         return self.b
 
