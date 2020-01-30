@@ -1,4 +1,4 @@
-from pygse.reports import report_statistics, helper_print_dict, print_formatted_result
+from pygse.reports import report_statistics, print_formatted_result
 from pygse.symbolic_execution_engine import SEEngine
 from pygse.sut_parser import SUTParser
 

@@ -1,8 +1,8 @@
-#coding:utf-8
+# coding:utf-8
 from pygse.proxy_decorators import forward_to_rfun, check_comparable_types
 from pygse.proxy_decorators import check_equality, check_self_and_other_have_same_type
 # Import objets for the SMT Solver
-from pygse.smt.smt import SMT, SMTException
+from pygse.smt.smt import SMT
 from pygse.smt.sort_z3 import SMTInt, SMTBool, SMTChar, SMTArray
 from pygse.smt.solver_z3 import SMTSolver
 
@@ -22,6 +22,7 @@ import pygse.symbolic_execution_engine as see
 
 smt = SMT((SMTInt, SMTBool, SMTChar, SMTArray), SMTSolver)
 
+
 class ConcolicExecutionError(Exception):
     pass
 
@@ -34,16 +35,20 @@ class MaxDepthError(ConcolicExecutionError):
 def is_symbolic(obj):
     return isinstance(obj, ProxyObject)
 
+
 def is_symbolic_bool(obj):
     return isinstance(obj, BoolProxy)
 
+
 def is_user_defined(obj):
     return hasattr(obj, "_is_user_defined")
+
 
 class ProxyObject(object):
     """
     Base class of a ProxyObject that can become any type by inheriting it.
     """
+
 
 class IntProxy(ProxyObject):
     """
@@ -108,7 +113,7 @@ class IntProxy(ProxyObject):
             # 1) -1 == -1//2 != 1//-2  == 0
             # 2)  1 ==  1//2 != -1//-2 == 0
             if other < 0:
-                return -self//-other
+                return -self // -other
             else:
                 return IntProxy(smt.Div(self.real, other.real))
         else:
@@ -218,7 +223,7 @@ class IntProxy(ProxyObject):
             # 1) -1 == -1//2 != 1//-2  == 0
             # 2)  1 ==  1//2 != -1//-2 == 0
             if self < 0:
-                return -other//-self
+                return -other // -self
             else:
                 return IntProxy(smt.Div(other.real, self.real))
         else:
@@ -274,6 +279,7 @@ class IntProxy(ProxyObject):
             result = SMTInt.concreteValue(model.evaluate(self.real))
         return result
 
+
 class BoolProxy(ProxyObject):
     """
     Bool Proxy object for variables that behave like bools.
@@ -293,7 +299,6 @@ class BoolProxy(ProxyObject):
             return self.formula
         # If self.formula isn't a builtin bool we have to solve it
         return see.SEEngine.evaluate(self)
-        
 
     def __nonzero__(self):
         return self.__bool__()
@@ -308,7 +313,7 @@ class BoolProxy(ProxyObject):
 
     def __repr__(self):
         ps = self._get_partial_solve()
-        return "BoolProxy(%s)" % (ps if ps != None else str(self.formula))
+        return "BoolProxy(%s)" % (ps if ps is not None else str(self.formula))
 
     def __deepcopy__(self, memo):
         return self
