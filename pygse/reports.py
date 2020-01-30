@@ -78,6 +78,6 @@ def report_statistics(stats):
     print(str(stats.successes) + " passed")
     print(str(stats.failures) + " failures")
     print(str(stats.pruned_by_depth) + " pruned by depth")
-    print(str(stats.pruned_by_error) + " pruned by repok")
-    print(str(stats.pruned_by_repok) + " pruned by error")
+    print(str(stats.pruned_by_error) + " pruned by error")
+    print(str(stats.pruned_by_repok) + " pruned by repok")
     print("")
