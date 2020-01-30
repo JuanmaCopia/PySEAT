@@ -60,7 +60,6 @@ class SUTParser:
         class_to_types[user_def_class] = types
 
         objects_added = copy.deepcopy(class_to_types[user_def_class])
-
         added = True if objects_added else False
 
         while added:

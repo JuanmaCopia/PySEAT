@@ -5,7 +5,6 @@ from pygse.branching_steps import LazyStep, ConditionalStep
 from pygse.stats import Status, ExecutionStats, GlobalStats
 from pygse.engine_errors import UnsatBranchError, MissingTypesError, RepOkFailException
 from pygse.engine_errors import MaxDepthException
-
 import pygse.proxy as proxy
 
 # TODO: Check in lazy initializations that the object has to be
@@ -302,7 +301,7 @@ class SEEngine:
     @classmethod
     def ignore_if(cls, value, instance):
         if value:
-            raise RepOkFailException(type(instance), "Repok Failed")
+            raise RepOkFailException()
 
     @classmethod
     def statistics(cls):

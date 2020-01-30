@@ -15,7 +15,7 @@ class MaxDepthException(Error):
 
 class MissingTypesError(Error):
     """Exception raised when an user defined class has
-    no docstring on his init method.
+    has some missing type annotations.
     """
 
     def __init__(self, message):
@@ -33,22 +33,15 @@ class UnsatBranchError(Error):
 class RepOkFailException(Error):
     """Exception raised when the maximum exploration depth
     is reached.
-
-    Attributes:
-        message -- explanation of the error
-        cls -- Class
     """
 
-    def __init__(self, message, cls):
-        self.message = message
+    def __init__(self):
+        self.message = "Repok Fail"
 
 
 class ReturnValueRepOkFail(Error):
     """Exception raised when the maximum exploration depth
     is reached.
-
-    Attributes:
-        message -- explanation of the error
     """
 
     def __init__(self):

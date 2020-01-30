@@ -1,35 +1,14 @@
-# coding:utf-8
+
 from pygse.proxy_decorators import forward_to_rfun, check_comparable_types
 from pygse.proxy_decorators import check_equality, check_self_and_other_have_same_type
-# Import objets for the SMT Solver
+
 from pygse.smt.smt import SMT
 from pygse.smt.sort_z3 import SMTInt, SMTBool, SMTChar, SMTArray
 from pygse.smt.solver_z3 import SMTSolver
-
 import pygse.symbolic_execution_engine as see
 
-# Gideline para crear/modificar proxys:
-#   *) Si queremos saber si una variable tiene algo preguntar si es != None.
-#      Comparaciones con valores o usar como booleanos a variables puede
-#      producir branching no deseado.
-#   *) La implementación de __str__ y __repr__ de los Proxy no debe generar
-#      branching. Facilita el debugeo y evita caminos generalmente innecesarios.
-#   *) No utilizar la función `len` ya que python hace checkeo de tipos.
-#   *) Los métodos _concretize deben devolver un objeto concreto "equivalente".
-#   *) Cada proxy object DEBE tener un atributo de clase `emulated_class` que
-#      tenga como valor la clase que el proxy object emula. ej.
-#      ProxyInt.emulated_class = int, ProxyList.emulated_class = list
 
 smt = SMT((SMTInt, SMTBool, SMTChar, SMTArray), SMTSolver)
-
-
-class ConcolicExecutionError(Exception):
-    pass
-
-
-class MaxDepthError(ConcolicExecutionError):
-    def __init__(self):
-        super(MaxDepthError, self).__init__("Max depth reached")
 
 
 def is_symbolic(obj):
@@ -43,13 +22,11 @@ def is_symbolic_bool(obj):
 def is_user_defined(obj):
     return hasattr(obj, "_is_user_defined")
 
-
 class ProxyObject(object):
     """
     Base class of a ProxyObject that can become any type by inheriting it.
     """
-
-
+    
 class IntProxy(ProxyObject):
     """
     Int Proxy object for variables that behave like ints.

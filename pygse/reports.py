@@ -59,7 +59,7 @@ def print_list(l: list):
 
 def print_formatted_result(function, stats, verbose):
     if stats.status != Status.PRUNED:
-        print("\n" + get_header_str(stats) + get_function_profile_str(function, stats))
+        print(get_header_str(stats) + get_function_profile_str(function, stats))
         if not stats.exception:
             print_list(stats.errors)
 
@@ -67,17 +67,24 @@ def print_formatted_result(function, stats, verbose):
                 print(INDENT + "Path Condition:  ")
                 print_list(stats.pathcondition)
                 print(INDENT + "Symbolic return:  " + stats.returnv.__repr__())
-                print(INDENT + "Symbolic self:    " + stats.self_structure.__repr__())
+                print(
+                    INDENT
+                    + "Symbolic self:    "
+                    + stats.self_structure.__repr__()
+                    + "\n"
+                )
 
 
 def report_statistics(stats):
-    print("")
     print(
-        str(stats.complete_exec) + " of " + str(stats.total_paths) + " paths explored"
+        "\n"
+        + str(stats.complete_exec)
+        + " of "
+        + str(stats.total_paths)
+        + " paths explored"
     )
     print(str(stats.successes) + " passed")
     print(str(stats.failures) + " failures")
     print(str(stats.pruned_by_depth) + " pruned by depth")
     print(str(stats.pruned_by_error) + " pruned by error")
-    print(str(stats.pruned_by_repok) + " pruned by repok")
-    print("")
+    print(str(stats.pruned_by_repok) + " pruned by repok" + "\n")
