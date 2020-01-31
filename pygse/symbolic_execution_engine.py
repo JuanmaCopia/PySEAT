@@ -33,6 +33,12 @@ class SEEngine:
 
     @classmethod
     def initialize(cls, sut_data, max_depth):
+        """Setups the initial values of the engine.
+
+        Args:
+            sut_data: System under test (function, types, classes).
+            max_depth: Depth limit of the exploration tree.
+        """
         cls._sut = sut_data
         cls._branching_points = []
         cls._path_condition = []
@@ -44,22 +50,29 @@ class SEEngine:
     
     @classmethod
     def explore(cls):
+        """Main method, implements the generalized symbolic execution.
+
+        Yields:
+            ExecutionStats: The result of the execution of the function under test
+        """
         unexplored_paths = True
         while unexplored_paths:
             cls.reset_exploration()
 
-            args = [cls.instantiate(a) for a in cls._sut.types]
+            args = [cls.symbolic_instantiation(a) for a in cls._sut.types]
 
             result = cls.execute_program(args)
             yield (result)
 
-            cls.remove_explored_branching_points()
+            cls.remove_explored_branches()
 
             if not cls._branching_points:
                 unexplored_paths = False
 
     @classmethod
     def reset_exploration(cls):
+        """Resets the exploration variables to it's initial values.
+        """
         cls._path_condition = []
         cls._current_bp = 0
         cls._current_depth = 0
@@ -68,6 +81,21 @@ class SEEngine:
 
     @classmethod
     def execute_program(cls, args):
+        """Executes the method and returns the result.
+
+        Collect and returns all the execution data, like the returned
+        value, the final state of the self, the path condition, the
+        model, exceptions raised, concrete values of arguments and
+        result, and state.
+
+        Args:
+            args (List): List of the arguments to call the function
+                or method.
+
+        Returns:
+            ExecutionStats: The result of the execution of the function
+            under test
+        """
         cls._globalstats.total_paths += 1
         stats = ExecutionStats(cls._globalstats.complete_exec)
         try:
@@ -127,48 +155,87 @@ class SEEngine:
 
     @classmethod
     def expected(cls, exception):
+        """Checks whether an exception is expected or not.
+
+        Args:
+            exception (Exception): A raised exception during
+                the execution of a function.
+
+        Returns:
+            True if expected, False otherwise.
+        """
         return isinstance(exception, ValueError)
 
     @classmethod
     def check_repok(cls, obj):
+        """Checks whether an object pass it's class invariant o not.
+
+        Args:
+            obj: instance of a user_defined_class
+
+        Returns:
+            True if obj is valid (pass it's repok), False otherwise.
+        """
         if proxy.is_user_defined(type(obj)):
             return obj.rep_ok()
         return True
 
     @classmethod
-    def _concretize(cls, obj, model):
+    def _concretize(cls, symbolic, model):
+        """Created the concrete object.
+
+        Creates the concrete object from a symbolic (builtin symbolic)
+        or a partially symbolic (user-defined) one and the model 
+        describing it's restrictions.
+
+        Args:
+            symbolic: a symbolic builtin or a partially symbolic
+                user-defined class.
+            model: Model describing the constrains that the object
+                must acomplish.
+
+        Returns:
+            The concrete object represented by symbolic and the model.
+        """
         # FIXME: Hay que iterar sobre builtins que puedan contener ProxyObjects
-        if obj is None:
+        if symbolic is None:
             return None
-        elif proxy.is_symbolic(obj):
-            return obj._concretize(model)
-        elif isinstance(obj, list):
-            return [cls._concretize(x, model) for x in obj]
-        elif isinstance(obj, tuple):
-            return tuple([cls._concretize(x, model) for x in obj])
-        elif proxy.is_user_defined(obj):
-            # obj.__dict__ returns all instance-only defined attributes
-            if obj.concretized:
-                return obj
-            obj.concretized = True
+        elif proxy.is_symbolic(symbolic):
+            return symbolic._concretize(model)
+        elif isinstance(symbolic, list):
+            return [cls._concretize(x, model) for x in symbolic]
+        elif isinstance(symbolic, tuple):
+            return tuple([cls._concretize(x, model) for x in symbolic])
+        elif proxy.is_user_defined(symbolic):
+            # symbolic.__dict__ returns all instance-only defined attributes
+            if symbolic.concretized:
+                return symbolic
+            symbolic.concretized = True
             try:
-                for name in obj.__dict__:
+                for name in symbolic.__dict__:
                     # TODO: Hacerlo genérico, incluyendo atributos de clase
-                    attr = getattr(obj, name)
+                    attr = getattr(symbolic, name)
                     if not callable(attr):
-                        setattr(obj, name, cls._concretize(attr, model))
+                        setattr(symbolic, name, cls._concretize(attr, model))
             except AttributeError:
                 # TODO: Check wtf is this
-                if isinstance(obj, Iterable):
+                if isinstance(symbolic, Iterable):
                     pass
-            return obj
+            return symbolic
         else:
-            # i think this is executed when the object is a builtin or a
+            # i think this is executed when the symbolicect is a builtin or a
             # callable
-            return obj
+            return symbolic
 
     @classmethod
-    def remove_explored_branching_points(cls):
+    def remove_explored_branches(cls):
+        """Removes fully explored branhes.
+
+        Advance the last branching point and removes it if it
+        has been fully explored. After removing a branching point
+        the same is done again until no more branches are removed
+        or no more branches left.
+        """
         if not cls._branching_points:
             return None
 
@@ -183,6 +250,24 @@ class SEEngine:
 
     @classmethod
     def get_next_lazy_step(cls, lazy_class, vector):
+        """Implements a lazy initialization step.
+
+        If it's a new initialization step creates the branching
+        point an return None as first initialization, on the
+        other hand if it's an already existent one it gets the
+        corresponding initialization that could be:
+            - None
+            - Any previous created instances of lazy_class.
+            - A new lazy_class instance.
+
+        Args:
+            lazt_class: The instance type to be initialized.
+            vector: A vector containing the previous created 
+                instances of lazy_class.
+
+        Returns:
+            An instance of lazy_class or None.
+        """
         if cls._max_depth < cls._current_depth:
             raise MaxDepthException
         cls._current_depth += 1
@@ -196,7 +281,7 @@ class SEEngine:
             if index < len(vector):
                 return vector[index]
 
-            n = cls.create_instance(lazy_class)
+            n = cls.symbolize_partially(lazy_class)
             vector.append(n)
             return n
 
@@ -205,19 +290,45 @@ class SEEngine:
         return None
 
     @classmethod
-    def instantiate(cls, typ):
+    def symbolic_instantiation(cls, typ):
+        """Creates a symbolic or a partially symbolic instance.
+
+        If it's a supported builtin type it returns the appropiate
+        symbolic instance.
+        If it's an user-defined class returns a partially symbolic
+        instance of that class
+
+        Args:
+            typ: The type to be instantiated. Could be builtin or
+            user defined.
+
+        Returns:
+            A symbolic or partially symbolic instance.
+        """
         if typ in cls._real_to_proxy.keys():
             return cls._real_to_proxy[typ]()
         elif isinstance(typ, type(None)):
             return None
         elif proxy.is_user_defined(typ):
-            instance = cls.create_instance(typ)
+            instance = cls.symbolize_partially(typ)
             typ._vector = [None, instance]
             return instance
         return typ()
 
     @classmethod
-    def create_instance(cls, user_def_class):
+    def symbolize_partially(cls, user_def_class):
+        """Creates partially symbolic instance of a class.
+
+        Returns an instance of user_def_class with all it's builtin
+        instance attributes symbolized and it's user-defined attributes
+        initialized to None.
+
+        Args:
+            user_def_class: The class to be partially symbolized.
+
+        Returns:
+            A partially symbolic instance of user_def_class.
+        """
         init_types = cls.get_init_types(user_def_class)
         init_args = [cls.make_symbolic(a) for a in init_types]
         if init_args:
@@ -226,6 +337,17 @@ class SEEngine:
 
     @classmethod
     def get_init_types(cls, user_def_class):
+        """Returns the types of the parameters of the class.
+
+        Returns a list containing the types of the parameters
+        of the init method of user_def_class.
+
+        Args:
+            user_def_class: An user-defined class.
+
+        Returns:
+            A list of types.
+        """
         init_types = copy.deepcopy(cls._sut.class_params_map[user_def_class])
         number_params = user_def_class.__init__.__code__.co_argcount
         if number_params - 1 != len(init_types):
@@ -236,6 +358,19 @@ class SEEngine:
 
     @classmethod
     def make_symbolic(cls, typ):
+        """Creates a symbolic instance.
+
+        If it's a supported builtin type it returns the appropiate
+        symbolic instance.
+        If it's an user-defined class returns None
+
+        Args:
+            typ: The type to be instantiated. Could be builtin or
+            user defined.
+
+        Returns:
+            A symbolic instance of a builtin type or None.
+        """
         if typ in cls._real_to_proxy.keys():
             return cls._real_to_proxy[typ]()
         elif isinstance(typ, type(None)) or proxy.is_user_defined(typ):
@@ -243,12 +378,26 @@ class SEEngine:
         return typ()
 
     @classmethod
-    def evaluate(cls, bool_proxy):
-        partial_solve = cls._get_partial_solve(bool_proxy)
+    def evaluate(cls, sym_bool):
+        """Evaluates a condition represented by a symbolic bool.
+
+        If the value of the symbol represented constrain is conditioned
+        to True or False by the path conditions, that value is returned
+        and no branching point is created. Otherwise (both values are
+        feasible) return the corresponding bool evaluation of the current
+        branching point.
+
+        Args:
+            sym_bool: the symbolic bool that represents a constrain.
+
+        Returns:
+            True or False, depending on the evaluation.
+        """
+        partial_solve = cls._get_partial_solve(sym_bool)
         if partial_solve is not None:
             return partial_solve
 
-        condition = bool_proxy.formula
+        condition = sym_bool.formula
         condition_value = cls.get_next_conditional_step()
 
         if condition_value:
@@ -258,16 +407,11 @@ class SEEngine:
 
         # TODO: Check if next lines are necessary
         if not condition_value:
-            bool_proxy.formula = proxy.smt.Not(bool_proxy.formula)
+            sym_bool.formula = proxy.smt.Not(sym_bool.formula)
         return condition_value
 
     @classmethod
     def _get_partial_solve(cls, bool_proxy):
-        """
-        :returns: None if constrains haven't define a concrete value yet,
-                  else returns that concrete value (True or False).
-        It tries to obtain a bool value if possible. Without branching.
-        """
         conditions = True
         for c in cls._path_condition:
             conditions = proxy.smt.And(conditions, c)
