@@ -1,233 +1,447 @@
+"""Symbolic execution Engine
+
+Implements a Generalized Symbolic execution engine that handles complex
+dynammically allocated structures with the use of lazy initialization.
+
+"""
 
 import copy
 from collections.abc import Iterable
 
-from branching_steps import LazyStep, ConditionalStep
-from exception_mod import MaxDepthException, ClassNotDocumentedError, UnsatBranchError
+from pygse.branching_steps import LazyStep, ConditionalStep
+from pygse.stats import Status, ExecutionStats, GlobalStats
+from pygse.engine_errors import UnsatBranchError, MissingTypesError, RepOkFailException
+from pygse.engine_errors import MaxDepthException
+import pygse.proxy as proxy
 
-import proxy as proxy
-
-# TODO: Check what happen when a class is not documented
-# TODO: Check what happen when de contract doesnt document the right amount of parameters
-# in init methon and also in the function to explore
+# TODO: Check in lazy initializations that the object has to be
+# a tracked one, that is to say or a parameter, o the self, or
+# a previously created one. New objects created in the method
+# under test should be treated as initialized in alll its fields
+# TODO: Manage exceptions raised when the types are not specified or
+# incorrectly specified
 # TODO: Support preconditions and posconditions
-# TODO: Make symbolic all attr of an instance, not only the ones on the contract
-# In order to do this the entire class should be documented with all it's attributes
-# and its types. It also can document class atributes to support them.
 # TODO: Check what happen with objects like list and dict... in instanciation
 # method
+# TODO: Support other symbolic types like list, tuple, dict, slices
+
 
 class SEEngine:
+    """Symbolic Execution engine.
 
+    Performs symbolic execution on programs. Handles complex
+    dynammically allocated structures with the use of lazy initialization.
+
+    Attributes:
+        _branching_points (list): Represents the desitions made at the program
+        symbolic execution. The program execution has two possible branching
+        scenarios:
+            - Lazy Initialization Step: It happens when a user-defined class field
+            is accessed, so the engine must initialize it to each posibility creating
+            differents executions paths. The possible choices are initializate field to:
+                - None
+                - Any previous created instances of the user-defined class.
+                - A new instance of that class.
+            - Conditional Step: It happens the execution reachs a condition over
+            symbolic fields, so two there are two possible decisions: make it True
+            or make it False, generating different path executions.
+
+        _path_condition (list): Collects all the path constraints of the current execution.
+
+        _current_bp (LazyStep, ConditionalStep): Is the current branching point, it could
+        be a Lazy Initialization Stem or a Conditional Step. 
+
+        _current_depth (int): Depth's of the current execution tree.
+
+        _max_depth (int): Max depth search, any execution that exeeds this value is pruned.
+
+        _globalstats (GlobalStats): Contains the overall statistics of all executed
+        program paths.
+
+        _sut (SUT): Data of the program under test, contains the method or function,
+        parameter types, etc.
+
+        _real_to_proxy (dict): Maps builtin supported types to Symbolic Ones.
+    """
     _branching_points = []
     _path_condition = []
     _current_bp = 0
     _current_depth = 0
-    _total_paths = 0
-    _pruned = 0
-    _pruned_by_error = 0
+    _max_depth = 0
 
-
-    _is_method = False
-    _function = None    # Function under exloration
-    _func_args_types = [] # Initial arguments, they could be symbolic or a instrumented reference object
-    _max_depth = 10
-
-    _self_class = None
+    _globalstats = None
+    _sut = None
     _real_to_proxy = {}
-    _class_params_map = {}
 
     @classmethod
-    def initialize(cls, function, func_args_types, max_depth, class_params_map, primitives, self_class=None):
-        # TODO: Add kwargs
-        cls._function = function
-        cls._func_args_types = func_args_types
+    def initialize(cls, sut_data, max_depth):
+        """Setups the initial values of the engine.
+
+        Args:
+            sut_data: System under test (function, types, classes).
+            max_depth: Depth limit of the exploration tree.
+        """
+        cls._sut = sut_data
+        cls._branching_points = []
+        cls._path_condition = []
+        cls._current_bp = 0
+        cls._current_depth = 0
+        cls._globalstats = GlobalStats()
         cls._max_depth = max_depth
-
-        if self_class:
-            cls._is_method = True
-
-        cls._class_params_map = class_params_map
-        cls._self_class = self_class
-        cls._real_to_proxy =  primitives
-        
-
+        cls._real_to_proxy = {x.emulated_class: x for x in proxy.ProxyObject.__subclasses__()}
+    
     @classmethod
-    def exploration(cls):
-        for r in cls.explore():
-            yield r
+    def explore(cls):
+        """Main method, implements the generalized symbolic execution.
 
-    @classmethod
-    def explore(cls): 
-
+        Yields:
+            ExecutionStats: The result of the execution of the function under test
+        """
         unexplored_paths = True
-
         while unexplored_paths:
-            cls._path_condition = []
-            cls._current_bp = 0
-            cls._current_depth = 0
-            cls._total_paths += 1
+            cls._reset_exploration()
 
+            args = [cls._symbolic_instantiation(a) for a in cls._sut.types]
 
-            cls.reset_vectors()
+            result = cls._execute_program(args)
+            yield (result)
 
-            args = [cls.instantiate(a) for a in cls._func_args_types]
-
-            try:
-                result = cls.execute_program(args)
-            except UnsatBranchError as e:
-                raise e
-            except MaxDepthException:
-                cls._pruned += 1
-            except ClassNotDocumentedError as e:
-                cls._pruned_by_error += 1
-                raise e
-            else:
-                yield(result)
-            
-            cls.remove_explored_branching_points()
+            cls._remove_explored_branches()
 
             if not cls._branching_points:
                 unexplored_paths = False
-    
+
     @classmethod
-    def reset_vectors(cls):
-        for k in cls._class_params_map.keys():
+    def _reset_exploration(cls):
+        """Resets the exploration variables to it's initial values.
+        """
+        cls._path_condition = []
+        cls._current_bp = 0
+        cls._current_depth = 0
+        for k in cls._sut.class_params_map.keys():
             k._vector = [None]
 
-
     @classmethod
-    def execute_program(cls, args):
+    def _execute_program(cls, args):
+        """Executes the method and returns the result.
+
+        Collect and returns all the execution data, like the returned
+        value, the final state of the self, the path condition, the
+        model, exceptions raised, concrete values of arguments and
+        result, and state.
+
+        Args:
+            args (List): List of the arguments to call the function
+                or method.
+
+        Returns:
+            ExecutionStats: The result of the execution of the function
+            under test
+        """
+        cls._globalstats.total_paths += 1
+        stats = ExecutionStats(cls._globalstats.complete_exec)
+        returnv = None
+        the_self = None
         try:
-            if cls._is_method:
-                # if its a method i know that args[0] is the self
+            if cls._sut.is_method:
                 the_self = args[0]
                 args = args[1:]
-                method = getattr(the_self, cls._function.__name__)
+                method = getattr(the_self, cls._sut.function.__name__)
                 if args:
                     returnv = method(*args)
                 else:
                     returnv = method()
-                # If the method returns a boolean expression, it
-                # isnt evaluated, so neither added to path condition..
-                # with the next line we force to evaluate tha missing
-                # boolean expression
                 if proxy.is_symbolic_bool(returnv):
                     returnv = returnv.__bool__()
-                # TODO: make it work for a non method function    
-                #else:
-                    # function = cls._function
-                    # returnv = function(*nargs)
-        except AttributeError as e:
-            raise e
+            # TODO: make it work for a non method function
+        except UnsatBranchError:
+            cls._globalstats.pruned_by_error += 1
+        except MaxDepthException:
+            cls._globalstats.pruned_by_depth += 1
+        except RepOkFailException:
+            cls._globalstats.pruned_by_repok += 1
+        except Exception as e:
+            if not cls._expected(e):
+                stats.status = Status.FAIL
+            else:
+                stats.status = Status.OK
+            stats.exception = e
         else:
+            stats.status = Status.OK
+        finally:
+            if stats.status == Status.PRUNED:
+                return stats
+            cls._globalstats.complete_exec += 1
+            stats.pathcondition = cls._path_condition
+            stats.model = proxy.smt.get_model(cls._path_condition)
+            stats.self_structure = the_self
+            stats.concrete_self = cls._concretize(copy.deepcopy(the_self), stats.model)
+            if args:
+                stats.concrete_args = cls._concretize(copy.deepcopy(args), stats.model)
 
-            result = {}
-            result["self"] = the_self 
-            result["returnv"] = returnv
-            result["path_codition"] = cls._path_condition
-            result["model"] = proxy.smt.get_model(cls._path_condition)
-            result["conc_ret"] = cls._concretize(copy.deepcopy(result["returnv"]), result["model"])
-            result["conc_self"] = cls._concretize(copy.deepcopy(result["self"]), result["model"])
-        return result
+            if stats.exception:
+                cls._globalstats.status_count(stats.status)
+                return stats
+
+            if not cls._check_repok(returnv):
+                stats.status = Status.FAIL
+                stats.errors.append("Return value RepOk fail")
+            if not cls._check_repok(the_self):
+                stats.status = Status.FAIL
+                stats.errors.append("Self RepOk fail")
+            stats.returnv = returnv
+            stats.concrete_return = cls._concretize(
+                copy.deepcopy(stats.returnv), stats.model
+            )
+            cls._globalstats.status_count(stats.status)
+            return stats
 
     @classmethod
-    def _concretize(cls, obj, model):
-        #FIXME: Hay que iterar sobre builtins que puedan contener ProxyObjects
-        if obj is None:
+    def _expected(cls, exception):
+        """Checks whether an exception is expected or not.
+
+        Args:
+            exception (Exception): A raised exception during
+                the execution of a function.
+
+        Returns:
+            True if expected, False otherwise.
+        """
+        return isinstance(exception, ValueError)
+
+    @classmethod
+    def _check_repok(cls, instance):
+        """Checks whether an instance pass it's class invariant o not.
+
+        Args:
+            instance: instance of a user_defined_class
+
+        Returns:
+            True if instance is valid (pass it's repok), False otherwise.
+        """
+        if proxy.is_user_defined(type(instance)):
+            return instance.rep_ok()
+        return True
+
+    @classmethod
+    def _concretize(cls, symbolic, model):
+        """Creates the concrete object.
+
+        Creates the concrete object from a symbolic (builtin symbolic)
+        or a partially symbolic (user-defined) one and the model 
+        describing it's restrictions.
+
+        Args:
+            symbolic: a symbolic builtin or a partially symbolic
+                user-defined class.
+            model: Model describing the constraints that the object
+                must acomplish.
+
+        Returns:
+            The concrete object represented by symbolic and the model.
+        """
+        # FIXME: Hay que iterar sobre builtins que puedan contener ProxyObjects
+        if symbolic is None:
             return None
-        elif proxy.is_symbolic(obj):
-            return obj._concretize(model)
-        elif isinstance(obj, list):
-            return [cls._concretize(x, model) for x in obj]
-        elif isinstance(obj, tuple):
-            return tuple([cls._concretize(x, model) for x in obj])
-        elif proxy.is_user_defined(obj):
-            # User defined (abstract) class
-            # obj.__dict__ returns all instance-only defined attributes
-            if obj.concretized:
-                return obj
-            obj.concretized = True
+        elif proxy.is_symbolic(symbolic):
+            return symbolic.concretize(model)
+        elif isinstance(symbolic, list):
+            return [cls._concretize(x, model) for x in symbolic]
+        elif isinstance(symbolic, tuple):
+            return tuple([cls._concretize(x, model) for x in symbolic])
+        elif proxy.is_user_defined(symbolic):
+            # symbolic.__dict__ returns all instance-only defined attributes
+            if symbolic.concretized:
+                return symbolic
+            symbolic.concretized = True
             try:
-                for name in obj.__dict__:
+                for name in symbolic.__dict__:
                     # TODO: Hacerlo genérico, incluyendo atributos de clase
-                    attr = getattr(obj, name)
+                    attr = getattr(symbolic, name)
                     if not callable(attr):
-                        setattr(obj, name, cls._concretize(attr, model))
+                        setattr(symbolic, name, cls._concretize(attr, model))
             except AttributeError:
                 # TODO: Check wtf is this
-                if isinstance(obj, Iterable):
+                if isinstance(symbolic, Iterable):
                     pass
-            return obj
+            return symbolic
         else:
-            # i think this is executed when the object is a builtin or a 
+            # i think this is executed when the symbolicect is a builtin or a
             # callable
-            return obj
-
+            return symbolic
 
     @classmethod
-    def remove_explored_branching_points(cls):
-        # Advance last branch 
+    def _remove_explored_branches(cls):
+        """Removes fully explored branhes.
+
+        Advance the last branching point and removes it if it
+        has been fully explored. After removing a branching point
+        the same is done again until no more branches are removed
+        or no more branches left.
+        """
         if not cls._branching_points:
             return None
+
         last_bp = cls._branching_points[-1]
         last_bp.advance_branch()
-        # While is not empty and..
+
         while cls._branching_points and last_bp.all_branches_covered():
-            # Delete last branching point
             del cls._branching_points[-1]
-            # Advance branch in the new last branching point
             if cls._branching_points:
                 last_bp = cls._branching_points[-1]
                 last_bp.advance_branch()
 
     @classmethod
     def get_next_lazy_step(cls, lazy_class, vector):
-        # TODO: Think about it: Backup last lazy step with a copy
-        # if is last lazy step()       Esto quizas se pueda hacer siempre, total el ultimo es el que va a quedar
-        # backup = copy.deepcopy(cls._self_class._vector)
+        """Implements a lazy initialization step.
 
+        If it's a new initialization step creates the branching
+        point an return None as first initialization, on the
+        other hand if it's an already existent one it gets the
+        corresponding initialization that could be:
+            - None
+            - Any previous created instances of lazy_class.
+            - A new lazy_class instance.
+
+        Args:
+            lazy_class: The instance type to be initialized.
+            vector: A vector containing the previous created 
+                instances of lazy_class.
+
+        Returns:
+            An instance of lazy_class or None.
+        """
         if cls._max_depth < cls._current_depth:
             raise MaxDepthException
         cls._current_depth += 1
 
-        # if is the branching point already exist
         if cls._current_bp < len(cls._branching_points):
-
-            # Getting the corresponding index
             branch_point = cls._branching_points[cls._current_bp]
-            assert(isinstance(branch_point, LazyStep))
-            index = branch_point.get_branch()    
+            assert isinstance(branch_point, LazyStep)
+            index = branch_point.get_branch()
             cls._current_bp += 1
-            # if is one of the previously created structures
+
             if index < len(vector):
                 return vector[index]
-            # Else return a new structure
 
-            # TODO: is it ok to raise an exception? what else is possible?
-            try:
-                init_types = cls._class_params_map[lazy_class]
-            except KeyError:
-                raise ClassNotDocumentedError(lazy_class)
-            else:
-                init_args = [cls.instantiate_only_primitives(a) for a in init_types]
-                n = lazy_class(*init_args)
-                vector.append(n)
-
+            n = cls._symbolize_partially(lazy_class)
+            vector.append(n)
             return n
-        # Else create the new branching point
+
         cls._branching_points.append(LazyStep(len(vector)))
         cls._current_bp += 1
-        return None   
+        return None
 
     @classmethod
-    def evaluate(cls, bool_proxy):
-        partial_solve = cls._get_partial_solve(bool_proxy)
-        if partial_solve != None:
-           return partial_solve
+    def _symbolic_instantiation(cls, typ):
+        """Creates a symbolic or a partially symbolic instance.
 
-        condition = bool_proxy.formula
-        condition_value = cls.get_next_conditional_step()
+        If it's a supported builtin type it returns the appropiate
+        symbolic instance.
+        If it's an user-defined class returns a partially symbolic
+        instance of that class
+
+        Args:
+            typ: The type to be instantiated. Could be builtin or
+            user defined.
+
+        Returns:
+            A symbolic or partially symbolic instance.
+        """
+        if typ in cls._real_to_proxy.keys():
+            return cls._real_to_proxy[typ]()
+        elif isinstance(typ, type(None)):
+            return None
+        elif proxy.is_user_defined(typ):
+            instance = cls._symbolize_partially(typ)
+            typ._vector = [None, instance]
+            return instance
+        return typ()
+
+    @classmethod
+    def _symbolize_partially(cls, user_def_class):
+        """Creates partially symbolic instance of a class.
+
+        Returns an instance of user_def_class with all it's builtin
+        instance attributes symbolized and it's user-defined attributes
+        initialized to None.
+
+        Args:
+            user_def_class: The class to be partially symbolized.
+
+        Returns:
+            A partially symbolic instance of user_def_class.
+        """
+        init_types = cls._get_init_types(user_def_class)
+        init_args = [cls._make_symbolic(a) for a in init_types]
+        if init_args:
+            return user_def_class(*init_args)
+        return user_def_class()
+
+    @classmethod
+    def _get_init_types(cls, user_def_class):
+        """Returns the types of the parameters of the class.
+
+        Returns a list containing the types of the parameters
+        of the init method of user_def_class.
+
+        Args:
+            user_def_class: An user-defined class.
+
+        Returns:
+            A list of types.
+        """
+        init_types = copy.deepcopy(cls._sut.class_params_map[user_def_class])
+        number_params = user_def_class.__init__.__code__.co_argcount
+        if number_params - 1 != len(init_types):
+            raise MissingTypesError(
+                "Incomplete type annotations in: " + str(user_def_class)
+            )
+        return init_types
+
+    @classmethod
+    def _make_symbolic(cls, typ):
+        """Creates a symbolic instance.
+
+        If it's a supported builtin type it returns the appropiate
+        symbolic instance.
+        If it's an user-defined class returns None
+
+        Args:
+            typ: The type to be instantiated. Could be builtin or
+            user defined.
+
+        Returns:
+            A symbolic instance of a builtin type or None.
+        """
+        if typ in cls._real_to_proxy.keys():
+            return cls._real_to_proxy[typ]()
+        elif isinstance(typ, type(None)) or proxy.is_user_defined(typ):
+            return None
+        return typ()
+
+    @classmethod
+    def evaluate(cls, sym_bool):
+        """Evaluates a condition represented by a symbolic bool.
+
+        If the value of the symbol represented constraint is conditioned
+        to True or False by the path conditions, that value is returned
+        and no branching point is created. Otherwise (both values are
+        feasible) return the corresponding bool evaluation of the current
+        branching point.
+
+        Args:
+            sym_bool: the symbolic bool that represents a constraint.
+
+        Returns:
+            True or False, depending on the evaluation.
+        """
+        bool_value = cls.conditioned_value(sym_bool)
+        if bool_value is not None:
+            return bool_value
+
+        condition = sym_bool.formula
+        condition_value = cls._get_next_conditional_step()
 
         if condition_value:
             cls._path_condition.append(condition)
@@ -236,48 +450,56 @@ class SEEngine:
 
         # TODO: Check if next lines are necessary
         if not condition_value:
-            bool_proxy.formula = proxy.smt.Not(bool_proxy.formula)
+            sym_bool.formula = proxy.smt.Not(sym_bool.formula)
         return condition_value
 
     @classmethod
-    def is_pathcondition_sat(cls):
+    def conditioned_value(cls, sym_bool):
+        """Checks if a constraint's value is conditioned by the path.
+
+        Checks whether the constraint represented by sym_bool has a
+        determined value conditioned by the path_condition.
+
+        Args:
+            sym_bool: the symbolic bool that represents a constraint.
+
+        Returns:
+            True or False if the value it's conditioned by the path_condition,
+            None otherwise.
+
+        Raises:
+            UnstatBranchError: Unsat constraint Error.
+        """
         conditions = True
         for c in cls._path_condition:
             conditions = proxy.smt.And(conditions, c)
-        result  = proxy.smt.check(conditions)
-        if result == "sat":
+        true_cond = proxy.smt.check(proxy.smt.And(conditions, sym_bool.formula))
+        false_cond = proxy.smt.check(
+            proxy.smt.And(conditions, proxy.smt.Not(sym_bool.formula))
+        )
+        if true_cond and not false_cond:
             return True
-        else:
+        if false_cond and not true_cond:
             return False
+        if not true_cond and not false_cond:
+            raise UnsatBranchError()
 
     @classmethod
-    def _get_partial_solve(cls, bool_proxy):
-        """
-        :returns: None if constrains haven't define a concrete value yet,
-                  else returns that concrete value (True or False).
-        It tries to obtain a bool value if possible. Without branching.
-        """
-        conditions = True
-        for c in cls._path_condition:
-            conditions = proxy.smt.And(conditions, c)
-        true_cond  = proxy.smt.check(proxy.smt.And(conditions, bool_proxy.formula))
-        false_cond = proxy.smt.check(proxy.smt.And(conditions, proxy.smt.Not(bool_proxy.formula)))
-        # TODO: Que pasa si es indecidible?
-        if true_cond == "sat" and not false_cond == "sat":
-            return True
-        if false_cond == "sat" and not true_cond == "sat":
-            return False    
+    def _get_next_conditional_step(cls):
+        """Retrieves the conditional of the current branching point.
 
-    @classmethod
-    def get_next_conditional_step(cls):
+        Looks and returns the value that must take the current branching
+        point (conditional branching point).
+
+        Returns:
+            True or False Depending on the current branching point value.
+        """
         if cls._max_depth < cls._current_depth:
             raise MaxDepthException
-        
         cls._current_depth += 1
 
-        # if is the branching point already exist
         if cls._current_bp < len(cls._branching_points):
-            assert(isinstance(cls._branching_points[cls._current_bp], ConditionalStep))
+            assert isinstance(cls._branching_points[cls._current_bp], ConditionalStep)
             bool_value = cls._branching_points[cls._current_bp].get_branch()
         else:
             cls._branching_points.append(ConditionalStep())
@@ -287,53 +509,20 @@ class SEEngine:
         return bool_value
 
     @classmethod
-    def instantiate(cls, param_type):
-        if param_type in cls._real_to_proxy.keys():
-            return cls._real_to_proxy[param_type]()
-        elif param_type == type(None):
-            return None
-        elif proxy.is_user_defined(param_type):
-            return cls.create_instance(param_type)
-        # TODO: Check if this is working
-        # with this I intend to catch types not suported, like dictionaries
-        return param_type()
-    
-    @classmethod
-    def create_instance(cls, user_def_class):
-        class_args = copy.deepcopy(cls._class_params_map[user_def_class])
-        for i, ptype in enumerate(class_args):
-            # If supported symbolic type_
-            if ptype in cls._real_to_proxy.keys():
-                class_args[i] = cls._real_to_proxy[ptype]()
-            elif proxy.is_user_defined(ptype):
-                class_args[i] = None
-            else:
-                # TODO: Check if this is working
-                # with this I intend to catch types not suported, like dictionaries
-                class_args[i] = ptype()
+    def ignore_if(cls, value, instance):
+        """Ignores this execution path if value is true.
 
-        if not class_args:
-            new_instance = user_def_class()
-        else:
-            new_instance = user_def_class(*class_args)
-        user_def_class._vector = [None, new_instance]
-        return new_instance
+        Value deepends on instance repok, if repok is violated,
+        value will be True and an exception is raised.
 
-    @classmethod
-    def instantiate_only_primitives(cls, arg):
-        if arg in cls._real_to_proxy.keys():
-            return cls._real_to_proxy[arg]()
-        elif arg == type(None) or proxy.is_user_defined(arg):
-            return None
-        # Else
-        # TODO: Check if this is working
-        # with this I intend to catch types not suported, like dictionaries
-        return arg()
+        Raises:
+            RepOkFailException: RepOk of instances failed.
+        """
+        if value:
+            raise RepOkFailException()
 
     @classmethod
     def statistics(cls):
-        data = {}
-        data["explored"] = cls._total_paths - cls._pruned
-        data["total_paths"] = cls._total_paths
-        data["pruned_paths"] = cls._pruned
-        return data
+        """Returns the collected statistics of all executions.
+        """
+        return cls._globalstats
