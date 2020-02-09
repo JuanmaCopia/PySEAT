@@ -1,10 +1,10 @@
 from pygse.reports import report_statistics, print_formatted_result
 from pygse.symbolic_execution_engine import SEEngine
-from pygse.sut_parser import SUTParser
+from pygse.sut_parser import SUT
 
 
 def symbolically_execute_method(module_name, class_name, function_name, max_depth=10):
-    sut = SUTParser()
+    sut = SUT()
     sut.parse(module_name, function_name, class_name)
     SEEngine.initialize(sut, max_depth)
     for result in SEEngine.explore():

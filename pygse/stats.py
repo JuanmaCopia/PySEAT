@@ -1,3 +1,10 @@
+"""Statistics Module.
+
+Provides the structures to collect statistics from overall program
+executions and for each execution in particular.
+
+"""
+
 from enum import Enum
 
 

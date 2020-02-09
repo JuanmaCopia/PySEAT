@@ -1,3 +1,10 @@
+"""Symbolic execution Engine
+
+Implements a Generalized Symbolic execution engine that handles complex
+dynammically allocated structures with the use of lazy initialization.
+
+"""
+
 import copy
 from collections.abc import Iterable
 
@@ -20,7 +27,42 @@ import pygse.proxy as proxy
 
 
 class SEEngine:
+    """Symbolic Execution engine.
 
+    Performs symbolic execution on programs. Handles complex
+    dynammically allocated structures with the use of lazy initialization.
+
+    Attributes:
+        _branching_points (list): Represents the desitions made at the program
+        symbolic execution. The program execution has two possible branching
+        scenarios:
+            - Lazy Initialization Step: It happens when a user-defined class field
+            is accessed, so the engine must initialize it to each posibility creating
+            differents executions paths. The possible choices are initializate field to:
+                - None
+                - Any previous created instances of the user-defined class.
+                - A new instance of that class.
+            - Conditional Step: It happens the execution reachs a condition over
+            symbolic fields, so two there are two possible decisions: make it True
+            or make it False, generating different path executions.
+
+        _path_condition (list): Collects all the path constraints of the current execution.
+
+        _current_bp (LazyStep, ConditionalStep): Is the current branching point, it could
+        be a Lazy Initialization Stem or a Conditional Step. 
+
+        _current_depth (int): Depth's of the current execution tree.
+
+        _max_depth (int): Max depth search, any execution that exeeds this value is pruned.
+
+        _globalstats (GlobalStats): Contains the overall statistics of all executed
+        program paths.
+
+        _sut (SUT): Data of the program under test, contains the method or function,
+        parameter types, etc.
+
+        _real_to_proxy (dict): Maps builtin supported types to Symbolic Ones.
+    """
     _branching_points = []
     _path_condition = []
     _current_bp = 0
@@ -57,20 +99,20 @@ class SEEngine:
         """
         unexplored_paths = True
         while unexplored_paths:
-            cls.reset_exploration()
+            cls._reset_exploration()
 
-            args = [cls.symbolic_instantiation(a) for a in cls._sut.types]
+            args = [cls._symbolic_instantiation(a) for a in cls._sut.types]
 
-            result = cls.execute_program(args)
+            result = cls._execute_program(args)
             yield (result)
 
-            cls.remove_explored_branches()
+            cls._remove_explored_branches()
 
             if not cls._branching_points:
                 unexplored_paths = False
 
     @classmethod
-    def reset_exploration(cls):
+    def _reset_exploration(cls):
         """Resets the exploration variables to it's initial values.
         """
         cls._path_condition = []
@@ -80,7 +122,7 @@ class SEEngine:
             k._vector = [None]
 
     @classmethod
-    def execute_program(cls, args):
+    def _execute_program(cls, args):
         """Executes the method and returns the result.
 
         Collect and returns all the execution data, like the returned
@@ -98,6 +140,8 @@ class SEEngine:
         """
         cls._globalstats.total_paths += 1
         stats = ExecutionStats(cls._globalstats.complete_exec)
+        returnv = None
+        the_self = None
         try:
             if cls._sut.is_method:
                 the_self = args[0]
@@ -117,14 +161,13 @@ class SEEngine:
         except RepOkFailException:
             cls._globalstats.pruned_by_repok += 1
         except Exception as e:
-            if not cls.expected(e):
+            if not cls._expected(e):
                 stats.status = Status.FAIL
             else:
                 stats.status = Status.OK
             stats.exception = e
         else:
             stats.status = Status.OK
-
         finally:
             if stats.status == Status.PRUNED:
                 return stats
@@ -140,10 +183,10 @@ class SEEngine:
                 cls._globalstats.status_count(stats.status)
                 return stats
 
-            if not cls.check_repok(returnv):
+            if not cls._check_repok(returnv):
                 stats.status = Status.FAIL
                 stats.errors.append("Return value RepOk fail")
-            if not cls.check_repok(the_self):
+            if not cls._check_repok(the_self):
                 stats.status = Status.FAIL
                 stats.errors.append("Self RepOk fail")
             stats.returnv = returnv
@@ -154,7 +197,7 @@ class SEEngine:
             return stats
 
     @classmethod
-    def expected(cls, exception):
+    def _expected(cls, exception):
         """Checks whether an exception is expected or not.
 
         Args:
@@ -167,22 +210,22 @@ class SEEngine:
         return isinstance(exception, ValueError)
 
     @classmethod
-    def check_repok(cls, obj):
-        """Checks whether an object pass it's class invariant o not.
+    def _check_repok(cls, instance):
+        """Checks whether an instance pass it's class invariant o not.
 
         Args:
-            obj: instance of a user_defined_class
+            instance: instance of a user_defined_class
 
         Returns:
-            True if obj is valid (pass it's repok), False otherwise.
+            True if instance is valid (pass it's repok), False otherwise.
         """
-        if proxy.is_user_defined(type(obj)):
-            return obj.rep_ok()
+        if proxy.is_user_defined(type(instance)):
+            return instance.rep_ok()
         return True
 
     @classmethod
     def _concretize(cls, symbolic, model):
-        """Created the concrete object.
+        """Creates the concrete object.
 
         Creates the concrete object from a symbolic (builtin symbolic)
         or a partially symbolic (user-defined) one and the model 
@@ -191,7 +234,7 @@ class SEEngine:
         Args:
             symbolic: a symbolic builtin or a partially symbolic
                 user-defined class.
-            model: Model describing the constrains that the object
+            model: Model describing the constraints that the object
                 must acomplish.
 
         Returns:
@@ -201,7 +244,7 @@ class SEEngine:
         if symbolic is None:
             return None
         elif proxy.is_symbolic(symbolic):
-            return symbolic._concretize(model)
+            return symbolic.concretize(model)
         elif isinstance(symbolic, list):
             return [cls._concretize(x, model) for x in symbolic]
         elif isinstance(symbolic, tuple):
@@ -228,7 +271,7 @@ class SEEngine:
             return symbolic
 
     @classmethod
-    def remove_explored_branches(cls):
+    def _remove_explored_branches(cls):
         """Removes fully explored branhes.
 
         Advance the last branching point and removes it if it
@@ -261,7 +304,7 @@ class SEEngine:
             - A new lazy_class instance.
 
         Args:
-            lazt_class: The instance type to be initialized.
+            lazy_class: The instance type to be initialized.
             vector: A vector containing the previous created 
                 instances of lazy_class.
 
@@ -281,7 +324,7 @@ class SEEngine:
             if index < len(vector):
                 return vector[index]
 
-            n = cls.symbolize_partially(lazy_class)
+            n = cls._symbolize_partially(lazy_class)
             vector.append(n)
             return n
 
@@ -290,7 +333,7 @@ class SEEngine:
         return None
 
     @classmethod
-    def symbolic_instantiation(cls, typ):
+    def _symbolic_instantiation(cls, typ):
         """Creates a symbolic or a partially symbolic instance.
 
         If it's a supported builtin type it returns the appropiate
@@ -310,13 +353,13 @@ class SEEngine:
         elif isinstance(typ, type(None)):
             return None
         elif proxy.is_user_defined(typ):
-            instance = cls.symbolize_partially(typ)
+            instance = cls._symbolize_partially(typ)
             typ._vector = [None, instance]
             return instance
         return typ()
 
     @classmethod
-    def symbolize_partially(cls, user_def_class):
+    def _symbolize_partially(cls, user_def_class):
         """Creates partially symbolic instance of a class.
 
         Returns an instance of user_def_class with all it's builtin
@@ -329,14 +372,14 @@ class SEEngine:
         Returns:
             A partially symbolic instance of user_def_class.
         """
-        init_types = cls.get_init_types(user_def_class)
-        init_args = [cls.make_symbolic(a) for a in init_types]
+        init_types = cls._get_init_types(user_def_class)
+        init_args = [cls._make_symbolic(a) for a in init_types]
         if init_args:
             return user_def_class(*init_args)
         return user_def_class()
 
     @classmethod
-    def get_init_types(cls, user_def_class):
+    def _get_init_types(cls, user_def_class):
         """Returns the types of the parameters of the class.
 
         Returns a list containing the types of the parameters
@@ -357,7 +400,7 @@ class SEEngine:
         return init_types
 
     @classmethod
-    def make_symbolic(cls, typ):
+    def _make_symbolic(cls, typ):
         """Creates a symbolic instance.
 
         If it's a supported builtin type it returns the appropiate
@@ -381,24 +424,24 @@ class SEEngine:
     def evaluate(cls, sym_bool):
         """Evaluates a condition represented by a symbolic bool.
 
-        If the value of the symbol represented constrain is conditioned
+        If the value of the symbol represented constraint is conditioned
         to True or False by the path conditions, that value is returned
         and no branching point is created. Otherwise (both values are
         feasible) return the corresponding bool evaluation of the current
         branching point.
 
         Args:
-            sym_bool: the symbolic bool that represents a constrain.
+            sym_bool: the symbolic bool that represents a constraint.
 
         Returns:
             True or False, depending on the evaluation.
         """
-        partial_solve = cls._get_partial_solve(sym_bool)
-        if partial_solve is not None:
-            return partial_solve
+        bool_value = cls.conditioned_value(sym_bool)
+        if bool_value is not None:
+            return bool_value
 
         condition = sym_bool.formula
-        condition_value = cls.get_next_conditional_step()
+        condition_value = cls._get_next_conditional_step()
 
         if condition_value:
             cls._path_condition.append(condition)
@@ -411,13 +454,28 @@ class SEEngine:
         return condition_value
 
     @classmethod
-    def _get_partial_solve(cls, bool_proxy):
+    def conditioned_value(cls, sym_bool):
+        """Checks if a constraint's value is conditioned by the path.
+
+        Checks whether the constraint represented by sym_bool has a
+        determined value conditioned by the path_condition.
+
+        Args:
+            sym_bool: the symbolic bool that represents a constraint.
+
+        Returns:
+            True or False if the value it's conditioned by the path_condition,
+            None otherwise.
+
+        Raises:
+            UnstatBranchError: Unsat constraint Error.
+        """
         conditions = True
         for c in cls._path_condition:
             conditions = proxy.smt.And(conditions, c)
-        true_cond = proxy.smt.check(proxy.smt.And(conditions, bool_proxy.formula))
+        true_cond = proxy.smt.check(proxy.smt.And(conditions, sym_bool.formula))
         false_cond = proxy.smt.check(
-            proxy.smt.And(conditions, proxy.smt.Not(bool_proxy.formula))
+            proxy.smt.And(conditions, proxy.smt.Not(sym_bool.formula))
         )
         if true_cond and not false_cond:
             return True
@@ -427,7 +485,15 @@ class SEEngine:
             raise UnsatBranchError()
 
     @classmethod
-    def get_next_conditional_step(cls):
+    def _get_next_conditional_step(cls):
+        """Retrieves the conditional of the current branching point.
+
+        Looks and returns the value that must take the current branching
+        point (conditional branching point).
+
+        Returns:
+            True or False Depending on the current branching point value.
+        """
         if cls._max_depth < cls._current_depth:
             raise MaxDepthException
         cls._current_depth += 1
@@ -444,9 +510,19 @@ class SEEngine:
 
     @classmethod
     def ignore_if(cls, value, instance):
+        """Ignores this execution path if value is true.
+
+        Value deepends on instance repok, if repok is violated,
+        value will be True and an exception is raised.
+
+        Raises:
+            RepOkFailException: RepOk of instances failed.
+        """
         if value:
             raise RepOkFailException()
 
     @classmethod
     def statistics(cls):
+        """Returns the collected statistics of all executions.
+        """
         return cls._globalstats

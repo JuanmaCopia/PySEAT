@@ -22,11 +22,13 @@ def is_symbolic_bool(obj):
 def is_user_defined(obj):
     return hasattr(obj, "_is_user_defined")
 
+
 class ProxyObject(object):
     """
     Base class of a ProxyObject that can become any type by inheriting it.
     """
-    
+
+
 class IntProxy(ProxyObject):
     """
     Int Proxy object for variables that behave like ints.
@@ -249,7 +251,7 @@ class IntProxy(ProxyObject):
         """
         raise NotImplementedError("FloatProxy not implemented.")
 
-    def _concretize(self, model):
+    def concretize(self, model):
         if isinstance(self.real, int):
             result = self.real
         else:
@@ -280,22 +282,22 @@ class BoolProxy(ProxyObject):
     def __nonzero__(self):
         return self.__bool__()
 
-    def _get_partial_solve(self):
+    def conditioned_value(self):
         """
         :returns: None if constrains haven't define a concrete value yet,
                   else returns that concrete value (True or False).
         It tries to obtain a bool value if possible. Without branching.
         """
-        return see.SEEngine._get_partial_solve(self)
+        return see.SEEngine.conditioned_value(self)
 
     def __repr__(self):
-        ps = self._get_partial_solve()
+        ps = self.conditioned_value()
         return "BoolProxy(%s)" % (ps if ps is not None else str(self.formula))
 
     def __deepcopy__(self, memo):
         return self
 
-    def _concretize(self, model):
+    def concretize(self, model):
         if isinstance(self.formula, bool):
             result = self.formula
         else:

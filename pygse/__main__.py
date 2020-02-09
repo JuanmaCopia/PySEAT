@@ -1,8 +1,12 @@
+"""PyGSE Command Line Interface
+
+"""
+
 import argparse
 
 from pygse.reports import report_statistics, print_formatted_result
 from pygse.symbolic_execution_engine import SEEngine
-from pygse.sut_parser import SUTParser
+from pygse.sut_parser import SUT
 from pygse.run_test import run_tests
 
 
@@ -34,7 +38,7 @@ else:
     function_name = mod_cls_func[2].strip()
     max_depth = args.depth
 
-    sut = SUTParser()
+    sut = SUT()
     sut.parse(module_name, function_name, class_name)
 
     if sut.is_method:

@@ -1,3 +1,10 @@
+"""System Under Test Parser.
+
+Parses all the data about the sut: Module, Class, method under test, types of 
+classes involved.
+
+"""
+
 import importlib
 import copy
 
@@ -5,7 +12,22 @@ from pygse.proxy import is_user_defined
 from pygse.engine_errors import MissingTypesError
 
 
-class SUTParser:
+class SUT:
+    """System Under Test.
+
+    Parses and stores the data objects of the sut.
+
+    Attributes:
+        module (module): The module which contains the method under test.
+        sclass (class): The class of the method under test.
+        function (function): Method Under Test.
+        types (list[type]): Ordered list of the types of the method Pprameters.
+        class_params_map (dict): Maps a class to a ordered list of it's 
+        init method parameter's types.
+        is_method (bool): Whether the sut is a method (True) or a Function (False).
+    
+    """
+
     def __init__(self):
         self.module = None
         self.sclass = None

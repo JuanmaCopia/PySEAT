@@ -1,3 +1,10 @@
+"""Report Module
+
+Contains the methods to print a formatted console output of the statistics 
+of executions.
+
+"""
+
 from pygse.stats import Status
 
 
