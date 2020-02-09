@@ -39,7 +39,7 @@ class SMT(object):
     def check(self, formula):
         self._solver.clear()
         self._solver.add(formula)
-        return self._solver.check()
+        return self._solver.check() == "sat"
 
     @wrap_exceptions
     def get_model(self, formula):

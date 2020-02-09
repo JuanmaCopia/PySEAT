@@ -1,55 +1,33 @@
-#coding:utf-8
-import types as _types
-import copy
-import re
-from collections.abc import Iterable
-from ast import literal_eval
-import itertools
-from proxy_decorators import forward_to_rfun, check_comparable_types
-from proxy_decorators import check_equality, check_self_and_other_have_same_type
-# Import objets for the SMT Solver
-from smt.smt import SMT, SMTException
-from smt.sort_z3 import SMTInt, SMTBool, SMTChar, SMTArray
-from smt.solver_z3 import SMTSolver
 
-from symbolic_execution_engine import SEEngine
+from pygse.proxy_decorators import forward_to_rfun, check_comparable_types
+from pygse.proxy_decorators import check_equality, check_self_and_other_have_same_type
 
-# Gideline para crear/modificar proxys:
-#   *) Si queremos saber si una variable tiene algo preguntar si es != None.
-#      Comparaciones con valores o usar como booleanos a variables puede
-#      producir branching no deseado.
-#   *) La implementación de __str__ y __repr__ de los Proxy no debe generar
-#      branching. Facilita el debugeo y evita caminos generalmente innecesarios.
-#   *) No utilizar la función `len` ya que python hace checkeo de tipos.
-#   *) Los métodos _concretize deben devolver un objeto concreto "equivalente".
-#   *) Cada proxy object DEBE tener un atributo de clase `emulated_class` que
-#      tenga como valor la clase que el proxy object emula. ej.
-#      ProxyInt.emulated_class = int, ProxyList.emulated_class = list
+from pygse.smt.smt import SMT
+from pygse.smt.sort_z3 import SMTInt, SMTBool, SMTChar, SMTArray
+from pygse.smt.solver_z3 import SMTSolver
+import pygse.symbolic_execution_engine as see
+
 
 smt = SMT((SMTInt, SMTBool, SMTChar, SMTArray), SMTSolver)
-
-class ConcolicExecutionError(Exception):
-    pass
-
-
-class MaxDepthError(ConcolicExecutionError):
-    def __init__(self):
-        super(MaxDepthError, self).__init__("Max depth reached")
 
 
 def is_symbolic(obj):
     return isinstance(obj, ProxyObject)
 
+
 def is_symbolic_bool(obj):
     return isinstance(obj, BoolProxy)
 
+
 def is_user_defined(obj):
     return hasattr(obj, "_is_user_defined")
+
 
 class ProxyObject(object):
     """
     Base class of a ProxyObject that can become any type by inheriting it.
     """
+
 
 class IntProxy(ProxyObject):
     """
@@ -114,7 +92,7 @@ class IntProxy(ProxyObject):
             # 1) -1 == -1//2 != 1//-2  == 0
             # 2)  1 ==  1//2 != -1//-2 == 0
             if other < 0:
-                return -self//-other
+                return -self // -other
             else:
                 return IntProxy(smt.Div(self.real, other.real))
         else:
@@ -224,7 +202,7 @@ class IntProxy(ProxyObject):
             # 1) -1 == -1//2 != 1//-2  == 0
             # 2)  1 ==  1//2 != -1//-2 == 0
             if self < 0:
-                return -other//-self
+                return -other // -self
             else:
                 return IntProxy(smt.Div(other.real, self.real))
         else:
@@ -273,12 +251,13 @@ class IntProxy(ProxyObject):
         """
         raise NotImplementedError("FloatProxy not implemented.")
 
-    def _concretize(self, model):
+    def concretize(self, model):
         if isinstance(self.real, int):
             result = self.real
         else:
             result = SMTInt.concreteValue(model.evaluate(self.real))
         return result
+
 
 class BoolProxy(ProxyObject):
     """
@@ -298,28 +277,27 @@ class BoolProxy(ProxyObject):
         if isinstance(self.formula, bool):
             return self.formula
         # If self.formula isn't a builtin bool we have to solve it
-        return SEEngine.evaluate(self)
-        
+        return see.SEEngine.evaluate(self)
 
     def __nonzero__(self):
         return self.__bool__()
 
-    def _get_partial_solve(self):
+    def conditioned_value(self):
         """
         :returns: None if constrains haven't define a concrete value yet,
                   else returns that concrete value (True or False).
         It tries to obtain a bool value if possible. Without branching.
         """
-        return SEEngine._get_partial_solve(self)
+        return see.SEEngine.conditioned_value(self)
 
     def __repr__(self):
-        ps = self._get_partial_solve()
-        return "BoolProxy(%s)" % (ps if ps != None else str(self.formula))
+        ps = self.conditioned_value()
+        return "BoolProxy(%s)" % (ps if ps is not None else str(self.formula))
 
     def __deepcopy__(self, memo):
         return self
 
-    def _concretize(self, model):
+    def concretize(self, model):
         if isinstance(self.formula, bool):
             result = self.formula
         else:

@@ -1,3 +1,17 @@
+"""Report Module
+
+Contains the methods to print a formatted console output of the statistics 
+of executions.
+
+"""
+
+from pygse.stats import Status
+
+
+INDENT = "        "
+INDENT_LIST = "            "
+
+
 def helper_print_dict(dictionary):
     print("")
     for (k, v) in dictionary.items():
@@ -5,79 +19,79 @@ def helper_print_dict(dictionary):
     print("")
 
 
-def get_concrete_return(result):
-    if result["conc_ret"] is not None:
-        return result["conc_ret"].__repr__()
+def get_concrete_return(stats):
+    if stats.concrete_return is not None:
+        return stats.concrete_return.__repr__()
     else:
-        if result["exception"]:
-            return "Exception: " + str(result["exception"])
+        if stats.exception:
+            return "Exception: " + str(stats.exception)
         return "None"
 
 
-def get_function_profile(function, result):
-    concrete_args = result["conc_args"]
-    if concrete_args:
-        conc_args = ""
-        if len(concrete_args) == 1:
-            conc_args = concrete_args[0].__repr__()
-        else:
-            for x in concrete_args:
-                conc_args += str(x) + ","
-            conc_args = conc_args[:-1]
-        return (
-            function.__name__
-            + "("
-            + result["conc_self"].__repr__()
-            + ", "
-            + conc_args
-            + ")"
-            + "  ->  "
-            + get_concrete_return(result)
-        )
+def get_concrete_args_str(stats):
+    result = stats.concrete_self.__repr__()
+    if not stats.concrete_args:
+        return result
+
+    conc_args = ""
+    if len(stats.concrete_args) == 1:
+        conc_args = stats.concrete_args[0].__repr__()
+    else:
+        for x in stats.concrete_args:
+            conc_args += str(x) + ","
+        conc_args = conc_args[:-1]
+
+    return result + ", " + conc_args
+
+
+def get_function_profile_str(function, stats):
     return (
         function.__name__
         + "("
-        + result["conc_self"].__repr__()
+        + get_concrete_args_str(stats)
         + ")"
         + "  ->  "
-        + get_concrete_return(result)
+        + get_concrete_return(stats)
     )
 
 
-def print_formatted_result(function, result, verbose):
-    verbose = True
-    if result["status"] != "PRUNED":
-        print("")
-        print(
-            "#"
-            + str(result["execution_number"])
-            + " ["
-            + result["status"]
-            + "]: "
-            + get_function_profile(function, result)
-        )
-        if not result["exception"]:
-            warns = result["warnings"]
-            if warns:
-                print("      > Warnings:")
-                for w in warns:
-                    print("          - " + w)
+def get_header_str(stats):
+    return "#" + str(stats.number) + " [" + stats.status.name + "]: "
+
+
+def print_list(l: list):
+    for elem in l:
+        print(INDENT_LIST + str(elem))
+
+
+def print_formatted_result(function, stats, verbose):
+    if stats.status != Status.PRUNED:
+        print(get_header_str(stats) + get_function_profile_str(function, stats))
+        if not stats.exception:
+            print_list(stats.errors)
 
             if verbose:
-                print("      > Path Condition:")
-                for c in result["path_condition"]:
-                    print("            " + str(c))
-                print("      > Symbolic return: " + result["returnv"].__repr__())
+                print(INDENT + "Path Condition:  ")
+                print_list(stats.pathcondition)
+                print(INDENT + "Symbolic return:  " + stats.returnv.__repr__())
                 print(
-                    "      > Symbolic self:\n           "
-                    + str(result["self"].__repr__())
+                    INDENT
+                    + "Symbolic self:    "
+                    + stats.self_structure.__repr__()
+                    + "\n"
                 )
 
 
-def report_statistics(stat):
-    print("")
-    print(str(stat["explored"]) + " of " + str(stat["total_paths"]) + " paths explored")
-    print(str(stat["pruned_by_depth"]) + " pruned by depth")
-    print(str(stat["pruned_by_repok"]) + " pruned by repok")
-    print(str(stat["pruned_by_error"]) + " pruned by error")
-    print("")
+def report_statistics(stats):
+    print(
+        "\n"
+        + str(stats.complete_exec)
+        + " of "
+        + str(stats.total_paths)
+        + " paths explored"
+    )
+    print(str(stats.successes) + " passed")
+    print(str(stats.failures) + " failures")
+    print(str(stats.pruned_by_depth) + " pruned by depth")
+    print(str(stats.pruned_by_error) + " pruned by error")
+    print(str(stats.pruned_by_repok) + " pruned by repok" + "\n")
