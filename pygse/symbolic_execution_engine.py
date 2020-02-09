@@ -354,7 +354,7 @@ class SEEngine:
             return None
         elif proxy.is_user_defined(typ):
             instance = cls._symbolize_partially(typ)
-            typ._vector = [None, instance]
+            typ._vector.append(instance)
             return instance
         return typ()
 
