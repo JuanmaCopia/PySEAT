@@ -29,3 +29,7 @@ def run_tests():
         "pygse.tests.linked_list_test", "LinkedList", "delete", 10
     )
     # symbolically_execute_method("pygse.tests.fail_tests", "LinkedList", "delete", 10)
+    symbolically_execute_method(
+        "pygse.tests.node_test", "Node", "swap_node_with_garbage", 10
+    )
+

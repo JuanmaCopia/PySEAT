@@ -14,10 +14,9 @@ class Node:
         self.concretized = False
 
     def _get_next(self):
-        if not self._next_is_initialized:
+        if not self._next_is_initialized and self in Node._vector:
             self._next_is_initialized = True
             self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            # Verify.ignore_if(not self.precondition())
             see.SEEngine.ignore_if(not self.rep_ok(), self)
         return self.next
 
@@ -50,6 +49,21 @@ class Node:
 
     def swap_node(self):
         if self._get_next() is not None:
+            if self.elem - self._get_next().elem > 0:
+                t = self._get_next()
+                self._set_next(t._get_next())
+                t._set_next(self)
+                return t
+        return self
+
+    def swap_node_with_garbage(self):
+        if self._get_next() is not None:
+            # Garbage
+            x = Node(4)
+            z = x._get_next()
+            if z:
+                z.unmark_all()
+            # End garbage
             if self.elem - self._get_next().elem > 0:
                 t = self._get_next()
                 self._set_next(t._get_next())
