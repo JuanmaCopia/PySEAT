@@ -73,6 +73,8 @@ class SEEngine:
     _sut = None
     _real_to_proxy = {}
 
+    _lazy_backups = {}
+
     @classmethod
     def initialize(cls, sut_data, max_depth):
         """Setups the initial values of the engine.
@@ -89,7 +91,7 @@ class SEEngine:
         cls._globalstats = GlobalStats()
         cls._max_depth = max_depth
         cls._real_to_proxy = {x.emulated_class: x for x in proxy.ProxyObject.__subclasses__()}
-    
+
     @classmethod
     def explore(cls):
         """Main method, implements the generalized symbolic execution.
@@ -120,6 +122,8 @@ class SEEngine:
         cls._current_depth = 0
         for k in cls._sut.class_params_map.keys():
             k._vector = [None]
+            cls._lazy_backups[k] = LazyBackup()
+        
 
     @classmethod
     def _execute_program(cls, args):
@@ -174,6 +178,11 @@ class SEEngine:
             cls._globalstats.complete_exec += 1
             stats.pathcondition = cls._path_condition
             stats.model = proxy.smt.get_model(cls._path_condition)
+            
+            ##
+            the_self = cls._lazy_backups[cls._sut.sclass].get_entity()
+            cls.retrieve_inputs(args)
+            ##
             stats.self_structure = the_self
             stats.concrete_self = cls._concretize(copy.deepcopy(the_self), stats.model)
             if args:
@@ -195,6 +204,12 @@ class SEEngine:
             )
             cls._globalstats.status_count(stats.status)
             return stats
+
+    @classmethod
+    def retrieve_inputs(cls, args_list):
+        for i, arg in enumerate(args_list):
+            if proxy.is_user_defined(arg):
+                args_list[i] = cls._lazy_backups[type(arg)].get_entity()
 
     @classmethod
     def _expected(cls, exception):
@@ -355,6 +370,7 @@ class SEEngine:
         elif proxy.is_user_defined(typ):
             instance = cls._symbolize_partially(typ)
             typ._vector.append(instance)
+            cls._lazy_backups[typ].add_entity(typ._vector)
             return instance
         return typ()
 
@@ -526,3 +542,26 @@ class SEEngine:
         """Returns the collected statistics of all executions.
         """
         return cls._globalstats
+
+    @classmethod
+    def save_lazy_step(cls, sclass, vector):
+        cls._lazy_backups[sclass].new_backup(vector)
+
+class LazyBackup:
+    def __init__(self, vector=[None], amount_entities=0):
+        self.vector = copy.deepcopy(vector)
+        self.amount_entities = amount_entities
+        self.next_entity = 1
+    
+    def add_entity(self, vector):
+        self.vector = copy.deepcopy(vector)
+        self.amount_entities += 1
+
+    def new_backup(self, vector):
+        self.vector = copy.deepcopy(vector)
+
+    def get_entity(self):
+        entity = self.vector[self.next_entity]
+        self.next_entity += 1
+        return entity
+
