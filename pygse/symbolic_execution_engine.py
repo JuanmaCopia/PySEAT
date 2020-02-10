@@ -544,8 +544,10 @@ class SEEngine:
         return cls._globalstats
 
     @classmethod
-    def save_lazy_step(cls, sclass, vector):
-        cls._lazy_backups[sclass].new_backup(vector)
+    def save_lazy_step(cls, sclass):
+        cls._lazy_backups[sclass].new_backup(sclass._vector)
+        if (sclass != cls._sut.sclass):
+            cls._lazy_backups[cls._sut.sclass].new_backup(cls._sut.sclass._vector)
 
 class LazyBackup:
     def __init__(self, vector=[None], amount_entities=0):

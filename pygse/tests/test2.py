@@ -38,6 +38,7 @@ class A:
         if not self._next_is_initialized:
             self._next_is_initialized = True
             self.next = see.SEEngine.get_next_lazy_step(A, A._vector)
+            see.SEEngine.save_lazy_step(A)
             # Verify.ignore_if(not self.precondition())
         return self.next
 
@@ -87,6 +88,7 @@ class B:
         if not self._next_is_initialized:
             self._next_is_initialized = True
             self.next = see.SEEngine.get_next_lazy_step(B, B._vector)
+            see.SEEngine.save_lazy_step(B)
             # Verify.ignore_if(not self.precondition())
         return self.next
 
@@ -136,6 +138,7 @@ class C:
         if not self._next_is_initialized:
             self._next_is_initialized = True
             self.next = see.SEEngine.get_next_lazy_step(C, C._vector)
+            see.SEEngine.save_lazy_step(C)
             # Verify.ignore_if(not self.precondition())
         return self.next
 
@@ -147,6 +150,7 @@ class C:
         if not self._a_is_initialized:
             self._a_is_initialized = True
             self.a = see.SEEngine.get_next_lazy_step(A, A._vector)
+            see.SEEngine.save_lazy_step(A)
             # Verify.ignore_if(not self.precondition())
         return self.a
 
@@ -158,6 +162,7 @@ class C:
         if not self._b_is_initialized:
             self._b_is_initialized = True
             self.b = see.SEEngine.get_next_lazy_step(B, B._vector)
+            see.SEEngine.save_lazy_step(B)
             # Verify.ignore_if(not self.precondition())
         return self.b
 
