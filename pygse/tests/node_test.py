@@ -17,6 +17,7 @@ class Node:
         if not self._next_is_initialized and self in Node._vector:
             self._next_is_initialized = True
             self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
+            see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.rep_ok(), self)
         return self.next
 

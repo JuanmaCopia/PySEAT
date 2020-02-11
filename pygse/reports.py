@@ -71,15 +71,11 @@ def print_formatted_result(function, stats, verbose):
             print_list(stats.errors)
 
             if verbose:
+                print(INDENT + "Symbolic self:    " + stats.self_structure.__repr__())
+                print(INDENT + "Symbolic return:  " + stats.returnv.__repr__())
                 print(INDENT + "Path Condition:  ")
                 print_list(stats.pathcondition)
-                print(INDENT + "Symbolic return:  " + stats.returnv.__repr__())
-                print(
-                    INDENT
-                    + "Symbolic self:    "
-                    + stats.self_structure.__repr__()
-                    + "\n"
-                )
+                print("")
 
 
 def report_statistics(stats):

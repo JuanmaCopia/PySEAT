@@ -23,9 +23,10 @@ class Node:
         self.next = new_next
 
     def _get_next(self):
-        if not self._next_is_initialized:
+        if not self._next_is_initialized and self in Node._vector:
             self._next_is_initialized = True
             self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
+            see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.rep_ok(), self)
         return self.next
 
@@ -84,9 +85,10 @@ class LinkedList:
         self.concretized = False
 
     def _get_head(self):
-        if not self._head_is_initialized:
+        if not self._head_is_initialized and self in LinkedList._vector:
             self._head_is_initialized = True
             self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
+            see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.rep_ok(), self)
         return self.head
 
@@ -135,6 +137,7 @@ class LinkedList:
             self._set_head(current._get_next())
         else:
             previous._set_next(current._get_next())
+        return self
 
     def unmark_all(self):
         aux = self.head
