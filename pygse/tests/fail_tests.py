@@ -10,15 +10,15 @@ class Node:
         self.elem = elem
         self.next = next
         self._next_is_initialized = False
-        self.marked = False
-        self.concretized = False
+        self._marked = False
+        self._concretized = False
 
     # def __init__(self, elem: int = None, next: "Node" = None):
     #     self.elem = elem
     #     self.next = next
     #     self._next_is_initialized = False
-    #     self.marked = False
-    #     self.concretized = False
+    #     self._marked = False
+    #     self._concretized = False
 
     def get_elem(self):
         return self.elem
@@ -41,20 +41,20 @@ class Node:
         self._next_is_initialized = True
 
     def to_str(self):
-        self.marked = True
+        self._marked = True
         if not self._next_is_initialized:
             return self.elem.__repr__() + "->CLOUD"
         if self.next is None:
             return self.elem.__repr__() + "->None"
         else:
-            if self.next.marked:
+            if self.next._marked:
                 return self.elem.__repr__() + "->" + self.next.elem.__repr__() + "*"
             return self.elem.__repr__() + "->" + self.next.to_str()
 
     def unmark_all(self):
         aux = self
-        while aux is not None and aux.marked:
-            aux.marked = False
+        while aux is not None and aux._marked:
+            aux._marked = False
             aux = aux.next
 
     def __repr__(self):
@@ -67,9 +67,9 @@ class Node:
         self.unmark_all()
         current = self
         while current:
-            if current.marked:
+            if current._marked:
                 return False
-            current.marked = True
+            current._marked = True
             # This make the repok conservative
             if not current._next_is_initialized:
                 return True
@@ -88,12 +88,12 @@ class LinkedList:
     def __init__(self, head):
         self.head = head
         self._head_is_initialized = False
-        self.concretized = False
+        self._concretized = False
 
     # def __init__(self, head: "Node" = None):
     #     self.head = head
     #     self._head_is_initialized = False
-    #     self.concretized = False
+    #     self._concretized = False
 
     def _get_head(self):
         if not self._head_is_initialized:
@@ -150,8 +150,8 @@ class LinkedList:
 
     def unmark_all(self):
         aux = self.head
-        while aux is not None and aux.marked:
-            aux.marked = False
+        while aux is not None and aux._marked:
+            aux._marked = False
             aux = aux.next
 
     def rep_ok(self):
@@ -161,9 +161,9 @@ class LinkedList:
         self.unmark_all()
         current = self.head
         while current:
-            if current.marked:
+            if current._marked:
                 return False
-            current.marked = True
+            current._marked = True
             # This make the repok conservative
             if not current._next_is_initialized:
                 return True
@@ -173,8 +173,8 @@ class LinkedList:
     def is_circular(self):
         self.unmark_all()
         current = self.head
-        while current and not current.marked:
-            current.marked = True
+        while current and not current._marked:
+            current._marked = True
             # This make the repok conservative
             if not current._next_is_initialized:
                 return True

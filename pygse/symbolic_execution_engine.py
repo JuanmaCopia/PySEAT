@@ -103,7 +103,7 @@ class SEEngine:
         while unexplored_paths:
             cls._reset_exploration()
 
-            args = [cls._symbolic_instantiation(a) for a in cls._sut.types]
+            args = [cls._symbolic_instantiation(typ) for name, typ in cls._sut.params.items()]
 
             result = cls._execute_program(args)
             yield (result)
@@ -265,9 +265,9 @@ class SEEngine:
             return tuple([cls._concretize(x, model) for x in symbolic])
         elif proxy.is_user_defined(symbolic):
             # symbolic.__dict__ returns all instance-only defined attributes
-            if symbolic.concretized:
+            if symbolic._concretized:
                 return symbolic
-            symbolic.concretized = True
+            symbolic._concretized = True
             try:
                 for name in symbolic.__dict__:
                     # TODO: Hacerlo genérico, incluyendo atributos de clase
@@ -406,7 +406,8 @@ class SEEngine:
         Returns:
             A list of types.
         """
-        init_types = copy.deepcopy(cls._sut.class_params_map[user_def_class])
+        init_types = list(cls._sut.class_params_map[user_def_class].values())
+        init_types = copy.deepcopy(init_types)
         number_params = user_def_class.__init__.__code__.co_argcount
         if number_params - 1 != len(init_types):
             raise MissingTypesError(

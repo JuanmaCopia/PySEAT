@@ -10,8 +10,8 @@ class X:
         self.data = data
         self.next = nxt
         self._next_is_initialized = False
-        self.marked = False
-        self.concretized = False
+        self._marked = False
+        self._concretized = False
 
     def __repr__(self):
         r = "X" + str(X._n) + "=" + self.data.__repr__() + "->X"
@@ -28,11 +28,11 @@ class A:
     def __init__(self, data: int, x: "X", nxt: "A"):
         self.data = data
         self.next = nxt
-        self.marked = False
+        self._marked = False
         self._next_is_initialized = False
         self._x_is_initialized = False
-        self.marked2 = False
-        self.concretized = False
+        self._marked2 = False
+        self._concretized = False
 
     def _get_next(self):
         if not self._next_is_initialized:
@@ -47,21 +47,21 @@ class A:
         self._next_is_initialized = True
 
     def to_str(self):
-        self.marked = True
+        self._marked = True
         if not self._next_is_initialized:
             return self.data.__repr__() + "-> CLOUD"
         if self.next is None:
             return self.data.__repr__() + "-> None"
         else:
-            if self.next.marked:
+            if self.next._marked:
                 return self.data.__repr__() + "->" + self.next.data.__repr__() + "*"
             return self.data.__repr__() + "->" + self.next.to_str()
 
     def __repr__(self):
         result = self.to_str()
         aux = self
-        while aux is not None and aux.marked:
-            aux.marked = False
+        while aux is not None and aux._marked:
+            aux._marked = False
             aux = aux.next
         return result
 
@@ -80,9 +80,9 @@ class B:
         self.next = nxt
         self._next_is_initialized = False
         self._a_is_initialized = False
-        self.marked = False
-        self.marked2 = False
-        self.concretized = False
+        self._marked = False
+        self._marked2 = False
+        self._concretized = False
 
     def _get_next(self):
         if not self._next_is_initialized:
@@ -97,21 +97,21 @@ class B:
         self._next_is_initialized = True
 
     def to_str(self):
-        self.marked = True
+        self._marked = True
         if not self._next_is_initialized:
             return self.data.__repr__() + "-> CLOUD"
         if self.next is None:
             return self.data.__repr__() + "-> None"
         else:
-            if self.next.marked:
+            if self.next._marked:
                 return self.data.__repr__() + "->" + self.next.data.__repr__() + "*"
             return self.data.__repr__() + "->" + self.next.to_str()
 
     def __repr__(self):
         result = self.to_str()
         aux = self
-        while aux is not None and aux.marked:
-            aux.marked = False
+        while aux is not None and aux._marked:
+            aux._marked = False
             aux = aux.next
         return result
 
@@ -131,8 +131,8 @@ class C:
         self._a_is_initialized = False
         self._b_is_initialized = False
         self._next_is_initialized = False
-        self.marked = False
-        self.concretized = False
+        self._marked = False
+        self._concretized = False
 
     def _get_next(self):
         if not self._next_is_initialized:
@@ -180,15 +180,15 @@ class C:
     def test_method(self):
         suma_A = 0
         current = self._get_a()
-        while current and not current.marked2:
-            current.marked2 = True
+        while current and not current._marked2:
+            current._marked2 = True
             suma_A += current.data
             current = current._get_next()
 
         suma_B = 0
         current = self._get_b()
-        while current and not current.marked2:
-            current.marked2 = True
+        while current and not current._marked2:
+            current._marked2 = True
             suma_B += current.data
             current = current._get_next()
         return suma_A > suma_B

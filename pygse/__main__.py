@@ -6,8 +6,9 @@ import argparse
 
 from pygse.reports import report_statistics, print_formatted_result
 from pygse.symbolic_execution_engine import SEEngine
-from pygse.sut_parser import SUT
+from sut_parser import parse
 from pygse.run_test import run_tests
+from pygse.test_generator import TestCode
 
 
 def parse_command_line_args():
@@ -38,14 +39,17 @@ else:
     function_name = mod_cls_func[2].strip()
     max_depth = args.depth
 
-    sut = SUT()
-    sut.parse(module_name, function_name, class_name)
+    sut = parse(module_name, function_name, class_name)
 
     if sut.is_method:
         SEEngine.initialize(sut, max_depth)
+        # maybe initialize test generator
 
         for run in SEEngine.explore():
             print_formatted_result(sut.function, run, True)
+            # GenerateTest(run)
+            test = TestCode(sut, run)
+            print("\n" + test.get_code() + "\n")
 
         report_statistics(SEEngine.statistics())
     else:

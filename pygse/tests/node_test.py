@@ -5,13 +5,15 @@ class Node:
 
     _vector = [None]
     _is_user_defined = True
+    _id = 0
 
     def __init__(self, elem: int):
         self.elem = elem
         self.next = None
         self._next_is_initialized = False
-        self.marked = False
-        self.concretized = False
+        self._marked = False
+        self._concretized = False
+        self._identifier = ""
 
     def _get_next(self):
         if not self._next_is_initialized and self in Node._vector:
@@ -26,13 +28,13 @@ class Node:
         self._next_is_initialized = True
 
     def to_str(self):
-        self.marked = True
+        self._marked = True
         if not self._next_is_initialized:
             return self.elem.__repr__() + "->CLOUD"
         if self.next is None:
             return self.elem.__repr__() + "->None"
         else:
-            if self.next.marked:
+            if self.next._marked:
                 return self.elem.__repr__() + "->" + self.next.elem.__repr__() + "*"
             return self.elem.__repr__() + "->" + self.next.to_str()
 
@@ -44,8 +46,8 @@ class Node:
 
     def unmark_all(self):
         aux = self
-        while aux is not None and aux.marked:
-            aux.marked = False
+        while aux is not None and aux._marked:
+            aux._marked = False
             aux = aux.next
 
     def swap_node(self):
@@ -90,9 +92,9 @@ class Node:
         self.unmark_all()
         current = self
         while current:
-            if current.marked:
+            if current._marked:
                 return False
-            current.marked = True
+            current._marked = True
             # This make the repok conservative
             if not current._next_is_initialized:
                 return True
@@ -102,8 +104,8 @@ class Node:
     def is_circular(self):
         self.unmark_all()
         current = self
-        while current and not current.marked:
-            current.marked = True
+        while current and not current._marked:
+            current._marked = True
             # This make the repok conservative
             if not current._next_is_initialized:
                 return True

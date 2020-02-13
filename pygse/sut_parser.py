@@ -18,82 +18,77 @@ class SUT:
     Parses and stores the data objects of the sut.
 
     Attributes:
-        module (module): The module which contains the method under test.
         sclass (class): The class of the method under test.
         function (function): Method Under Test.
         types (list[type]): Ordered list of the types of the method Pprameters.
-        class_params_map (dict): Maps a class to a ordered list of it's 
+        class_params_map (dict): Maps a class to a dict with it's parameters/type
         init method parameter's types.
         is_method (bool): Whether the sut is a method (True) or a Function (False).
     
     """
 
     def __init__(self):
-        self.module = None
         self.sclass = None
         self.function = None
-        self.types = []
+        self.params = []
         self.class_params_map = {}
         self.is_method = False
 
-    def parse(self, module_name, function_name, class_name=None):
-        self.module = importlib.import_module(module_name)
-        if class_name:
-            self.sclass = getattr(self.module, class_name)
-            self.function = getattr(self.sclass, function_name)
-            self.types = self.parse_types()
-            self.class_params_map = self.get_user_defined_objects(self.sclass)
-            self.is_method = True
+    def get_init_params(self, typ):
+        if typ in self.class_params_map:
+            return self.class_params_map[typ]
 
-    def parse_types(self):
-        types = self.function.__annotations__
-        not_self = False
-        if "self" not in types:
-            not_self = True
-        if "return" in types:
-            del types["return"]
-        types_list = self.set_classes(list(types.values()))
-        if not_self:
-            types_list.insert(0, self.sclass)
 
-        if self.function.__code__.co_argcount != len(types_list):
-            raise MissingTypesError("Types missing in: " + self.function.__name__)
-        return types_list
+def parse(module_name, function_name, class_name=None):
+    sut = SUT()
+    module = importlib.import_module(module_name)
+    if class_name:
+        sut.is_method = True
+        sut.sclass = getattr(module, class_name)
+        sut.function = getattr(sut.sclass, function_name)
+        sut.params = parse_params(sut.function, sut.sclass, module)
+        if sut.function.__code__.co_argcount != len(sut.params):
+            raise MissingTypesError("Types missing in: " + function_name)
+        sut.class_params_map = get_user_defined_objects(sut.sclass, module)
+    return sut
 
-    def set_classes(self, types):
-        for i, t in enumerate(types):
-            if isinstance(t, str):
-                types[i] = getattr(self.module, t)
-        return types
 
-    def parse_types_whitout_self(self, function):
-        types = function.__annotations__
-        if types:
-            if "self" in types:
-                del types["self"]
-            if "return" in types:
-                del types["return"]
-            return self.set_classes(list(types.values()))
-        return []
+def parse_params(function, sclass, module, include_self=True):
+    """Parses the parameters of a function.
+    """
+    params = {}
+    if include_self:
+        params["self"] = sclass
 
-    def get_user_defined_objects(self, user_def_class):
-        class_to_types = {}
-        types = self.parse_types_whitout_self(user_def_class.__init__)
-        class_to_types[user_def_class] = types
+    for name, typ in function.__annotations__.items():
+        if name != "self" and name != "return":
+            if isinstance(typ, str):
+                params[name] = getattr(module, typ)
+            else:
+                params[name] = typ
+    return params
 
-        objects_added = copy.deepcopy(class_to_types[user_def_class])
-        added = True if objects_added else False
+
+def get_user_defined_objects(sclass, module):
+    class_to_types = {}
+    params = parse_params(sclass.__init__, sclass, module, False)
+    class_to_types[sclass] = params
+
+    if params:
+        objects_added = copy.deepcopy(list(params.values()))
+        added = True
 
         while added:
             added = False
             new_classes = []
-            for c in objects_added:
-                if is_user_defined(c) and c not in class_to_types.keys():
-                    new_classes.append(c)
+
+            for typ in objects_added:
+                if is_user_defined(typ) and typ not in class_to_types.keys():
+                    new_classes.append(typ)
 
             if new_classes:
                 added = True
                 for nc in new_classes:
-                    class_to_types[nc] = self.parse_types_whitout_self(nc.__init__)
-                    objects_added.extend(class_to_types[nc])
-        return class_to_types
+                    class_to_types[nc] = parse_params(nc.__init__, nc, module, False)
+                    objects_added.extend(class_to_types[nc].values())
+    return class_to_types
