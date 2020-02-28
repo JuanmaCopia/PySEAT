@@ -14,6 +14,7 @@ class Node:
         self._marked = False
         self._concretized = False
         self._identifier = ""
+        self._generated = False
 
     def _get_next(self):
         if not self._next_is_initialized and self in Node._vector:
@@ -30,13 +31,29 @@ class Node:
     def to_str(self):
         self._marked = True
         if not self._next_is_initialized:
-            return self.elem.__repr__() + "->CLOUD"
+            return self._identifier + ":" + self.elem.__repr__() + " ->CLOUD"
         if self.next is None:
-            return self.elem.__repr__() + "->None"
+            return self._identifier + ":" + self.elem.__repr__() + " ->None"
         else:
             if self.next._marked:
-                return self.elem.__repr__() + "->" + self.next.elem.__repr__() + "*"
-            return self.elem.__repr__() + "->" + self.next.to_str()
+                return (
+                    self._identifier
+                    + ":"
+                    + self.elem.__repr__()
+                    + " -> "
+                    + self.next._identifier
+                    + "("
+                    + self.next.elem.__repr__()
+                    + ")"
+                    + "*"
+                )
+            return (
+                self._identifier
+                + ":"
+                + self.elem.__repr__()
+                + " -> "
+                + self.next.to_str()
+            )
 
     def __repr__(self):
         self.unmark_all()

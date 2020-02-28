@@ -9,6 +9,7 @@ from pygse.symbolic_execution_engine import SEEngine
 from sut_parser import parse
 from pygse.run_test import run_tests
 from pygse.test_generator import TestCode
+from pygse.stats import Status
 
 
 def parse_command_line_args():
@@ -48,8 +49,9 @@ else:
         for run in SEEngine.explore():
             print_formatted_result(sut.function, run, True)
             # GenerateTest(run)
-            test = TestCode(sut, run)
-            print("\n" + test.get_code() + "\n")
+            if run.status != Status.PRUNED:
+                test = TestCode(sut, run)
+                print("\n" + test.get_code() + "\n")
 
         report_statistics(SEEngine.statistics())
     else:

@@ -50,7 +50,7 @@ def get_function_profile_str(function, stats):
         + "("
         + get_concrete_args_str(stats)
         + ")"
-        + "  ->  "
+        + "   -->   "
         + get_concrete_return(stats)
     )
 
@@ -76,6 +76,8 @@ def print_formatted_result(function, stats, verbose):
                 print(INDENT + "Path Condition:  ")
                 print_list(stats.pathcondition)
                 print("")
+    else:
+        print(get_header_str(stats))
 
 
 def report_statistics(stats):

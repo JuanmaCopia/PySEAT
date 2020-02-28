@@ -15,26 +15,29 @@ class TestCode:
         self._code = ""
 
     def get_code(self):
-        self.reset_id_numbers()
         self.generate_test_code()
         return self._code
 
-    def reset_id_numbers(self):
-        for udclass in self._sut.class_params_map:
-            udclass._id = 0
+    def generate_arguments_code(self, instance):
+        args_ids = ""
+        for arg in instance:
+            if proxy.is_user_defined(arg):
+                args_ids += self.generate_structure_code(arg) + ", "
+            else:
+                args_ids += str(arg) + ", "
+        return args_ids[:-2]
 
     def generate_test_code(self):
         self_id = self.generate_structure_code(self._run_stats.concrete_self)
-        # args_ids = ""
-        # for arg in self._run_stats.concrete_args:
-        #     args_ids += self.generate_code(arg) + ","
-        # if args_ids:
-        #     args_ids = args_ids[:-1]
+        args_ids = self.generate_arguments_code(self._run_stats.concrete_args)
+        self.generate_method_call(self_id, self._sut.function.__name__, args_ids)
+        # self.generate_assertions(self._sut.concrete_return)
 
-        # self.generate_method_call(self_id, self._sut.function.__name__, args_ids)
+    # def generate_assertions(self, instance):
+    #     if proxy.is_user_defined(instance):
 
-    def generate_method_call(self, self_id, function_name, args):
-        self._code += self_id + "." + function_name + "(" + args + ")\n"
+    def generate_method_call(self, self_id, method_name, args_ids):
+        self._code += self_id + "." + method_name + "(" + args_ids + ")\n"
 
     def generate_code(self, arg):
         if proxy.is_user_defined(arg):
@@ -44,24 +47,34 @@ class TestCode:
 
     @classmethod
     def take_identifier(cls, typ):
-        identifier = typ.__name__.lower() + str(typ._id)
         typ._id += 1
-        return identifier
+        return typ.__name__.lower() + str(typ._id)
 
-    def generate_structure_code(self, instance):
-        if instance._identifier:
-            return instance._identifier
-        attr = {
+    @classmethod
+    def is_special_attr(cls, attr_name):
+        return attr_name.endswith("_is_initialized") or attr_name in [
+            "_marked",
+            "_concretized",
+            "_identifier",
+            "_generated",
+        ]
+
+    @classmethod
+    def get_attr_value_dict(cls, instance):
+        return {
             key: value
             for (key, value) in instance.__dict__.items()
-            if key
-            not in ["_next_is_initialized", "_marked", "_concretized", "_identifier",]
+            if not cls.is_special_attr(key)
         }
 
-        identifier = self.take_identifier(type(instance))
+    def generate_structure_code(self, instance):
+        if instance._generated:
+            return instance._identifier
 
-        instance._identifier = identifier
+        instance._generated = True
+        identifier = instance._identifier
 
+        attr = self.get_attr_value_dict(instance)
         self.create_constructor_call(
             identifier, type(instance), attr, self._sut.get_init_params(type(instance)),
         )
@@ -85,23 +98,23 @@ class TestCode:
     def create_constructor_call(self, identifier, typ, ins_dict, params_dict):
         if "self" in params_dict:
             del params_dict["self"]
-        ctor_dict = {}
+        ctor_params = {}
         for name in params_dict:
             if name in ins_dict:
-                ctor_dict[name] = ins_dict[name]
+                ctor_params[name] = ins_dict[name]
             else:
                 assert False
 
         code_line = identifier + " = " + typ.__name__ + "("
 
-        for k, v in ctor_dict.items():
+        for name, value in ctor_params.items():
             obj_name = ""
-            if proxy.is_user_defined(v):
-                obj_name = self.generate_structure_code(v)
-                code_line += obj_name + ","
+            if proxy.is_user_defined(value):
+                obj_name = self.generate_structure_code(value)
+                code_line += obj_name + ", "
             else:
-                code_line += str(ctor_dict[k]) + ","
+                code_line += str(ctor_params[name]) + ", "
 
-        code_line = code_line[:-1] + ")\n"
+        code_line = code_line[:-2] + ")\n"
         self._code += code_line
 

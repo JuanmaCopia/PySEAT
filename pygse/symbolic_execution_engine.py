@@ -122,6 +122,7 @@ class SEEngine:
         cls._current_depth = 0
         for k in cls._sut.class_params_map.keys():
             k._vector = [None]
+            k._id = 0
             cls._lazy_backups[k] = LazyBackup()
         
 
@@ -143,7 +144,7 @@ class SEEngine:
             under test
         """
         cls._globalstats.total_paths += 1
-        stats = ExecutionStats(cls._globalstats.complete_exec)
+        stats = ExecutionStats(cls._globalstats.complete_exec + 1)
         returnv = None
         the_self = None
         try:
@@ -390,8 +391,13 @@ class SEEngine:
         init_types = cls._get_init_types(user_def_class)
         init_args = [cls._make_symbolic(a) for a in init_types]
         if init_args:
-            return user_def_class(*init_args)
-        return user_def_class()
+            partial_ins = user_def_class(*init_args)
+        else:
+            partial_ins = user_def_class()
+
+        partial_ins._identifier = user_def_class.__name__.lower() + str(user_def_class._id)
+        user_def_class._id += 1
+        return partial_ins
 
     @classmethod
     def _get_init_types(cls, user_def_class):

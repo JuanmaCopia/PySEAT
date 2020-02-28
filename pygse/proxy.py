@@ -1,4 +1,3 @@
-
 from pygse.proxy_decorators import forward_to_rfun, check_comparable_types
 from pygse.proxy_decorators import check_equality, check_self_and_other_have_same_type
 
@@ -33,6 +32,7 @@ class IntProxy(ProxyObject):
     """
     Int Proxy object for variables that behave like ints.
     """
+
     emulated_class = int
 
     def __init__(self, real=None):
@@ -189,7 +189,7 @@ class IntProxy(ProxyObject):
             s = smt.simplify(self.real)
             if SMTInt.isSMTValue(s):
                 s = SMTInt.concreteValue(s)
-        return "IntProxy(%s)" % s
+        return "%s" % s
 
     @check_self_and_other_have_same_type
     def __rfloordiv__(self, other):
@@ -263,6 +263,7 @@ class BoolProxy(ProxyObject):
     """
     Bool Proxy object for variables that behave like bools.
     """
+
     emulated_class = bool
 
     def __init__(self, formula=None):
@@ -292,7 +293,7 @@ class BoolProxy(ProxyObject):
 
     def __repr__(self):
         ps = self.conditioned_value()
-        return "BoolProxy(%s)" % (ps if ps is not None else str(self.formula))
+        return "%s" % (ps if ps is not None else str(self.formula))
 
     def __deepcopy__(self, memo):
         return self
