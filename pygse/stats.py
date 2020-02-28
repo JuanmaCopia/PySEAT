@@ -25,7 +25,7 @@ class ExecutionStats:
         self.exception = None
         self.returnv = None
         self.concrete_return = None
-        self.end_self_state = None
+        self.concrete_end_self = None
         self.model = None
         self.pathcondition = []
         self.errors = []

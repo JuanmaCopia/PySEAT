@@ -6,7 +6,7 @@ import argparse
 
 from pygse.reports import report_statistics, print_formatted_result
 from pygse.symbolic_execution_engine import SEEngine
-from sut_parser import parse
+from pygse.sut_parser import parse
 from pygse.run_test import run_tests
 from pygse.test_generator import TestCode
 from pygse.stats import Status
@@ -45,12 +45,13 @@ else:
     if sut.is_method:
         SEEngine.initialize(sut, max_depth)
         # maybe initialize test generator
-
+        test_number = 1
         for run in SEEngine.explore():
             print_formatted_result(sut.function, run, True)
             # GenerateTest(run)
             if run.status != Status.PRUNED:
-                test = TestCode(sut, run)
+                test = TestCode(sut, run, test_number)
+                test_number += 1
                 print("\n" + test.get_code() + "\n")
 
         report_statistics(SEEngine.statistics())

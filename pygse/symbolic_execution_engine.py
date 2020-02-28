@@ -180,6 +180,8 @@ class SEEngine:
             stats.pathcondition = cls._path_condition
             stats.model = proxy.smt.get_model(cls._path_condition)
             
+            stats.concrete_end_self = cls._concretize(copy.deepcopy(the_self), stats.model)
+
             the_self = cls._lazy_backups[cls._sut.sclass].get_entity()
             cls.retrieve_inputs(args)
             

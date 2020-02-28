@@ -6,13 +6,14 @@ import pygse.proxy as proxy
 
 
 class TestCode:
-
-    test_number = 0
-
-    def __init__(self, sut, run_stats):
+    def __init__(self, sut, run_stats, number):
         self._sut = sut
         self._run_stats = run_stats
         self._code = ""
+        self.test_number = number
+
+    def _add_line(self, line):
+        self._code += "\n\t" + line
 
     def get_code(self):
         self.generate_test_code()
@@ -28,27 +29,61 @@ class TestCode:
         return args_ids[:-2]
 
     def generate_test_code(self):
+        self.gen_test_header()
+        self._add_line("# Input Generation")
         self_id = self.generate_structure_code(self._run_stats.concrete_self)
-        args_ids = self.generate_arguments_code(self._run_stats.concrete_args)
-        self.generate_method_call(self_id, self._sut.function.__name__, args_ids)
-        # self.generate_assertions(self._sut.concrete_return)
+        self._add_line("# Method call")
+        self.generate_method_call(
+            self_id, self._sut.function.__name__, self._run_stats.concrete_return
+        )
+        self._add_line("# Assertions")
+        self.gen_returnv_assert(self._run_stats.concrete_return)
+        # self.gen_structure_assertions(self._run_stats.concrete_end_self)
 
-    # def generate_assertions(self, instance):
-    #     if proxy.is_user_defined(instance):
+    def gen_test_header(self):
+        self._code += (
+            self._sut.function.__name__ + "_test" + str(self.test_number) + "():"
+        )
 
-    def generate_method_call(self, self_id, method_name, args_ids):
-        self._code += self_id + "." + method_name + "(" + args_ids + ")\n"
-
-    def generate_code(self, arg):
-        if proxy.is_user_defined(arg):
-            return self.generate_structure_code(arg)
+    def gen_returnv_assert(self, returnv):
+        if proxy.is_user_defined(returnv):
+            self.create_return_assert_code(returnv._identifier)
+            self.gen_structure_assertions(returnv)
         else:
-            return str(arg)
+            self.create_return_assert_code(returnv)
 
-    @classmethod
-    def take_identifier(cls, typ):
-        typ._id += 1
-        return typ.__name__.lower() + str(typ._id)
+    def create_return_assert_code(self, value):
+        self._add_line("assert returnv == " + str(value))
+
+    def create_assert_code(self, identifier, field, value):
+        self._add_line("assert " + identifier + "." + field + " == " + str(value))
+
+    def gen_structure_assertions(self, instance):
+        if not instance._generated:
+            instance._generated = True
+            identifier = instance._identifier
+
+            attr = self.get_attr_value_dict(instance)
+
+            userdef = []
+            for field, value in attr.items():
+                if proxy.is_user_defined(value):
+                    userdef.append((field, value))
+                    self.create_assert_code(identifier, field, value._identifier)
+                else:
+                    self.create_assert_code(identifier, field, value)
+
+            for field, value in userdef:
+                self.gen_structure_assertions(value)
+
+    def generate_method_call(self, self_id, method_name, returnv=None):
+        args_ids = self.generate_arguments_code(self._run_stats.concrete_args)
+        if returnv:
+            self._add_line(
+                "returnv = " + self_id + "." + method_name + "(" + args_ids + ")"
+            )
+        else:
+            self._add_line(self_id + "." + method_name + "(" + args_ids + ")")
 
     @classmethod
     def is_special_attr(cls, attr_name):
@@ -93,7 +128,7 @@ class TestCode:
         return identifier
 
     def create_assign_code(self, identifier, field, value):
-        self._code += identifier + "." + field + " = " + str(value) + "\n"
+        self._add_line(identifier + "." + field + " = " + str(value) + "")
 
     def create_constructor_call(self, identifier, typ, ins_dict, params_dict):
         if "self" in params_dict:
@@ -115,6 +150,6 @@ class TestCode:
             else:
                 code_line += str(ctor_params[name]) + ", "
 
-        code_line = code_line[:-2] + ")\n"
-        self._code += code_line
+        code_line = code_line[:-2] + ")"
+        self._add_line(code_line)
 
