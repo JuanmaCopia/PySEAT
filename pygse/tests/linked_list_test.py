@@ -21,7 +21,7 @@ class Node:
             self._next_is_initialized = True
             self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
-            see.SEEngine.ignore_if(not self.rep_ok(), self)
+            see.SEEngine.ignore_if(not self.conservative_repok(), self)
         return self.next
 
     def _set_next(self, value):
@@ -104,7 +104,18 @@ class Node:
                 nxt = nxt._get_next()
             return True
 
-    def rep_ok(self):
+    def conservative_repok(self):
+        return True
+
+    def repok(self):
+        # Acyclic
+        self.unmark_all()
+        current = self
+        while current:
+            if current._marked:
+                return False
+            current._marked = True
+            current = current._get_next()
         return True
 
     def acyclic(self):
@@ -155,7 +166,7 @@ class LinkedList:
             self._head_is_initialized = True
             self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
-            see.SEEngine.ignore_if(not self.rep_ok(), self)
+            see.SEEngine.ignore_if(not self.conservative_repok(), self)
         return self.head
 
     def _set_head(self, value):
@@ -211,7 +222,7 @@ class LinkedList:
             aux._marked = False
             aux = aux.next
 
-    def rep_ok(self):
+    def conservative_repok(self):
         return True
 
     def acyclic(self):

@@ -237,7 +237,7 @@ class SEEngine:
             True if instance is valid (pass it's repok), False otherwise.
         """
         if proxy.is_user_defined(type(instance)):
-            return instance.rep_ok()
+            return instance.conservative_repok()
         return True
 
     @classmethod
