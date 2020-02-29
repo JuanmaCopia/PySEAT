@@ -42,19 +42,25 @@ else:
 
     sut = parse(module_name, function_name, class_name)
 
+    runs = []
+    test_number = 1
+
     if sut.is_method:
         SEEngine.initialize(sut, max_depth)
         # maybe initialize test generator
-        test_number = 1
+
         for run in SEEngine.explore():
+            runs.append(run)
             print_formatted_result(sut.function, run, True)
-            # GenerateTest(run)
+
+        report_statistics(SEEngine.statistics())
+
+        for run in runs:
             if run.status != Status.PRUNED:
+                SEEngine.build_partial_structures(run)
                 test = TestCode(sut, run, test_number)
                 test_number += 1
                 print("\n" + test.get_code() + "\n")
-
-        report_statistics(SEEngine.statistics())
     else:
         # TODO: Make it support functions (functions that not belong to a class)
         raise NotImplementedError

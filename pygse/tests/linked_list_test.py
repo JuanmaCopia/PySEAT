@@ -223,6 +223,9 @@ class LinkedList:
             aux = aux.next
 
     def conservative_repok(self):
+        return self.acyclic()
+
+    def repok(self):
         return True
 
     def acyclic(self):

@@ -39,6 +39,15 @@ class RepOkFailException(Error):
         self.message = "Repok Fail"
 
 
+class CouldNotBuildError(Error):
+    """Exception raised when the maximum exploration depth
+    is reached.
+    """
+
+    def __init__(self):
+        self.message = "Could not build the complete structure"
+
+
 class ReturnValueRepOkFail(Error):
     """Exception raised when the maximum exploration depth
     is reached.

@@ -76,8 +76,8 @@ def print_formatted_result(function, stats, verbose):
                 print(INDENT + "Path Condition:  ")
                 print_list(stats.pathcondition)
                 print("")
-    else:
-        print(get_header_str(stats))
+    # else:
+    #     print(get_header_str(stats))
 
 
 def report_statistics(stats):

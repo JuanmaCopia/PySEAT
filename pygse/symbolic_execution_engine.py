@@ -11,7 +11,7 @@ from collections.abc import Iterable
 from pygse.branching_steps import LazyStep, ConditionalStep
 from pygse.stats import Status, ExecutionStats, GlobalStats
 from pygse.engine_errors import UnsatBranchError, MissingTypesError, RepOkFailException
-from pygse.engine_errors import MaxDepthException
+from pygse.engine_errors import MaxDepthException, CouldNotBuildError
 import pygse.proxy as proxy
 
 # TODO: Check in lazy initializations that the object has to be
@@ -74,6 +74,8 @@ class SEEngine:
     _real_to_proxy = {}
 
     _lazy_backups = {}
+    
+    _current_self = None
 
     @classmethod
     def initialize(cls, sut_data, max_depth):
@@ -91,6 +93,7 @@ class SEEngine:
         cls._globalstats = GlobalStats()
         cls._max_depth = max_depth
         cls._real_to_proxy = {x.emulated_class: x for x in proxy.ProxyObject.__subclasses__()}
+        cls._current_self = None
 
     @classmethod
     def explore(cls):
@@ -112,6 +115,61 @@ class SEEngine:
 
             if not cls._branching_points:
                 unexplored_paths = False
+
+
+    @classmethod
+    def build_partial_structures(cls, run):
+        complete_self = cls.build_clouds(run.concrete_self)
+        if not complete_self:
+            raise CouldNotBuildError()
+        run.concrete_self = complete_self
+
+        for i, arg in enumerate(run.concrete_args):
+            if proxy.is_user_defined(arg) and not arg.repok():
+                complete_arg = cls.build_clouds(arg)
+                if not complete_arg:
+                    raise CouldNotBuildError()
+                run.concrete_args[i] = complete_arg
+
+    @classmethod
+    def build_clouds(cls, partial_ins):
+        if partial_ins is None:
+            return partial_ins
+        if partial_ins.repok():
+            return partial_ins
+        
+        unexplored_paths = True
+        while unexplored_paths:
+            cls._reset_exploration()
+
+            args = copy.deepcopy(partial_ins)
+
+            result = cls._execute_repok(args)
+
+            if result is not None and result.repok():
+                return result
+
+            cls._remove_explored_branches()
+
+            if not cls._branching_points:
+                unexplored_paths = False
+
+    @classmethod
+    def _execute_repok(cls, args):
+        try:
+
+            the_self = args[0]
+            method = getattr(the_self, "repok")
+
+            returnv = method()
+
+            if proxy.is_symbolic_bool(returnv):
+                returnv = returnv.__bool__()
+        except:
+            return None
+        else:
+            model = proxy.smt.get_model(cls._path_condition)
+            return cls._concretize(copy.deepcopy(the_self), model)
 
     @classmethod
     def _reset_exploration(cls):
@@ -150,6 +208,7 @@ class SEEngine:
         try:
             if cls._sut.is_method:
                 the_self = args[0]
+                cls._current_self = the_self
                 args = args[1:]
                 method = getattr(the_self, cls._sut.function.__name__)
                 if args:
@@ -543,6 +602,9 @@ class SEEngine:
             RepOkFailException: RepOk of instances failed.
         """
         if value:
+            raise RepOkFailException()
+        self_repok = getattr(cls._current_self, "conservative_repok")
+        if not self_repok():
             raise RepOkFailException()
 
     @classmethod
