@@ -11,7 +11,7 @@ from collections.abc import Iterable
 from pygse.branching_steps import LazyStep, ConditionalStep
 from pygse.stats import Status, ExecutionStats, GlobalStats
 from pygse.engine_errors import UnsatBranchError, MissingTypesError, RepOkFailException
-from pygse.engine_errors import MaxDepthException, CouldNotBuildError
+from pygse.engine_errors import MaxDepthException, CouldNotBuildError, RepokNotFoundError
 import pygse.proxy as proxy
 
 # TODO: Check in lazy initializations that the object has to be
@@ -119,10 +119,11 @@ class SEEngine:
 
     @classmethod
     def build_partial_structures(cls, run):
-        complete_self = cls.build_clouds(run.concrete_self)
-        if not complete_self:
-            raise CouldNotBuildError()
-        run.concrete_self = complete_self
+        if run.concrete_self is not None:
+            complete_self = cls.build_clouds(run.concrete_self)
+            if not complete_self:
+                raise CouldNotBuildError()
+            run.concrete_self = complete_self
 
         for i, arg in enumerate(run.concrete_args):
             if proxy.is_user_defined(arg) and not arg.repok():
@@ -133,8 +134,6 @@ class SEEngine:
 
     @classmethod
     def build_clouds(cls, partial_ins):
-        if partial_ins is None:
-            return partial_ins
         if partial_ins.repok():
             return partial_ins
         
@@ -142,9 +141,9 @@ class SEEngine:
         while unexplored_paths:
             cls._reset_exploration()
 
-            args = copy.deepcopy(partial_ins)
+            instance = copy.deepcopy(partial_ins)
 
-            result = cls._execute_repok(args)
+            result = cls._execute_repok(instance)
 
             if result is not None and result.repok():
                 return result
@@ -155,21 +154,23 @@ class SEEngine:
                 unexplored_paths = False
 
     @classmethod
-    def _execute_repok(cls, args):
+    def _execute_repok(cls, instance):
         try:
-
-            the_self = args[0]
-            method = getattr(the_self, "repok")
-
-            returnv = method()
-
-            if proxy.is_symbolic_bool(returnv):
-                returnv = returnv.__bool__()
-        except:
-            return None
+            instance.repok()
+        except AttributeError:
+            class_name = instance.__class__.__name__
+            raise RepokNotFoundError(class_name + " doesn't have a repok() method")
         else:
             model = proxy.smt.get_model(cls._path_condition)
-            return cls._concretize(copy.deepcopy(the_self), model)
+            return cls._concretize(copy.deepcopy(instance), model)
+        # try:
+        #     method = getattr(instance, "repok")
+        #     method()
+        # except ValueError as e:
+        #     return None
+        # else:
+        #     model = proxy.smt.get_model(cls._path_condition)
+        #     return cls._concretize(copy.deepcopy(instance), model)
 
     @classmethod
     def _reset_exploration(cls):

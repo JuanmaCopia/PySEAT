@@ -105,20 +105,12 @@ class Node:
             return True
 
     def conservative_repok(self):
-        return True
+        return self.conservative_acyclic()
 
     def repok(self):
-        # Acyclic
-        self.unmark_all()
-        current = self
-        while current:
-            if current._marked:
-                return False
-            current._marked = True
-            current = current._get_next()
-        return True
+        return self.acyclic()
 
-    def acyclic(self):
+    def conservative_acyclic(self):
         self.unmark_all()
         current = self
         while current:
@@ -129,6 +121,16 @@ class Node:
             if not current._next_is_initialized:
                 return True
             current = current.next
+        return True
+
+    def acyclic(self):
+        self.unmark_all()
+        current = self
+        while current:
+            if current._marked:
+                return False
+            current._marked = True
+            current = current._get_next()
         return True
 
     def is_circular(self):

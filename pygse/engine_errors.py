@@ -31,8 +31,7 @@ class UnsatBranchError(Error):
 
 
 class RepOkFailException(Error):
-    """Exception raised when the maximum exploration depth
-    is reached.
+    """
     """
 
     def __init__(self):
@@ -40,8 +39,7 @@ class RepOkFailException(Error):
 
 
 class CouldNotBuildError(Error):
-    """Exception raised when the maximum exploration depth
-    is reached.
+    """
     """
 
     def __init__(self):
@@ -49,9 +47,16 @@ class CouldNotBuildError(Error):
 
 
 class ReturnValueRepOkFail(Error):
-    """Exception raised when the maximum exploration depth
-    is reached.
+    """
     """
 
     def __init__(self):
         self.message = "The returned value does not pass the repok()"
+
+
+class RepokNotFoundError(Error):
+    """ desc
+    """
+
+    def __init__(self, message):
+        self.message = message
