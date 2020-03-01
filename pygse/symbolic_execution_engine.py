@@ -163,14 +163,6 @@ class SEEngine:
         else:
             model = proxy.smt.get_model(cls._path_condition)
             return cls._concretize(copy.deepcopy(instance), model)
-        # try:
-        #     method = getattr(instance, "repok")
-        #     method()
-        # except ValueError as e:
-        #     return None
-        # else:
-        #     model = proxy.smt.get_model(cls._path_condition)
-        #     return cls._concretize(copy.deepcopy(instance), model)
 
     @classmethod
     def _reset_exploration(cls):
