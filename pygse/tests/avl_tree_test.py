@@ -29,6 +29,7 @@ class Node:
         self._concretized = False
         self._identifier = ""
         self._generated = False
+        self._marked = False
 
     # ========================== Instrumentation ============================ #
     def _get_parent(self):
@@ -68,29 +69,9 @@ class Node:
         self._right_is_initialized = True
 
     def conservative_repok(self):
-        if self.bf < -1 and self.bf > 1:
-            return False
-        if not self._left_is_initialized:
-            return True
-        if self.left:
-            if not self.left.repok():
-                return False
-        if not self._right_is_initialized:
-            return True
-        if self.right:
-            if not self.right.repok():
-                return False
         return True
 
     def repok(self):
-        if self.bf < -1 and self.bf > 1:
-            return False
-        if self._get_left():
-            if not self._get_left().repok():
-                return False
-        if self._get_right():
-            if not self._get_right().repok():
-                return False
         return True
 
 class AVLTree:
@@ -99,7 +80,7 @@ class AVLTree:
     _is_user_defined = True
     _id = 0
 
-    def __init__(self):
+    def __init__(self, root: "Node" = None):
         self.root = None
         # Instrumentations instance attributes
         self._root_is_initialized = False
@@ -127,13 +108,139 @@ class AVLTree:
             return True
         if not self.root:
             return True
-        return self.root.conservative_repok()
+        if not (self.is_acyclic() and self.is_ordered() and self.is_balanced()):
+            return False
+        return True
+
 
     def repok(self):
-        if not self._get_root():
+        if not self.root:
             return True
-        return self._get_root().repok()
+        if not (self.is_acyclic() and self.is_ordered() and self.is_balanced()):
+            return False
+        return True
 
+
+    @staticmethod
+    def do_add(s, x):
+        l = len(s)
+        s.add(x)
+        return len(s) != l
+
+    def is_acyclic(self):
+        visited = set()
+        visited.add(self.root)
+        worklist = []
+        worklist.append(self.root)
+        while worklist:
+            current = worklist.pop(0)
+            if current.left:
+                if not AVLTree.do_add(visited, current.left):
+                    return False
+                worklist.append(current.left)
+            if current.right:
+                if not AVLTree.do_add(visited, current.right):
+                    return False
+                worklist.append(current.right)
+        return True
+
+    def is_ordered(self):
+        return self.is_ordered2(self.root, -1, -1);
+
+    def is_ordered2(self, node, min, max):
+        if (min != -1 and node.elem <= min) or (max != -1 and node.elem >= max):
+            return False
+        if node.left:
+            if not self.is_ordered2(node.left, min, node.elem):
+                return False
+        if node.right:
+            if not self.is_ordered2(node.right, node.elem, max):
+                return False
+        return True
+
+    def is_balanced(self):
+        queue = []
+        queue.append(self.root)
+        while queue:
+            current = queue.pop(0)
+            if current.bf > 1 or current.bf < -1:
+                return False
+            if current.left:
+                queue.add(current.left)
+            if current.right:
+                queue.add(current.right)
+        return True 
+
+
+    # private boolean isBalanced(){
+	# 	LinkedList<AvlNode> queue = new LinkedList<AvlNode>();
+	# 	queue.add(root);
+    #     while (!queue.isEmpty()) {
+    #         AvlNode current = (AvlNode) queue.removeFirst();
+    #         int l_Height = current.left == null ? 0 : current.left.height;
+	# 		int r_Height = current.right == null ? 0 : current.right.height;
+	# 		int difference = l_Height - r_Height;
+	# 		if (difference < -1 || difference > 1)
+	# 			return false; // Not balanced.
+	# 		int max = l_Height > r_Height ? l_Height : r_Height;
+	# 		if (current.height != 1 + max)
+	# 			return false; // Wrong height.
+    #         if (current.left != null) {
+    #         	queue.add(current.left);
+    #         }
+    #         if (current.right != null) {
+    #         	queue.add(current.right);
+    #         }
+    #     }
+    #     return true;
+		
+	}
+
+    # private boolean isOrdered(AvlNode n) {
+    #      return isOrdered(n, -1, -1);
+    #  }
+
+    #  private boolean isOrdered(AvlNode n, int min, int max) {
+    #      // if (n.info == null)
+    #      // return false;
+    #      if (n.data == -1)
+    #          return false;
+    #      // if ((min != null && n.info.compareTo(min) <= 0)
+    #      // || (max != null && n.info.compareTo(max) >= 0))
+    #      if ((min != -1 && n.data <= (min)) || (max != -1 && n.data >= (max)))
+
+    #          return false;
+    #      if (n.left != null)
+    #          if (!isOrdered(n.left, min, n.data))
+    #              return false;
+    #      if (n.right != null)
+    #          if (!isOrdered(n.right, n.data, max))
+    #              return false;
+    #      return true;
+    #  }
+
+    # private boolean isAcyclic() {
+    #       Set<AvlNode> visited = new HashSet<AvlNode>();
+    #       visited.add(root);
+    #       LinkedList<AvlNode> workList = new LinkedList<AvlNode>();
+    #       workList.add(root);
+    #       while (!workList.isEmpty()) {
+    #           AvlNode current = (AvlNode) workList.removeFirst();
+    #           if (current.left != null) {
+    #               // checks that the tree has no cycle
+    #               if (!visited.add(current.left))
+    #                   return false;
+    #               workList.add(current.left);
+    #           }
+    #           if (current.right != null) {
+    #               // checks that the tree has no cycle
+    #               if (!visited.add(current.right))
+    #                   return false;
+    #               workList.add(current.right);
+    #           }
+    #       }
+    #       return true;
+    #   }
 
     # The instrumented method should have replaced accesses to fields by the above getters
     # and setters, and types annotated.
@@ -269,7 +376,7 @@ class AVLTree:
             str_rep += self.to_str(currPtr.left, indent, False)
             str_rep += self.to_str(currPtr.right, indent, True)
             return str_rep
-        return ""
+        return "None"
     
     def __searchTreeHelper(self, node, key):
         if node == None or key == node.data:
@@ -503,4 +610,4 @@ class AVLTree:
         self.__printHelper(self.root, "", True)
 
     def __repr__(self):
-        return self.to_str(self.root, "", True)
+        return "\n" + self.to_str(self.root, "", True) + "\n"

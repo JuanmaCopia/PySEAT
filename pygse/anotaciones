@@ -4,4 +4,7 @@ El metodo de instrumentacion get de un campo debe referir al Tipo del campo y no
 la clase del self, por ejemplo en Linkelist, el get_head, como head es un Nodo refiere a Node
 y no a Linkelist (refiere a node en las llamadas a los metodos del engine)
 
+Hay que agregar algun tipo de contrato que permita simbolizar los attributos de instancia (actualmente
+solo simbolizamos los que esten aclarados en el metodo init)
+
 Ver que ocurre con marked en linked list por ejemplo, si lo simbolizo.
