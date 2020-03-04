@@ -26,6 +26,11 @@ class ProxyObject(object):
     """
     Base class of a ProxyObject that can become any type by inheriting it.
     """
+    supported_types = [int, bool]
+
+    @classmethod
+    def is_supported_builtin(cls, obj):
+        return obj in cls.supported_types or type(obj) in cls.supported_types
 
 
 class IntProxy(ProxyObject):

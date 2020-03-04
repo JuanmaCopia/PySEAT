@@ -1,5 +1,5 @@
 import pygse.symbolic_execution_engine as see
-
+import pygse.proxy as proxy
 
 class Node:
 
@@ -11,13 +11,23 @@ class Node:
         self.elem = elem
         self.next = None
         self._next_is_initialized = False
+        self._elem_is_initialized = False
         self._marked = False
         self._concretized = False
         self._identifier = ""
         self._generated = False
 
+    def _get_elem(self):
+        if not self._elem_is_initialized:
+            self.elem = proxy.IntProxy()
+        return self.elem
+
+    def _set_elem(self, value):
+        self.elem = value
+        self._elem_is_initialized = True
+
     def _get_next(self):
-        if not self._next_is_initialized and self in Node._vector:
+        if not self._next_is_initialized and self in self._vector:
             self._next_is_initialized = True
             self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
@@ -71,7 +81,7 @@ class Node:
 
     def swap_node(self):
         if self._get_next() is not None:
-            if self.elem - self._get_next().elem > 0:
+            if self._get_elem() - self._get_next()._get_elem() > 0:
                 t = self._get_next()
                 self._set_next(t._get_next())
                 t._set_next(self)
@@ -105,7 +115,7 @@ class Node:
             return True
 
     def conservative_repok(self):
-        return True
+        return self.con_acyclic()
 
     def repok(self):
         # Acyclic
@@ -118,7 +128,7 @@ class Node:
             current = current._get_next()
         return True
 
-    def acyclic(self):
+    def con_acyclic(self):
         self.unmark_all()
         current = self
         while current:
@@ -153,16 +163,13 @@ class LinkedList:
 
     def __init__(self, head: "Node" = None):
         self.head = head
-        if head:
-            self._head_is_initialized = True
-        else:
-            self._head_is_initialized = False
+        self._head_is_initialized = False
         self._concretized = False
         self._identifier = ""
         self._generated = False
 
     def _get_head(self):
-        if not self._head_is_initialized and self in LinkedList._vector:
+        if not self._head_is_initialized and self in self._vector:
             self._head_is_initialized = True
             self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
@@ -222,14 +229,37 @@ class LinkedList:
             aux._marked = False
             aux = aux.next
 
+    # def conservative_repok(self):
+    #     return self.acyclic()
+
+    # def repok(self):
+    #     # acyclic
+    #     self.unmark_all()
+    #     current = self._get_head()
+    #     while current:
+    #         if current._marked:
+    #             return False
+    #         current._marked = True
+    #         # This make the repok conservative
+    #         current = current._get_next()
+    #     return True
+
     def conservative_repok(self):
-        return self.acyclic()
+        if not self._head_is_initialized:
+            return True
+        if self.head is None:
+            return True
+        return self.head.conservative_repok()
 
     def repok(self):
-        return True
+        if self._get_head() is None:
+            return True
+        return self._get_head().repok()
 
     def acyclic(self):
         self.unmark_all()
+        if not self._head_is_initialized:
+            return True
         current = self.head
         while current:
             if current._marked:
@@ -243,6 +273,8 @@ class LinkedList:
 
     def is_circular(self):
         self.unmark_all()
+        if not self._head_is_initialized:
+            return True
         current = self.head
         while current and not current._marked:
             current._marked = True
@@ -257,7 +289,7 @@ class LinkedList:
     def swap_node(self):
         head = self._get_head()
         if head and head._get_next() is not None:
-            if head.elem - head._get_next().elem > 0:
+            if head._get_elem() - head._get_next()._get_elem() > 0:
                 t = head._get_next()
                 head._set_next(t._get_next())
                 t._set_next(head)

@@ -4,19 +4,237 @@
 # data structure that represents a node in the tree
 
 import sys
+import pygse.symbolic_execution_engine as see
 
 class Node:
-    def  __init__(self, data):
+    # Instrumentations class attributes
+    _vector = [None]
+    _is_user_defined = True
+    _id = 0
+
+    # We need to add type annotations, there is no need to annotate self
+    def  __init__(self, data: int):
         self.data = data
         self.parent = None
         self.left = None
         self.right = None
         self.bf = 0
+        # Instrumentations instance attributes
+        self._data_is_initialized = False
+        self._parent_is_initialized = False
+        self._left_is_initialized = False
+        self._right_is_initialized = False
+        self._bf_is_initialized = False
+
+        self._concretized = False
+        self._identifier = ""
+        self._generated = False
+
+    # ========================== Instrumentation ============================ #
+    def _get_parent(self):
+        if not self._parent_is_initialized and self in self._vector:
+            self._parent_is_initialized = True
+            self.parent = see.SEEngine.get_next_lazy_step(Node, Node._vector)
+            see.SEEngine.save_lazy_step(Node)
+            see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        return self.parent
+
+    def _set_parent(self, value):
+        self.parent = value
+        self._parent_is_initialized = True
+
+    def _get_left(self):
+        if not self._left_is_initialized and self in self._vector:
+            self._left_is_initialized = True
+            self.left = see.SEEngine.get_next_lazy_step(Node, Node._vector)
+            see.SEEngine.save_lazy_step(Node)
+            see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        return self.left
+
+    def _set_left(self, value):
+        self.left = value
+        self._left_is_initialized = True
+
+    def _get_right(self):
+        if not self._right_is_initialized and self in self._vector:
+            self._right_is_initialized = True
+            self.right = see.SEEngine.get_next_lazy_step(Node, Node._vector)
+            see.SEEngine.save_lazy_step(Node)
+            see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        return self.right
+
+    def _set_right(self, value):
+        self.right = value
+        self._right_is_initialized = True
+
+    def conservative_repok(self):
+        if self.bf < -1 and self.bf > 1:
+            return False
+        if not self._left_is_initialized:
+            return True
+        if self.left:
+            if not self.left.repok():
+                return False
+        if not self._right_is_initialized:
+            return True
+        if self.right:
+            if not self.right.repok():
+                return False
+        return True
+
+    def repok(self):
+        if self.bf < -1 and self.bf > 1:
+            return False
+        if self._get_left():
+            if not self._get_left().repok():
+                return False
+        if self._get_right():
+            if not self._get_right().repok():
+                return False
+        return True
 
 class AVLTree:
+    # Instrumentations class attributes
+    _vector = [None]
+    _is_user_defined = True
+    _id = 0
 
     def __init__(self):
         self.root = None
+        # Instrumentations instance attributes
+        self._root_is_initialized = False
+
+        self._concretized = False
+        self._identifier = ""
+        self._generated = False
+
+    # ========================== Instrumentation ============================ #
+
+    def _get_root(self):
+        if not self._root_is_initialized and self in self._vector:
+            self._root_is_initialized = True
+            self.root = see.SEEngine.get_next_lazy_step(Node, Node._vector)
+            see.SEEngine.save_lazy_step(Node)
+            see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        return self.root
+
+    def _set_root(self, value):
+        self.root = value
+        self._root_is_initialized = True
+
+    def conservative_repok(self):
+        if not self._root_is_initialized:
+            return True
+        if not self.root:
+            return True
+        return self.root.conservative_repok()
+
+    def repok(self):
+        if not self._get_root():
+            return True
+        return self._get_root().repok()
+
+
+    # The instrumented method should have replaced accesses to fields by the above getters
+    # and setters, and types annotated.
+    def instrumented_insert(self, key: int):
+        # PART 1: Ordinary BST insert
+        node =  Node(key)
+        y = None
+        x = self._get_root()
+
+        while x != None:
+            y = x
+            if node.data < x.data:
+                x = x._get_left()
+            else:
+                x = x._get_right()
+
+        # y is parent of x
+        node._set_parent(y)
+        if y == None:
+            self._set_root(node)
+        elif node.data < y.data:
+            y._set_left(node)
+        else:
+            y._set_right(node)
+
+        # PART 2: re-balance the node if necessary
+        self.__ins_updateBalance(node)
+
+    # any method called inside the method under test should be also instrumented.
+    def __ins_updateBalance(self, node):
+        if node.bf < -1 or node.bf > 1:
+            self.__ins_rebalance(node)
+            return
+
+        if node._get_parent() != None:
+            if node == node._get_parent()._get_left():
+                node._get_parent().bf -= 1
+
+            if node == node._get_parent()._get_right():
+                node._get_parent().bf += 1
+
+            if node._get_parent().bf != 0:
+                self.__ins_updateBalance(node._get_parent())
+
+
+    def __ins_rebalance(self, node):
+        if node.bf > 0:
+            if node._get_right().bf < 0:
+                self.ins_rightRotate(node._get_right())
+                self.ins_leftRotate(node)
+            else:
+                self.ins_leftRotate(node)
+        elif node.bf < 0:
+            if node._get_left().bf > 0:
+                self.ins_leftRotate(node._get_left())
+                self.ins_rightRotate(node)
+            else:
+                self.ins_rightRotate(node)
+
+
+    def ins_leftRotate(self, x):
+        y = x._get_right()
+        x._set_right(y._get_left())
+        if y._get_left() != None:
+            y._set_parent(x)
+
+        y._set_parent(x._get_parent()) 
+        if x._get_parent() == None:
+            self._set_root(y)
+        elif x == x._get_parent()._get_left():
+            x._get_parent()._set_left(y)
+        else:
+            x._get_parent()._set_right(y)
+        y._set_left(x)
+        x._set_parent(y)
+
+        # update the balance factor
+        x.bf = x.bf - 1 - max(0, y.bf)
+        y.bf = y.bf - 1 + min(0, x.bf)
+
+
+    def ins_rightRotate(self, x):
+        y = x._get_left()
+        x._set_left(y._get_right())
+        if y._get_right() != None:
+            y._get_right()._set_parent(x)
+        
+        y._set_parent(x._get_parent())
+        if x._get_parent() == None:
+            self._set_root(y)
+        elif x == x._get_parent()._get_right():
+            x._get_parent()._set_right(y)
+        else:
+            x._get_parent()._set_left(y)
+        
+        y._set_right(x)
+        x._set_parent(y)
+
+        # update the balance factor
+        x.bf = x.bf + 1 - min(0, y.bf)
+        y.bf = y.bf + 1 + max(0, x.bf)
 
     def __printHelper(self, currPtr, indent, last):
         # print the tree structure on the screen
@@ -178,7 +396,7 @@ class AVLTree:
 
     # find the successor of a given node
     def successor(self, x):
-        # if the right subtree is not null,
+        # if the right subtree is not None,
         # the successor is the leftmost node in the
         # right subtree
         if x.right != None:
@@ -194,7 +412,7 @@ class AVLTree:
 
     # find the predecessor of a given node
     def predecessor(self, x):
-        # if the left subtree is not null,
+        # if the left subtree is not None,
         # the predecessor is the rightmost node in the 
         # left subtree
         if x.left != None:

@@ -1,0 +1,7 @@
+Cuestiones a tener en cuentra instrumentacion:
+
+El metodo de instrumentacion get de un campo debe referir al Tipo del campo y no a 
+la clase del self, por ejemplo en Linkelist, el get_head, como head es un Nodo refiere a Node
+y no a Linkelist (refiere a node en las llamadas a los metodos del engine)
+
+Ver que ocurre con marked en linked list por ejemplo, si lo simbolizo.
