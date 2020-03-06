@@ -13,6 +13,7 @@ from pygse.stats import Status, ExecutionStats, GlobalStats
 from pygse.engine_errors import UnsatBranchError, MissingTypesError, RepOkFailException
 from pygse.engine_errors import MaxDepthException, CouldNotBuildError, RepokNotFoundError
 import pygse.proxy as proxy
+import signal
 
 # TODO: Check in lazy initializations that the object has to be
 # a tracked one, that is to say or a parameter, o the self, or
@@ -24,6 +25,9 @@ import pygse.proxy as proxy
 # TODO: Check what happen with objects like list and dict... in instanciation
 # method
 # TODO: Support other symbolic types like list, tuple, dict, slices
+
+def timeout_handler(signum, frame):
+    raise Exception("Timeout")
 
 
 class SEEngine:
@@ -49,7 +53,7 @@ class SEEngine:
         _path_condition (list): Collects all the path constraints of the current execution.
 
         _current_bp (LazyStep, ConditionalStep): Is the current branching point, it could
-        be a Lazy Initialization Stem or a Conditional Step. 
+        be a Lazy Initialization Stem or a Conditional Step.
 
         _current_depth (int): Depth's of the current execution tree.
 
@@ -74,7 +78,7 @@ class SEEngine:
     _real_to_proxy = {}
 
     _lazy_backups = {}
-    
+
     _current_self = None
 
     @classmethod
@@ -119,11 +123,11 @@ class SEEngine:
 
     @classmethod
     def build_partial_structures(cls, run):
-        if run.concrete_self is not None:
-            complete_self = cls.build_clouds(run.concrete_self)
+        if run.concrete_input_self is not None:
+            complete_self = cls.build_clouds(run.concrete_input_self)
             if not complete_self:
                 raise CouldNotBuildError()
-            run.concrete_self = complete_self
+            run.concrete_input_self = complete_self
 
         for i, arg in enumerate(run.concrete_args):
             if proxy.is_user_defined(arg) and not arg.repok():
@@ -134,9 +138,9 @@ class SEEngine:
 
     @classmethod
     def build_clouds(cls, partial_ins):
-        if partial_ins.repok():
+        if partial_ins.orig_repok():
             return partial_ins
-        
+
         unexplored_paths = True
         while unexplored_paths:
             cls._reset_exploration()
@@ -162,7 +166,9 @@ class SEEngine:
             raise RepokNotFoundError(class_name + " doesn't have a repok() method")
         else:
             model = proxy.smt.get_model(cls._path_condition)
-            return cls._concretize(copy.deepcopy(instance), model)
+            new_object = cls._concretize(copy.deepcopy(instance), model)
+            assert new_object.orig_repok()
+            return new_object
 
     @classmethod
     def _reset_exploration(cls):
@@ -175,7 +181,21 @@ class SEEngine:
             k._vector = [None]
             k._id = 0
             cls._lazy_backups[k] = LazyBackup()
-        
+
+    # def time_bounded_execution(cls, args):
+    #     signal.signal(signal.SIGALRM, handler)
+    #     signal.alarm(2)
+
+    #     the_self = args[0]
+    #     cls._current_self = the_self
+    #     args = args[1:]
+    #     method = getattr(the_self, cls._sut.function.__name__)
+    #     if args:
+    #         returnv = method(*args)
+    #     else:
+    #         returnv = method()
+    #     if proxy.is_symbolic_bool(returnv):
+    #         returnv = returnv.__bool__()
 
     @classmethod
     def _execute_program(cls, args):
@@ -196,66 +216,63 @@ class SEEngine:
         """
         cls._globalstats.total_paths += 1
         stats = ExecutionStats(cls._globalstats.complete_exec + 1)
+
         returnv = None
-        the_self = None
+        cls._current_self = args[0]
+        args = args[1:]
+        method = getattr(cls._current_self, cls._sut.function.__name__)
+
+        signal.signal(signal.SIGALRM, timeout_handler)
+        signal.alarm(1)
         try:
-            if cls._sut.is_method:
-                the_self = args[0]
-                cls._current_self = the_self
-                args = args[1:]
-                method = getattr(the_self, cls._sut.function.__name__)
-                if args:
-                    returnv = method(*args)
-                else:
-                    returnv = method()
-                if proxy.is_symbolic_bool(returnv):
-                    returnv = returnv.__bool__()
-            # TODO: make it work for a non method function
+            if args:
+                returnv = method(*args)
+            else:
+                returnv = method()
+            if proxy.is_symbolic_bool(returnv):
+                returnv = returnv.__bool__()
         except UnsatBranchError:
             cls._globalstats.pruned_by_error += 1
         except MaxDepthException:
             cls._globalstats.pruned_by_depth += 1
         except RepOkFailException:
             cls._globalstats.pruned_by_repok += 1
+        except RecursionError as e:
+            stats.status = Status.FAIL
+            stats.exception = e
         except Exception as e:
-            if not cls._expected(e):
-                stats.status = Status.FAIL
-            else:
-                stats.status = Status.OK
+            stats.status = Status.FAIL
             stats.exception = e
         else:
             stats.status = Status.OK
         finally:
-            if stats.status == Status.PRUNED:
+            signal.alarm(0)
+            # if stats.exception:
+            #     raise stats.exception
+            # signal.alarm(0)
+            # signal.signal(signal.SIGALRM, signal.SIG_IGN)
+            if stats.status != Status.OK:
                 return stats
-            cls._globalstats.complete_exec += 1
+
+            stats.end_self = copy.deepcopy(cls._current_self)
+            if not cls._check_repok(stats.end_self):
+                stats.status = Status.FAIL
+                stats.errors.append("Repok failed on final state of self")
+                return stats
+
             stats.pathcondition = cls._path_condition
             stats.model = proxy.smt.get_model(cls._path_condition)
-            
-            stats.concrete_end_self = cls._concretize(copy.deepcopy(the_self), stats.model)
-
-            the_self = cls._lazy_backups[cls._sut.sclass].get_entity()
+            stats.concrete_end_self = cls._concretize(copy.deepcopy(cls._current_self), stats.model)
+            stats.input_self = cls._lazy_backups[cls._sut.sclass].get_entity()
+            stats.concrete_input_self = cls._concretize(copy.deepcopy(stats.input_self), stats.model)
             cls.retrieve_inputs(args)
-            
-            stats.self_structure = the_self
-            stats.concrete_self = cls._concretize(copy.deepcopy(the_self), stats.model)
             if args:
                 stats.concrete_args = cls._concretize(copy.deepcopy(args), stats.model)
-
-            if stats.exception:
-                cls._globalstats.status_count(stats.status)
-                return stats
-
-            if not cls._check_repok(returnv):
-                stats.status = Status.FAIL
-                stats.errors.append("Return value RepOk fail")
-            if not cls._check_repok(the_self):
-                stats.status = Status.FAIL
-                stats.errors.append("Self RepOk fail")
             stats.returnv = returnv
             stats.concrete_return = cls._concretize(
                 copy.deepcopy(stats.returnv), stats.model
             )
+            cls._globalstats.complete_exec += 1
             cls._globalstats.status_count(stats.status)
             return stats
 
@@ -265,18 +282,18 @@ class SEEngine:
             if proxy.is_user_defined(arg):
                 args_list[i] = cls._lazy_backups[type(arg)].get_entity()
 
-    @classmethod
-    def _expected(cls, exception):
-        """Checks whether an exception is expected or not.
+    # @classmethod
+    # def _expected(cls, exception):
+    #     """Checks whether an exception is expected or not.
 
-        Args:
-            exception (Exception): A raised exception during
-                the execution of a function.
+    #     Args:
+    #         exception (Exception): A raised exception during
+    #             the execution of a function.
 
-        Returns:
-            True if expected, False otherwise.
-        """
-        return isinstance(exception, ValueError)
+    #     Returns:
+    #         True if expected, False otherwise.
+    #     """
+    #     return isinstance(exception, ValueError)
 
     @classmethod
     def _check_repok(cls, instance):
@@ -297,7 +314,7 @@ class SEEngine:
         """Creates the concrete object.
 
         Creates the concrete object from a symbolic (builtin symbolic)
-        or a partially symbolic (user-defined) one and the model 
+        or a partially symbolic (user-defined) one and the model
         describing it's restrictions.
 
         Args:
@@ -374,7 +391,7 @@ class SEEngine:
 
         Args:
             lazy_class: The instance type to be initialized.
-            vector: A vector containing the previous created 
+            vector: A vector containing the previous created
                 instances of lazy_class.
 
         Returns:
@@ -449,8 +466,8 @@ class SEEngine:
         else:
             partial_ins = user_def_class()
 
-        partial_ins._identifier = user_def_class.__name__.lower() + str(user_def_class._id)
-        user_def_class._id += 1
+        # partial_ins._identifier = user_def_class.__name__.lower() + str(user_def_class._id)
+        # user_def_class._id += 1
         return partial_ins
 
     @classmethod
@@ -596,9 +613,11 @@ class SEEngine:
         """
         if value:
             raise RepOkFailException()
-        self_repok = getattr(cls._current_self, "conservative_repok")
-        if not self_repok():
+        repok_passed = cls._current_self.conservative_repok()
+        if not repok_passed:
             raise RepOkFailException()
+        return None
+
 
     @classmethod
     def statistics(cls):
@@ -608,8 +627,12 @@ class SEEngine:
 
     @classmethod
     def save_lazy_step(cls, sclass):
+        old_vec = cls._lazy_backups[sclass].vector
+        new_vec = sclass._vector
         cls._lazy_backups[sclass].new_backup(sclass._vector)
         if (sclass != cls._sut.sclass):
+            old_vec = cls._lazy_backups[cls._sut.sclass].vector
+            new_vec = cls._sut.sclass._vector
             cls._lazy_backups[cls._sut.sclass].new_backup(cls._sut.sclass._vector)
 
 class LazyBackup:
@@ -617,7 +640,7 @@ class LazyBackup:
         self.vector = copy.deepcopy(vector)
         self.amount_entities = amount_entities
         self.next_entity = 1
-    
+
     def add_entity(self, vector):
         self.vector = copy.deepcopy(vector)
         self.amount_entities += 1

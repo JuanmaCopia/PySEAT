@@ -1,6 +1,6 @@
 """Report Module
 
-Contains the methods to print a formatted console output of the statistics 
+Contains the methods to print a formatted console output of the statistics
 of executions.
 
 """
@@ -29,7 +29,7 @@ def get_concrete_return(stats):
 
 
 def get_concrete_args_str(stats):
-    result = stats.concrete_self.__repr__()
+    result = stats.concrete_input_self.__repr__()
     if not stats.concrete_args:
         return result
 
@@ -65,19 +65,25 @@ def print_list(l: list):
 
 
 def print_formatted_result(function, stats, verbose):
-    if stats.status != Status.PRUNED:
+    if stats.status == Status.OK:
         print(get_header_str(stats) + get_function_profile_str(function, stats))
         if not stats.exception:
             print_list(stats.errors)
 
             if verbose:
-                print(INDENT + "Symbolic self:    " + stats.self_structure.__repr__())
+                print(INDENT + "Symbolic self:    " + stats.input_self.__repr__())
                 print(INDENT + "Symbolic return:  " + stats.returnv.__repr__())
+                print(INDENT + "Self end state:  " + stats.concrete_end_self.__repr__())
+
                 print(INDENT + "Path Condition:  ")
                 print_list(stats.pathcondition)
                 print("")
-    # else:
-    #     print(get_header_str(stats))
+    else:
+        print(get_header_str(stats))
+        if stats.exception:
+            print("Exception: " + str(stats.exception))
+        if stats.errors:
+            print_list(stats.errors)
 
 
 def report_statistics(stats):

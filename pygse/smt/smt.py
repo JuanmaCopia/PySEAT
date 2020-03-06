@@ -10,18 +10,23 @@ def wrap_exceptions(fun):
     """
     Catch all the internal (in use) solver exceptions and raises SMTExceptions
     """
+
     def new_fun(fun, self, *args, **kwargs):
         exceptions = self._exeptions
         try:
             return fun(self, *args, **kwargs)
         except exceptions as e:
             raise SMTException(e)
+        except Exception as e:
+            raise e
+
     return decorator(new_fun, fun)
 
 
 # Solver definition
 from .sort_base import SMTSortBase
 from .solver_base import SMTSolverBase
+
 
 class SMT(object):
     def __init__(self, sorts=(), solver=None, **kwargs):

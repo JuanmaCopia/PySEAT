@@ -31,14 +31,14 @@ class TestCode:
     def generate_test_code(self):
         self.gen_test_header()
         self._add_line("# Input Generation")
-        self_id = self.generate_structure_code(self._run_stats.concrete_self)
+        self_id = self.generate_structure_code(self._run_stats.concrete_input_self)
         self._add_line("# Method call")
         self.generate_method_call(
             self_id, self._sut.function.__name__, self._run_stats.concrete_return
         )
         self._add_line("# Assertions")
         self.gen_returnv_assert(self._run_stats.concrete_return)
-        # self.gen_structure_assertions(self._run_stats.concrete_end_self)
+        self.gen_structure_assertions(self._run_stats.concrete_end_self)
 
     def gen_test_header(self):
         self._code += (
@@ -83,7 +83,9 @@ class TestCode:
                 "returnv = " + self_id + "." + method_name + "(" + args_ids + ")"
             )
         else:
-            self._add_line(self_id + "." + method_name + "(" + args_ids + ")")
+            self._add_line(
+                "returnv = " + self_id + "." + method_name + "(" + args_ids + ")"
+            )
 
     @classmethod
     def is_special_attr(cls, attr_name):
@@ -103,6 +105,8 @@ class TestCode:
         }
 
     def generate_structure_code(self, instance):
+        if not instance:
+            return "Attempted to generate the code for a None self\n"
         if instance._generated:
             return instance._identifier
 

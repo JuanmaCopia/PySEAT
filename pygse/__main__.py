@@ -51,12 +51,15 @@ else:
 
         for run in SEEngine.explore():
             runs.append(run)
-            print_formatted_result(sut.function, run, True)
+            if run:
+                print_formatted_result(sut.function, run, True)
+            else:
+                print("una corrida retorno None")
 
         report_statistics(SEEngine.statistics())
 
         for run in runs:
-            if run.status != Status.PRUNED:
+            if run.status != Status.PRUNED and run.concrete_input_self:
                 SEEngine.build_partial_structures(run)
                 test = TestCode(sut, run, test_number)
                 test_number += 1
