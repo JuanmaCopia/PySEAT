@@ -1,6 +1,7 @@
 import pygse.symbolic_execution_engine as see
 import pygse.proxy as proxy
 
+
 class Node:
 
     _vector = [None]
@@ -10,12 +11,15 @@ class Node:
     def __init__(self, elem: int):
         self.elem = elem
         self.next = None
+        self._marked = False
+        # Instrumentation instance attributes
         self._next_is_initialized = False
         self._elem_is_initialized = False
-        self._marked = False
+
         self._concretized = False
-        self._identifier = ""
         self._generated = False
+        self._identifier = self.__class__.__name__.lower() + str(self._id)
+        self.__class__._id += 1
 
     def _get_elem(self):
         if not self._elem_is_initialized:
@@ -115,43 +119,9 @@ class Node:
             return True
 
     def conservative_repok(self):
-        return self.con_acyclic()
+        return True
 
     def repok(self):
-        # Acyclic
-        self.unmark_all()
-        current = self
-        while current:
-            if current._marked:
-                return False
-            current._marked = True
-            current = current._get_next()
-        return True
-
-    def con_acyclic(self):
-        self.unmark_all()
-        current = self
-        while current:
-            if current._marked:
-                return False
-            current._marked = True
-            # This make the repok conservative
-            if not current._next_is_initialized:
-                return True
-            current = current.next
-        return True
-
-    def is_circular(self):
-        self.unmark_all()
-        current = self
-        while current and not current._marked:
-            current._marked = True
-            # This make the repok conservative
-            if not current._next_is_initialized:
-                return True
-            current = current.next
-            if current is None:
-                return False
         return True
 
 
@@ -163,10 +133,13 @@ class LinkedList:
 
     def __init__(self, head: "Node" = None):
         self.head = head
+        # Instrumentation instance attributes
         self._head_is_initialized = False
+
         self._concretized = False
-        self._identifier = ""
         self._generated = False
+        self._identifier = self.__class__.__name__.lower() + str(self._id)
+        self.__class__._id += 1
 
     def _get_head(self):
         if not self._head_is_initialized and self in self._vector:
@@ -229,34 +202,49 @@ class LinkedList:
             aux._marked = False
             aux = aux.next
 
-    # def conservative_repok(self):
-    #     return self.acyclic()
-
-    # def repok(self):
-    #     # acyclic
+    # def con_acyclic(self):
     #     self.unmark_all()
-    #     current = self._get_head()
+    #     current = self
     #     while current:
     #         if current._marked:
     #             return False
     #         current._marked = True
     #         # This make the repok conservative
-    #         current = current._get_next()
+    #         if not current._next_is_initialized:
+    #             return True
+    #         current = current.next
     #     return True
 
-    def conservative_repok(self):
-        if not self._head_is_initialized:
-            return True
-        if self.head is None:
-            return True
-        return self.head.conservative_repok()
+    # def con_is_circular(self):
+    #     self.unmark_all()
+    #     current = self
+    #     while current and not current._marked:
+    #         current._marked = True
+    #         # This make the repok conservative
+    #         if not current._next_is_initialized:
+    #             return True
+    #         current = current.next
+    #         if current is None:
+    #             return False
+    #     return True
 
     def repok(self):
-        if self._get_head() is None:
-            return True
-        return self._get_head().repok()
+        return self.acyclic()
 
     def acyclic(self):
+        self.unmark_all()
+        current = self.head
+        while current:
+            if current._marked:
+                return False
+            current._marked = True
+            current = current.next
+        return True
+
+    def conservative_repok(self):
+        return self.conservative_acyclic()
+
+    def conservative_acyclic(self):
         self.unmark_all()
         if not self._head_is_initialized:
             return True
@@ -271,19 +259,17 @@ class LinkedList:
             current = current.next
         return True
 
-    def is_circular(self):
+    def instrumented_repok(self):
+        return self.instrumented_acyclic()
+
+    def instrumented_acyclic(self):
         self.unmark_all()
-        if not self._head_is_initialized:
-            return True
-        current = self.head
-        while current and not current._marked:
-            current._marked = True
-            # This make the repok conservative
-            if not current._next_is_initialized:
-                return True
-            current = current.next
-            if current is None:
+        current = self._get_head()
+        while current:
+            if current._marked:
                 return False
+            current._marked = True
+            current = current.get_next()
         return True
 
     def swap_node(self):

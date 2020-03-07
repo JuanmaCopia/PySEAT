@@ -123,8 +123,9 @@ class SEEngine:
 
     @classmethod
     def build_partial_structures(cls, run):
-        if run.concrete_input_self is not None:
-            complete_self = cls.build_clouds(run.concrete_input_self)
+        input_self = run.concrete_input_self
+        if input_self is not None and not input_self.repok():
+            complete_self = cls.build_clouds(input_self)
             if not complete_self:
                 raise CouldNotBuildError()
             run.concrete_input_self = complete_self
@@ -138,9 +139,6 @@ class SEEngine:
 
     @classmethod
     def build_clouds(cls, partial_ins):
-        if partial_ins.orig_repok():
-            return partial_ins
-
         unexplored_paths = True
         while unexplored_paths:
             cls._reset_exploration()
@@ -160,14 +158,14 @@ class SEEngine:
     @classmethod
     def _execute_repok(cls, instance):
         try:
-            instance.repok()
+            instance.instrumented_repok()
         except AttributeError:
             class_name = instance.__class__.__name__
-            raise RepokNotFoundError(class_name + " doesn't have a repok() method")
+            raise RepokNotFoundError(class_name + " doesn't have a intrumented_repok() method")
         else:
             model = proxy.smt.get_model(cls._path_condition)
             new_object = cls._concretize(copy.deepcopy(instance), model)
-            assert new_object.orig_repok()
+            assert new_object.repok()
             return new_object
 
     @classmethod
@@ -465,9 +463,6 @@ class SEEngine:
             partial_ins = user_def_class(*init_args)
         else:
             partial_ins = user_def_class()
-
-        # partial_ins._identifier = user_def_class.__name__.lower() + str(user_def_class._id)
-        # user_def_class._id += 1
         return partial_ins
 
     @classmethod
@@ -627,13 +622,10 @@ class SEEngine:
 
     @classmethod
     def save_lazy_step(cls, sclass):
-        old_vec = cls._lazy_backups[sclass].vector
-        new_vec = sclass._vector
         cls._lazy_backups[sclass].new_backup(sclass._vector)
         if (sclass != cls._sut.sclass):
-            old_vec = cls._lazy_backups[cls._sut.sclass].vector
-            new_vec = cls._sut.sclass._vector
             cls._lazy_backups[cls._sut.sclass].new_backup(cls._sut.sclass._vector)
+
 
 class LazyBackup:
     def __init__(self, vector=[None], amount_entities=0):
@@ -652,4 +644,3 @@ class LazyBackup:
         entity = self.vector[self.next_entity]
         self.next_entity += 1
         return entity
-

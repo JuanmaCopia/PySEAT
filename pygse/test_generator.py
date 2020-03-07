@@ -13,7 +13,7 @@ class TestCode:
         self.test_number = number
 
     def _add_line(self, line):
-        self._code += "\n\t" + line
+        self._code += "\n    " + line
 
     def get_code(self):
         self.generate_test_code()
@@ -32,6 +32,8 @@ class TestCode:
         self.gen_test_header()
         self._add_line("# Input Generation")
         self_id = self.generate_structure_code(self._run_stats.concrete_input_self)
+        self._add_line("# Repok check")
+        self.add_repok_check(self._run_stats.concrete_input_self)
         self._add_line("# Method call")
         self.generate_method_call(
             self_id, self._sut.function.__name__, self._run_stats.concrete_return
@@ -39,29 +41,47 @@ class TestCode:
         self._add_line("# Assertions")
         self.gen_returnv_assert(self._run_stats.concrete_return)
         self.gen_structure_assertions(self._run_stats.concrete_end_self)
+        self._add_line("# Repok check")
+        self.add_repok_check(self._run_stats.concrete_end_self)
 
     def gen_test_header(self):
         self._code += (
-            self._sut.function.__name__ + "_test" + str(self.test_number) + "():"
+            "def "
+            + self._sut.function.__name__
+            + "_test"
+            + str(self.test_number)
+            + "():"
         )
+
+    def add_repok_check(self, structure):
+        self._add_line("assert " + structure._identifier + ".repok()")
 
     def gen_returnv_assert(self, returnv):
         if proxy.is_user_defined(returnv):
             self.create_return_assert_code(returnv._identifier)
             self.gen_structure_assertions(returnv)
         else:
-            self.create_return_assert_code(returnv)
+            if returnv:
+                self.create_return_assert_code(returnv)
 
     def create_return_assert_code(self, value):
         self._add_line("assert returnv == " + str(value))
 
     def create_assert_code(self, identifier, field, value):
-        self._add_line("assert " + identifier + "." + field + " == " + str(value))
+        if value is not None:
+            comp = " == "
+        else:
+            comp = " is "
+        self._add_line("assert " + identifier + "." + field + comp + str(value))
 
-    def gen_structure_assertions(self, instance):
+    def gen_structure_assertions(self, instance, defined_identifier=None):
         if not instance._generated:
             instance._generated = True
-            identifier = instance._identifier
+
+            if defined_identifier:
+                identifier = defined_identifier
+            else:
+                identifier = instance._identifier
 
             attr = self.get_attr_value_dict(instance)
 
@@ -69,12 +89,12 @@ class TestCode:
             for field, value in attr.items():
                 if proxy.is_user_defined(value):
                     userdef.append((field, value))
-                    self.create_assert_code(identifier, field, value._identifier)
+                    # self.create_assert_code(identifier, field, value._identifier)
                 else:
                     self.create_assert_code(identifier, field, value)
 
             for field, value in userdef:
-                self.gen_structure_assertions(value)
+                self.gen_structure_assertions(value, identifier + "." + field)
 
     def generate_method_call(self, self_id, method_name, returnv=None):
         args_ids = self.generate_arguments_code(self._run_stats.concrete_args)
@@ -83,9 +103,7 @@ class TestCode:
                 "returnv = " + self_id + "." + method_name + "(" + args_ids + ")"
             )
         else:
-            self._add_line(
-                "returnv = " + self_id + "." + method_name + "(" + args_ids + ")"
-            )
+            self._add_line(self_id + "." + method_name + "(" + args_ids + ")")
 
     @classmethod
     def is_special_attr(cls, attr_name):

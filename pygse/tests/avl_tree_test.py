@@ -28,10 +28,9 @@ class Node:
         self._bf_is_initialized = False
 
         self._concretized = False
+        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
-        self._generated = False
-        self._marked = False
 
     # ========================== Instrumentation ============================ #
     def _get_parent(self):
@@ -92,7 +91,7 @@ class AVLTree:
         self._root_is_initialized = False
 
         self._concretized = False
-        self._identifier = self.__class__.__name__ + str(self._id)
+        self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._generated = False
 
@@ -117,20 +116,20 @@ class AVLTree:
         s.add(x)
         return len(s) != length
 
-    def orig_repok(self):
+    def repok(self):
         if not self.root:
             return True
         if self.root.parent is not None:
             return False
         if not (
-            self.orig_is_acyclic() and
-            self.orig_is_ordered() and
-            self.orig_is_balanced()
+            self.is_acyclic() and
+            self.is_ordered() and
+            self.is_balanced()
         ):
             return False
         return True
 
-    def orig_is_acyclic(self):
+    def is_acyclic(self):
         visited = set()
         visited.add(self.root)
         worklist = []
@@ -147,10 +146,10 @@ class AVLTree:
                 worklist.append(current.right)
         return True
 
-    def orig_is_ordered(self):
-        return self.orig_is_ordered2(self.root, None, None)
+    def is_ordered(self):
+        return self.is_ordered2(self.root, None, None)
 
-    def orig_is_ordered2(self, node, min, max):
+    def is_ordered2(self, node, min, max):
         if (
             (min is not None and node.data <= min) or
             (max is not None and node.data >= max)
@@ -164,7 +163,7 @@ class AVLTree:
                 return False
         return True
 
-    def orig_is_balanced(self):
+    def is_balanced(self):
         queue = []
         queue.append(self.root)
         while queue:
@@ -178,20 +177,20 @@ class AVLTree:
         return True
     # ======================== instrumented repok ========================== #
 
-    def repok(self):
+    def instrumented_repok(self):
         if not self._get_root():
             return True
         if self._get_root()._get_parent() is not None:
             return False
         if not (
-            self.ins_is_acyclic() and
-            self.ins_is_ordered() and
-            self.ins_is_balanced()
+            self.instrumented_is_acyclic() and
+            self.instrumented_is_ordered() and
+            self.instrumented_is_balanced()
         ):
             return False
         return True
 
-    def ins_is_acyclic(self):
+    def instrumented_is_acyclic(self):
         visited = set()
         visited.add(self._get_root())
         worklist = []
@@ -208,24 +207,24 @@ class AVLTree:
                 worklist.append(current._get_right())
         return True
 
-    def ins_is_ordered(self):
-        return self.ins_is_ordered2(self._get_root(), None, None)
+    def instrumented_is_ordered(self):
+        return self.instrumented_is_ordered2(self._get_root(), None, None)
 
-    def ins_is_ordered2(self, node, min, max):
+    def instrumented_is_ordered2(self, node, min, max):
         if (
             (min is not None and node.data <= min) or
             (max is not None and node.data >= max)
         ):
             return False
         if node._get_left():
-            if not self.is_ordered2(node._get_left(), min, node.data):
+            if not self.instrumented_is_ordered2(node._get_left(), min, node.data):
                 return False
         if node._get_right():
-            if not self.is_ordered2(node._get_right(), node.data, max):
+            if not self.instrumented_is_ordered2(node._get_right(), node.data, max):
                 return False
         return True
 
-    def ins_is_balanced(self):
+    def instrumented_is_balanced(self):
         queue = []
         queue.append(self._get_root())
         while queue:
@@ -250,14 +249,14 @@ class AVLTree:
         if self.root.parent is not None:
             return False
         if not (
-            self.is_acyclic() and
-            self.is_ordered() and
-            self.is_balanced()
+            self.conservative_is_acyclic() and
+            self.conservative_is_ordered() and
+            self.conservative_is_balanced()
         ):
             return False
         return True
 
-    def is_acyclic(self):
+    def conservative_is_acyclic(self):
         visited = set()
         if not self._root_is_initialized:
             return True
@@ -280,12 +279,12 @@ class AVLTree:
                 worklist.append(current.right)
         return True
 
-    def is_ordered(self):
+    def conservative_is_ordered(self):
         if not self._root_is_initialized:
             return True
-        return self.is_ordered2(self.root, None, None)
+        return self.conservative_is_ordered2(self.root, None, None)
 
-    def is_ordered2(self, node, min, max):
+    def conservative_is_ordered2(self, node, min, max):
         if (
             (min is not None and node.data <= min) or
             (max is not None and node.data >= max)
@@ -294,16 +293,16 @@ class AVLTree:
         if not node._left_is_initialized:
             return True
         if node.left:
-            if not self.is_ordered2(node.left, min, node.data):
+            if not self.conservative_is_ordered2(node.left, min, node.data):
                 return False
         if not node._right_is_initialized:
             return True
         if node.right:
-            if not self.is_ordered2(node.right, node.data, max):
+            if not self.conservative_is_ordered2(node.right, node.data, max):
                 return False
         return True
 
-    def is_balanced(self):
+    def conservative_is_balanced(self):
         queue = []
         if not self._root_is_initialized:
             return True
@@ -349,12 +348,12 @@ class AVLTree:
             y._set_right(node)
 
         # PART 2: re-balance the node if necessary
-        self.__ins_updateBalance(node)
+        self.instrumented_updateBalance(node)
 
     # Methods called inside method under test should be also instrumented.
-    def __ins_updateBalance(self, node):
+    def instrumented_updateBalance(self, node):
         if node.bf < -1 or node.bf > 1:
-            self.__ins_rebalance(node)
+            self.instrumented_rebalance(node)
             return
 
         if node._get_parent() is not None:
@@ -365,23 +364,23 @@ class AVLTree:
                 node._get_parent().bf += 1
 
             if node._get_parent().bf != 0:
-                self.__ins_updateBalance(node._get_parent())
+                self.instrumented_updateBalance(node._get_parent())
 
-    def __ins_rebalance(self, node):
+    def instrumented_rebalance(self, node):
         if node.bf > 0:
             if node._get_right().bf < 0:
-                self.ins_rightRotate(node._get_right())
-                self.ins_leftRotate(node)
+                self.instrumented_rightRotate(node._get_right())
+                self.instrumented_leftRotate(node)
             else:
-                self.ins_leftRotate(node)
+                self.instrumented_leftRotate(node)
         elif node.bf < 0:
             if node._get_left().bf > 0:
-                self.ins_leftRotate(node._get_left())
-                self.ins_rightRotate(node)
+                self.instrumented_leftRotate(node._get_left())
+                self.instrumented_rightRotate(node)
             else:
-                self.ins_rightRotate(node)
+                self.instrumented_rightRotate(node)
 
-    def ins_leftRotate(self, x):
+    def instrumented_leftRotate(self, x):
         y = x._get_right()
         x._set_right(y._get_left())
         if y._get_left() is not None:
@@ -401,7 +400,7 @@ class AVLTree:
         x.bf = x.bf - 1 - max(0, y.bf)
         y.bf = y.bf - 1 + min(0, x.bf)
 
-    def ins_rightRotate(self, x):
+    def instrumented_rightRotate(self, x):
         y = x._get_left()
         x._set_left(y._get_right())
         if y._get_right() is not None:
