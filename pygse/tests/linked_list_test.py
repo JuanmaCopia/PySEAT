@@ -254,6 +254,16 @@ class LinkedList:
                 head._set_next(t._get_next())
                 t._set_next(head)
                 self._set_head(t)
+        return self._get_head()
+
+    def swap_node2(self):
+        head = self._get_head()
+        if head and head._get_next() is not None:
+            if head._get_elem() - head._get_next()._get_elem() > 0:
+                t = head._get_next()
+                head._set_next(t._get_next())
+                t._set_next(head)
+                self._set_head(t)
 
     # def con_is_circular(self):
     #     self.unmark_all()

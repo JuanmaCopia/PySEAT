@@ -327,7 +327,9 @@ class AVLTree:
         y = None
         x = self._get_root()
 
-        while x:
+        while x is not None:
+            if key == x.data:
+                return
             y = x
             if node.data < x.data:
                 x = x._get_left()
@@ -344,7 +346,7 @@ class AVLTree:
             y._set_right(node)
 
         # PART 2: re-balance the node if necessary
-        #self.instrumented_updateBalance(node)
+        self.instrumented_updateBalance(node)
 
     # Methods called inside method under test should be also instrumented.
     def instrumented_updateBalance(self, node):

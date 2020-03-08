@@ -43,7 +43,7 @@ class TestCode:
         self._add_line("# Repok check")
         self.add_repok_check(self._run_stats.concrete_end_self)
         self.gen_structure_assertions(self._run_stats.concrete_end_self)
-
+        self._add_line("print('Test" + str(self.test_number) + ": OK')")
 
     def gen_test_header(self):
         self._code += (
@@ -57,14 +57,6 @@ class TestCode:
     def add_repok_check(self, structure):
         self._add_line("assert " + structure._identifier + ".repok()")
 
-    def gen_returnv_assert(self, returnv):
-        if proxy.is_user_defined(returnv):
-            self.create_return_assert_code(returnv._identifier)
-            self.gen_structure_assertions(returnv)
-        else:
-            if returnv:
-                self.create_return_assert_code(returnv)
-
     def create_return_assert_code(self, value):
         self._add_line("assert returnv == " + str(value))
 
@@ -74,6 +66,14 @@ class TestCode:
         else:
             comp = " is "
         self._add_line("assert " + identifier + "." + field + comp + str(value))
+
+    def gen_returnv_assert(self, returnv):
+        if proxy.is_user_defined(returnv):
+            #self.create_return_assert_code(returnv._identifier)
+            self.gen_structure_assertions(returnv, "returnv")
+        else:
+            if returnv:
+                self.create_return_assert_code(returnv)
 
     def gen_structure_assertions(self, instance, defined_identifier=None):
         if not instance._generated:
