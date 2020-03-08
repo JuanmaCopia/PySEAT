@@ -202,32 +202,6 @@ class LinkedList:
             aux._marked = False
             aux = aux.next
 
-    # def con_acyclic(self):
-    #     self.unmark_all()
-    #     current = self
-    #     while current:
-    #         if current._marked:
-    #             return False
-    #         current._marked = True
-    #         # This make the repok conservative
-    #         if not current._next_is_initialized:
-    #             return True
-    #         current = current.next
-    #     return True
-
-    # def con_is_circular(self):
-    #     self.unmark_all()
-    #     current = self
-    #     while current and not current._marked:
-    #         current._marked = True
-    #         # This make the repok conservative
-    #         if not current._next_is_initialized:
-    #             return True
-    #         current = current.next
-    #         if current is None:
-    #             return False
-    #     return True
-
     def repok(self):
         return self.acyclic()
 
@@ -279,8 +253,20 @@ class LinkedList:
                 t = head._get_next()
                 head._set_next(t._get_next())
                 t._set_next(head)
-                return t
-        return head
+                self._set_head(t)
+
+    # def con_is_circular(self):
+    #     self.unmark_all()
+    #     current = self
+    #     while current and not current._marked:
+    #         current._marked = True
+    #         # This make the repok conservative
+    #         if not current._next_is_initialized:
+    #             return True
+    #         current = current.next
+    #         if current is None:
+    #             return False
+    #     return True
 
     def __repr__(self):
         if self.head:

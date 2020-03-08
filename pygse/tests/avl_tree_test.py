@@ -44,7 +44,6 @@ class Node:
     def _set_parent(self, value):
         self.parent = value
         self._parent_is_initialized = True
-        see.SEEngine.ignore_if(not self.conservative_repok(), self)
 
     def _get_left(self):
         if not self._left_is_initialized and self in self._vector:
@@ -57,7 +56,6 @@ class Node:
     def _set_left(self, value):
         self.left = value
         self._left_is_initialized = True
-        see.SEEngine.ignore_if(not self.conservative_repok(), self)
 
     def _get_right(self):
         if not self._right_is_initialized and self in self._vector:
@@ -70,7 +68,6 @@ class Node:
     def _set_right(self, value):
         self.right = value
         self._right_is_initialized = True
-        see.SEEngine.ignore_if(not self.conservative_repok(), self)
 
     def conservative_repok(self):
         return True
@@ -108,7 +105,6 @@ class AVLTree:
     def _set_root(self, value):
         self.root = value
         self._root_is_initialized = True
-        see.SEEngine.ignore_if(not self.conservative_repok(), self)
 
     @staticmethod
     def do_add(s, x):
@@ -348,7 +344,7 @@ class AVLTree:
             y._set_right(node)
 
         # PART 2: re-balance the node if necessary
-        self.instrumented_updateBalance(node)
+        #self.instrumented_updateBalance(node)
 
     # Methods called inside method under test should be also instrumented.
     def instrumented_updateBalance(self, node):

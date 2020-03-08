@@ -165,7 +165,7 @@ class SEEngine:
         else:
             model = proxy.smt.get_model(cls._path_condition)
             new_object = cls._concretize(copy.deepcopy(instance), model)
-            assert new_object.repok()
+            #assert new_object.repok()
             return new_object
 
     @classmethod
@@ -236,10 +236,10 @@ class SEEngine:
         except RepOkFailException:
             cls._globalstats.pruned_by_repok += 1
         except RecursionError as e:
-            stats.status = Status.FAIL
+            stats.status = Status.PRUNED
             stats.exception = e
         except Exception as e:
-            stats.status = Status.FAIL
+            stats.status = Status.PRUNED
             stats.exception = e
         else:
             stats.status = Status.OK

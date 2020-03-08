@@ -10,7 +10,7 @@ from pygse.sut_parser import parse
 from pygse.run_test import run_tests
 from pygse.test_generator import TestCode
 from pygse.stats import Status
-
+from pygse.engine_errors import CouldNotBuildError
 
 def parse_command_line_args():
     parser = argparse.ArgumentParser(add_help=True)
@@ -60,10 +60,14 @@ else:
 
         for run in runs:
             if run.status != Status.PRUNED and run.concrete_input_self:
-                SEEngine.build_partial_structures(run)
-                test = TestCode(sut, run, test_number)
-                test_number += 1
-                print("\n" + test.get_code() + "\n")
+                try:
+                    SEEngine.build_partial_structures(run)
+                except CouldNotBuildError:
+                    pass
+                else:
+                    test = TestCode(sut, run, test_number)
+                    test_number += 1
+                    print("\n" + test.get_code() + "\n")
     else:
         # TODO: Make it support functions (functions that not belong to a class)
         raise NotImplementedError

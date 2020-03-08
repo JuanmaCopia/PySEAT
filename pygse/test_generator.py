@@ -40,9 +40,10 @@ class TestCode:
         )
         self._add_line("# Assertions")
         self.gen_returnv_assert(self._run_stats.concrete_return)
-        self.gen_structure_assertions(self._run_stats.concrete_end_self)
         self._add_line("# Repok check")
         self.add_repok_check(self._run_stats.concrete_end_self)
+        self.gen_structure_assertions(self._run_stats.concrete_end_self)
+
 
     def gen_test_header(self):
         self._code += (
