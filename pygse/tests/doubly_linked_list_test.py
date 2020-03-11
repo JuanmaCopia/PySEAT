@@ -123,7 +123,7 @@ class DoublyLinkedList:
             self._set_head(node)
             self._set_tail(node)
         else:
-            self._get_tail()._set_next()
+            self._get_tail()._set_next(node)
             node._set_prev(self._get_tail())
             self._set_tail(node)
 
