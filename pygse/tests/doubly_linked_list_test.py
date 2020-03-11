@@ -1,63 +1,156 @@
 import sys
+import pygse.symbolic_execution_engine as see
+import pygse.proxy as proxy
+
 
 class Node:
-    def __init__(self, data):
+
+    _vector = [None]
+    _is_user_defined = True
+    _id = 0
+
+    def __init__(self, data: int):
         self.data = data
         self.next = None
         self.prev = None
 
+        self._data_is_initialized = data
+        self._next_is_initialized = False
+        self._prev_is_initialized = False
+
+        self._concretized = False
+        self._generated = False
+        self._identifier = self.__class__.__name__.lower() + str(self._id)
+        self.__class__._id += 1
+
+    def _get_data(self):
+        if not self._data_is_initialized:
+            self.data = proxy.IntProxy()
+        return self.data
+
+    def _set_data(self, value):
+        self.data = value
+        self._data_is_initialized = True
+
+    def _get_next(self):
+        if not self._next_is_initialized and self in self._vector:
+            self._next_is_initialized = True
+            self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
+            see.SEEngine.save_lazy_step(Node)
+            see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        return self.next
+
+    def _set_next(self, value):
+        self.next = value
+        self._next_is_initialized = True
+
+    def _get_prev(self):
+        if not self._prev_is_initialized and self in self._vector:
+            self._prev_is_initialized = True
+            self.prev = see.SEEngine.get_next_lazy_step(Node, Node._vector)
+            see.SEEngine.save_lazy_step(Node)
+            see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        return self.prev
+
+    def _set_prev(self, value):
+        self.prev = value
+        self._prev_is_initialized = True
+
+    def conservative_repok(self):
+        return True
+
+    def repok(self):
+        return True
+
+
 class DoublyLinkedList:
-    def __init__(self):
-        self.head = None 
-        self.tail = None
+
+    _vector = [None]
+    _is_user_defined = True
+    _id = 0
+
+    def __init__(self, head: "Node" = None, tail: "Node" = None):
+        self.head = head
+        self.tail = tail
+
+        self._head_is_initialized = False
+        self._tail_is_initialized = False
+
+        self._concretized = False
+        self._generated = False
+        self._identifier = self.__class__.__name__.lower() + str(self._id)
+        self.__class__._id += 1
+
+    def _get_head(self):
+        if not self._head_is_initialized and self in self._vector:
+            self._head_is_initialized = True
+            self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
+            see.SEEngine.save_lazy_step(Node)
+            see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        return self.head
+
+    def _set_head(self, value):
+        self.head = value
+        self._head_is_initialized = True
+
+    def _get_tail(self):
+        if not self._tail_is_initialized and self in self._vector:
+            self._tail_is_initialized = True
+            self.tail = see.SEEngine.get_next_lazy_step(Node, Node._vector)
+            see.SEEngine.save_lazy_step(Node)
+            see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        return self.tail
+
+    def _set_tail(self, value):
+        self.tail = value
+        self._tail_is_initialized = True
 
     # Insert 'value' at the front of the list
-    def insert_at_front(self, value):
+    def insert_at_front(self, value: int):
         node = Node(value)
-        if self.is_empty():
-            self.head = node
-            self.tail = node
+        if self.instrumented_is_empty():
+            self._set_head(node)
+            self._set_tail(node)
         else:
-            node.next = self.head
-            self.head.prev = node
-            self.head = node
-     
+            node._set_next(self._get_head())
+            self._get_head()._set_prev(node)
+            self._set_head(node)
+
     #  insert value at the back of the linked list
-    def insert_at_back(self, value):
+    def insert_at_back(self, value: int):
         node = Node(value)
-        if self.is_empty():
-            self.head = node
-            self.tail = node
+        if self.instrumented_is_empty():
+            self._set_head(node)
+            self._set_tail(node)
         else:
-           self.tail.next = node
-           node.prev = self.tail
-           self.tail = node
-    
+            self._get_tail()._set_next()
+            node._set_prev(self._get_tail())
+            self._set_tail(node)
+
     # inserts value after key
-    def insert_after(self, key, value):
+    def insert_after(self, key: int, value: int):
         node = Node(value)
 
         # find the position of key
-        curr = self.head
-        while curr != None and curr.data != key:
-            curr = curr.next
+        curr = self._get_head()
+        while curr is not None and curr._get_data() != key:
+            curr = curr._get_next()
 
-        if curr == None:
-            print("Key not found")
+        if curr is None:
             return
 
-        if curr.next == None:
-            curr.next = node
-            node.prev = curr
-            self.tail = node 
+        if curr._get_next() is None:
+            curr._set_next(node)
+            node._set_prev(curr)
+            self._set_tail(node)
         else:
-            next_node = curr.next
-            curr.next = node
-            node.prev = curr
-            node.next = next_node
-            next_node.prev = node
+            next_node = curr._get_next()
+            curr._set_next(node)
+            node._set_prev(curr)
+            node._set_next(next_node)
+            next_node._set_prev(node)
 
-    # returns the data at first node 
+    # returns the data at first node
     def top_front(self):
         if self.is_empty():
             print("List is empty")
@@ -65,32 +158,32 @@ class DoublyLinkedList:
 
         return self.head.data
 
-    # returns the data at last node 
-    def top_back(self): 
+    # returns the data at last node
+    def top_back(self):
         if self.is_empty():
             print("List is empty")
             return
 
         curr = self.head
-        while curr.next != None:
+        while curr.next is not None:
             curr = curr.next
 
         return curr.data
 
-    # removes the item at front of the linked list and return 
+    # removes the item at front of the linked list and return
     def pop_front(self):
         if self.is_empty():
             print("List is empty")
             return
 
         next_node = self.head.next
-        if (next_node != None):
+        if next_node is not None:
             next_node.prev = None
         item = self.head.data
         self.head = next_node
         return item
 
-    # remove the item at the end of the list and return 
+    # remove the item at the end of the list and return
     def pop_back(self):
         if self.is_empty():
             print("List is empty")
@@ -99,7 +192,7 @@ class DoublyLinkedList:
         item = self.tail.data
         prev = self.tail.prev
 
-        if prev != None:
+        if prev is not None:
             prev.next = None
 
         self.tail.prev = None
@@ -116,26 +209,26 @@ class DoublyLinkedList:
         # find the position of the key
         curr = self.head
 
-        while curr != None and curr.data != key:
+        while curr is not None and curr.data != key:
             curr = curr.next
 
-        if curr == None:
+        if curr is None:
             print("key not found")
             return
 
         # if curr is head, delete the head
-        if curr.prev == None:
+        if curr.prev is None:
             self.pop_front()
-        elif curr.next == None: # if curr is last item
+        elif curr.next is None:  # if curr is last item
             self.pop_back()
-        else: #anywhere between first and last node
+        else:  # anywhere between first and last node
             next_node = curr.next
             prev_node = curr.prev
 
             prev_node.next = next_node
             next_node.prev = prev_node
 
-            curr.next = None 
+            curr.next = None
             curr.prev = None
             curr = None
 
@@ -146,17 +239,30 @@ class DoublyLinkedList:
             return False
 
         curr = self.head
-        while curr != None and curr.data != key:
+        while curr is not None and curr.data != key:
             curr = curr.next
 
-        if curr == None:
+        if curr is None:
             return False
 
         return True
 
     # check if the list is empty
+    def instrumented_is_empty(self):
+        return self._get_head() is None
+
     def is_empty(self):
-        return self.head == None
+        return self.head is None
+
+    def print_reverse(self):
+        if self.is_empty():
+            print("Nothing to display")
+        else:
+            curr = self.tail
+            while curr is not None:
+                sys.stdout.write(str(curr.data) + " ")
+                curr = curr.prev
+            print("")
 
     # print all the items
     def printlist(self):
@@ -164,36 +270,123 @@ class DoublyLinkedList:
             print("Nothing to display")
         else:
             curr = self.head
-            while (curr != None):
-                sys.stdout.write(str(curr.data) + ' ')
+            while curr is not None:
+                sys.stdout.write(str(curr.data) + " ")
                 curr = curr.next
+            print("")
 
-            print("")
-    
-    def print_reverse(self):
+    @staticmethod
+    def do_add(s, x):
+        length = len(s)
+        s.add(x)
+        return len(s) != length
+
+    def to_str(self):
         if self.is_empty():
-            print("Nothing to display")
-        else:
-            curr = self.tail
-            while (curr != None):
-                sys.stdout.write(str(curr.data) + ' ')
-                curr = curr.prev
-    
-            print("")
-       
-if __name__ == '__main__':
-    l = DoublyLinkedList()
-    l.insert_at_front(44)
-    l.insert_at_front(66)
-    l.insert_at_back(21)
-    l.insert_at_back(43)
-    l.print_reverse()
-    l.insert_after(43,49)
-    l.insert_after(21,33)
-    l.printlist()
-    print(l.pop_front())
-    l.printlist()
-    print(l.pop_back())
-    l.printlist()
-    l.remove(21)
-    l.print_reverse()
+            return "Empty"
+        str_rep = ""
+        visited = set()
+        visited.add(self.head)
+        worklist = []
+        worklist.append(self.head)
+        while worklist:
+            current = worklist.pop(0)
+            str_rep += current.data.__repr__() + " "
+            if current.next:
+                if not DoublyLinkedList.do_add(visited, current.next):
+                    str_rep += current.data.__repr__() + "* "
+                else:
+                    worklist.append(current.next)
+        return str_rep
+
+    def __repr__(self):
+        return self.to_str()
+
+    def repok(self):
+        if self.head is None and self.tail is None:
+            return True
+        if self.head is None and self.tail is not None:
+            return False
+        if self.head is not None and self.tail is None:
+            return False
+        if self.head.prev or self.tail.next:
+            return False
+
+        visited = set()
+        visited.add(self.head)
+
+        current = self.head
+        next_node = current.next
+
+        while next_node:
+            if next_node.prev is not current:
+                return False
+            if not DoublyLinkedList.do_add(visited, next_node):
+                return False
+            current = next_node
+            next_node = next_node.next
+        return True
+
+    def conservative_repok(self):
+        if not self._head_is_initialized:
+            return True
+        if not self._tail_is_initialized:
+            return True
+        if self.head is None and self.tail is None:
+            return True
+        if self.head is None and self.tail is not None:
+            return False
+        if self.head is not None and self.tail is None:
+            return False
+        if not self.head._prev_is_initialized:
+            return True
+        if not self.tail._next_is_initialized:
+            return True
+        if self.head.prev or self.tail.next:
+            return False
+
+        visited = set()
+        visited.add(self.head)
+
+        current = self.head
+        if not current._next_is_initialized:
+            return True
+        next_node = current.next
+
+        while next_node:
+            if not current._prev_is_initialized:
+                return True
+            if next_node.prev is not current:
+                return False
+            if not DoublyLinkedList.do_add(visited, next_node):
+                return False
+            current = next_node
+            if not next_node._next_is_initialized:
+                return True
+            next_node = next_node.next
+        return True
+
+    def instrumented_repok(self):
+        if self._get_head() is None and self._get_tail() is None:
+            return True
+        if self._get_head() is None and self._get_tail() is not None:
+            return False
+        if self._get_head() is not None and self._get_tail() is None:
+            return False
+        if self._get_head()._get_prev() or self._get_tail()._get_next():
+            return False
+
+        visited = set()
+        visited.add(self._get_head())
+
+        current = self._get_head()
+        next_node = current._get_next()
+
+        while next_node:
+            if next_node._get_prev() is not current:
+                return False
+            if not DoublyLinkedList.do_add(visited, next_node):
+                return False
+            current = next_node
+            next_node = next_node._get_next()
+        return True
