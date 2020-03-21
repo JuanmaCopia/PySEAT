@@ -297,6 +297,22 @@ class DoublyLinkedList:
                     str_rep += current.data.__repr__() + "* "
                 else:
                     worklist.append(current.next)
+
+        str_rep += "\n"
+        if not self.tail:
+            return str_rep + "emptyTail"
+        visited = set()
+        visited.add(self.tail)
+        worklist = []
+        worklist.append(self.tail)
+        while worklist:
+            current = worklist.pop(0)
+            str_rep += current.data.__repr__() + " "
+            if current.prev:
+                if not DoublyLinkedList.do_add(visited, current.prev):
+                    str_rep += current.data.__repr__() + "* "
+                else:
+                    worklist.append(current.prev)
         return str_rep
 
     def __repr__(self):
@@ -314,6 +330,7 @@ class DoublyLinkedList:
 
         visited = set()
         visited.add(self.head)
+        tail_added = False
 
         current = self.head
         next_node = current.next
@@ -321,17 +338,20 @@ class DoublyLinkedList:
         while next_node:
             if next_node.prev is not current:
                 return False
+            if next_node is self.tail and tail_added:
+                return False
+            else:
+                tail_added = True
             if not DoublyLinkedList.do_add(visited, next_node):
                 return False
             current = next_node
             next_node = next_node.next
+
+        if not tail_added:
+            return False
         return True
 
     def conservative_repok(self):
-        if not self._head_is_initialized:
-            return True
-        if not self._tail_is_initialized:
-            return True
         if self.head is None and self.tail is None:
             return True
         if self.head is None and self.tail is not None:
@@ -347,6 +367,7 @@ class DoublyLinkedList:
 
         visited = set()
         visited.add(self.head)
+        tail_added = False
 
         current = self.head
         if not current._next_is_initialized:
@@ -358,12 +379,19 @@ class DoublyLinkedList:
                 return True
             if next_node.prev is not current:
                 return False
+            if next_node is self.tail and tail_added:
+                return False
+            else:
+                tail_added = True
             if not DoublyLinkedList.do_add(visited, next_node):
                 return False
             current = next_node
             if not next_node._next_is_initialized:
                 return True
             next_node = next_node.next
+
+        if not tail_added:
+            return False
         return True
 
     def instrumented_repok(self):
@@ -378,6 +406,7 @@ class DoublyLinkedList:
 
         visited = set()
         visited.add(self._get_head())
+        tail_added = False
 
         current = self._get_head()
         next_node = current._get_next()
@@ -385,8 +414,15 @@ class DoublyLinkedList:
         while next_node:
             if next_node._get_prev() is not current:
                 return False
+            if next_node is self._get_tail() and tail_added:
+                return False
+            else:
+                tail_added = True
             if not DoublyLinkedList.do_add(visited, next_node):
                 return False
             current = next_node
             next_node = next_node._get_next()
+
+        if not tail_added:
+            return False
         return True

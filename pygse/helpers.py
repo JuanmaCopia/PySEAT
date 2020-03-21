@@ -15,6 +15,12 @@ def is_special_attr(attr_name):
     ]
 
 
+def do_add(s, x):
+    length = len(s)
+    s.add(x)
+    return len(s) != length
+
+
 def is_symbolic(obj):
     return isinstance(obj, proxy.ProxyObject)
 

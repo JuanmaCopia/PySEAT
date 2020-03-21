@@ -12,6 +12,7 @@ from pygse.branching_steps import LazyStep, ConditionalStep
 from pygse.stats import Status, ExecutionStats, GlobalStats
 from pygse.engine_errors import UnsatBranchError, MissingTypesError, RepOkFailException
 from pygse.engine_errors import MaxDepthException, CouldNotBuildError, RepokNotFoundError
+from pygse.helpers import do_add
 import pygse.proxy as proxy
 import signal
 
@@ -144,6 +145,7 @@ class SEEngine:
             cls._reset_exploration()
 
             instance = copy.deepcopy(partial_ins)
+            instance._vector.append(instance)
 
             result = cls._execute_repok(instance)
 
@@ -159,12 +161,18 @@ class SEEngine:
     def _execute_repok(cls, instance):
         try:
             instance.instrumented_repok()
+        except UnsatBranchError:
+            pass
+        except MaxDepthException:
+            pass
+        except RepOkFailException:
+            pass
         except AttributeError:
             class_name = instance.__class__.__name__
             raise RepokNotFoundError(class_name + " doesn't have a intrumented_repok() method")
         else:
             model = proxy.smt.get_model(cls._path_condition)
-            new_object = cls._concretize(copy.deepcopy(instance), model)
+            new_object = cls.concretize(copy.deepcopy(instance), model)
             #assert new_object.repok()
             return new_object
 
@@ -260,14 +268,14 @@ class SEEngine:
 
             stats.pathcondition = cls._path_condition
             stats.model = proxy.smt.get_model(cls._path_condition)
-            stats.concrete_end_self = cls._concretize(copy.deepcopy(cls._current_self), stats.model)
+            stats.concrete_end_self = cls.concretize(copy.deepcopy(cls._current_self), stats.model)
             stats.input_self = cls._lazy_backups[cls._sut.sclass].get_entity()
-            stats.concrete_input_self = cls._concretize(copy.deepcopy(stats.input_self), stats.model)
+            stats.concrete_input_self = cls.concretize(copy.deepcopy(stats.input_self), stats.model)
             cls.retrieve_inputs(args)
             if args:
-                stats.concrete_args = cls._concretize(copy.deepcopy(args), stats.model)
+                stats.concrete_args = cls.concretize(copy.deepcopy(args), stats.model)
             stats.returnv = returnv
-            stats.concrete_return = cls._concretize(
+            stats.concrete_return = cls.concretize(
                 copy.deepcopy(stats.returnv), stats.model
             )
             cls._globalstats.complete_exec += 1
@@ -308,7 +316,11 @@ class SEEngine:
         return True
 
     @classmethod
-    def _concretize(cls, symbolic, model):
+    def concretize(cls, symbolic, model):
+        return cls._concretize(symbolic, model, set())
+
+    @classmethod
+    def _concretize(cls, symbolic, model, visited):
         """Creates the concrete object.
 
         Creates the concrete object from a symbolic (builtin symbolic)
@@ -330,20 +342,19 @@ class SEEngine:
         elif proxy.is_symbolic(symbolic):
             return symbolic.concretize(model)
         elif isinstance(symbolic, list):
-            return [cls._concretize(x, model) for x in symbolic]
+            return [cls._concretize(x, model, visited) for x in symbolic]
         elif isinstance(symbolic, tuple):
-            return tuple([cls._concretize(x, model) for x in symbolic])
+            return tuple([cls._concretize(x, model, visited) for x in symbolic])
         elif proxy.is_user_defined(symbolic):
             # symbolic.__dict__ returns all instance-only defined attributes
-            if symbolic._concretized:
+            if not do_add(visited, symbolic):
                 return symbolic
-            symbolic._concretized = True
             try:
                 for name in symbolic.__dict__:
                     # TODO: Hacerlo genérico, incluyendo atributos de clase
                     attr = getattr(symbolic, name)
                     if not callable(attr):
-                        setattr(symbolic, name, cls._concretize(attr, model))
+                        setattr(symbolic, name, cls._concretize(attr, model, visited))
             except AttributeError:
                 # TODO: Check wtf is this
                 if isinstance(symbolic, Iterable):
