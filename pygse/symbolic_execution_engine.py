@@ -27,6 +27,7 @@ import signal
 # method
 # TODO: Support other symbolic types like list, tuple, dict, slices
 
+
 def timeout_handler(signum, frame):
     raise Exception("Timeout")
 
@@ -107,6 +108,7 @@ class SEEngine:
         Yields:
             ExecutionStats: The result of the execution of the function under test
         """
+        cls._branching_points = []
         unexplored_paths = True
         while unexplored_paths:
             cls._reset_exploration()
@@ -121,61 +123,6 @@ class SEEngine:
             if not cls._branching_points:
                 unexplored_paths = False
 
-
-    @classmethod
-    def build_partial_structures(cls, run):
-        input_self = run.concrete_input_self
-        if input_self is not None and not input_self.repok():
-            complete_self = cls.build_clouds(input_self)
-            if not complete_self:
-                raise CouldNotBuildError()
-            run.concrete_input_self = complete_self
-
-        for i, arg in enumerate(run.concrete_args):
-            if proxy.is_user_defined(arg) and not arg.repok():
-                complete_arg = cls.build_clouds(arg)
-                if not complete_arg:
-                    raise CouldNotBuildError()
-                run.concrete_args[i] = complete_arg
-
-    @classmethod
-    def build_clouds(cls, partial_ins):
-        unexplored_paths = True
-        while unexplored_paths:
-            cls._reset_exploration()
-
-            instance = copy.deepcopy(partial_ins)
-            instance._vector.append(instance)
-
-            result = cls._execute_repok(instance)
-
-            if result is not None and result.repok():
-                return result
-
-            cls._remove_explored_branches()
-
-            if not cls._branching_points:
-                unexplored_paths = False
-
-    @classmethod
-    def _execute_repok(cls, instance):
-        try:
-            instance.instrumented_repok()
-        except UnsatBranchError:
-            pass
-        except MaxDepthException:
-            pass
-        except RepOkFailException:
-            pass
-        except AttributeError:
-            class_name = instance.__class__.__name__
-            raise RepokNotFoundError(class_name + " doesn't have a intrumented_repok() method")
-        else:
-            model = proxy.smt.get_model(cls._path_condition)
-            new_object = cls.concretize(copy.deepcopy(instance), model)
-            #assert new_object.repok()
-            return new_object
-
     @classmethod
     def _reset_exploration(cls):
         """Resets the exploration variables to it's initial values.
@@ -187,21 +134,6 @@ class SEEngine:
             k._vector = [None]
             k._id = 0
             cls._lazy_backups[k] = LazyBackup()
-
-    # def time_bounded_execution(cls, args):
-    #     signal.signal(signal.SIGALRM, handler)
-    #     signal.alarm(2)
-
-    #     the_self = args[0]
-    #     cls._current_self = the_self
-    #     args = args[1:]
-    #     method = getattr(the_self, cls._sut.function.__name__)
-    #     if args:
-    #         returnv = method(*args)
-    #     else:
-    #         returnv = method()
-    #     if proxy.is_symbolic_bool(returnv):
-    #         returnv = returnv.__bool__()
 
     @classmethod
     def _execute_program(cls, args):
@@ -221,15 +153,17 @@ class SEEngine:
             under test
         """
         cls._globalstats.total_paths += 1
-        stats = ExecutionStats(cls._globalstats.complete_exec + 1)
 
         returnv = None
+        exception = None
+        status = Status.PRUNED
+
         cls._current_self = args[0]
         args = args[1:]
         method = getattr(cls._current_self, cls._sut.function.__name__)
 
-        signal.signal(signal.SIGALRM, timeout_handler)
-        signal.alarm(1)
+        # signal.signal(signal.SIGALRM, timeout_handler)
+        # signal.alarm(1)
         try:
             if args:
                 returnv = method(*args)
@@ -244,43 +178,119 @@ class SEEngine:
         except RepOkFailException:
             cls._globalstats.pruned_by_repok += 1
         except RecursionError as e:
-            stats.status = Status.PRUNED
-            stats.exception = e
+            status = Status.PRUNED
+            exception = e
         except Exception as e:
-            stats.status = Status.PRUNED
-            stats.exception = e
+            status = Status.PRUNED
+            exception = e
         else:
-            stats.status = Status.OK
+            status = Status.OK
         finally:
-            signal.alarm(0)
+            # signal.alarm(0)
             # if stats.exception:
             #     raise stats.exception
             # signal.alarm(0)
             # signal.signal(signal.SIGALRM, signal.SIG_IGN)
-            if stats.status != Status.OK:
-                return stats
+            if status == Status.PRUNED:
+                return ExecutionStats(0, status, exception)
 
-            stats.end_self = copy.deepcopy(cls._current_self)
-            if not cls._check_repok(stats.end_self):
-                stats.status = Status.FAIL
-                stats.errors.append("Repok failed on final state of self")
-                return stats
+            stats = cls.build_stats(status, args, returnv)
 
-            stats.pathcondition = cls._path_condition
-            stats.model = proxy.smt.get_model(cls._path_condition)
-            stats.concrete_end_self = cls.concretize(copy.deepcopy(cls._current_self), stats.model)
-            stats.input_self = cls._lazy_backups[cls._sut.sclass].get_entity()
-            stats.concrete_input_self = cls.concretize(copy.deepcopy(stats.input_self), stats.model)
-            cls.retrieve_inputs(args)
-            if args:
-                stats.concrete_args = cls.concretize(copy.deepcopy(args), stats.model)
-            stats.returnv = returnv
-            stats.concrete_return = cls.concretize(
-                copy.deepcopy(stats.returnv), stats.model
-            )
             cls._globalstats.complete_exec += 1
             cls._globalstats.status_count(stats.status)
+
             return stats
+
+    @classmethod
+    def build_stats(cls, status, args, returnv):
+
+        path = cls._path_condition
+        model = proxy.smt.get_model(path)
+        end_self = cls._current_self
+        input_self = cls._lazy_backups[cls._sut.sclass].get_entity()
+
+        stats = ExecutionStats(cls._globalstats.complete_exec + 1, status)
+        stats.concrete_end_self = cls.concretize(end_self, model)
+        stats.returnv = returnv
+        stats.concrete_return = cls.concretize(returnv, model)
+        cls.retrieve_inputs(args)
+        if args:
+            stats.concrete_args = cls.concretize(args, model)
+        stats.concrete_input_self = cls.concretize(input_self, model)
+        stats.builded_in_self = cls.build_input_self(input_self)
+        stats.input_self = input_self
+        stats.end_self = end_self
+        stats.pathcondition = path
+        stats.model = model
+        return stats
+
+    @classmethod
+    def _reset_for_repok(cls, pc_len, vec_len):
+        cls._path_condition = SEEngine.keep_first_n_items(cls._path_condition, pc_len)
+        cls._current_bp = 0
+        cls._current_depth = 0
+        for k in cls._sut.class_params_map.keys():
+            if len(k._vector) != vec_len[k]:
+                k._vector = SEEngine.keep_first_n_items(k._vector, vec_len[k])
+
+    @classmethod
+    def build_input_self(cls, input_self):
+        backup_bp = cls._branching_points
+        cls._branching_points = []
+        unexplored_paths = True
+
+        for k in cls._lazy_backups.keys():
+            k._vector = cls._lazy_backups[k].get_vector()
+
+        pc_len = len(cls._path_condition)
+        vec_len = {}
+        for k in cls._sut.class_params_map.keys():
+            vec_len[k] = len(k._vector)
+
+        while unexplored_paths:
+            cls._reset_for_repok(pc_len, vec_len)
+
+            result = cls._execute_repok(input_self)
+
+            if result is not None and result.repok():
+                cls._branching_points = backup_bp
+                return result
+
+            cls._remove_explored_branches()
+
+            if not cls._branching_points:
+                unexplored_paths = False
+        cls._branching_points = backup_bp
+
+    @staticmethod
+    def keep_first_n_items(l, n):
+        new_list = []
+        i = 0
+        while i < n:
+            new_list.insert(i, l[i])
+            i += 1
+        return new_list
+
+    @classmethod
+    def _execute_repok(cls, instance):
+        try:
+            result = instance.instrumented_repok()
+        except UnsatBranchError:
+            pass
+        except MaxDepthException:
+            pass
+        except RepOkFailException:
+            pass
+        except AttributeError as e:
+            class_name = instance.__class__.__name__ + str(e)
+            raise RepokNotFoundError(class_name + " doesn't have a intrumented_repok() method")
+        else:
+            if result:
+                model = proxy.smt.get_model(cls._path_condition)
+                new_object = cls.concretize(instance, model)
+                #assert new_object.repok()
+                return new_object
+            return None
 
     @classmethod
     def retrieve_inputs(cls, args_list):
@@ -336,7 +346,6 @@ class SEEngine:
         Returns:
             The concrete object represented by symbolic and the model.
         """
-        # FIXME: Hay que iterar sobre builtins que puedan contener ProxyObjects
         if symbolic is None:
             return None
         elif proxy.is_symbolic(symbolic):
@@ -346,24 +355,22 @@ class SEEngine:
         elif isinstance(symbolic, tuple):
             return tuple([cls._concretize(x, model, visited) for x in symbolic])
         elif proxy.is_user_defined(symbolic):
-            # symbolic.__dict__ returns all instance-only defined attributes
             if not do_add(visited, symbolic):
                 return symbolic
-            try:
-                for name in symbolic.__dict__:
-                    # TODO: Hacerlo genérico, incluyendo atributos de clase
+
+            concrete = copy.deepcopy(symbolic)
+            visited.add(concrete)
+            for name in symbolic.__dict__:
+                try:
                     attr = getattr(symbolic, name)
+                except AttributeError:
+                    if isinstance(symbolic, Iterable):
+                        pass
+                else:
                     if not callable(attr):
-                        setattr(symbolic, name, cls._concretize(attr, model, visited))
-            except AttributeError:
-                # TODO: Check wtf is this
-                if isinstance(symbolic, Iterable):
-                    pass
-            return symbolic
-        else:
-            # i think this is executed when the symbolicect is a builtin or a
-            # callable
-            return symbolic
+                        setattr(concrete, name, cls._concretize(attr, model, visited))
+            return concrete
+        return symbolic
 
     @classmethod
     def _remove_explored_branches(cls):
@@ -490,7 +497,6 @@ class SEEngine:
             A list of types.
         """
         init_types = list(cls._sut.class_params_map[user_def_class].values())
-        init_types = copy.deepcopy(init_types)
         number_params = user_def_class.__init__.__code__.co_argcount
         if number_params - 1 != len(init_types):
             raise MissingTypesError(
@@ -655,3 +661,6 @@ class LazyBackup:
         entity = self.vector[self.next_entity]
         self.next_entity += 1
         return entity
+
+    def get_vector(self):
+        return self.vector

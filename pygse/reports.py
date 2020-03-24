@@ -74,7 +74,7 @@ def print_formatted_result(function, stats, verbose):
                 print(INDENT + "Symbolic self:    " + stats.input_self.__repr__())
                 print(INDENT + "Symbolic return:  " + stats.returnv.__repr__())
                 print(INDENT + "Self end state:  " + stats.concrete_end_self.__repr__())
-
+                print(INDENT + "concrete builded self:  " + stats.builded_in_self.__repr__())
                 print(INDENT + "Path Condition:  ")
                 print_list(stats.pathcondition)
                 print("")

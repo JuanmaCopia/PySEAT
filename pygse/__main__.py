@@ -12,6 +12,7 @@ from pygse.test_generator import TestCode
 from pygse.stats import Status
 from pygse.engine_errors import CouldNotBuildError
 
+
 def parse_command_line_args():
     parser = argparse.ArgumentParser(add_help=True)
     parser.add_argument("-t", "--test", action="store_true", help="run all tests")
@@ -29,6 +30,18 @@ def parse_command_line_args():
     return parser.parse_args()
 
 
+def create_testfile(filename, module_name):
+    file = open(filename + ".py", "w")
+    file.write("from " + module_name + " import *\n\n\n")
+    file.close()
+
+
+def append_to_testfile(filename, str):
+    file = open(filename + ".py", "a")
+    file.write(str + "\n\n")
+    file.close()
+
+
 args = parse_command_line_args()
 
 if args.test:
@@ -44,30 +57,28 @@ else:
 
     runs = []
     test_number = 1
+    foldername = "generated_tests/"
+    filename = foldername + function_name + "_tf"
+    create_testfile(filename, module_name)
 
-    if sut.is_method:
-        SEEngine.initialize(sut, max_depth)
-        # maybe initialize test generator
-
-        for run in SEEngine.explore():
-            runs.append(run)
-            if run:
-                print_formatted_result(sut.function, run, True)
-            else:
-                print("una corrida retorno None")
-
-        report_statistics(SEEngine.statistics())
-
-        for run in runs:
-            if run.status != Status.PRUNED and run.concrete_input_self:
-                try:
-                    SEEngine.build_partial_structures(run)
-                except CouldNotBuildError:
-                    pass
+    SEEngine.initialize(sut, max_depth)
+    # maybe initialize test generator
+    tests_gen = []
+    for run in SEEngine.explore():
+        if run:
+            print_formatted_result(sut.function, run, True)
+            if run.status != Status.PRUNED:
+                if run.builded_in_self:
+                    test = TestCode(sut, run, run.number)
+                    code = test.get_code()
+                    append_to_testfile(filename, code)
+                    tests_gen.append(run.number)
+                    print("\n" + code + "\n")
                 else:
-                    test = TestCode(sut, run, test_number)
-                    test_number += 1
-                    print("\n" + test.get_code() + "\n")
-    else:
-        # TODO: Make it support functions (functions that not belong to a class)
-        raise NotImplementedError
+                    print("run " + str(run.number) + "Could not be builded")
+        else:
+            print("una corrida retorno None")
+
+    report_statistics(SEEngine.statistics())
+    print(tests_gen)
+

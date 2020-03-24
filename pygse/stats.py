@@ -15,22 +15,23 @@ class Status(Enum):
 
 
 class ExecutionStats:
-    def __init__(self, exec_number: int):
+    def __init__(self, exec_number: int, status=None, exception=None):
 
         self.input_self = None
         self.concrete_input_self = None
         self.end_self = None
         self.concrete_end_self = None
+        self.builded_in_self = None
         self.args = []
         self.concrete_args = []
         self.returnv = None
         self.concrete_return = None
-        self.exception = None
+        self.exception = exception
         self.model = None
         self.pathcondition = []
         self.errors = []
         self.number = exec_number
-        self.status = Status.PRUNED
+        self.status = status
 
 
 class GlobalStats:

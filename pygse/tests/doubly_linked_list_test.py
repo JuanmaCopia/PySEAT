@@ -62,6 +62,9 @@ class Node:
     def repok(self):
         return True
 
+    def __repr__(self):
+        return self.data.__repr__()
+
 
 class DoublyLinkedList:
 

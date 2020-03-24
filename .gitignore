@@ -51,6 +51,8 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+generated_tests/
+
 
 # OSX files
 .DS_Store
