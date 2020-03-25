@@ -217,7 +217,11 @@ class SEEngine:
         if args:
             stats.concrete_args = cls.concretize(args, model)
         stats.concrete_input_self = cls.concretize(input_self, model)
+
+
         stats.builded_in_self = cls.build_input_self(input_self)
+
+
         stats.input_self = input_self
         stats.end_self = end_self
         stats.pathcondition = path
@@ -327,7 +331,7 @@ class SEEngine:
 
     @classmethod
     def concretize(cls, symbolic, model):
-        return cls._concretize(symbolic, model, set())
+        return cls._conc2(symbolic, model, set(), copy.deepcopy(symbolic))
 
     @classmethod
     def _concretize(cls, symbolic, model, visited):
@@ -359,7 +363,7 @@ class SEEngine:
                 return symbolic
 
             concrete = copy.deepcopy(symbolic)
-            visited.add(concrete)
+            # visited.add(concrete)
             for name in symbolic.__dict__:
                 try:
                     attr = getattr(symbolic, name)
@@ -371,6 +375,87 @@ class SEEngine:
                         setattr(concrete, name, cls._concretize(attr, model, visited))
             return concrete
         return symbolic
+
+    @classmethod
+    def _conc2(cls, symbolic, model, visited, concrete):
+        """Creates the concrete object.
+
+        Creates the concrete object from a symbolic (builtin symbolic)
+        or a partially symbolic (user-defined) one and the model
+        describing it's restrictions.
+
+        Args:
+            symbolic: a symbolic builtin or a partially symbolic
+                user-defined class.
+            model: Model describing the constraints that the object
+                must acomplish.
+
+        Returns:
+            The concrete object represented by symbolic and the model.
+        """
+        if concrete is None:
+            return None
+        elif proxy.is_symbolic(concrete):
+            return concrete.concretize(model)
+        elif proxy.is_user_defined(concrete):
+
+            if not do_add(visited, concrete):
+                return concrete
+
+            # visited.add(concrete)
+            for name in concrete.__dict__:
+                try:
+                    sym_attr = getattr(symbolic, name)
+                    conc_attr = getattr(concrete, name)
+                except AttributeError:
+                    if isinstance(symbolic, Iterable):
+                        pass
+                else:
+                    if not callable(sym_attr):
+                        setattr(concrete, name, cls._conc2(sym_attr, model, visited, conc_attr))
+            return concrete
+        return concrete
+
+    # @classmethod
+    # def concretize2(cls, partial_obj, model):
+    #     visited = set()
+    #     visited.add(partial_obj)
+    #     worklist = []
+    #     worklist.append(partial_obj)
+
+    #     concrete = copy.deepcopy(partial_obj)
+    #     worklist_conc = []
+    #     worklist_conc.append(concrete)
+
+    #     while worklist:
+    #         current = worklist.pop(0)
+    #         current_conc = worklist_conc.pop(0)
+
+    #         if current is None:
+    #             current_conc = None
+    #         elif proxy.is_symbolic(current):
+    #             current_conc = current.concretize(model)
+    #         elif proxy.is_user_defined(current):
+
+    #             if not do_add(visited, current):
+    #                 return symbolic
+
+
+    #             for name in symbolic.__dict__:
+    #                 attr = getattr(symbolic, name)
+    #                 setattr(concrete, name, cls._concretize(attr, model, visited))
+
+
+
+
+
+
+        #     if current.next:
+        #         if not LinkedList.do_add(visited, current.next):
+        #             str_rep += current.next.to_str(True)
+        #         else:
+        #             worklist.append(current.next)
+        # return str_rep
 
     @classmethod
     def _remove_explored_branches(cls):

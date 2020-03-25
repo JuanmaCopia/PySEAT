@@ -168,7 +168,8 @@ class LinkedList:
         return self
 
     def repok(self):
-        return self.acyclic()
+        #return self.acyclic()
+        return True
 
     def acyclic(self):
         if self.head is None:
@@ -183,7 +184,8 @@ class LinkedList:
         return True
 
     def conservative_repok(self):
-        return self.conservative_acyclic()
+        #return self.conservative_acyclic()
+        return True
 
     def conservative_acyclic(self):
         if not self._head_is_initialized:
@@ -205,7 +207,8 @@ class LinkedList:
         return True
 
     def instrumented_repok(self):
-        return self.instrumented_acyclic()
+        #return self.instrumented_acyclic()
+        return True
 
     def instrumented_acyclic(self):
         if self._get_head() is None:
