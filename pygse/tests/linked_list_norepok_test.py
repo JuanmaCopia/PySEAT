@@ -261,4 +261,6 @@ class LinkedList:
     #     return True
 
     def __repr__(self):
-        return self.head.__repr__()
+        if self.head:
+            return self.head.__repr__()
+        return "EmptyList"

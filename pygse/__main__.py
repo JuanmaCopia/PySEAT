@@ -38,7 +38,7 @@ def create_testfile(filename, module_name):
 
 def append_to_testfile(filename, str):
     file = open(filename + ".py", "a")
-    file.write(str + "\n\n")
+    file.write(str + "\n\n\n")
     file.close()
 
 

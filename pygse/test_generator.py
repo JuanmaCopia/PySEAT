@@ -30,10 +30,11 @@ class TestCode:
 
     def generate_test_code(self):
         self.gen_test_header()
+        self.gen_test_comment()
         self._add_line("# Input Generation")
-        self_id = self.generate_structure_code(self._run_stats.concrete_input_self)
+        self_id = self.generate_structure_code(self._run_stats.builded_in_self)
         self._add_line("# Repok check")
-        self.add_repok_check(self._run_stats.concrete_input_self)
+        self.add_repok_check(self._run_stats.builded_in_self)
         self._add_line("# Method call")
         self.generate_method_call(
             self_id, self._sut.function.__name__, self._run_stats.concrete_return
@@ -44,6 +45,13 @@ class TestCode:
         self.add_repok_check(self._run_stats.concrete_end_self)
         self.gen_structure_assertions(self._run_stats.concrete_end_self)
         self._add_line("print('Test" + str(self.test_number) + ": OK')")
+
+    def gen_test_comment(self):
+        self._add_line("'''")
+        self._add_line("Self: " + self._run_stats.builded_in_self.__repr__())
+        self._add_line("Return: " + self._run_stats.concrete_return.__repr__())
+        self._add_line("End Self: " + self._run_stats.concrete_end_self.__repr__())
+        self._add_line("'''")
 
     def gen_test_header(self):
         self._code += (
