@@ -30,7 +30,7 @@ class Node:
         self._elem_is_initialized = True
 
     def _get_next(self):
-        if not self._next_is_initialized and self._identifier in [x._identifier for x in self._vector if x is not None]:
+        if not self._next_is_initialized and see.SEEngine.is_tracked(self):
             self._next_is_initialized = True
             self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
@@ -40,7 +40,6 @@ class Node:
     def _set_next(self, value):
         self.next = value
         self._next_is_initialized = True
-
 
     def swap_node(self):
         if self._get_next() is not None:
@@ -96,6 +95,7 @@ class Node:
                     worklist.append(current.next)
         return str_rep
 
+
 class LinkedList:
 
     _vector = [None]
@@ -113,7 +113,7 @@ class LinkedList:
         self.__class__._id += 1
 
     def _get_head(self):
-        if not self._head_is_initialized and self._identifier in [x._identifier for x in self._vector if x is not None]:
+        if not self._head_is_initialized and see.SEEngine.is_tracked(self):
             self._head_is_initialized = True
             self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)

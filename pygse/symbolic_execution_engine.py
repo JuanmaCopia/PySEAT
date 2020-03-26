@@ -631,6 +631,9 @@ class SEEngine:
             raise RepOkFailException()
         return None
 
+    @staticmethod
+    def is_tracked(obj):
+        return obj._identifier in [x._identifier for x in obj._vector if x is not None]
 
     @classmethod
     def statistics(cls):
