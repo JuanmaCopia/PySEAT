@@ -4,7 +4,7 @@ import pygse.proxy as proxy
 
 class Node:
 
-    _vector = [None]
+    _vector = []
     _is_user_defined = True
     _id = 0
 
@@ -13,7 +13,7 @@ class Node:
         self.next = None
         # Instrumentation instance attributes
         self._next_is_initialized = False
-        self._elem_is_initialized = False
+        self._elem_is_initialized = True
 
         self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
@@ -98,16 +98,15 @@ class Node:
 
 class LinkedList:
 
-    _vector = [None]
+    _vector = []
     _is_user_defined = True
     _id = 0
 
     def __init__(self, head: "Node" = None):
         self.head = head
-        # Instrumentation instance attributes
+
         self._head_is_initialized = False
 
-        self._concretized = False
         self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
@@ -258,4 +257,6 @@ class LinkedList:
     #     return True
 
     def __repr__(self):
+        if not self.head:
+            return "Empty"
         return self.head.__repr__()

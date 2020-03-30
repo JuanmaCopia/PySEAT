@@ -4,7 +4,7 @@ import pygse.proxy as proxy
 
 class Node:
 
-    _vector = [None]
+    _vector = []
     _is_user_defined = True
     _id = 0
 
@@ -98,7 +98,7 @@ class Node:
 
 class LinkedList:
 
-    _vector = [None]
+    _vector = []
     _is_user_defined = True
     _id = 0
 

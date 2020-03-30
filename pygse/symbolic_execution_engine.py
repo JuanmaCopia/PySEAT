@@ -12,7 +12,7 @@ from pygse.branching_steps import LazyStep, ConditionalStep
 from pygse.stats import Status, ExecutionStats, GlobalStats
 from pygse.engine_errors import UnsatBranchError, MissingTypesError, RepOkFailException
 from pygse.engine_errors import MaxDepthException, CouldNotBuildError, RepokNotFoundError
-from pygse.helpers import do_add
+from pygse.helpers import do_add, is_user_defined, get_initialized_name
 import pygse.proxy as proxy
 import signal
 
@@ -74,6 +74,7 @@ class SEEngine:
     _current_bp = 0
     _current_depth = 0
     _max_depth = 0
+    _recursion_limit = 0
 
     _globalstats = None
     _sut = None
@@ -100,6 +101,7 @@ class SEEngine:
         cls._max_depth = max_depth
         cls._real_to_proxy = {x.emulated_class: x for x in proxy.ProxyObject.__subclasses__()}
         cls._current_self = None
+        cls._recursion_limit = 50
 
     @classmethod
     def explore(cls):
@@ -131,7 +133,7 @@ class SEEngine:
         cls._current_bp = 0
         cls._current_depth = 0
         for k in cls._sut.class_params_map.keys():
-            k._vector = [None]
+            k._vector = []
             k._id = 0
             cls._lazy_backups[k] = LazyBackup()
 
@@ -187,8 +189,8 @@ class SEEngine:
             status = Status.OK
         finally:
             # signal.alarm(0)
-            # if stats.exception:
-            #     raise stats.exception
+            # if exception:
+            #     raise exception
             # signal.alarm(0)
             # signal.signal(signal.SIGALRM, signal.SIG_IGN)
             if status == Status.PRUNED:
@@ -203,68 +205,123 @@ class SEEngine:
 
     @classmethod
     def build_stats(cls, status, args, returnv):
-
-        path = cls._path_condition
-        model = proxy.smt.get_model(path)
-        end_self = cls._current_self
-        input_self = cls._lazy_backups[cls._sut.sclass].get_entity()
-
         stats = ExecutionStats(cls._globalstats.complete_exec + 1, status)
-        stats.concrete_end_self = cls.concretize(end_self, model)
+
+        # End path condition and model
+        end_path = cls._path_condition
+        stats.pathcondition = end_path
+        end_model = proxy.smt.get_model(end_path)
+        stats.model = end_model
+
+        # Input path condition and model
+        input_path = cls._lazy_backups[cls._sut.sclass].path_condition
+        input_model = proxy.smt.get_model(input_path)
+
+        # Returned Value
         stats.returnv = returnv
-        stats.concrete_return = cls.concretize(returnv, model)
+        stats.concrete_return = cls.concretize(returnv, end_model)
+        # Final state of self structure
+        end_self = cls._current_self
+        stats.end_self = end_self
+        stats.concrete_end_self = cls.concretize(end_self, end_model)
+        # Input self structure (not builded)
+        input_self = cls._lazy_backups[cls._sut.sclass].get_entity()
+        stats.input_self = input_self
+        stats.concrete_input_self = cls.concretize(input_self, input_model)
+        # input arguments
         cls.retrieve_inputs(args)
         if args:
-            stats.concrete_args = cls.concretize(args, model)
-        stats.concrete_input_self = cls.concretize(input_self, model)
+            stats.concrete_args = cls.concretize(args, input_model)
 
-
-        stats.builded_in_self = cls.build_input_self(input_self)
-
-
-        stats.input_self = input_self
-        stats.end_self = end_self
-        stats.pathcondition = path
-        stats.model = model
+        # Builded input self
+        stats.builded_in_self = cls.build_input_self(input_self, input_path, input_model)
         return stats
 
     @classmethod
-    def _reset_for_repok(cls, pc_len, vec_len):
-        cls._path_condition = SEEngine.keep_first_n_items(cls._path_condition, pc_len)
-        cls._current_bp = 0
-        cls._current_depth = 0
-        for k in cls._sut.class_params_map.keys():
-            if len(k._vector) != vec_len[k]:
-                k._vector = SEEngine.keep_first_n_items(k._vector, vec_len[k])
+    def remove_initialized_nones(cls, iself):
+        visited = set()
+        visited.add(iself)
+        worklist = []
+        worklist.append(iself)
+        while worklist:
+            current = worklist.pop(0)
+            if is_user_defined(current):
+                for name in current.__dict__:
+                    attr = getattr(current, name)
+                    if attr is None:
+                        init_name = get_initialized_name(name)
+                        if hasattr(current, init_name):
+                            setattr(current, init_name, False)
+                    else:
+                        if is_user_defined(attr) and do_add(visited, attr):
+                            worklist.append(attr)
+
 
     @classmethod
-    def build_input_self(cls, input_self):
-        backup_bp = cls._branching_points
-        cls._branching_points = []
-        unexplored_paths = True
+    def _reset_for_repok(cls, iself, pc_len):
+        cls._path_condition = cls.keep_first_n_items(cls._path_condition, pc_len)
+        cls._current_bp = 0
+        cls._current_depth = 0
+        cls.fill_class_vectors(iself)
 
-        for k in cls._lazy_backups.keys():
-            k._vector = cls._lazy_backups[k].get_vector()
+    @classmethod
+    def build_input_self(cls, input_self, path_cond, model):
+        if input_self.repok():
+            return cls.concretize(input_self, model)
+
+        backup_pc = copy.deepcopy(cls._path_condition)
+        backup_bp = copy.deepcopy(cls._branching_points)
+
+        cls._path_condition = path_cond
+        cls._branching_points = []
 
         pc_len = len(cls._path_condition)
-        vec_len = {}
-        for k in cls._sut.class_params_map.keys():
-            vec_len[k] = len(k._vector)
+        unexplored_paths = True
+
+        # just for debug purposes
+        useless = 0
 
         while unexplored_paths:
-            cls._reset_for_repok(pc_len, vec_len)
-
-            result = cls._execute_repok(input_self)
+            useless += 1
+            iself = copy.deepcopy(input_self)
+            cls._reset_for_repok(iself, pc_len)
+            result = cls._execute_repok(iself)
 
             if result is not None and result.repok():
+                cls._path_condition = backup_pc
                 cls._branching_points = backup_bp
                 return result
 
             cls._remove_explored_branches()
-
             if not cls._branching_points:
                 unexplored_paths = False
+
+        # cls._path_condition = cls.keep_first_n_items(cls._path_condition, pc_len)
+        cls._path_condition = backup_pc
         cls._branching_points = backup_bp
+
+    @classmethod
+    def fill_class_vectors(cls, structure):
+        for k in cls._sut.class_params_map.keys():
+            k._vector = []
+            cls._lazy_backups[k] = LazyBackup()
+        if not is_user_defined(structure):
+            return
+
+        visited = set()
+        visited.add(structure)
+        worklist = []
+        worklist.append(structure)
+        while worklist:
+            current = worklist.pop(0)
+            current._vector.append(current)
+            for name in current.__dict__:
+                attr = None
+                if hasattr(current, name):
+                    attr = getattr(current, name)
+                if is_user_defined(attr) and do_add(visited, attr):
+                    worklist.append(attr)
+
 
     @staticmethod
     def keep_first_n_items(l, n):
@@ -353,7 +410,11 @@ class SEEngine:
         if concrete is None:
             return None
         elif proxy.is_symbolic(concrete):
-            return concrete.concretize(model)
+            return symbolic.concretize(model)
+        elif isinstance(concrete, list):
+            for i, x in enumerate(concrete):
+                concrete[i] = cls._concretize(symbolic[i], model, visited, x)
+            return concrete
         elif proxy.is_user_defined(concrete):
 
             if not do_add(visited, concrete):
@@ -424,16 +485,23 @@ class SEEngine:
             index = branch_point.get_branch()
             cls._current_bp += 1
 
-            if index < len(vector):
-                return vector[index]
+            if index == 0:
+                n = cls._symbolize_partially(lazy_class)
+                vector.append(n)
+                return n
+            elif index == 1:
+                return None
+            else:
+                assert index - 2 >= 0
+                assert index - 2 < len(vector)
+                return vector[index - 2]
 
-            n = cls._symbolize_partially(lazy_class)
-            vector.append(n)
-            return n
-
-        cls._branching_points.append(LazyStep(len(vector)))
+        cls._branching_points.append(LazyStep(len(vector) + 1))
         cls._current_bp += 1
-        return None
+        n = cls._symbolize_partially(lazy_class)
+        vector.append(n)
+        return n
+
 
     @classmethod
     def _symbolic_instantiation(cls, typ):
@@ -631,6 +699,13 @@ class SEEngine:
             raise RepOkFailException()
         return None
 
+    @classmethod
+    def check_recursion_limit(cls, obj):
+        obj._recursion_depth += 1
+        if obj._recursion_depth > cls._recursion_limit:
+            raise MaxDepthException()
+
+
     @staticmethod
     def is_tracked(obj):
         return obj._identifier in [x._identifier for x in obj._vector if x is not None]
@@ -643,23 +718,25 @@ class SEEngine:
 
     @classmethod
     def save_lazy_step(cls, sclass):
-        cls._lazy_backups[sclass].new_backup(sclass._vector)
+        cls._lazy_backups[sclass].new_backup(sclass._vector, cls._path_condition)
         if (sclass != cls._sut.sclass):
-            cls._lazy_backups[cls._sut.sclass].new_backup(cls._sut.sclass._vector)
+            cls._lazy_backups[cls._sut.sclass].new_backup(cls._sut.sclass._vector, cls._path_condition)
 
 
 class LazyBackup:
-    def __init__(self, vector=[None], amount_entities=0):
+    def __init__(self, vector=[], amount_entities=0):
         self.vector = copy.deepcopy(vector)
+        self.path_condition = []
         self.amount_entities = amount_entities
-        self.next_entity = 1
+        self.next_entity = 0
 
     def add_entity(self, vector):
         self.vector = copy.deepcopy(vector)
         self.amount_entities += 1
 
-    def new_backup(self, vector):
+    def new_backup(self, vector, pc):
         self.vector = copy.deepcopy(vector)
+        self.path_condition = copy.deepcopy(pc)
 
     def get_entity(self):
         entity = self.vector[self.next_entity]

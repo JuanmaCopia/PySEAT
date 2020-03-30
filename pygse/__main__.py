@@ -12,6 +12,43 @@ from pygse.test_generator import TestCode
 from pygse.stats import Status
 from pygse.engine_errors import CouldNotBuildError
 
+import pygse.proxy as proxy
+import copy
+import sys
+
+
+# a = proxy.IntProxy()
+# b = proxy.IntProxy()
+# c = 5
+
+# SEEngine.initialize(None, 10)
+
+# if a == b:
+#     pass
+# if b == c:
+#     pass
+
+# path = SEEngine._path_condition
+# print(SEEngine._path_condition)
+
+# print("b es: ")
+# print(str(b))
+# print(SEEngine.concretize(b, proxy.smt.get_model(path)))
+
+# print("copia de b es: ")
+# print(str(copy.deepcopy(b)))
+# print(SEEngine.concretize(copy.deepcopy(b), proxy.smt.get_model(path)))
+
+# print("a es: ")
+# print(str(a))
+# print(SEEngine.concretize(a, proxy.smt.get_model(path)))
+
+# print("copia de a es: ")
+# print(str(copy.deepcopy(a)))
+# print(SEEngine.concretize(copy.deepcopy(a), proxy.smt.get_model(path)))
+
+# sys.exit()
+
 
 def parse_command_line_args():
     parser = argparse.ArgumentParser(add_help=True)

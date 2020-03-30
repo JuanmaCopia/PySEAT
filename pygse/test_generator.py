@@ -3,6 +3,7 @@
 """
 
 import pygse.proxy as proxy
+from pygse.helpers import is_special_attr, is_initialized, is_user_defined
 
 
 class TestCode:
@@ -96,10 +97,16 @@ class TestCode:
 
             userdef = []
             for field, value in attr.items():
+                # if value is None:
+                #     if not is_initialized(field, instance):
+                #         continue
+                #     self.create_assert_code(identifier, field, value)
                 if proxy.is_user_defined(value):
                     userdef.append((field, value))
                     # self.create_assert_code(identifier, field, value._identifier)
                 else:
+                    if not is_initialized(instance, field):
+                        continue
                     self.create_assert_code(identifier, field, value)
 
             for field, value in userdef:
@@ -114,21 +121,13 @@ class TestCode:
         else:
             self._add_line(self_id + "." + method_name + "(" + args_ids + ")")
 
-    @classmethod
-    def is_special_attr(cls, attr_name):
-        return attr_name.endswith("_is_initialized") or attr_name in [
-            "_marked",
-            "_concretized",
-            "_identifier",
-            "_generated",
-        ]
 
     @classmethod
     def get_attr_value_dict(cls, instance):
         return {
             key: value
             for (key, value) in instance.__dict__.items()
-            if not cls.is_special_attr(key)
+            if not is_special_attr(key)
         }
 
     def generate_structure_code(self, instance):
@@ -183,4 +182,3 @@ class TestCode:
 
         code_line = code_line[:-2] + ")"
         self._add_line(code_line)
-

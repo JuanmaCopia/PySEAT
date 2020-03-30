@@ -4,7 +4,7 @@ import pygse.proxy as proxy
 
 class Node:
 
-    _vector = [None]
+    _vector = []
     _is_user_defined = True
     _id = 0
 
@@ -13,19 +13,19 @@ class Node:
         self.next = None
         self.prev = None
 
-        self._key_is_initialized = key
+        self._key_is_initialized = True
         self._next_is_initialized = False
         self._prev_is_initialized = False
 
-        self._concretized = False
         self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
+        self._recursion_depth = 0
 
     def _get_key(self):
         if not self._key_is_initialized:
-            self.key = proxy.IntProxy()
             self._key_is_initialized = True
+            self.key = proxy.IntProxy()
         return self.key
 
     def _set_key(self, value):
@@ -33,7 +33,8 @@ class Node:
         self._key_is_initialized = True
 
     def _get_next(self):
-        if not self._next_is_initialized and self in self._vector:
+        see.SEEngine.check_recursion_limit(self)
+        if not self._next_is_initialized and see.SEEngine.is_tracked(self):
             self._next_is_initialized = True
             self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
@@ -45,7 +46,8 @@ class Node:
         self._next_is_initialized = True
 
     def _get_prev(self):
-        if not self._prev_is_initialized and self in self._vector:
+        see.SEEngine.check_recursion_limit(self)
+        if not self._prev_is_initialized and see.SEEngine.is_tracked(self):
             self._prev_is_initialized = True
             self.prev = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
@@ -57,10 +59,29 @@ class Node:
         self._prev_is_initialized = True
 
     def __str__(self):
-        return str(self.key)
+        return self.__repr__()
 
     def __repr__(self):
-        return " " + self._identifier + "(" + str(self.key) + ")"
+        # return " " + self._identifier + "(" + str(self.key) + ")"
+        ps = None
+        if self._prev_is_initialized:
+            if self.prev:
+                ps = self.prev._identifier[-1]
+            else:
+                ps = "None"
+        else:
+            ps = "CLOUD"
+
+        ns = None
+        if self._next_is_initialized:
+            if self.next:
+                ns = self.next._identifier[-1]
+            else:
+                ns = "None"
+        else:
+            ns = "CLOUD"
+
+        return "(" + ps + " <- " + self._identifier + ": " + self.key.__repr__() + " -> " + ns + ") "
 
     def repok(self):
         return True
@@ -74,22 +95,24 @@ class Node:
 
 class CDLinkedList:
 
-    _vector = [None]
+    _vector = []
     _is_user_defined = True
     _id = 0
+    _max_deep = 50
 
     def __init__(self, head: "Node" = None):
         self.head = head
 
         self._head_is_initialized = False
 
-        self._concretized = False
         self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
+        self._recursion_depth = 0
 
     def _get_head(self):
-        if not self._head_is_initialized and self in self._vector:
+        see.SEEngine.check_recursion_limit(self)
+        if not self._head_is_initialized and see.SEEngine.is_tracked(self):
             self._head_is_initialized = True
             self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
@@ -103,6 +126,8 @@ class CDLinkedList:
     def __repr__(self):
         if not self.head:
             return "Empty"
+        if self.head.next is self.head and self.head.prev is self.head:
+            return self.head.__repr__()
         str_rep = ""
         visited = set()
         visited.add(self.head)
@@ -111,15 +136,16 @@ class CDLinkedList:
         while worklist:
             current = worklist.pop(0)
             str_rep += current.__repr__()
-            # if current.next == self.head:
-            #     break
             if current.next:
                 if not CDLinkedList.do_add(visited, current.next):
-                    str_rep += current.__repr__() + "*"
+                    str_rep += "**" + current.next._identifier
                 else:
                     worklist.append(current.next)
             else:
-                str_rep += " None"
+                if current._next_is_initialized:
+                    str_rep += " None"
+                else:
+                    str_rep += " CLOUD"
         return str_rep
 
     # Insert node at the end of the circular doubly linked list
