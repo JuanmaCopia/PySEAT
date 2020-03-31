@@ -207,34 +207,30 @@ class SEEngine:
     def build_stats(cls, status, args, returnv):
         stats = ExecutionStats(cls._globalstats.complete_exec + 1, status)
 
-        # End path condition and model
-        end_path = cls._path_condition
-        stats.pathcondition = end_path
-        end_model = proxy.smt.get_model(end_path)
-        stats.model = end_model
-
-        # Input path condition and model
-        input_path = cls._lazy_backups[cls._sut.sclass].path_condition
-        input_model = proxy.smt.get_model(input_path)
+        # Path condition and model
+        path = cls._path_condition
+        model = proxy.smt.get_model(path)
+        stats.pathcondition = path
+        stats.model = model
 
         # Returned Value
         stats.returnv = returnv
-        stats.concrete_return = cls.concretize(returnv, end_model)
+        stats.concrete_return = cls.concretize(returnv, model)
         # Final state of self structure
         end_self = cls._current_self
+        stats.concrete_end_self = cls.concretize(end_self, model)
         stats.end_self = end_self
-        stats.concrete_end_self = cls.concretize(end_self, end_model)
         # Input self structure (not builded)
         input_self = cls._lazy_backups[cls._sut.sclass].get_entity()
+        stats.concrete_input_self = cls.concretize(input_self, model)
         stats.input_self = input_self
-        stats.concrete_input_self = cls.concretize(input_self, input_model)
         # input arguments
         cls.retrieve_inputs(args)
         if args:
-            stats.concrete_args = cls.concretize(args, input_model)
+            stats.concrete_args = cls.concretize(args, model)
 
         # Builded input self
-        stats.builded_in_self = cls.build_input_self(input_self, input_path, input_model)
+        stats.builded_in_self = cls.build_input_self(input_self, model)
         return stats
 
     @classmethod
@@ -265,17 +261,14 @@ class SEEngine:
         cls.fill_class_vectors(iself)
 
     @classmethod
-    def build_input_self(cls, input_self, path_cond, model):
+    def build_input_self(cls, input_self, model):
         if input_self.repok():
             return cls.concretize(input_self, model)
 
-        backup_pc = copy.deepcopy(cls._path_condition)
         backup_bp = copy.deepcopy(cls._branching_points)
-
-        cls._path_condition = path_cond
         cls._branching_points = []
-
         pc_len = len(cls._path_condition)
+
         unexplored_paths = True
 
         # just for debug purposes
@@ -288,7 +281,7 @@ class SEEngine:
             result = cls._execute_repok(iself)
 
             if result is not None and result.repok():
-                cls._path_condition = backup_pc
+                cls._path_condition = cls.keep_first_n_items(cls._path_condition, pc_len)
                 cls._branching_points = backup_bp
                 return result
 
@@ -296,8 +289,7 @@ class SEEngine:
             if not cls._branching_points:
                 unexplored_paths = False
 
-        # cls._path_condition = cls.keep_first_n_items(cls._path_condition, pc_len)
-        cls._path_condition = backup_pc
+        cls._path_condition = cls.keep_first_n_items(cls._path_condition, pc_len)
         cls._branching_points = backup_bp
 
     @classmethod
@@ -388,10 +380,14 @@ class SEEngine:
 
     @classmethod
     def concretize(cls, symbolic, model):
-        return cls._concretize(symbolic, model, set(), copy.deepcopy(symbolic))
+        visited = set()
+        sym_copy = copy.deepcopy(symbolic)
+        if is_user_defined(sym_copy):
+            visited.add(sym_copy)
+        return cls._concretize(sym_copy, model, visited)
 
     @classmethod
-    def _concretize(cls, symbolic, model, visited, concrete):
+    def _concretize(cls, symbolic, model, visited):
         """Creates the concrete object.
 
         Creates the concrete object from a symbolic (builtin symbolic)
@@ -407,32 +403,65 @@ class SEEngine:
         Returns:
             The concrete object represented by symbolic and the model.
         """
-        if concrete is None:
+        if symbolic is None:
             return None
-        elif proxy.is_symbolic(concrete):
+        elif proxy.is_symbolic(symbolic):
             return symbolic.concretize(model)
-        elif isinstance(concrete, list):
-            for i, x in enumerate(concrete):
-                concrete[i] = cls._concretize(symbolic[i], model, visited, x)
-            return concrete
-        elif proxy.is_user_defined(concrete):
+        elif isinstance(symbolic, list):
+            for i, x in enumerate(symbolic):
+                symbolic[i] = cls._concretize(x, model, visited)
+            return symbolic
+        elif proxy.is_user_defined(symbolic):
 
-            if not do_add(visited, concrete):
-                return concrete
+            for attr_name, value in symbolic.__dict__.items():
+                attr = value
+                if not callable(attr) and do_add(visited, attr):
+                    setattr(symbolic, attr_name, cls._concretize(attr, model, visited))
+            return symbolic
+        return symbolic
 
-            # visited.add(concrete)
-            for name in concrete.__dict__:
-                try:
-                    sym_attr = getattr(symbolic, name)
-                    conc_attr = getattr(concrete, name)
-                except AttributeError:
-                    if isinstance(symbolic, Iterable):
-                        pass
-                else:
-                    if not callable(sym_attr):
-                        setattr(concrete, name, cls._concretize(sym_attr, model, visited, conc_attr))
-            return concrete
-        return concrete
+
+    # concrete = copy.deepcopy(symbolic)
+    # visited = set()
+    # visited.add(concrete)
+    # worklist = []
+    # worklist.append(concrete)
+    # while worklist:
+    #     current = worklist.pop(0)
+
+
+    #     if concrete is None:
+    #         return None
+    #     elif proxy.is_symbolic(concrete):
+    #         return symbolic.concretize(model)
+    #     elif isinstance(concrete, list):
+    #         for i, x in enumerate(concrete):
+    #             concrete[i] = cls._concretize(symbolic[i], model, visited, x)
+    #         return concrete
+
+    #     elif proxy.is_user_defined(current):
+
+    #         for name, value in current.__dict__.items():
+    #             sym_attr = symbolic.__dict__[name]
+    #             conc_attr = value
+    #             if not callable(sym_attr) and do_add(visited, conc_attr):
+    #                 setattr(current, name, cls._concretize(sym_attr, model, visited, conc_attr))
+    #         return concrete
+    #     return concrete
+
+    # visited = set()
+    #     visited.add(structure)
+    #     worklist = []
+    #     worklist.append(structure)
+    #     while worklist:
+    #         current = worklist.pop(0)
+    #         current._vector.append(current)
+    #         for name in current.__dict__:
+    #             attr = None
+    #             if hasattr(current, name):
+    #                 attr = getattr(current, name)
+    #             if is_user_defined(attr) and do_add(visited, attr):
+    #                 worklist.append(attr)
 
     @classmethod
     def _remove_explored_branches(cls):
