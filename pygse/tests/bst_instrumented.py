@@ -33,6 +33,8 @@ class BST:
             or node.data >= max
             or (node.left is not None and not do_add(visited, node.left))
             or (node.right is not None and not do_add(visited, node.right))
+            or (node is not self.root and node.parent is None)
+            or (node.parent is not None and do_add(visited, node.parent))
             or node.right.parent is not node
             or node.left.parent is not node
         ):
