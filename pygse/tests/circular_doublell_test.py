@@ -98,7 +98,6 @@ class CDLinkedList:
     _vector = []
     _is_user_defined = True
     _id = 0
-    _max_deep = 50
 
     def __init__(self, head: "Node" = None):
         self.head = head

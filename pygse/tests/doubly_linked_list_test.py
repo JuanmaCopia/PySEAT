@@ -1,11 +1,11 @@
-import sys
 import pygse.symbolic_execution_engine as see
 import pygse.proxy as proxy
+import sys
 
 
 class Node:
 
-    _vector = [None]
+    _vector = []
     _is_user_defined = True
     _id = 0
 
@@ -14,17 +14,18 @@ class Node:
         self.next = None
         self.prev = None
 
-        self._data_is_initialized = data
+        self._data_is_initialized = True
         self._next_is_initialized = False
         self._prev_is_initialized = False
 
-        self._concretized = False
         self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
+        self._recursion_depth = 0
 
     def _get_data(self):
         if not self._data_is_initialized:
+            self._key_is_initialized = True
             self.data = proxy.IntProxy()
         return self.data
 
@@ -33,7 +34,8 @@ class Node:
         self._data_is_initialized = True
 
     def _get_next(self):
-        if not self._next_is_initialized and self in self._vector:
+        see.SEEngine.check_recursion_limit(self)
+        if not self._next_is_initialized and see.SEEngine.is_tracked(self):
             self._next_is_initialized = True
             self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
@@ -45,7 +47,8 @@ class Node:
         self._next_is_initialized = True
 
     def _get_prev(self):
-        if not self._prev_is_initialized and self in self._vector:
+        see.SEEngine.check_recursion_limit(self)
+        if not self._prev_is_initialized and see.SEEngine.is_tracked(self):
             self._prev_is_initialized = True
             self.prev = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
@@ -56,19 +59,44 @@ class Node:
         self.prev = value
         self._prev_is_initialized = True
 
-    def conservative_repok(self):
-        return True
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        # return " " + self._identifier + "(" + str(self.key) + ")"
+        ps = None
+        if self._prev_is_initialized:
+            if self.prev:
+                ps = self.prev._identifier[-1]
+            else:
+                ps = "None"
+        else:
+            ps = "CLOUD"
+
+        ns = None
+        if self._next_is_initialized:
+            if self.next:
+                ns = self.next._identifier[-1]
+            else:
+                ns = "None"
+        else:
+            ns = "CLOUD"
+
+        return "(" + ps + " <- " + self._identifier + ": " + self.data.__repr__() + " -> " + ns + ") "
 
     def repok(self):
         return True
 
-    def __repr__(self):
-        return self.data.__repr__()
+    def conservative_repok(self):
+        return True
+
+    def instrumented_repok(self):
+        return True
 
 
 class DoublyLinkedList:
 
-    _vector = [None]
+    _vector = []
     _is_user_defined = True
     _id = 0
 
@@ -79,13 +107,14 @@ class DoublyLinkedList:
         self._head_is_initialized = False
         self._tail_is_initialized = False
 
-        self._concretized = False
         self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
+        self._recursion_depth = 0
 
     def _get_head(self):
-        if not self._head_is_initialized and self in self._vector:
+        see.SEEngine.check_recursion_limit(self)
+        if not self._head_is_initialized and see.SEEngine.is_tracked(self):
             self._head_is_initialized = True
             self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
@@ -97,7 +126,8 @@ class DoublyLinkedList:
         self._head_is_initialized = True
 
     def _get_tail(self):
-        if not self._tail_is_initialized and self in self._vector:
+        see.SEEngine.check_recursion_limit(self)
+        if not self._tail_is_initialized and see.SEEngine.is_tracked(self):
             self._tail_is_initialized = True
             self.tail = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
@@ -284,8 +314,8 @@ class DoublyLinkedList:
         s.add(x)
         return len(s) != length
 
-    def to_str(self):
-        if self.is_empty():
+    def __repr__(self):
+        if not self.head:
             return "Empty"
         str_rep = ""
         visited = set()
@@ -294,46 +324,29 @@ class DoublyLinkedList:
         worklist.append(self.head)
         while worklist:
             current = worklist.pop(0)
-            str_rep += current.data.__repr__() + " "
+            str_rep += current.__repr__()
             if current.next:
-                if not DoublyLinkedList.do_add(visited, current.next):
-                    str_rep += current.data.__repr__() + "* "
+                if not self.do_add(visited, current.next):
+                    str_rep += "**" + current.next._identifier
                 else:
                     worklist.append(current.next)
-
-        str_rep += "\n"
-        if not self.tail:
-            return str_rep + "emptyTail"
-        visited = set()
-        visited.add(self.tail)
-        worklist = []
-        worklist.append(self.tail)
-        while worklist:
-            current = worklist.pop(0)
-            str_rep += current.data.__repr__() + " "
-            if current.prev:
-                if not DoublyLinkedList.do_add(visited, current.prev):
-                    str_rep += current.data.__repr__() + "* "
+            else:
+                if current._next_is_initialized:
+                    str_rep += " None"
                 else:
-                    worklist.append(current.prev)
+                    str_rep += " CLOUD"
         return str_rep
-
-    def __repr__(self):
-        return self.to_str()
 
     def repok(self):
         if self.head is None and self.tail is None:
             return True
-        if self.head is None and self.tail is not None:
+        if self.head is None or self.tail is None:
             return False
-        if self.head is not None and self.tail is None:
-            return False
-        if self.head.prev or self.tail.next:
+        if self.head.prev is not None or self.tail.next is not None:
             return False
 
         visited = set()
         visited.add(self.head)
-        tail_added = False
 
         current = self.head
         next_node = current.next
@@ -341,75 +354,65 @@ class DoublyLinkedList:
         while next_node:
             if next_node.prev is not current:
                 return False
-            if next_node is self.tail and tail_added:
-                return False
-            else:
-                tail_added = True
-            if not DoublyLinkedList.do_add(visited, next_node):
+            if not self.do_add(visited, next_node):
                 return False
             current = next_node
             next_node = next_node.next
 
-        if not tail_added:
+        if self.do_add(visited, self.tail):
             return False
         return True
 
     def conservative_repok(self):
+
+        if not self._head_is_initialized or not self._tail_is_initialized:
+            return True
+        if not self.head._prev_is_initialized or not self.tail._next_is_initialized:
+            return True
+
         if self.head is None and self.tail is None:
             return True
-        if self.head is None and self.tail is not None:
+        if self.head is None or self.tail is None:
             return False
-        if self.head is not None and self.tail is None:
-            return False
-        if not self.head._prev_is_initialized:
-            return True
-        if not self.tail._next_is_initialized:
-            return True
-        if self.head.prev or self.tail.next:
+        if self.head.prev is not None or self.tail.next is not None:
             return False
 
         visited = set()
         visited.add(self.head)
-        tail_added = False
 
         current = self.head
-        if not current._next_is_initialized:
-            return True
         next_node = current.next
 
         while next_node:
-            if not current._prev_is_initialized:
+
+            if not next_node._prev_is_initialized:
                 return True
+
             if next_node.prev is not current:
                 return False
-            if next_node is self.tail and tail_added:
-                return False
-            else:
-                tail_added = True
-            if not DoublyLinkedList.do_add(visited, next_node):
+            if not self.do_add(visited, next_node):
                 return False
             current = next_node
+
             if not next_node._next_is_initialized:
                 return True
+
             next_node = next_node.next
 
-        if not tail_added:
+        if self.do_add(visited, self.tail):
             return False
         return True
 
     def instrumented_repok(self):
         if self._get_head() is None and self._get_tail() is None:
             return True
-        if self._get_head() is None and self._get_tail() is not None:
+        if self._get_head() is None or self._get_tail() is None:
             return False
-        if self._get_head() is not None and self._get_tail() is None:
-            return False
-        if self._get_head()._get_prev() or self._get_tail()._get_next():
+        if self._get_head()._get_prev() is not None or self._get_tail()._get_next() is not None:
             return False
 
         visited = set()
         visited.add(self._get_head())
-        tail_added = False
 
         current = self._get_head()
         next_node = current._get_next()
@@ -417,15 +420,12 @@ class DoublyLinkedList:
         while next_node:
             if next_node._get_prev() is not current:
                 return False
-            if next_node is self._get_tail() and tail_added:
-                return False
-            else:
-                tail_added = True
-            if not DoublyLinkedList.do_add(visited, next_node):
+            if not self.do_add(visited, next_node):
                 return False
             current = next_node
             next_node = next_node._get_next()
 
-        if not tail_added:
+        if self.do_add(visited, self._get_tail()):
             return False
         return True
+
