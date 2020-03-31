@@ -105,7 +105,7 @@ class TestCode:
                     userdef.append((field, value))
                     # self.create_assert_code(identifier, field, value._identifier)
                 else:
-                    if not is_initialized(instance, field):
+                    if value is None and not is_initialized(instance, field):
                         continue
                     self.create_assert_code(identifier, field, value)
 
