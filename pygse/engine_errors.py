@@ -13,6 +13,15 @@ class MaxDepthException(Error):
         self.message = "Max exploration depth reached"
 
 
+class MaxRecursionException(Error):
+    """Exception raised when the maximum recursion depth
+    is reached.
+    """
+
+    def __init__(self):
+        self.message = "Max exploration recursion reached"
+
+
 class MissingTypesError(Error):
     """Exception raised when an user defined class has
     has some missing type annotations.

@@ -40,6 +40,8 @@ class GlobalStats:
         self.pruned_by_depth = 0
         self.pruned_by_error = 0
         self.pruned_by_repok = 0
+        self.pruned_by_rec_limit = 0
+        self.pruned_invalid = 0
         self.successes = 0
         self.failures = 0
         self.complete_exec = 0
@@ -47,5 +49,12 @@ class GlobalStats:
     def status_count(self, status):
         if status == Status.OK:
             self.successes += 1
-        else:
+        elif status == Status.FAIL:
             self.failures += 1
+
+    def get_amount_pruned(self):
+        total = self.pruned_by_depth + self.pruned_by_error
+        total += self.pruned_by_repok
+        total += self.pruned_by_rec_limit
+        total += self.pruned_invalid
+        return total

@@ -10,15 +10,12 @@ class TestCode:
     def __init__(self, sut, run_stats, number):
         self._sut = sut
         self._run_stats = run_stats
-        self._code = ""
         self.test_number = number
+        self.code = ""
+        self.generate_test_code()
 
     def _add_line(self, line):
-        self._code += "\n    " + line
-
-    def get_code(self):
-        self.generate_test_code()
-        return self._code
+        self.code += "\n    " + line
 
     def generate_arguments_code(self, instance):
         args_ids = ""
@@ -53,11 +50,12 @@ class TestCode:
         self._add_line("   " + self._run_stats.builded_in_self.__repr__())
         self._add_line("Return:")
         self._add_line("   " + self._run_stats.concrete_return.__repr__())
-        # self._add_line("End Self:\n" + self._run_stats.concrete_end_self.__repr__())
+        self._add_line("End Self:")
+        self._add_line("   " + self._run_stats.concrete_end_self.__repr__())
         self._add_line("'''")
 
     def gen_test_header(self):
-        self._code += (
+        self.code += (
             "def "
             + self._sut.function.__name__
             + "_test"

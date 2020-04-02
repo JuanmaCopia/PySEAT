@@ -9,9 +9,12 @@ import copy
 
 from pygse.branching_steps import LazyStep, ConditionalStep
 from pygse.stats import Status, ExecutionStats, GlobalStats
-from pygse.engine_errors import UnsatBranchError, MissingTypesError, RepOkFailException
-from pygse.engine_errors import MaxDepthException, CouldNotBuildError, RepokNotFoundError
-from pygse.helpers import do_add, is_user_defined, get_initialized_name, set_to_initialized
+from pygse.engine_errors import UnsatBranchError, MissingTypesError
+from pygse.engine_errors import RepOkFailException, MaxRecursionException
+from pygse.engine_errors import MaxDepthException, CouldNotBuildError
+from pygse.engine_errors import RepokNotFoundError
+from pygse.helpers import do_add, is_user_defined
+from pygse.helpers import set_to_initialized
 import pygse.proxy as proxy
 
 # TODO: Check in lazy initializations that the object has to be
@@ -171,6 +174,8 @@ class SEEngine:
             cls._globalstats.pruned_by_depth += 1
         except RepOkFailException:
             cls._globalstats.pruned_by_repok += 1
+        except MaxRecursionException:
+            cls._globalstats.pruned_by_rec_limit += 1
         except RecursionError as e:
             status = Status.PRUNED
             exception = e
@@ -181,13 +186,11 @@ class SEEngine:
             status = Status.OK
         finally:
             if status == Status.PRUNED:
-                return ExecutionStats(0, status, exception)
+                exec_num = cls._globalstats.total_paths
+                return ExecutionStats(exec_num, status, exception)
 
             stats = cls.build_stats(status, args, returnv)
-
-            cls._globalstats.complete_exec += 1
             cls._globalstats.status_count(stats.status)
-
             return stats
 
     @classmethod
@@ -201,7 +204,8 @@ class SEEngine:
         builded_in_self = cls.build_partial_struture(input_self, model)
 
         if builded_in_self is None:
-            return ExecutionStats(cls._globalstats.complete_exec + 1, Status.PRUNED)
+            cls._globalstats.pruned_invalid += 1
+            return ExecutionStats(cls._globalstats.total_paths, Status.PRUNED)
 
         # input arguments
         cls.retrieve_inputs(args)
@@ -221,7 +225,7 @@ class SEEngine:
         else:
             status = Status.FAIL
 
-        stats = ExecutionStats(cls._globalstats.complete_exec + 1, status)
+        stats = ExecutionStats(cls._globalstats.total_paths, status)
         stats.concrete_args = args
         stats.pathcondition = path
         stats.model = model
@@ -231,26 +235,6 @@ class SEEngine:
         stats.returnv = returnv
         stats.concrete_return = cls.concretize(returnv, model)
         return stats
-
-    # @classmethod
-    # def remove_initialized_nones(cls, iself):
-    #     visited = set()
-    #     visited.add(iself)
-    #     worklist = []
-    #     worklist.append(iself)
-    #     while worklist:
-    #         current = worklist.pop(0)
-    #         if is_user_defined(current):
-    #             for name in current.__dict__:
-    #                 attr = getattr(current, name)
-    #                 if attr is None:
-    #                     init_name = get_initialized_name(name)
-    #                     if hasattr(current, init_name):
-    #                         setattr(current, init_name, False)
-    #                 else:
-    #                     if is_user_defined(attr) and do_add(visited, attr):
-    #                         worklist.append(attr)
-
 
     @classmethod
     def _reset_for_repok(cls, iself, pc_len):
@@ -299,7 +283,6 @@ class SEEngine:
     def fill_class_vectors(cls, structure):
         if not is_user_defined(structure):
             return
-
         visited = set()
         visited.add(structure)
         worklist = []
@@ -675,7 +658,7 @@ class SEEngine:
     def check_recursion_limit(cls, obj):
         obj._recursion_depth += 1
         if obj._recursion_depth > cls._recursion_limit:
-            raise MaxDepthException()
+            raise MaxRecursionException()
 
 
     @staticmethod

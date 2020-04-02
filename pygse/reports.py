@@ -65,31 +65,42 @@ def print_list(l: list):
 
 
 def print_formatted_result(function, stats, verbose):
-    if stats.status == Status.OK:
-        print("\n#" + str(stats.number) + " [" + stats.status.name + "]: ")
-        print_list(stats.pathcondition)
-        print("  In self:\n      " + stats.input_self.__repr__())
-        print("  Builded input:\n      " + stats.builded_in_self.__repr__())
-        # print("  Conc In self:\n      " + stats.concrete_input_self.__repr__())
-        print("  Conc end self:\n      " + stats.concrete_end_self.__repr__())
+    verbose = False
+    if verbose:
+        if stats.status != Status.PRUNED:
+            print(get_header_str(stats))
+            print(" Path Condition:\n")
+            print_list(stats.pathcondition)
+            print(" In self:\n        " + stats.input_self.__repr__())
+            print(" Builded input:\n        " + stats.builded_in_self.__repr__())
+            print(" Conc end self:\n        " + stats.concrete_end_self.__repr__())
+        else:
+            print(get_header_str(stats))
+            if stats.exception:
+                print("  Exception: " + str(stats.exception))
     else:
-        print(get_header_str(stats))
-        if stats.exception:
-            print("Exception: " + str(stats.exception))
-        if stats.errors:
-            print_list(stats.errors)
+        print("#" + str(stats.number) + ": " + stats.status.name)
 
 
 def report_statistics(stats):
+    complete_exec = stats.successes + stats.failures
+    pruned = stats.get_amount_pruned()
+
+    assert pruned + complete_exec == stats.total_paths
     print(
         "\n"
-        + str(stats.complete_exec)
+        + str(complete_exec)
         + " of "
         + str(stats.total_paths)
         + " paths explored"
     )
     print(str(stats.successes) + " passed")
-    print(str(stats.failures) + " failures")
-    print(str(stats.pruned_by_depth) + " pruned by depth")
-    print(str(stats.pruned_by_error) + " pruned by error")
-    print(str(stats.pruned_by_repok) + " pruned by repok" + "\n")
+    print(str(stats.failures) + " failed")
+    print(str(pruned) + " pruned")
+    verbose = True
+    if verbose:
+        print(str(stats.pruned_by_depth) + " pruned by depth")
+        print(str(stats.pruned_by_error) + " pruned by error")
+        print(str(stats.pruned_invalid) + " pruned by invalid")
+        print(str(stats.pruned_by_rec_limit) + " pruned by rec limit")
+        print(str(stats.pruned_by_repok) + " pruned by repok" + "\n")

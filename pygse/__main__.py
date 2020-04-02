@@ -10,11 +10,10 @@ from pygse.sut_parser import parse
 from pygse.run_test import run_tests
 from pygse.test_generator import TestCode
 from pygse.stats import Status
-from pygse.engine_errors import CouldNotBuildError
 
-import pygse.proxy as proxy
-import copy
-import sys
+# import pygse.proxy as proxy
+# import copy
+# import sys
 
 
 # a = proxy.IntProxy()
@@ -119,26 +118,25 @@ else:
     create_testfile(filename, module_name, class_name)
 
     SEEngine.initialize(sut, max_depth)
-
     tests_gen = []
+    test_num = 1
+    print("Running tests...\n")
     for run in SEEngine.explore():
         if run:
             print_formatted_result(sut.function, run, True)
             if run.status != Status.PRUNED:
-                if run.builded_in_self:
-                    test = TestCode(sut, run, run.number)
-                    code = test.get_code()
-                    append_to_testfile(filename, code)
-                    tests_gen.append(run.number)
-                    print("\n" + code + "\n")
-        else:
-            print("una corrida retorno None")
+                # test = TestCode(sut, run, run.number)
+                test = TestCode(sut, run, test_num)
+                test_num += 1
+                tests_gen.append(test)
+                append_to_testfile(filename, test.code)
 
+    print("DONE!\n")
     report_statistics(SEEngine.statistics())
 
-    print(tests_gen)
-
     append_line_testfile(filename, "if __name__ == '__main__':")
-    for n in tests_gen:
-        append_line_testfile(filename, "    " + function_name + "_test" + str(n) + "()")
+    for i, n in enumerate(tests_gen):
+        append_line_testfile(
+            filename, "    " + function_name + "_test" + str(i + 1) + "()"
+        )
 
