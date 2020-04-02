@@ -67,9 +67,27 @@ def parse_command_line_args():
     return parser.parse_args()
 
 
-def create_testfile(filename, module_name):
+def remove_instrumented(module_name):
+    x = module_name.split(".")
+    orig = x[2].split("_")
+    return orig[0]
+
+
+def create_testfile(filename, module_name, class_name):
     file = open(filename + ".py", "w")
-    file.write("from " + module_name + " import *\n\n\n")
+    file.write(
+        "from "
+        + remove_instrumented(module_name)
+        + " import Node, "
+        + class_name
+        + "\n\n\n"
+    )
+    file.close()
+
+
+def append_line_testfile(filename, str):
+    file = open(filename + ".py", "a")
+    file.write(str + "\n")
     file.close()
 
 
@@ -95,11 +113,13 @@ else:
     runs = []
     test_number = 1
     foldername = "generated_tests/"
-    filename = foldername + function_name + "_tf"
-    create_testfile(filename, module_name)
+    filename = (
+        foldername + remove_instrumented(module_name) + "_" + function_name + "_tests"
+    )
+    create_testfile(filename, module_name, class_name)
 
     SEEngine.initialize(sut, max_depth)
-    # maybe initialize test generator
+
     tests_gen = []
     for run in SEEngine.explore():
         if run:
@@ -111,11 +131,14 @@ else:
                     append_to_testfile(filename, code)
                     tests_gen.append(run.number)
                     print("\n" + code + "\n")
-                else:
-                    print("run " + str(run.number) + "Could not be builded")
         else:
             print("una corrida retorno None")
 
     report_statistics(SEEngine.statistics())
+
     print(tests_gen)
+
+    append_line_testfile(filename, "if __name__ == '__main__':")
+    for n in tests_gen:
+        append_line_testfile(filename, "    " + function_name + "_test" + str(n) + "()")
 

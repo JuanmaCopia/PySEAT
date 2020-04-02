@@ -66,18 +66,12 @@ def print_list(l: list):
 
 def print_formatted_result(function, stats, verbose):
     if stats.status == Status.OK:
-        print(get_header_str(stats) + get_function_profile_str(function, stats))
-        if not stats.exception:
-            print_list(stats.errors)
-
-            if verbose:
-                print(INDENT + "Symbolic self:    " + stats.input_self.__repr__())
-                print(INDENT + "Symbolic return:  " + stats.returnv.__repr__())
-                print(INDENT + "Self end state:  " + stats.concrete_end_self.__repr__())
-                print(INDENT + "concrete builded self:  " + stats.builded_in_self.__repr__())
-                print(INDENT + "Path Condition:  ")
-                print_list(stats.pathcondition)
-                print("")
+        print("\n#" + str(stats.number) + " [" + stats.status.name + "]: ")
+        print_list(stats.pathcondition)
+        print("  In self:\n      " + stats.input_self.__repr__())
+        print("  Builded input:\n      " + stats.builded_in_self.__repr__())
+        # print("  Conc In self:\n      " + stats.concrete_input_self.__repr__())
+        print("  Conc end self:\n      " + stats.concrete_end_self.__repr__())
     else:
         print(get_header_str(stats))
         if stats.exception:

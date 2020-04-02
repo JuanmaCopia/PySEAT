@@ -2,6 +2,12 @@ import pygse.symbolic_execution_engine as see
 import pygse.proxy as proxy
 
 
+def do_add(s, x):
+    length = len(s)
+    s.add(x)
+    return len(s) != length
+
+
 class Node:
 
     _vector = []
@@ -89,7 +95,7 @@ class Node:
             str_rep += current.to_str()
 
             if current.next:
-                if not LinkedList.do_add(visited, current.next):
+                if not do_add(visited, current.next):
                     str_rep += current.next.to_str(True)
                 else:
                     worklist.append(current.next)
@@ -104,7 +110,7 @@ class LinkedList:
 
     def __init__(self, head: "Node" = None):
         self.head = head
-
+        # Instrumentation instance attributes
         self._head_is_initialized = False
 
         self._generated = False
@@ -167,62 +173,13 @@ class LinkedList:
         return self
 
     def repok(self):
-        return self.acyclic()
-
-    def acyclic(self):
-        if self.head is None:
-            return True
-        visited = set()
-        visited.add(self.head)
-        current = self.head
-        while current.next:
-            if not LinkedList.do_add(visited, current.next):
-                return False
-            current = current.next
         return True
 
     def conservative_repok(self):
-        return self.conservative_acyclic()
-
-    def conservative_acyclic(self):
-        if not self._head_is_initialized:
-            return True
-        if self.head is None:
-            return True
-        visited = set()
-        visited.add(self.head)
-        current = self.head
-
-        if not current._next_is_initialized:
-            return True
-        while current.next:
-            if not LinkedList.do_add(visited, current.next):
-                return False
-            current = current.next
-            if not current._next_is_initialized:
-                return True
         return True
 
     def instrumented_repok(self):
-        return self.instrumented_acyclic()
-
-    def instrumented_acyclic(self):
-        if self._get_head() is None:
-            return True
-        visited = set()
-        visited.add(self._get_head())
-        current = self._get_head()
-        while current._get_next():
-            if not LinkedList.do_add(visited, current._get_next()):
-                return False
-            current = current._get_next()
         return True
-
-    @staticmethod
-    def do_add(s, x):
-        length = len(s)
-        s.add(x)
-        return len(s) != length
 
     def swap_node(self):
         head = self._get_head()
@@ -243,20 +200,7 @@ class LinkedList:
                 t._set_next(head)
                 self._set_head(t)
 
-    # def con_is_circular(self):
-    #     self.unmark_all()
-    #     current = self
-    #     while current and not current._marked:
-    #         current._marked = True
-    #         # This make the repok conservative
-    #         if not current._next_is_initialized:
-    #             return True
-    #         current = current.next
-    #         if current is None:
-    #             return False
-    #     return True
-
     def __repr__(self):
-        if not self.head:
-            return "Empty"
-        return self.head.__repr__()
+        if self.head:
+            return self.head.__repr__()
+        return "EmptyList"

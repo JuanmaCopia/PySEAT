@@ -6,7 +6,6 @@ dynammically allocated structures with the use of lazy initialization.
 """
 
 import copy
-from collections.abc import Iterable
 
 from pygse.branching_steps import LazyStep, ConditionalStep
 from pygse.stats import Status, ExecutionStats, GlobalStats
@@ -14,7 +13,6 @@ from pygse.engine_errors import UnsatBranchError, MissingTypesError, RepOkFailEx
 from pygse.engine_errors import MaxDepthException, CouldNotBuildError, RepokNotFoundError
 from pygse.helpers import do_add, is_user_defined, get_initialized_name
 import pygse.proxy as proxy
-import signal
 
 # TODO: Check in lazy initializations that the object has to be
 # a tracked one, that is to say or a parameter, o the self, or
@@ -26,11 +24,6 @@ import signal
 # TODO: Check what happen with objects like list and dict... in instanciation
 # method
 # TODO: Support other symbolic types like list, tuple, dict, slices
-
-
-def timeout_handler(signum, frame):
-    raise Exception("Timeout")
-
 
 class SEEngine:
     """Symbolic Execution engine.
@@ -164,8 +157,6 @@ class SEEngine:
         args = args[1:]
         method = getattr(cls._current_self, cls._sut.function.__name__)
 
-        # signal.signal(signal.SIGALRM, timeout_handler)
-        # signal.alarm(1)
         try:
             if args:
                 returnv = method(*args)
@@ -188,11 +179,6 @@ class SEEngine:
         else:
             status = Status.OK
         finally:
-            # signal.alarm(0)
-            # if exception:
-            #     raise exception
-            # signal.alarm(0)
-            # signal.signal(signal.SIGALRM, signal.SIG_IGN)
             if status == Status.PRUNED:
                 return ExecutionStats(0, status, exception)
 
@@ -213,44 +199,41 @@ class SEEngine:
         stats.pathcondition = path
         stats.model = model
 
-        # Returned Value
+        end_self = cls._current_self
+        stats.concrete_end_self = cls.build_partial_struture(end_self, model)
+        # Input self structure
+        input_self = cls._lazy_backups[cls._sut.sclass].get_entity()
+        stats.builded_in_self = cls.build_partial_struture(input_self, model)
+
+        stats.input_self = input_self
         stats.returnv = returnv
         stats.concrete_return = cls.concretize(returnv, model)
-        # Final state of self structure
-        end_self = cls._current_self
-        stats.concrete_end_self = cls.concretize(end_self, model)
         stats.end_self = end_self
-        # Input self structure (not builded)
-        input_self = cls._lazy_backups[cls._sut.sclass].get_entity()
-        stats.concrete_input_self = cls.concretize(input_self, model)
-        stats.input_self = input_self
+
         # input arguments
         cls.retrieve_inputs(args)
         if args:
             stats.concrete_args = cls.concretize(args, model)
-
-        # Builded input self
-        stats.builded_in_self = cls.build_input_self(input_self, model)
         return stats
 
-    @classmethod
-    def remove_initialized_nones(cls, iself):
-        visited = set()
-        visited.add(iself)
-        worklist = []
-        worklist.append(iself)
-        while worklist:
-            current = worklist.pop(0)
-            if is_user_defined(current):
-                for name in current.__dict__:
-                    attr = getattr(current, name)
-                    if attr is None:
-                        init_name = get_initialized_name(name)
-                        if hasattr(current, init_name):
-                            setattr(current, init_name, False)
-                    else:
-                        if is_user_defined(attr) and do_add(visited, attr):
-                            worklist.append(attr)
+    # @classmethod
+    # def remove_initialized_nones(cls, iself):
+    #     visited = set()
+    #     visited.add(iself)
+    #     worklist = []
+    #     worklist.append(iself)
+    #     while worklist:
+    #         current = worklist.pop(0)
+    #         if is_user_defined(current):
+    #             for name in current.__dict__:
+    #                 attr = getattr(current, name)
+    #                 if attr is None:
+    #                     init_name = get_initialized_name(name)
+    #                     if hasattr(current, init_name):
+    #                         setattr(current, init_name, False)
+    #                 else:
+    #                     if is_user_defined(attr) and do_add(visited, attr):
+    #                         worklist.append(attr)
 
 
     @classmethod
@@ -261,9 +244,10 @@ class SEEngine:
         cls.fill_class_vectors(iself)
 
     @classmethod
-    def build_input_self(cls, input_self, model):
-        if input_self.repok():
-            return cls.concretize(input_self, model)
+    def build_partial_struture(cls, input_self, model):
+        concretei = cls.concretize(input_self, model)
+        if concretei.repok():
+            return concretei
 
         backup_bp = copy.deepcopy(cls._branching_points)
         cls._branching_points = []
@@ -314,7 +298,6 @@ class SEEngine:
                 if is_user_defined(attr) and do_add(visited, attr):
                     worklist.append(attr)
 
-
     @staticmethod
     def keep_first_n_items(l, n):
         new_list = []
@@ -335,13 +318,12 @@ class SEEngine:
         except RepOkFailException:
             pass
         except AttributeError as e:
-            class_name = instance.__class__.__name__ + str(e)
-            raise RepokNotFoundError(class_name + " doesn't have a intrumented_repok() method")
+            raise RepokNotFoundError(str(e))
         else:
             if result:
                 model = proxy.smt.get_model(cls._path_condition)
                 new_object = cls.concretize(instance, model)
-                #assert new_object.repok()
+                assert new_object.repok()
                 return new_object
             return None
 
@@ -350,19 +332,6 @@ class SEEngine:
         for i, arg in enumerate(args_list):
             if proxy.is_user_defined(arg):
                 args_list[i] = cls._lazy_backups[type(arg)].get_entity()
-
-    # @classmethod
-    # def _expected(cls, exception):
-    #     """Checks whether an exception is expected or not.
-
-    #     Args:
-    #         exception (Exception): A raised exception during
-    #             the execution of a function.
-
-    #     Returns:
-    #         True if expected, False otherwise.
-    #     """
-    #     return isinstance(exception, ValueError)
 
     @classmethod
     def _check_repok(cls, instance):
@@ -419,49 +388,6 @@ class SEEngine:
                     setattr(symbolic, attr_name, cls._concretize(attr, model, visited))
             return symbolic
         return symbolic
-
-
-    # concrete = copy.deepcopy(symbolic)
-    # visited = set()
-    # visited.add(concrete)
-    # worklist = []
-    # worklist.append(concrete)
-    # while worklist:
-    #     current = worklist.pop(0)
-
-
-    #     if concrete is None:
-    #         return None
-    #     elif proxy.is_symbolic(concrete):
-    #         return symbolic.concretize(model)
-    #     elif isinstance(concrete, list):
-    #         for i, x in enumerate(concrete):
-    #             concrete[i] = cls._concretize(symbolic[i], model, visited, x)
-    #         return concrete
-
-    #     elif proxy.is_user_defined(current):
-
-    #         for name, value in current.__dict__.items():
-    #             sym_attr = symbolic.__dict__[name]
-    #             conc_attr = value
-    #             if not callable(sym_attr) and do_add(visited, conc_attr):
-    #                 setattr(current, name, cls._concretize(sym_attr, model, visited, conc_attr))
-    #         return concrete
-    #     return concrete
-
-    # visited = set()
-    #     visited.add(structure)
-    #     worklist = []
-    #     worklist.append(structure)
-    #     while worklist:
-    #         current = worklist.pop(0)
-    #         current._vector.append(current)
-    #         for name in current.__dict__:
-    #             attr = None
-    #             if hasattr(current, name):
-    #                 attr = getattr(current, name)
-    #             if is_user_defined(attr) and do_add(visited, attr):
-    #                 worklist.append(attr)
 
     @classmethod
     def _remove_explored_branches(cls):

@@ -1,6 +1,5 @@
 import pygse.symbolic_execution_engine as see
 import pygse.proxy as proxy
-import sys
 
 
 class Node:
@@ -286,27 +285,6 @@ class DoublyLinkedList:
 
     def is_empty(self):
         return self.head is None
-
-    def print_reverse(self):
-        if self.is_empty():
-            print("Nothing to display")
-        else:
-            curr = self.tail
-            while curr is not None:
-                sys.stdout.write(str(curr.data) + " ")
-                curr = curr.prev
-            print("")
-
-    # print all the items
-    def printlist(self):
-        if self.is_empty():
-            print("Nothing to display")
-        else:
-            curr = self.head
-            while curr is not None:
-                sys.stdout.write(str(curr.data) + " ")
-                curr = curr.next
-            print("")
 
     @staticmethod
     def do_add(s, x):
