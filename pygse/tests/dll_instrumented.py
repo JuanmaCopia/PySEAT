@@ -345,13 +345,15 @@ class DoublyLinkedList:
 
         if not self._head_is_initialized or not self._tail_is_initialized:
             return True
-        if not self.head._prev_is_initialized or not self.tail._next_is_initialized:
-            return True
 
         if self.head is None and self.tail is None:
             return True
         if self.head is None or self.tail is None:
-            return False
+            return
+
+        if not self.head._prev_is_initialized or not self.tail._next_is_initialized:
+            return True
+
         if self.head.prev is not None or self.tail.next is not None:
             return False
 

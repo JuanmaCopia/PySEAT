@@ -11,7 +11,7 @@ from pygse.branching_steps import LazyStep, ConditionalStep
 from pygse.stats import Status, ExecutionStats, GlobalStats
 from pygse.engine_errors import UnsatBranchError, MissingTypesError, RepOkFailException
 from pygse.engine_errors import MaxDepthException, CouldNotBuildError, RepokNotFoundError
-from pygse.helpers import do_add, is_user_defined, get_initialized_name
+from pygse.helpers import do_add, is_user_defined, get_initialized_name, set_to_initialized
 import pygse.proxy as proxy
 
 # TODO: Check in lazy initializations that the object has to be
@@ -105,6 +105,7 @@ class SEEngine:
         """
         cls._branching_points = []
         unexplored_paths = True
+
         while unexplored_paths:
             cls._reset_exploration()
 
@@ -191,29 +192,44 @@ class SEEngine:
 
     @classmethod
     def build_stats(cls, status, args, returnv):
-        stats = ExecutionStats(cls._globalstats.complete_exec + 1, status)
-
         # Path condition and model
         path = cls._path_condition
         model = proxy.smt.get_model(path)
-        stats.pathcondition = path
-        stats.model = model
 
-        end_self = cls._current_self
-        stats.concrete_end_self = cls.build_partial_struture(end_self, model)
-        # Input self structure
+        # Input Self
         input_self = cls._lazy_backups[cls._sut.sclass].get_entity()
-        stats.builded_in_self = cls.build_partial_struture(input_self, model)
+        builded_in_self = cls.build_partial_struture(input_self, model)
 
-        stats.input_self = input_self
-        stats.returnv = returnv
-        stats.concrete_return = cls.concretize(returnv, model)
-        stats.end_self = end_self
+        if builded_in_self is None:
+            return ExecutionStats(cls._globalstats.complete_exec + 1, Status.PRUNED)
 
         # input arguments
         cls.retrieve_inputs(args)
+        args = cls.concretize(args, model)
+
+        # Execution of method with concrete input
+        end_self = copy.deepcopy(builded_in_self)
+        input_args = copy.deepcopy(args)
+        method = getattr(end_self, cls._sut.function.__name__)
         if args:
-            stats.concrete_args = cls.concretize(args, model)
+            returnv = method(*input_args)
+        else:
+            returnv = method()
+
+        if end_self.repok():
+            status = Status.OK
+        else:
+            status = Status.FAIL
+
+        stats = ExecutionStats(cls._globalstats.complete_exec + 1, status)
+        stats.concrete_args = args
+        stats.pathcondition = path
+        stats.model = model
+        stats.concrete_end_self = end_self
+        stats.builded_in_self = builded_in_self
+        stats.input_self = input_self
+        stats.returnv = returnv
+        stats.concrete_return = cls.concretize(returnv, model)
         return stats
 
     # @classmethod
@@ -241,6 +257,9 @@ class SEEngine:
         cls._path_condition = cls.keep_first_n_items(cls._path_condition, pc_len)
         cls._current_bp = 0
         cls._current_depth = 0
+        for k in cls._sut.class_params_map.keys():
+            k._vector = []
+            cls._lazy_backups[k] = LazyBackup()
         cls.fill_class_vectors(iself)
 
     @classmethod
@@ -278,9 +297,6 @@ class SEEngine:
 
     @classmethod
     def fill_class_vectors(cls, structure):
-        for k in cls._sut.class_params_map.keys():
-            k._vector = []
-            cls._lazy_backups[k] = LazyBackup()
         if not is_user_defined(structure):
             return
 
@@ -381,8 +397,9 @@ class SEEngine:
                 symbolic[i] = cls._concretize(x, model, visited)
             return symbolic
         elif proxy.is_user_defined(symbolic):
-
+            setattr(symbolic, "_recursion_depth", 0)
             for attr_name, value in symbolic.__dict__.items():
+                set_to_initialized(symbolic, attr_name)
                 attr = value
                 if not callable(attr) and do_add(visited, attr):
                     setattr(symbolic, attr_name, cls._concretize(attr, model, visited))

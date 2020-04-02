@@ -35,19 +35,21 @@ def is_user_defined(obj):
     return hasattr(obj, "_vector")
 
 
-def is_initialized(structure, attr_name):
+def set_to_initialized(structure, attr_name):
     init_name = get_initialized_name(attr_name)
     if hasattr(structure, init_name):
-        if getattr(structure, init_name) == True:
-            return True
-        else:
-            return False
-    assert False
+        setattr(structure, init_name, True)
+
+
+# def is_initialized(structure, attr_name):
+#     init_name = get_initialized_name(attr_name)
+#     if hasattr(structure, init_name):
+#         if getattr(structure, init_name) == True:
+#             return True
+#         else:
+#             return False
+#     assert False
 
 
 def get_initialized_name(attr_name):
     return "_" + attr_name + "_is_initialized"
-
-
-def timeout_handler(signum, frame):
-    raise Exception("Timeout")

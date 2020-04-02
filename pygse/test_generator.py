@@ -3,7 +3,7 @@
 """
 
 import pygse.proxy as proxy
-from pygse.helpers import is_special_attr, is_initialized, is_user_defined
+from pygse.helpers import is_special_attr, is_user_defined
 
 
 class TestCode:
@@ -53,7 +53,7 @@ class TestCode:
         self._add_line("   " + self._run_stats.builded_in_self.__repr__())
         self._add_line("Return:")
         self._add_line("   " + self._run_stats.concrete_return.__repr__())
-        #self._add_line("End Self:\n" + self._run_stats.concrete_end_self.__repr__())
+        # self._add_line("End Self:\n" + self._run_stats.concrete_end_self.__repr__())
         self._add_line("'''")
 
     def gen_test_header(self):
@@ -80,7 +80,7 @@ class TestCode:
 
     def gen_returnv_assert(self, returnv):
         if proxy.is_user_defined(returnv):
-            #self.create_return_assert_code(returnv._identifier)
+            # self.create_return_assert_code(returnv._identifier)
             self.gen_structure_assertions(returnv, "returnv")
         else:
             if returnv:
@@ -99,16 +99,9 @@ class TestCode:
 
             userdef = []
             for field, value in attr.items():
-                # if value is None:
-                #     if not is_initialized(field, instance):
-                #         continue
-                #     self.create_assert_code(identifier, field, value)
                 if proxy.is_user_defined(value):
                     userdef.append((field, value))
-                    # self.create_assert_code(identifier, field, value._identifier)
                 else:
-                    if value is None and not is_initialized(instance, field):
-                        continue
                     self.create_assert_code(identifier, field, value)
 
             for field, value in userdef:
@@ -122,7 +115,6 @@ class TestCode:
             )
         else:
             self._add_line(self_id + "." + method_name + "(" + args_ids + ")")
-
 
     @classmethod
     def get_attr_value_dict(cls, instance):
