@@ -24,6 +24,7 @@ class Node:
         self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
+        self._recursion_depth = 0
 
     def _get_elem(self):
         if not self._elem_is_initialized:
@@ -41,6 +42,8 @@ class Node:
             self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        else:
+            see.SEEngine.check_recursion_limit(self.next)
         return self.next
 
     def _set_next(self, value):
@@ -116,6 +119,7 @@ class LinkedList:
         self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
+        self._recursion_depth = 0
 
     def _get_head(self):
         if not self._head_is_initialized and see.SEEngine.is_tracked(self):
@@ -123,6 +127,8 @@ class LinkedList:
             self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        else:
+            see.SEEngine.check_recursion_limit(self.head)
         return self.head
 
     def _set_head(self, value):

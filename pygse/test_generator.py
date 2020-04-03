@@ -47,11 +47,11 @@ class TestCode:
     def gen_test_comment(self):
         self._add_line("'''")
         self._add_line("Self:")
-        self._add_line("   " + self._run_stats.builded_in_self.__repr__())
+        self._add_line("    " + self._run_stats.builded_in_self.__repr__())
         self._add_line("Return:")
-        self._add_line("   " + self._run_stats.concrete_return.__repr__())
+        self._add_line("    " + self._run_stats.concrete_return.__repr__())
         self._add_line("End Self:")
-        self._add_line("   " + self._run_stats.concrete_end_self.__repr__())
+        self._add_line("    " + self._run_stats.concrete_end_self.__repr__())
         self._add_line("'''")
 
     def gen_test_header(self):

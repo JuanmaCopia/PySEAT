@@ -119,19 +119,19 @@ else:
 
     SEEngine.initialize(sut, max_depth)
     tests_gen = []
-    test_num = 1
+    test_num = 0
     print("Running tests...\n")
     for run in SEEngine.explore():
         if run:
             print_formatted_result(sut.function, run, True)
             if run.status != Status.PRUNED:
                 # test = TestCode(sut, run, run.number)
-                test = TestCode(sut, run, test_num)
                 test_num += 1
+                test = TestCode(sut, run, test_num)
                 tests_gen.append(test)
                 append_to_testfile(filename, test.code)
 
-    print("DONE!\n")
+    print("DONE! " + str(test_num) + " Tests were generated")
     report_statistics(SEEngine.statistics())
 
     append_line_testfile(filename, "if __name__ == '__main__':")

@@ -18,8 +18,11 @@ class MaxRecursionException(Error):
     is reached.
     """
 
-    def __init__(self):
-        self.message = "Max exploration recursion reached"
+    def __init__(self, message=None):
+        if message:
+            self.message = message
+        else:
+            self.message = "Max exploration recursion reached"
 
 
 class MissingTypesError(Error):

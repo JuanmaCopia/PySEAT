@@ -33,12 +33,13 @@ class Node:
         self._data_is_initialized = True
 
     def _get_next(self):
-        see.SEEngine.check_recursion_limit(self)
         if not self._next_is_initialized and see.SEEngine.is_tracked(self):
             self._next_is_initialized = True
             self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        else:
+            see.SEEngine.check_recursion_limit(self.next)
         return self.next
 
     def _set_next(self, value):
@@ -46,12 +47,13 @@ class Node:
         self._next_is_initialized = True
 
     def _get_prev(self):
-        see.SEEngine.check_recursion_limit(self)
         if not self._prev_is_initialized and see.SEEngine.is_tracked(self):
             self._prev_is_initialized = True
             self.prev = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        else:
+            see.SEEngine.check_recursion_limit(self.prev)
         return self.prev
 
     def _set_prev(self, value):
@@ -66,7 +68,7 @@ class Node:
         ps = None
         if self._prev_is_initialized:
             if self.prev:
-                ps = self.prev._identifier[-1]
+                ps = self.prev._identifier
             else:
                 ps = "None"
         else:
@@ -75,7 +77,7 @@ class Node:
         ns = None
         if self._next_is_initialized:
             if self.next:
-                ns = self.next._identifier[-1]
+                ns = self.next._identifier
             else:
                 ns = "None"
         else:
@@ -112,12 +114,13 @@ class DoublyLinkedList:
         self._recursion_depth = 0
 
     def _get_head(self):
-        see.SEEngine.check_recursion_limit(self)
         if not self._head_is_initialized and see.SEEngine.is_tracked(self):
             self._head_is_initialized = True
             self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.conservative_repok(), self)
+            see.SEEngine.save_lazy_step(Node)
+        else:
+            see.SEEngine.check_recursion_limit(self.head)
         return self.head
 
     def _set_head(self, value):
@@ -125,12 +128,13 @@ class DoublyLinkedList:
         self._head_is_initialized = True
 
     def _get_tail(self):
-        see.SEEngine.check_recursion_limit(self)
         if not self._tail_is_initialized and see.SEEngine.is_tracked(self):
             self._tail_is_initialized = True
             self.tail = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        else:
+            see.SEEngine.check_recursion_limit(self.tail)
         return self.tail
 
     def _set_tail(self, value):

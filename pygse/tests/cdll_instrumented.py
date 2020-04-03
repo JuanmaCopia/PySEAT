@@ -39,6 +39,8 @@ class Node:
             self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        else:
+            see.SEEngine.check_recursion_limit(self.next)
         return self.next
 
     def _set_next(self, value):
@@ -52,6 +54,8 @@ class Node:
             self.prev = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        else:
+            see.SEEngine.check_recursion_limit(self.prev)
         return self.prev
 
     def _set_prev(self, value):
@@ -66,7 +70,7 @@ class Node:
         ps = None
         if self._prev_is_initialized:
             if self.prev:
-                ps = self.prev._identifier[-1]
+                ps = self.prev._identifier
             else:
                 ps = "None"
         else:
@@ -75,7 +79,7 @@ class Node:
         ns = None
         if self._next_is_initialized:
             if self.next:
-                ns = self.next._identifier[-1]
+                ns = self.next._identifier
             else:
                 ns = "None"
         else:
@@ -116,6 +120,8 @@ class CDLinkedList:
             self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        else:
+            see.SEEngine.check_recursion_limit(self.head)
         return self.head
 
     def _set_head(self, value):

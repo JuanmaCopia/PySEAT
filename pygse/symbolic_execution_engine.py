@@ -11,16 +11,12 @@ from pygse.branching_steps import LazyStep, ConditionalStep
 from pygse.stats import Status, ExecutionStats, GlobalStats
 from pygse.engine_errors import UnsatBranchError, MissingTypesError
 from pygse.engine_errors import RepOkFailException, MaxRecursionException
-from pygse.engine_errors import MaxDepthException, CouldNotBuildError
-from pygse.engine_errors import RepokNotFoundError
+from pygse.engine_errors import MaxDepthException, RepokNotFoundError
 from pygse.helpers import do_add, is_user_defined
 from pygse.helpers import set_to_initialized
 import pygse.proxy as proxy
 
-# TODO: Check in lazy initializations that the object has to be
-# a tracked one, that is to say or a parameter, o the self, or
-# a previously created one. New objects created in the method
-# under test should be treated as initialized in alll its fields
+
 # TODO: Manage exceptions raised when the types are not specified or
 # incorrectly specified
 # TODO: Support preconditions and posconditions
@@ -97,7 +93,6 @@ class SEEngine:
         cls._max_depth = max_depth
         cls._real_to_proxy = {x.emulated_class: x for x in proxy.ProxyObject.__subclasses__()}
         cls._current_self = None
-        cls._recursion_limit = 50
 
     @classmethod
     def explore(cls):
@@ -129,6 +124,7 @@ class SEEngine:
         cls._path_condition = []
         cls._current_bp = 0
         cls._current_depth = 0
+        cls._recursion_limit = 10
         for k in cls._sut.class_params_map.keys():
             k._vector = []
             k._id = 0
@@ -241,6 +237,7 @@ class SEEngine:
         cls._path_condition = cls.keep_first_n_items(cls._path_condition, pc_len)
         cls._current_bp = 0
         cls._current_depth = 0
+        cls._recursion_limit = 200
         for k in cls._sut.class_params_map.keys():
             k._vector = []
             cls._lazy_backups[k] = LazyBackup()
@@ -289,6 +286,7 @@ class SEEngine:
         worklist.append(structure)
         while worklist:
             current = worklist.pop(0)
+            setattr(current, "_recursion_depth", 0)
             current._vector.append(current)
             for name in current.__dict__:
                 attr = None
@@ -316,8 +314,10 @@ class SEEngine:
             pass
         except RepOkFailException:
             pass
+        except MaxRecursionException:
+            raise MaxRecursionException("Max recursion reached on repok")
         except AttributeError as e:
-            raise RepokNotFoundError(str(e))
+            raise e
         else:
             if result:
                 model = proxy.smt.get_model(cls._path_condition)
@@ -656,9 +656,10 @@ class SEEngine:
 
     @classmethod
     def check_recursion_limit(cls, obj):
-        obj._recursion_depth += 1
-        if obj._recursion_depth > cls._recursion_limit:
-            raise MaxRecursionException()
+        if obj is not None:
+            obj._recursion_depth += 1
+            if obj._recursion_depth > cls._recursion_limit:
+                raise MaxRecursionException()
 
 
     @staticmethod

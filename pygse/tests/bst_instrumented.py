@@ -50,6 +50,8 @@ class Node:
             self.right = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        else:
+            see.SEEngine.check_recursion_limit(self.right)
         return self.right
 
     def _set_right(self, value):
@@ -63,6 +65,8 @@ class Node:
             self.left = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        else:
+            see.SEEngine.check_recursion_limit(self.left)
         return self.left
 
     def _set_left(self, value):
@@ -76,6 +80,8 @@ class Node:
             self.parent = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        else:
+            see.SEEngine.check_recursion_limit(self.parent)
         return self.parent
 
     def _set_parent(self, value):
@@ -118,6 +124,8 @@ class BST:
             self.root = see.SEEngine.get_next_lazy_step(Node, Node._vector)
             see.SEEngine.save_lazy_step(Node)
             see.SEEngine.ignore_if(not self.conservative_repok(), self)
+        else:
+            see.SEEngine.check_recursion_limit(self.root)
         return self.root
 
     def _set_root(self, value):
