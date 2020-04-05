@@ -15,7 +15,7 @@ class Status(Enum):
 
 
 class ExecutionStats:
-    def __init__(self, exec_number: int, status=None, exception=None):
+    def __init__(self, exec_number: int, status=None, exception=None, pruned_s=None):
 
         self.input_self = None
         self.concrete_input_self = None
@@ -32,6 +32,7 @@ class ExecutionStats:
         self.errors = []
         self.number = exec_number
         self.status = status
+        self.pruned_structure = pruned_s
 
 
 class GlobalStats:

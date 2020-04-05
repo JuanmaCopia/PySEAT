@@ -44,7 +44,6 @@ class Node:
         self._data_is_initialized = True
 
     def _get_right(self):
-        see.SEEngine.check_recursion_limit(self)
         if not self._right_is_initialized and see.SEEngine.is_tracked(self):
             self._right_is_initialized = True
             self.right = see.SEEngine.get_next_lazy_step(Node, Node._vector)
@@ -59,7 +58,6 @@ class Node:
         self._right_is_initialized = True
 
     def _get_left(self):
-        see.SEEngine.check_recursion_limit(self)
         if not self._left_is_initialized and see.SEEngine.is_tracked(self):
             self._left_is_initialized = True
             self.left = see.SEEngine.get_next_lazy_step(Node, Node._vector)
@@ -74,7 +72,6 @@ class Node:
         self._left_is_initialized = True
 
     def _get_parent(self):
-        see.SEEngine.check_recursion_limit(self)
         if not self._parent_is_initialized and see.SEEngine.is_tracked(self):
             self._parent_is_initialized = True
             self.parent = see.SEEngine.get_next_lazy_step(Node, Node._vector)
@@ -88,9 +85,6 @@ class Node:
         self.parent = value
         self._parent_is_initialized = True
 
-    def __repr__(self):
-        return str(self.data) + "\n"
-
     def repok(self):
         return True
 
@@ -99,6 +93,9 @@ class Node:
 
     def instrumented_repok(self):
         return True
+
+    def __repr__(self):
+        return self.data.__repr__()
 
 
 class BST:
@@ -118,7 +115,6 @@ class BST:
         self._recursion_depth = 0
 
     def _get_root(self):
-        see.SEEngine.check_recursion_limit(self)
         if not self._root_is_initialized and see.SEEngine.is_tracked(self):
             self._root_is_initialized = True
             self.root = see.SEEngine.get_next_lazy_step(Node, Node._vector)
@@ -141,29 +137,6 @@ class BST:
         visited.add(self.root)
         return self.is_BST(self.root, INT_MIN, INT_MAX, visited)
 
-    def is_BST(self, node, min, max, visited):
-        if node is None:
-            return True
-        if (
-            node.data <= min
-            or node.data >= max
-            or (node is not self.root and node.parent is None)
-            or (node.parent is not None and do_add(visited, node.parent))
-            or (
-                node.left is not None
-                and (not do_add(visited, node.left) or node.left.parent is not node)
-            )
-            or (
-                node.right is not None
-                and (not do_add(visited, node.right) or node.right.parent is not node)
-            )
-        ):
-            return False
-
-        return self.is_BST(node.left, min, node.data, visited) and self.is_BST(
-            node.right, node.data, max, visited
-        )
-
     def conservative_repok(self):
         if not self._root_is_initialized:
             return True
@@ -180,38 +153,6 @@ class BST:
         visited.add(self.root)
         return self.conservative_is_BST(self.root, INT_MIN, INT_MAX, visited)
 
-    def conservative_is_BST(self, node, min, max, visited):
-        if node is None:
-            return True
-
-        if (
-            not node._data_is_initialized or
-            not node._parent_is_initialized or
-            not node._right_is_initialized or
-            not node._left_is_initialized
-        ):
-            return True
-
-        if (
-            node.data <= min
-            or node.data >= max
-            or (node is not self.root and node.parent is None)
-            or (node.parent is not None and do_add(visited, node.parent))
-            or (
-                node.left is not None
-                and (not do_add(visited, node.left) or node.left.parent is not node)
-            )
-            or (
-                node.right is not None
-                and (not do_add(visited, node.right) or node.right.parent is not node)
-            )
-        ):
-            return False
-
-        return self.conservative_is_BST(node.left, min, node.data, visited) and self.conservative_is_BST(
-            node.right, node.data, max, visited
-        )
-
     def instrumented_repok(self):
         if self._get_root() is None:
             return True
@@ -221,23 +162,96 @@ class BST:
         visited.add(self._get_root())
         return self.instrumented_is_BST(self._get_root(), INT_MIN, INT_MAX, visited)
 
+    def is_BST(self, node, min, max, visited):
+        if node is None:
+            return True
+        if node is not self.root:
+            if node.parent is None:
+                return False
+            if node.parent.right is not node and node.parent.left is not node:
+                return False
+
+        if node.left is not None:
+            if not do_add(visited, node.left) or node.left.parent is not node:
+                return False
+
+        if node.right is not None:
+            if not do_add(visited, node.right) or node.right.parent is not node:
+                return False
+
+        if node.data <= min or node.data >= max:
+            return False
+
+        return self.is_BST(node.left, min, node.data, visited) and self.is_BST(
+            node.right, node.data, max, visited
+        )
+
+    def conservative_is_BST(self, node, min, max, visited):
+        if node is None:
+            return True
+
+        if node is not self.root:
+            if not node._parent_is_initialized:
+                return
+
+            if node.parent is None:
+                return False
+
+            if not node.parent._right_is_initialized or not node.parent._left_is_initialized:
+                return True
+
+            if node.parent.right is not node and node.parent.left is not node:
+                return False
+
+        if not node._left_is_initialized:
+            return True
+
+        if node.left is not None:
+            if not node.left._parent_is_initialized:
+                return True
+            if not do_add(visited, node.left) or node.left.parent is not node:
+                return False
+
+        if not node._right_is_initialized:
+            return True
+
+        if node.right is not None:
+
+            if not node.right._parent_is_initialized:
+                return True
+
+            if not do_add(visited, node.right) or node.right.parent is not node:
+                return False
+
+        if not node._data_is_initialized:
+            return True
+
+        if node.data <= min or node.data >= max:
+            return False
+
+        return self.conservative_is_BST(node.left, min, node.data, visited) and self.conservative_is_BST(
+            node.right, node.data, max, visited
+        )
+
     def instrumented_is_BST(self, node, min, max, visited):
         if node is None:
             return True
-        if (
-            node._get_data() <= min
-            or node._get_data() >= max
-            or (node is not self._get_root() and node._get_parent() is None)
-            or (node._get_parent() is not None and do_add(visited, node._get_parent()))
-            or (
-                node._get_left() is not None
-                and (not do_add(visited, node._get_left()) or node._get_left()._get_parent() is not node)
-            )
-            or (
-                node._get_right() is not None
-                and (not do_add(visited, node._get_right()) or node._get_right()._get_parent() is not node)
-            )
-        ):
+
+        if node is not self._get_root():
+            if node._get_parent() is None:
+                return False
+            if node._get_parent()._get_right() is not node and node._get_parent()._get_left() is not node:
+                return False
+
+        if node._get_left() is not None:
+            if not do_add(visited, node._get_left()) or node._get_left()._get_parent() is not node:
+                return False
+
+        if node._get_right() is not None:
+            if not do_add(visited, node._get_right()) or node._get_right()._get_parent() is not node:
+                return False
+
+        if node._get_data() <= min or node._get_data() >= max:
             return False
 
         return self.instrumented_is_BST(node._get_left(), min, node._get_data(), visited) and self.instrumented_is_BST(
@@ -403,29 +417,54 @@ class BST:
             return self._search(data, cur_node.right)
         return False
 
+    def to_str(self, node, visited):
+        """Internal method for ASCII art."""
+        label = node.__repr__()
+        if node.left is None:
+            if node._right_is_initialized:
+                left_lines, left_pos, left_width = [], 0, 0
+            else:
+                left_lines, left_pos, left_width = ["CL"], 0, 0
+        else:
+            if do_add(visited, node.left):
+                left_lines, left_pos, left_width = self.to_str(node.left, visited)
+            else:
+                left_lines, left_pos, left_width = [str(node.left.data) + "*"], 0, 0
+        if node.right is None:
+            if node._right_is_initialized:
+                right_lines, right_pos, right_width = [], 0, 0
+            else:
+                right_lines, right_pos, right_width = ["CL"], 0, 0
+        else:
+            if do_add(visited, node.right):
+                right_lines, right_pos, right_width = self.to_str(node.right, visited)
+            else:
+                right_lines, right_pos, right_width = [str(node.right.data) + "*"], 0, 0
+        middle = max(right_pos + left_width - left_pos + 1, len(label), 2)
+        pos = left_pos + middle // 2
+        width = left_pos + middle + right_width - right_pos
+        while len(left_lines) < len(right_lines):
+            left_lines.append(' ' * left_width)
+        while len(right_lines) < len(left_lines):
+            right_lines.append(' ' * right_width)
+        if (middle - len(label)) % 2 == 1 and node.parent is not None and \
+           node is node.parent.left and len(label) < middle:
+            label += '.'
+        label = label.center(middle, '.')
+        if label[0] == '.':
+            label = ' ' + label[1:]
+        if label[-1] == '.':
+            label = label[:-1] + ' '
+        lines = [' ' * left_pos + label + ' ' * (right_width - right_pos),
+                 ' ' * left_pos + '/' + ' ' * (middle-2) +
+                 '\\' + ' ' * (right_width - right_pos)] + \
+                [left_line + ' ' * (width - left_width - right_width) + right_line for left_line, right_line in zip(left_lines, right_lines)]
+        return lines, pos, width
+
     def __repr__(self):
-        if not self.root:
-            return "Empty"
+        if self.root is None:
+            return '<empty tree>'
         visited = set()
         visited.add(self.root)
-        return self.to_str(self.root, visited, "")
-
-    def to_str(self, node, visited, indent):
-        str_rep = ""
-        indent2 = "      "
-
-        if node is None:
-            return indent + "-->" + "None\n"
-
-        if not node._right_is_initialized:
-            str_rep += indent + indent2 + "-->" + "CLOUD\n"
-        else:
-            str_rep += self.to_str(node.right, visited, indent + indent2)
-
-        str_rep += indent + "-->" + node.__repr__()
-
-        if not node._left_is_initialized:
-            str_rep += indent + indent2 + "-->" + "CLOUD\n"
-        else:
-            str_rep += self.to_str(node.left, visited, indent + indent2)
-        return str_rep
+        s = '\n'.join(self.to_str(self.root, visited)[0])
+        return "\n" + s

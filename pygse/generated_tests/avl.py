@@ -8,7 +8,7 @@ def do_add(s, x):
     return len(s) != length
 
 
-class Node(object):
+class Node():
     """A node in the AVL tree."""
 
     def __init__(self, parent, k):
@@ -162,14 +162,14 @@ def update_height(node):
     node.height = max(height(node.left), height(node.right)) + 1
 
 
-class AVL(object):
+class AVL():
     """
     AVL binary search tree implementation.
     """
 
-    def __init__(self):
+    def __init__(self, root=None):
         """ empty tree """
-        self.root = None
+        self.root = root
 
     def __str__(self):
         if self.root is None:
@@ -324,8 +324,8 @@ class AVL(object):
         if node is None:
             return True
         if (
-            node.data <= min
-            or node.data >= max
+            node.data < min
+            or node.data > max
             or (node is not self.root and node.parent is None)
             or (node.parent is not None and do_add(visited, node.parent))
             or (

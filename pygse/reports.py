@@ -65,7 +65,7 @@ def print_list(l: list):
 
 
 def print_formatted_result(function, stats, verbose):
-    verbose = False
+    verbose = True
     if verbose:
         if stats.status != Status.PRUNED:
             print(get_header_str(stats))
@@ -76,6 +76,7 @@ def print_formatted_result(function, stats, verbose):
             print(" Conc end self:\n        " + stats.concrete_end_self.__repr__())
         else:
             print(get_header_str(stats))
+            print(" Pruned self:\n\n" + stats.pruned_structure.__repr__())
             if stats.exception:
                 print("  Exception: " + str(stats.exception))
     else:
@@ -88,11 +89,7 @@ def report_statistics(stats):
 
     assert pruned + complete_exec == stats.total_paths
     print(
-        "\n"
-        + str(complete_exec)
-        + " of "
-        + str(stats.total_paths)
-        + " paths explored"
+        "\n" + str(complete_exec) + " of " + str(stats.total_paths) + " paths explored"
     )
     print(str(stats.successes) + " passed")
     print(str(stats.failures) + " failed")

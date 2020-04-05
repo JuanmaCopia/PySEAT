@@ -183,7 +183,10 @@ class SEEngine:
         finally:
             if status == Status.PRUNED:
                 exec_num = cls._globalstats.total_paths
-                return ExecutionStats(exec_num, status, exception)
+                model = proxy.smt.get_model(cls._path_condition)
+                pruned_s = cls._lazy_backups[cls._sut.sclass].get_entity()
+                pruned_s = cls.concretize(pruned_s, model)
+                return ExecutionStats(exec_num, status, exception, pruned_s)
 
             stats = cls.build_stats(status, args, returnv)
             cls._globalstats.status_count(stats.status)
@@ -197,7 +200,7 @@ class SEEngine:
 
         # Input Self
         input_self = cls._lazy_backups[cls._sut.sclass].get_entity()
-        builded_in_self = cls.build_partial_struture(input_self, model)
+        builded_in_self = cls.build(input_self, model)
 
         if builded_in_self is None:
             cls._globalstats.pruned_invalid += 1
@@ -205,7 +208,7 @@ class SEEngine:
 
         # input arguments
         cls.retrieve_inputs(args)
-        args = cls.concretize(args, model)
+        args = cls.build(args, model)
 
         # Execution of method with concrete input
         end_self = copy.deepcopy(builded_in_self)
@@ -229,7 +232,7 @@ class SEEngine:
         stats.builded_in_self = builded_in_self
         stats.input_self = input_self
         stats.returnv = returnv
-        stats.concrete_return = cls.concretize(returnv, model)
+        stats.concrete_return = returnv
         return stats
 
     @classmethod
@@ -244,7 +247,25 @@ class SEEngine:
         cls.fill_class_vectors(iself)
 
     @classmethod
+    def build(cls, symbolic, model):
+        if symbolic is None:
+            return None
+        elif proxy.is_symbolic(symbolic):
+            return symbolic.concretize(model)
+        elif isinstance(symbolic, list):
+            for i, x in enumerate(symbolic):
+                symbolic[i] = cls.build(x, model)
+                if x is not None and symbolic[i] is None:
+                    assert False
+            return symbolic
+        elif proxy.is_user_defined(symbolic):
+            return cls.build_partial_struture(symbolic, model)
+        assert False
+
+
+    @classmethod
     def build_partial_struture(cls, input_self, model):
+        cls._recursion_limit = 200
         concretei = cls.concretize(input_self, model)
         if concretei.repok():
             return concretei
@@ -659,7 +680,7 @@ class SEEngine:
         if obj is not None:
             obj._recursion_depth += 1
             if obj._recursion_depth > cls._recursion_limit:
-                raise MaxRecursionException()
+                raise MaxRecursionException("Max recursion of times:" + str(obj._recursion_depth))
 
 
     @staticmethod
