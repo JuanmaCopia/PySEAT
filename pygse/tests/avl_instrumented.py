@@ -113,18 +113,18 @@ class Node:
         Returns:
             The node with key k.
         """
-        if k == self.data:
+        if k == self._get_data():
             return self
-        elif k < self.data:
-            if self.left is None:
+        elif k < self._get_data():
+            if self._get_left() is None:
                 return None
             else:
-                return self.left.find(k)
+                return self._get_left().find(k)
         else:
-            if self.right is None:
+            if self._get_right() is None:
                 return None
             else:
-                return self.right.find(k)
+                return self._get_right().find(k)
 
     def find_min(self):
         """Finds the node with the minimum key in the subtree rooted at this
@@ -279,7 +279,7 @@ class AVL():
         s = '\n'.join(self.to_str(self.root, visited)[0])
         return "\n" + s
 
-    def find(self, k):
+    def find(self, k: int):
         """Finds and returns the node with key k from the subtree rooted at this
         node.
 
@@ -289,7 +289,7 @@ class AVL():
         Returns:
             The node with key k or None if the tree is empty.
         """
-        return self.root and self.root.find(k)
+        return self._get_root() and self._get_root().find(k)
 
     def find_min(self):
         """Returns the minimum node of this BST."""

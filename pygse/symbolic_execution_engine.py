@@ -228,11 +228,11 @@ class SEEngine:
         stats.concrete_args = args
         stats.pathcondition = path
         stats.model = model
-        stats.concrete_end_self = end_self
+        stats.concrete_end_self = copy.deepcopy(end_self)
         stats.builded_in_self = builded_in_self
         stats.input_self = input_self
         stats.returnv = returnv
-        stats.concrete_return = returnv
+        stats.concrete_return = copy.deepcopy(returnv)
         return stats
 
     @classmethod
