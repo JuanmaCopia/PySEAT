@@ -44,14 +44,16 @@ class SEEngine:
             symbolic fields, so two there are two possible decisions: make it True
             or make it False, generating different path executions.
 
-        _path_condition (list): Collects all the path constraints of the current execution.
+        _path_condition (list): Collects all the path constraints of the current
+        execution.
 
         _current_bp (LazyStep, ConditionalStep): Is the current branching point, it could
         be a Lazy Initialization Stem or a Conditional Step.
 
         _current_depth (int): Depth's of the current execution tree.
 
-        _max_depth (int): Max depth search, any execution that exeeds this value is pruned.
+        _max_depth (int): Max depth search, any execution that exeeds this value
+        is pruned.
 
         _globalstats (GlobalStats): Contains the overall statistics of all executed
         program paths.
@@ -261,7 +263,6 @@ class SEEngine:
         elif proxy.is_user_defined(symbolic):
             return cls.build_partial_struture(symbolic, model)
         assert False
-
 
     @classmethod
     def build_partial_struture(cls, input_self, model):
@@ -477,7 +478,6 @@ class SEEngine:
         n = cls._symbolize_partially(lazy_class)
         vector.append(n)
         return n
-
 
     @classmethod
     def _symbolic_instantiation(cls, typ):

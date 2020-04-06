@@ -65,7 +65,7 @@ def print_list(l: list):
 
 
 def print_formatted_result(function, stats, verbose):
-    verbose = True
+    verbose = False
     if verbose:
         if stats.status != Status.PRUNED:
             print(get_header_str(stats))
@@ -93,11 +93,13 @@ def report_statistics(stats):
     )
     print(str(stats.successes) + " passed")
     print(str(stats.failures) + " failed")
-    print(str(pruned) + " pruned")
     verbose = True
     if verbose:
-        print(str(stats.pruned_by_depth) + " pruned by depth")
-        print(str(stats.pruned_by_error) + " pruned by error")
-        print(str(stats.pruned_invalid) + " pruned by invalid")
-        print(str(stats.pruned_by_rec_limit) + " pruned by rec limit")
-        print(str(stats.pruned_by_repok) + " pruned by repok" + "\n")
+        print(str(pruned) + " pruned: ")
+        print("  " + str(stats.pruned_by_depth) + " by depth")
+        print("  " + str(stats.pruned_by_error) + " by error")
+        print("  " + str(stats.pruned_invalid) + " by invalid")
+        print("  " + str(stats.pruned_by_rec_limit) + " by rec limit")
+        print("  " + str(stats.pruned_by_repok) + " by repok" + "\n")
+    else:
+        print(str(pruned) + " pruned")
