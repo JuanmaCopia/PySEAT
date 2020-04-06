@@ -6,8 +6,47 @@ import argparse
 
 from pygse.reports import report_statistics, print_formatted_result
 from pygse.symbolic_execution_engine import SEEngine
-from pygse.sut_parser import SUT
+from pygse.sut_parser import parse
 from pygse.run_test import run_tests
+from pygse.test_generator import TestCode
+from pygse.stats import Status
+
+# import pygse.proxy as proxy
+# import copy
+# import sys
+
+
+# a = proxy.IntProxy()
+# b = proxy.IntProxy()
+# c = 5
+
+# SEEngine.initialize(None, 10)
+
+# if a == b:
+#     pass
+# if b == c:
+#     pass
+
+# path = SEEngine._path_condition
+# print(SEEngine._path_condition)
+
+# print("b es: ")
+# print(str(b))
+# print(SEEngine.concretize(b, proxy.smt.get_model(path)))
+
+# print("copia de b es: ")
+# print(str(copy.deepcopy(b)))
+# print(SEEngine.concretize(copy.deepcopy(b), proxy.smt.get_model(path)))
+
+# print("a es: ")
+# print(str(a))
+# print(SEEngine.concretize(a, proxy.smt.get_model(path)))
+
+# print("copia de a es: ")
+# print(str(copy.deepcopy(a)))
+# print(SEEngine.concretize(copy.deepcopy(a), proxy.smt.get_model(path)))
+
+# sys.exit()
 
 
 def parse_command_line_args():
@@ -27,6 +66,36 @@ def parse_command_line_args():
     return parser.parse_args()
 
 
+def remove_instrumented(module_name):
+    x = module_name.split(".")
+    orig = x[2].split("_")
+    return orig[0]
+
+
+def create_testfile(filename, module_name, class_name):
+    file = open(filename + ".py", "w")
+    file.write(
+        "from "
+        + remove_instrumented(module_name)
+        + " import Node, "
+        + class_name
+        + "\n\n\n"
+    )
+    file.close()
+
+
+def append_line_testfile(filename, str):
+    file = open(filename + ".py", "a")
+    file.write(str + "\n")
+    file.close()
+
+
+def append_to_testfile(filename, str):
+    file = open(filename + ".py", "a")
+    file.write(str + "\n\n\n")
+    file.close()
+
+
 args = parse_command_line_args()
 
 if args.test:
@@ -38,16 +107,36 @@ else:
     function_name = mod_cls_func[2].strip()
     max_depth = args.depth
 
-    sut = SUT()
-    sut.parse(module_name, function_name, class_name)
+    sut = parse(module_name, function_name, class_name)
 
-    if sut.is_method:
-        SEEngine.initialize(sut, max_depth)
+    runs = []
+    test_number = 1
+    foldername = "generated_tests/"
+    filename = (
+        foldername + remove_instrumented(module_name) + "_" + function_name + "_tests"
+    )
+    create_testfile(filename, module_name, class_name)
 
-        for run in SEEngine.explore():
+    SEEngine.initialize(sut, max_depth)
+    tests_gen = []
+    test_num = 0
+    print("Running tests...\n")
+    for run in SEEngine.explore():
+        if run:
             print_formatted_result(sut.function, run, True)
+            if run.status != Status.PRUNED:
+                # test = TestCode(sut, run, run.number)
+                test_num += 1
+                test = TestCode(sut, run, test_num)
+                tests_gen.append(test)
+                append_to_testfile(filename, test.code)
 
-        report_statistics(SEEngine.statistics())
-    else:
-        # TODO: Make it support functions (functions that not belong to a class)
-        raise NotImplementedError
+    print("DONE! " + str(test_num) + " Tests were generated")
+    report_statistics(SEEngine.statistics())
+
+    append_line_testfile(filename, "if __name__ == '__main__':")
+    for i, n in enumerate(tests_gen):
+        append_line_testfile(
+            filename, "    " + function_name + "_test" + str(i + 1) + "()"
+        )
+

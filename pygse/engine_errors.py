@@ -13,6 +13,18 @@ class MaxDepthException(Error):
         self.message = "Max exploration depth reached"
 
 
+class MaxRecursionException(Error):
+    """Exception raised when the maximum recursion depth
+    is reached.
+    """
+
+    def __init__(self, message=None):
+        if message:
+            self.message = message
+        else:
+            self.message = "Max exploration recursion reached"
+
+
 class MissingTypesError(Error):
     """Exception raised when an user defined class has
     has some missing type annotations.
@@ -31,18 +43,32 @@ class UnsatBranchError(Error):
 
 
 class RepOkFailException(Error):
-    """Exception raised when the maximum exploration depth
-    is reached.
+    """
     """
 
     def __init__(self):
         self.message = "Repok Fail"
 
 
+class CouldNotBuildError(Error):
+    """
+    """
+
+    def __init__(self):
+        self.message = "Could not build the complete structure"
+
+
 class ReturnValueRepOkFail(Error):
-    """Exception raised when the maximum exploration depth
-    is reached.
+    """
     """
 
     def __init__(self):
         self.message = "The returned value does not pass the repok()"
+
+
+class RepokNotFoundError(Error):
+    """ desc
+    """
+
+    def __init__(self, message):
+        self.message = message

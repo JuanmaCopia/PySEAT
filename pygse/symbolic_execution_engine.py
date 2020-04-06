@@ -6,25 +6,23 @@ dynammically allocated structures with the use of lazy initialization.
 """
 
 import copy
-from collections.abc import Iterable
 
 from pygse.branching_steps import LazyStep, ConditionalStep
 from pygse.stats import Status, ExecutionStats, GlobalStats
-from pygse.engine_errors import UnsatBranchError, MissingTypesError, RepOkFailException
-from pygse.engine_errors import MaxDepthException
+from pygse.engine_errors import UnsatBranchError, MissingTypesError
+from pygse.engine_errors import RepOkFailException, MaxRecursionException
+from pygse.engine_errors import MaxDepthException, RepokNotFoundError
+from pygse.helpers import do_add, is_user_defined
+from pygse.helpers import set_to_initialized
 import pygse.proxy as proxy
 
-# TODO: Check in lazy initializations that the object has to be
-# a tracked one, that is to say or a parameter, o the self, or
-# a previously created one. New objects created in the method
-# under test should be treated as initialized in alll its fields
+
 # TODO: Manage exceptions raised when the types are not specified or
 # incorrectly specified
 # TODO: Support preconditions and posconditions
 # TODO: Check what happen with objects like list and dict... in instanciation
 # method
 # TODO: Support other symbolic types like list, tuple, dict, slices
-
 
 class SEEngine:
     """Symbolic Execution engine.
@@ -46,14 +44,16 @@ class SEEngine:
             symbolic fields, so two there are two possible decisions: make it True
             or make it False, generating different path executions.
 
-        _path_condition (list): Collects all the path constraints of the current execution.
+        _path_condition (list): Collects all the path constraints of the current
+        execution.
 
         _current_bp (LazyStep, ConditionalStep): Is the current branching point, it could
-        be a Lazy Initialization Stem or a Conditional Step. 
+        be a Lazy Initialization Stem or a Conditional Step.
 
         _current_depth (int): Depth's of the current execution tree.
 
-        _max_depth (int): Max depth search, any execution that exeeds this value is pruned.
+        _max_depth (int): Max depth search, any execution that exeeds this value
+        is pruned.
 
         _globalstats (GlobalStats): Contains the overall statistics of all executed
         program paths.
@@ -68,12 +68,15 @@ class SEEngine:
     _current_bp = 0
     _current_depth = 0
     _max_depth = 0
+    _recursion_limit = 0
 
     _globalstats = None
     _sut = None
     _real_to_proxy = {}
 
     _lazy_backups = {}
+
+    _current_self = None
 
     @classmethod
     def initialize(cls, sut_data, max_depth):
@@ -91,6 +94,7 @@ class SEEngine:
         cls._globalstats = GlobalStats()
         cls._max_depth = max_depth
         cls._real_to_proxy = {x.emulated_class: x for x in proxy.ProxyObject.__subclasses__()}
+        cls._current_self = None
 
     @classmethod
     def explore(cls):
@@ -99,11 +103,13 @@ class SEEngine:
         Yields:
             ExecutionStats: The result of the execution of the function under test
         """
+        cls._branching_points = []
         unexplored_paths = True
+
         while unexplored_paths:
             cls._reset_exploration()
 
-            args = [cls._symbolic_instantiation(a) for a in cls._sut.types]
+            args = [cls._symbolic_instantiation(typ) for name, typ in cls._sut.params.items()]
 
             result = cls._execute_program(args)
             yield (result)
@@ -120,10 +126,11 @@ class SEEngine:
         cls._path_condition = []
         cls._current_bp = 0
         cls._current_depth = 0
+        cls._recursion_limit = 10
         for k in cls._sut.class_params_map.keys():
-            k._vector = [None]
+            k._vector = []
+            k._id = 0
             cls._lazy_backups[k] = LazyBackup()
-        
 
     @classmethod
     def _execute_program(cls, args):
@@ -143,85 +150,209 @@ class SEEngine:
             under test
         """
         cls._globalstats.total_paths += 1
-        stats = ExecutionStats(cls._globalstats.complete_exec)
+
         returnv = None
-        the_self = None
+        exception = None
+        status = Status.PRUNED
+
+        cls._current_self = args[0]
+        args = args[1:]
+        method = getattr(cls._current_self, cls._sut.function.__name__)
+
         try:
-            if cls._sut.is_method:
-                the_self = args[0]
-                args = args[1:]
-                method = getattr(the_self, cls._sut.function.__name__)
-                if args:
-                    returnv = method(*args)
-                else:
-                    returnv = method()
-                if proxy.is_symbolic_bool(returnv):
-                    returnv = returnv.__bool__()
-            # TODO: make it work for a non method function
+            if args:
+                returnv = method(*args)
+            else:
+                returnv = method()
+            if proxy.is_symbolic_bool(returnv):
+                returnv = returnv.__bool__()
         except UnsatBranchError:
             cls._globalstats.pruned_by_error += 1
         except MaxDepthException:
             cls._globalstats.pruned_by_depth += 1
         except RepOkFailException:
             cls._globalstats.pruned_by_repok += 1
+        except MaxRecursionException:
+            cls._globalstats.pruned_by_rec_limit += 1
+        except RecursionError as e:
+            status = Status.PRUNED
+            exception = e
         except Exception as e:
-            if not cls._expected(e):
-                stats.status = Status.FAIL
-            else:
-                stats.status = Status.OK
-            stats.exception = e
+            status = Status.PRUNED
+            exception = e
         else:
-            stats.status = Status.OK
+            status = Status.OK
         finally:
-            if stats.status == Status.PRUNED:
-                return stats
-            cls._globalstats.complete_exec += 1
-            stats.pathcondition = cls._path_condition
-            stats.model = proxy.smt.get_model(cls._path_condition)
-            
-            the_self = cls._lazy_backups[cls._sut.sclass].get_entity()
-            cls.retrieve_inputs(args)
-            
-            stats.self_structure = the_self
-            stats.concrete_self = cls._concretize(copy.deepcopy(the_self), stats.model)
-            if args:
-                stats.concrete_args = cls._concretize(copy.deepcopy(args), stats.model)
+            if status == Status.PRUNED:
+                exec_num = cls._globalstats.total_paths
+                model = proxy.smt.get_model(cls._path_condition)
+                pruned_s = cls._lazy_backups[cls._sut.sclass].get_entity()
+                pruned_s = cls.concretize(pruned_s, model)
+                return ExecutionStats(exec_num, status, exception, pruned_s)
 
-            if stats.exception:
-                cls._globalstats.status_count(stats.status)
-                return stats
-
-            if not cls._check_repok(returnv):
-                stats.status = Status.FAIL
-                stats.errors.append("Return value RepOk fail")
-            if not cls._check_repok(the_self):
-                stats.status = Status.FAIL
-                stats.errors.append("Self RepOk fail")
-            stats.returnv = returnv
-            stats.concrete_return = cls._concretize(
-                copy.deepcopy(stats.returnv), stats.model
-            )
+            stats = cls.build_stats(status, args, returnv)
             cls._globalstats.status_count(stats.status)
             return stats
+
+    @classmethod
+    def build_stats(cls, status, args, returnv):
+        # Path condition and model
+        path = cls._path_condition
+        model = proxy.smt.get_model(path)
+
+        # Input Self
+        input_self = cls._lazy_backups[cls._sut.sclass].get_entity()
+        builded_in_self = cls.build(input_self, model)
+
+        if builded_in_self is None:
+            cls._globalstats.pruned_invalid += 1
+            return ExecutionStats(cls._globalstats.total_paths, Status.PRUNED)
+
+        # input arguments
+        cls.retrieve_inputs(args)
+        args = cls.build(args, model)
+
+        # Execution of method with concrete input
+        end_self = copy.deepcopy(builded_in_self)
+        input_args = copy.deepcopy(args)
+        method = getattr(end_self, cls._sut.function.__name__)
+        if args:
+            returnv = method(*input_args)
+        else:
+            returnv = method()
+
+        if end_self.repok():
+            status = Status.OK
+        else:
+            status = Status.FAIL
+
+        stats = ExecutionStats(cls._globalstats.total_paths, status)
+        stats.concrete_args = args
+        stats.pathcondition = path
+        stats.model = model
+        stats.concrete_end_self = copy.deepcopy(end_self)
+        stats.builded_in_self = builded_in_self
+        stats.input_self = input_self
+        stats.returnv = returnv
+        stats.concrete_return = copy.deepcopy(returnv)
+        return stats
+
+    @classmethod
+    def _reset_for_repok(cls, iself, pc_len):
+        cls._path_condition = cls.keep_first_n_items(cls._path_condition, pc_len)
+        cls._current_bp = 0
+        cls._current_depth = 0
+        cls._recursion_limit = 200
+        for k in cls._sut.class_params_map.keys():
+            k._vector = []
+            cls._lazy_backups[k] = LazyBackup()
+        cls.fill_class_vectors(iself)
+
+    @classmethod
+    def build(cls, symbolic, model):
+        if symbolic is None:
+            return None
+        elif proxy.is_symbolic(symbolic):
+            return symbolic.concretize(model)
+        elif isinstance(symbolic, list):
+            for i, x in enumerate(symbolic):
+                symbolic[i] = cls.build(x, model)
+                if x is not None and symbolic[i] is None:
+                    assert False
+            return symbolic
+        elif proxy.is_user_defined(symbolic):
+            return cls.build_partial_struture(symbolic, model)
+        assert False
+
+    @classmethod
+    def build_partial_struture(cls, input_self, model):
+        cls._recursion_limit = 200
+        concretei = cls.concretize(input_self, model)
+        if concretei.repok():
+            return concretei
+
+        backup_bp = copy.deepcopy(cls._branching_points)
+        cls._branching_points = []
+        pc_len = len(cls._path_condition)
+
+        unexplored_paths = True
+
+        # just for debug purposes
+        useless = 0
+
+        while unexplored_paths:
+            useless += 1
+            iself = copy.deepcopy(input_self)
+            cls._reset_for_repok(iself, pc_len)
+            result = cls._execute_repok(iself)
+
+            if result is not None and result.repok():
+                cls._path_condition = cls.keep_first_n_items(cls._path_condition, pc_len)
+                cls._branching_points = backup_bp
+                return result
+
+            cls._remove_explored_branches()
+            if not cls._branching_points:
+                unexplored_paths = False
+
+        cls._path_condition = cls.keep_first_n_items(cls._path_condition, pc_len)
+        cls._branching_points = backup_bp
+
+    @classmethod
+    def fill_class_vectors(cls, structure):
+        if not is_user_defined(structure):
+            return
+        visited = set()
+        visited.add(structure)
+        worklist = []
+        worklist.append(structure)
+        while worklist:
+            current = worklist.pop(0)
+            setattr(current, "_recursion_depth", 0)
+            current._vector.append(current)
+            for name in current.__dict__:
+                attr = None
+                if hasattr(current, name):
+                    attr = getattr(current, name)
+                if is_user_defined(attr) and do_add(visited, attr):
+                    worklist.append(attr)
+
+    @staticmethod
+    def keep_first_n_items(l, n):
+        new_list = []
+        i = 0
+        while i < n:
+            new_list.insert(i, l[i])
+            i += 1
+        return new_list
+
+    @classmethod
+    def _execute_repok(cls, instance):
+        try:
+            result = instance.instrumented_repok()
+        except UnsatBranchError:
+            pass
+        except MaxDepthException:
+            pass
+        except RepOkFailException:
+            pass
+        except MaxRecursionException:
+            raise MaxRecursionException("Max recursion reached on repok")
+        except AttributeError as e:
+            raise e
+        else:
+            if result:
+                model = proxy.smt.get_model(cls._path_condition)
+                new_object = cls.concretize(instance, model)
+                assert new_object.repok()
+                return new_object
+            return None
 
     @classmethod
     def retrieve_inputs(cls, args_list):
         for i, arg in enumerate(args_list):
             if proxy.is_user_defined(arg):
                 args_list[i] = cls._lazy_backups[type(arg)].get_entity()
-
-    @classmethod
-    def _expected(cls, exception):
-        """Checks whether an exception is expected or not.
-
-        Args:
-            exception (Exception): A raised exception during
-                the execution of a function.
-
-        Returns:
-            True if expected, False otherwise.
-        """
-        return isinstance(exception, ValueError)
 
     @classmethod
     def _check_repok(cls, instance):
@@ -234,15 +365,23 @@ class SEEngine:
             True if instance is valid (pass it's repok), False otherwise.
         """
         if proxy.is_user_defined(type(instance)):
-            return instance.rep_ok()
+            return instance.conservative_repok()
         return True
 
     @classmethod
-    def _concretize(cls, symbolic, model):
+    def concretize(cls, symbolic, model):
+        visited = set()
+        sym_copy = copy.deepcopy(symbolic)
+        if is_user_defined(sym_copy):
+            visited.add(sym_copy)
+        return cls._concretize(sym_copy, model, visited)
+
+    @classmethod
+    def _concretize(cls, symbolic, model, visited):
         """Creates the concrete object.
 
         Creates the concrete object from a symbolic (builtin symbolic)
-        or a partially symbolic (user-defined) one and the model 
+        or a partially symbolic (user-defined) one and the model
         describing it's restrictions.
 
         Args:
@@ -254,35 +393,23 @@ class SEEngine:
         Returns:
             The concrete object represented by symbolic and the model.
         """
-        # FIXME: Hay que iterar sobre builtins que puedan contener ProxyObjects
         if symbolic is None:
             return None
         elif proxy.is_symbolic(symbolic):
             return symbolic.concretize(model)
         elif isinstance(symbolic, list):
-            return [cls._concretize(x, model) for x in symbolic]
-        elif isinstance(symbolic, tuple):
-            return tuple([cls._concretize(x, model) for x in symbolic])
+            for i, x in enumerate(symbolic):
+                symbolic[i] = cls._concretize(x, model, visited)
+            return symbolic
         elif proxy.is_user_defined(symbolic):
-            # symbolic.__dict__ returns all instance-only defined attributes
-            if symbolic.concretized:
-                return symbolic
-            symbolic.concretized = True
-            try:
-                for name in symbolic.__dict__:
-                    # TODO: Hacerlo genérico, incluyendo atributos de clase
-                    attr = getattr(symbolic, name)
-                    if not callable(attr):
-                        setattr(symbolic, name, cls._concretize(attr, model))
-            except AttributeError:
-                # TODO: Check wtf is this
-                if isinstance(symbolic, Iterable):
-                    pass
+            setattr(symbolic, "_recursion_depth", 0)
+            for attr_name, value in symbolic.__dict__.items():
+                set_to_initialized(symbolic, attr_name)
+                attr = value
+                if not callable(attr) and do_add(visited, attr):
+                    setattr(symbolic, attr_name, cls._concretize(attr, model, visited))
             return symbolic
-        else:
-            # i think this is executed when the symbolicect is a builtin or a
-            # callable
-            return symbolic
+        return symbolic
 
     @classmethod
     def _remove_explored_branches(cls):
@@ -319,7 +446,7 @@ class SEEngine:
 
         Args:
             lazy_class: The instance type to be initialized.
-            vector: A vector containing the previous created 
+            vector: A vector containing the previous created
                 instances of lazy_class.
 
         Returns:
@@ -335,16 +462,22 @@ class SEEngine:
             index = branch_point.get_branch()
             cls._current_bp += 1
 
-            if index < len(vector):
-                return vector[index]
+            if index == 0:
+                n = cls._symbolize_partially(lazy_class)
+                vector.append(n)
+                return n
+            elif index == 1:
+                return None
+            else:
+                assert index - 2 >= 0
+                assert index - 2 < len(vector)
+                return vector[index - 2]
 
-            n = cls._symbolize_partially(lazy_class)
-            vector.append(n)
-            return n
-
-        cls._branching_points.append(LazyStep(len(vector)))
+        cls._branching_points.append(LazyStep(len(vector) + 1))
         cls._current_bp += 1
-        return None
+        n = cls._symbolize_partially(lazy_class)
+        vector.append(n)
+        return n
 
     @classmethod
     def _symbolic_instantiation(cls, typ):
@@ -390,8 +523,10 @@ class SEEngine:
         init_types = cls._get_init_types(user_def_class)
         init_args = [cls._make_symbolic(a) for a in init_types]
         if init_args:
-            return user_def_class(*init_args)
-        return user_def_class()
+            partial_ins = user_def_class(*init_args)
+        else:
+            partial_ins = user_def_class()
+        return partial_ins
 
     @classmethod
     def _get_init_types(cls, user_def_class):
@@ -406,7 +541,7 @@ class SEEngine:
         Returns:
             A list of types.
         """
-        init_types = copy.deepcopy(cls._sut.class_params_map[user_def_class])
+        init_types = list(cls._sut.class_params_map[user_def_class].values())
         number_params = user_def_class.__init__.__code__.co_argcount
         if number_params - 1 != len(init_types):
             raise MissingTypesError(
@@ -535,6 +670,22 @@ class SEEngine:
         """
         if value:
             raise RepOkFailException()
+        repok_passed = cls._current_self.conservative_repok()
+        if not repok_passed:
+            raise RepOkFailException()
+        return None
+
+    @classmethod
+    def check_recursion_limit(cls, obj):
+        if obj is not None:
+            obj._recursion_depth += 1
+            if obj._recursion_depth > cls._recursion_limit:
+                raise MaxRecursionException("Max recursion of times:" + str(obj._recursion_depth))
+
+
+    @staticmethod
+    def is_tracked(obj):
+        return obj._identifier in [x._identifier for x in obj._vector if x is not None]
 
     @classmethod
     def statistics(cls):
@@ -544,25 +695,30 @@ class SEEngine:
 
     @classmethod
     def save_lazy_step(cls, sclass):
-        cls._lazy_backups[sclass].new_backup(sclass._vector)
+        cls._lazy_backups[sclass].new_backup(sclass._vector, cls._path_condition)
         if (sclass != cls._sut.sclass):
-            cls._lazy_backups[cls._sut.sclass].new_backup(cls._sut.sclass._vector)
+            cls._lazy_backups[cls._sut.sclass].new_backup(cls._sut.sclass._vector, cls._path_condition)
+
 
 class LazyBackup:
-    def __init__(self, vector=[None], amount_entities=0):
+    def __init__(self, vector=[], amount_entities=0):
         self.vector = copy.deepcopy(vector)
+        self.path_condition = []
         self.amount_entities = amount_entities
-        self.next_entity = 1
-    
+        self.next_entity = 0
+
     def add_entity(self, vector):
         self.vector = copy.deepcopy(vector)
         self.amount_entities += 1
 
-    def new_backup(self, vector):
+    def new_backup(self, vector, pc):
         self.vector = copy.deepcopy(vector)
+        self.path_condition = copy.deepcopy(pc)
 
     def get_entity(self):
         entity = self.vector[self.next_entity]
         self.next_entity += 1
         return entity
 
+    def get_vector(self):
+        return self.vector
