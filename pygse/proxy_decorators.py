@@ -1,6 +1,5 @@
 from decorator import decorator
 from functools import wraps
-import inspect
 
 
 def check_comparable_types(comp_fun):

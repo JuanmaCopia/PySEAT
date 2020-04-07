@@ -1,55 +1,56 @@
 from pygse.proxy_decorators import forward_to_rfun, check_comparable_types
 from pygse.proxy_decorators import check_equality, check_self_and_other_have_same_type
 
-from pygse.smt.smt import SMT
-from pygse.smt.sort_z3 import SMTInt, SMTBool, SMTChar, SMTArray
-from pygse.smt.solver_z3 import SMTSolver
-import pygse.symbolic_execution_engine as see
-
-
-smt = SMT((SMTInt, SMTBool, SMTChar, SMTArray), SMTSolver)
+from pygse.smt.sort_z3 import SMTInt, SMTBool
+import copy
 
 
 def is_symbolic(obj):
-    return isinstance(obj, ProxyObject)
+    return isinstance(obj, Symbolic)
 
 
 def is_symbolic_bool(obj):
-    return isinstance(obj, BoolProxy)
+    return isinstance(obj, SymBool)
 
 
-def is_user_defined(obj):
-    return hasattr(obj, "_is_user_defined")
+class Symbolic:
 
+    _real_to_sym = {}
 
-class ProxyObject(object):
-    """
-    Base class of a ProxyObject that can become any type by inheriting it.
-    """
-    supported_types = [int, bool]
+    @classmethod
+    def get_supported_builtins(cls):
+        if not cls._real_to_sym:
+            cls._real_to_sym = {x.emulated_class: x for x in Symbolic.__subclasses__()}
+        return cls._real_to_sym.keys()
 
     @classmethod
     def is_supported_builtin(cls, obj):
-        return obj in cls.supported_types or type(obj) in cls.supported_types
+        supported_types = cls.get_supported_builtins()
+        return obj in supported_types or type(obj) in supported_types
+
+    @classmethod
+    def get_symtypes_mapping(cls):
+        if not cls._real_to_sym:
+            cls._real_to_sym = {x.emulated_class: x for x in Symbolic.__subclasses__()}
+        return copy.deepcopy(cls._real_to_sym)
 
 
-class IntProxy(ProxyObject):
-    """
-    Int Proxy object for variables that behave like ints.
-    """
+class SymInt(Symbolic):
 
     emulated_class = int
 
-    def __init__(self, real=None):
+    def __init__(self, engine, real=None):
         """
         :real: Either symbolic numeric variable in smt solver or real int value.
         """
-        if isinstance(real, IntProxy):
+        self.engine = engine
+        self.smt = engine.smt
+        if isinstance(real, SymInt):
             self.real = real.real  # Idempotent creation
-        elif real != None:
+        elif real is not None:
             self.real = real
         else:
-            self.real = smt.Const(SMTInt)
+            self.real = self.smt.Const(SMTInt)
 
     def __abs__(self):
         """
@@ -63,7 +64,7 @@ class IntProxy(ProxyObject):
         :types: other: int
         x.__add__(y) <==> x+y
         """
-        return IntProxy(smt.Add(self.real, other.real))
+        return SymInt(self.engine, self.smt.Add(self.real, other.real))
 
     def __bool__(self):
         """
@@ -83,8 +84,8 @@ class IntProxy(ProxyObject):
         :types: other: int
         x.__eq__(y) <==> x==y
         """
-        other = other.real if isinstance(other, IntProxy) else other
-        return BoolProxy(smt.Eq(self.real, other))
+        other = other.real if isinstance(other, SymInt) else other
+        return SymBool(self.engine, self.smt.Eq(self.real, other))
 
     @forward_to_rfun()
     def __floordiv__(self, other):
@@ -99,9 +100,9 @@ class IntProxy(ProxyObject):
             if other < 0:
                 return -self // -other
             else:
-                return IntProxy(smt.Div(self.real, other.real))
+                return SymInt(self.engine, self.smt.Div(self.real, other.real))
         else:
-            raise ZeroDivisionError("IntProxy division or modulo by zero")
+            raise ZeroDivisionError("SymInt division or modulo by zero")
 
     @check_comparable_types
     def __ge__(self, other):
@@ -109,8 +110,8 @@ class IntProxy(ProxyObject):
         :types: other: int
         x.__ge__(y) <==> x>=y
         """
-        other = other.real if isinstance(other, IntProxy) else other
-        return BoolProxy(smt.Ge(self.real, other))
+        other = other.real if isinstance(other, SymInt) else other
+        return SymBool(self.engine, self.smt.Ge(self.real, other))
 
     @check_comparable_types
     def __gt__(self, other):
@@ -118,8 +119,8 @@ class IntProxy(ProxyObject):
         :types: other: int
         x.__gt__(y) <==> x>y
         """
-        other = other.real if isinstance(other, IntProxy) else other
-        return BoolProxy(smt.Gt(self.real, other))
+        other = other.real if isinstance(other, SymInt) else other
+        return SymBool(self.engine, self.smt.Gt(self.real, other))
 
     def __hash__(self):
         """
@@ -133,8 +134,8 @@ class IntProxy(ProxyObject):
         :types: other: int
         x.__le__(y) <==> x<=y
         """
-        other = other.real if isinstance(other, IntProxy) else other
-        return BoolProxy(smt.Le(self.real, other))
+        other = other.real if isinstance(other, SymInt) else other
+        return SymBool(self.engine, self.smt.Le(self.real, other))
 
     @check_comparable_types
     def __lt__(self, other):
@@ -142,8 +143,8 @@ class IntProxy(ProxyObject):
         :types: other: int
         x.__lt__(y) <==> x<y
         """
-        other = other.real if isinstance(other, IntProxy) else other
-        return BoolProxy(smt.Lt(self.real, other))
+        other = other.real if isinstance(other, SymInt) else other
+        return SymBool(self.engine, self.smt.Lt(self.real, other))
 
     @forward_to_rfun()
     def __mod__(self, other):
@@ -152,9 +153,9 @@ class IntProxy(ProxyObject):
         x.__mod__(y) <==> x%y
         """
         if other != 0:
-            return IntProxy(smt.Mod(self.real, other.real))
+            return SymInt(self.engine, self.smt.Mod(self.real, other.real))
         else:
-            raise ZeroDivisionError("IntProxy division or modulo by zero")
+            raise ZeroDivisionError("SymInt division or modulo by zero")
 
     @forward_to_rfun()
     def __mul__(self, other):
@@ -162,21 +163,22 @@ class IntProxy(ProxyObject):
         :types: other: int
         x.__mul__(y) <==> x*y
         """
-        return IntProxy(smt.Mul(self.real, other.real))
+        return SymInt(self.engine, self.smt.Mul(self.real, other.real))
 
     def __ne__(self, other):
         """
         :types: other: int
         x.__ne__(y) <==> x!=y
         """
-        other = other.real if isinstance(other, IntProxy) else other
-        return BoolProxy(smt.Not(smt.Eq(self.real, other)))
+        other = other.real if isinstance(other, SymInt) else other
+        formula = self.smt.Not(self.smt.Eq(self.real, other))
+        return SymBool(self.engine, formula)
 
     def __neg__(self):
         """
         x.__neg__() <==> -x
         """
-        return IntProxy(smt.Neg(self.real))
+        return SymInt(self.engine, self.smt.Neg(self.real))
 
     @check_self_and_other_have_same_type
     def __radd__(self, other):
@@ -191,7 +193,7 @@ class IntProxy(ProxyObject):
         x.__repr__() <==> repr(x)
         """
         if not isinstance(self.real, int):
-            s = smt.simplify(self.real)
+            s = self.smt.simplify(self.real)
             if SMTInt.isSMTValue(s):
                 s = SMTInt.concreteValue(s)
         return "%s" % s
@@ -209,9 +211,9 @@ class IntProxy(ProxyObject):
             if self < 0:
                 return -other // -self
             else:
-                return IntProxy(smt.Div(other.real, self.real))
+                return SymInt(self.engine, self.smt.Div(other.real, self.real))
         else:
-            raise ZeroDivisionError("IntProxy division or modulo by zero")
+            raise ZeroDivisionError("SymInt division or modulo by zero")
 
     @check_self_and_other_have_same_type
     def __rmod__(self, other):
@@ -220,9 +222,9 @@ class IntProxy(ProxyObject):
         x.__rmod__(y) <==> y%x
         """
         if self != 0:
-            return IntProxy(smt.Mod(other.real, self.real))
+            return SymInt(self.engine, self.smt.Mod(other.real, self.real))
         else:
-            raise ZeroDivisionError("IntProxy division or modulo by zero")
+            raise ZeroDivisionError("SymInt division or modulo by zero")
 
     @check_self_and_other_have_same_type
     def __rmul__(self, other):
@@ -238,7 +240,7 @@ class IntProxy(ProxyObject):
         :types: other: int
         x.__rsub__(y) <==> y-x
         """
-        return IntProxy(smt.Sub(other.real, self.real))
+        return SymInt(self.engine, self.smt.Sub(other.real, self.real))
 
     @forward_to_rfun()
     def __sub__(self, other):
@@ -246,7 +248,7 @@ class IntProxy(ProxyObject):
         :types: other: int
         x.__sub__(y) <==> x-y
         """
-        return IntProxy(smt.Sub(self.real, other.real))
+        return SymInt(self.engine, self.smt.Sub(self.real, other.real))
 
     @forward_to_rfun()
     def __truediv__(self, other):
@@ -264,26 +266,24 @@ class IntProxy(ProxyObject):
         return result
 
 
-class BoolProxy(ProxyObject):
-    """
-    Bool Proxy object for variables that behave like bools.
-    """
+class SymBool(Symbolic):
 
     emulated_class = bool
 
-    def __init__(self, formula=None):
+    def __init__(self, engine, formula=None):
+        self.engine = engine
+        self.smt = engine.smt
         if formula is None:
-            formula = smt.Const(SMTBool)
+            formula = self.smt.Const(SMTBool)
         self.formula = formula
 
     def __not__(self):
-        return BoolProxy(smt.Not(self.formula))
+        return SymBool(self.engine, self.smt.Not(self.formula))
 
     def __bool__(self):
         if isinstance(self.formula, bool):
             return self.formula
-        # If self.formula isn't a builtin bool we have to solve it
-        return see.SEEngine.evaluate(self)
+        return self.engine.evaluate(self)
 
     def __nonzero__(self):
         return self.__bool__()
@@ -294,7 +294,7 @@ class BoolProxy(ProxyObject):
                   else returns that concrete value (True or False).
         It tries to obtain a bool value if possible. Without branching.
         """
-        return see.SEEngine.conditioned_value(self)
+        return self.engine.conditioned_value(self)
 
     def __repr__(self):
         ps = self.conditioned_value()

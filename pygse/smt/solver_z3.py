@@ -1,4 +1,5 @@
-from pygse.smt.solver_base import SMTSolverBase, SMTCantFoundModel, SMTModelBase
+from pygse.smt.solver_base import SMTSolverBase, SMTModelBase
+from pygse.smt.smt import SMTCantFoundModel
 import z3
 
 
@@ -12,7 +13,7 @@ class SMTSolver(SMTSolverBase):
         self.add(formula)
 
     def add(self, formula=None):
-        if formula != None:
+        if formula is not None:
             self.solver.add(formula)
             self.checked = False
 

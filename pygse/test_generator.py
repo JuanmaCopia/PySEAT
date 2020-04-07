@@ -2,7 +2,6 @@
 
 """
 
-import pygse.proxy as proxy
 from pygse.helpers import is_special_attr, is_user_defined
 
 
@@ -20,7 +19,7 @@ class TestCode:
     def generate_arguments_code(self, instance):
         args_ids = ""
         for arg in instance:
-            if proxy.is_user_defined(arg):
+            if is_user_defined(arg):
                 args_ids += self.generate_structure_code(arg) + ", "
             else:
                 args_ids += str(arg) + ", "
@@ -78,7 +77,7 @@ class TestCode:
         self._add_line("assert " + identifier + "." + field + comp + str(value))
 
     def gen_returnv_assert(self, returnv):
-        if proxy.is_user_defined(returnv):
+        if is_user_defined(returnv):
             # self.create_return_assert_code(returnv._identifier)
             self.gen_structure_assertions(returnv, "returnv")
         else:
@@ -98,7 +97,7 @@ class TestCode:
 
             userdef = []
             for field, value in attr.items():
-                if proxy.is_user_defined(value):
+                if is_user_defined(value):
                     userdef.append((field, value))
                 else:
                     self.create_assert_code(identifier, field, value)
@@ -139,7 +138,7 @@ class TestCode:
 
         userdef = []
         for field, value in attr.items():
-            if not proxy.is_user_defined(value):
+            if not is_user_defined(value):
                 self.create_assign_code(identifier, field, value)
             else:
                 userdef.append((field, value))
@@ -167,7 +166,7 @@ class TestCode:
 
         for name, value in ctor_params.items():
             obj_name = ""
-            if proxy.is_user_defined(value):
+            if is_user_defined(value):
                 obj_name = self.generate_structure_code(value)
                 code_line += obj_name + ", "
             else:

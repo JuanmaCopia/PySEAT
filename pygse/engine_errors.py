@@ -20,7 +20,7 @@ class MaxRecursionException(Error):
 
     def __init__(self, message=None):
         if message:
-            self.message = message
+            self.message = "Reached max recursion of: " + message
         else:
             self.message = "Max exploration recursion reached"
 

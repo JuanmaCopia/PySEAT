@@ -1,16 +1,18 @@
-import collections
-
 """
 This file defines a generic Solver interface. The SMTSolverBase class need to be
 subclassed and the NotImplemented methods overwrited in order to work with SMT
 """
 
+
 class SMTSolverBase(object):
     """
     Abstract Solver instance
     """
+
     exceptions = ()
-    def __init__(self, formula=(), *args, **kwargs): raise NotImplementedError
+
+    def __init__(self, formula=(), *args, **kwargs):
+        raise NotImplementedError
 
     def add(self, formula=None):
         """
@@ -54,6 +56,7 @@ class SMTModelBase(object):
     """
     Stores a model result
     """
+
     def __init__(self, model):
         self.model = model
 
@@ -62,9 +65,3 @@ class SMTModelBase(object):
 
     def evaluate(self, expr):
         raise NotImplementedError
-
-
-from .smt import SMTException
-class SMTCantFoundModel(SMTException):
-    def __init__(self, formulas):
-        super().__init__("Can't found a model for the formulas\n\t%s" % formulas)

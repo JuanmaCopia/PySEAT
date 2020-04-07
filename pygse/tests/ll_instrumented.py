@@ -1,7 +1,3 @@
-import pygse.symbolic_execution_engine as see
-import pygse.proxy as proxy
-
-
 def do_add(s, x):
     length = len(s)
     s.add(x)
@@ -11,7 +7,7 @@ def do_add(s, x):
 class Node:
 
     _vector = []
-    _is_user_defined = True
+    _engine = None
     _id = 0
 
     def __init__(self, elem: int):
@@ -29,7 +25,7 @@ class Node:
     def _get_elem(self):
         if not self._elem_is_initialized:
             self._elem_is_initialized = True
-            self.elem = proxy.IntProxy()
+            self.elem = self._engine.sym_int()
         return self.elem
 
     def _set_elem(self, value):
@@ -37,13 +33,13 @@ class Node:
         self._elem_is_initialized = True
 
     def _get_next(self):
-        if not self._next_is_initialized and see.SEEngine.is_tracked(self):
+        if not self._next_is_initialized and self._engine.is_tracked(self):
             self._next_is_initialized = True
-            self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            see.SEEngine.save_lazy_step(Node)
-            see.SEEngine.ignore_if(not self.conservative_repok(), self)
+            self.next = self._engine.get_next_lazy_step(Node, Node._vector)
+            self._engine.save_lazy_step(Node)
+            self._engine.ignore_if(not self.conservative_repok(), self)
         else:
-            see.SEEngine.check_recursion_limit(self.next)
+            self._engine.check_recursion_limit(self.next)
         return self.next
 
     def _set_next(self, value):
@@ -108,7 +104,7 @@ class Node:
 class LinkedList:
 
     _vector = []
-    _is_user_defined = True
+    _engine = None
     _id = 0
 
     def __init__(self, head: "Node" = None):
@@ -122,13 +118,13 @@ class LinkedList:
         self._recursion_depth = 0
 
     def _get_head(self):
-        if not self._head_is_initialized and see.SEEngine.is_tracked(self):
+        if not self._head_is_initialized and self._engine.is_tracked(self):
             self._head_is_initialized = True
-            self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            see.SEEngine.save_lazy_step(Node)
-            see.SEEngine.ignore_if(not self.conservative_repok(), self)
+            self.head = self._engine.get_next_lazy_step(Node, Node._vector)
+            self._engine.save_lazy_step(Node)
+            self._engine.ignore_if(not self.conservative_repok(), self)
         else:
-            see.SEEngine.check_recursion_limit(self.head)
+            self._engine.check_recursion_limit(self.head)
         return self.head
 
     def _set_head(self, value):

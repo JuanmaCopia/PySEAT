@@ -5,9 +5,8 @@
 import argparse
 
 from pygse.reports import report_statistics, print_formatted_result
-from pygse.symbolic_execution_engine import SEEngine
+from pygse.engine import SEEngine
 from pygse.sut_parser import parse
-from pygse.run_test import run_tests
 from pygse.test_generator import TestCode
 from pygse.stats import Status
 
@@ -98,45 +97,42 @@ def append_to_testfile(filename, str):
 
 args = parse_command_line_args()
 
-if args.test:
-    run_tests()
-else:
-    mod_cls_func = args.mod_class_func.strip().split(":")
-    module_name = mod_cls_func[0].strip()
-    class_name = mod_cls_func[1].strip()
-    function_name = mod_cls_func[2].strip()
-    max_depth = args.depth
+mod_cls_func = args.mod_class_func.strip().split(":")
+module_name = mod_cls_func[0].strip()
+class_name = mod_cls_func[1].strip()
+function_name = mod_cls_func[2].strip()
+max_depth = args.depth
 
-    sut = parse(module_name, function_name, class_name)
+sut = parse(module_name, function_name, class_name)
 
-    runs = []
-    test_number = 1
-    foldername = "generated_tests/"
-    filename = (
-        foldername + remove_instrumented(module_name) + "_" + function_name + "_tests"
+runs = []
+test_number = 1
+foldername = "generated_tests/"
+filename = (
+    foldername + remove_instrumented(module_name) + "_" + function_name + "_tests"
+)
+create_testfile(filename, module_name, class_name)
+
+engine = SEEngine(sut, max_depth)
+tests_gen = []
+test_num = 0
+print("Running tests...\n")
+for run in engine.explore():
+    if run:
+        print_formatted_result(sut.function, run, True)
+        if run.status != Status.PRUNED:
+            # test = TestCode(sut, run, run.number)
+            test_num += 1
+            test = TestCode(sut, run, test_num)
+            tests_gen.append(test)
+            append_to_testfile(filename, test.code)
+
+print("DONE! " + str(test_num) + " Tests were generated")
+report_statistics(engine.statistics())
+
+append_line_testfile(filename, "if __name__ == '__main__':")
+for i, n in enumerate(tests_gen):
+    append_line_testfile(
+        filename, "    " + function_name + "_test" + str(i + 1) + "()"
     )
-    create_testfile(filename, module_name, class_name)
-
-    SEEngine.initialize(sut, max_depth)
-    tests_gen = []
-    test_num = 0
-    print("Running tests...\n")
-    for run in SEEngine.explore():
-        if run:
-            print_formatted_result(sut.function, run, True)
-            if run.status != Status.PRUNED:
-                # test = TestCode(sut, run, run.number)
-                test_num += 1
-                test = TestCode(sut, run, test_num)
-                tests_gen.append(test)
-                append_to_testfile(filename, test.code)
-
-    print("DONE! " + str(test_num) + " Tests were generated")
-    report_statistics(SEEngine.statistics())
-
-    append_line_testfile(filename, "if __name__ == '__main__':")
-    for i, n in enumerate(tests_gen):
-        append_line_testfile(
-            filename, "    " + function_name + "_test" + str(i + 1) + "()"
-        )
 
