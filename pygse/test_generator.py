@@ -2,7 +2,46 @@
 
 """
 
-from pygse.helpers import is_special_attr, is_user_defined
+from helpers import is_special_attr, is_user_defined
+import os
+
+
+def create_testfile(module_name, class_name, method_name):
+    def remove_instrumented(module_name):
+        if module_name.endswith("_instrumented"):
+            return module_name[: -len("_instrumented")]
+        return module_name
+    # print(module_name, class_name, method_name)
+    mod_basename = os.path.splitext(os.path.basename(module_name))[0]
+    mod_basename = remove_instrumented(mod_basename)
+    # print("Mod basename: ", mod_basename)
+    foldername = os.path.dirname(module_name) + "/"
+    # print("Foldername: ", foldername)
+    filename = mod_basename + "_" + method_name + "_tests.py"
+    # print("Filename: ", filename)
+    filepath = foldername + filename
+    # print("Filepath: ", filepath)
+    importstr = "from " + mod_basename + " import Node, " + class_name + "\n\n\n"
+    # print("Importstr: ", importstr)
+    # print("")
+    create_file(filepath, importstr)
+    return filepath
+
+def append_test_calls(filepath, tests_gen):
+    append_to_testfile(filepath, "if __name__ == '__main__':")
+    for test in tests_gen:
+        append_to_testfile(filepath, "    " + test.name)
+
+def create_file(filepath, str):
+    file = open(filepath, "w")
+    file.write(str + "\n")
+    file.close()
+
+
+def append_to_testfile(filepath, str):
+    file = open(filepath, "a")
+    file.write(str + "\n")
+    file.close()
 
 
 class TestCode:
@@ -11,6 +50,7 @@ class TestCode:
         self._run_stats = run_stats
         self.test_number = number
         self.code = ""
+        self.name = sut.function.__name__ + "_test" + str(number) + "()"
         self.generate_test_code()
 
     def _add_line(self, line):

@@ -5,7 +5,7 @@ of executions.
 
 """
 
-from pygse.stats import Status
+from stats import Status
 
 
 INDENT = "        "

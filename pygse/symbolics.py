@@ -1,7 +1,7 @@
-from pygse.proxy_decorators import forward_to_rfun, check_comparable_types
-from pygse.proxy_decorators import check_equality, check_self_and_other_have_same_type
+from proxy_decorators import forward_to_rfun, check_comparable_types
+from proxy_decorators import check_equality, check_self_and_other_have_same_type
 
-from pygse.smt.sort_z3 import SMTInt, SMTBool
+from smt.sort_z3 import SMTInt, SMTBool
 import copy
 
 

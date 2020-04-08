@@ -7,18 +7,18 @@ dynammically allocated structures with the use of lazy initialization.
 
 import copy
 
-from pygse.branching_steps import LazyStep, ConditionalStep
-from pygse.stats import Status, ExecutionStats, GlobalStats
-from pygse.engine_errors import UnsatBranchError, MissingTypesError
-from pygse.engine_errors import RepOkFailException, MaxRecursionException
-from pygse.engine_errors import MaxDepthException, RepokNotFoundError
-from pygse.helpers import do_add, is_user_defined, keep_first_n_items
-from pygse.helpers import set_to_initialized
-from pygse.symbolics import Symbolic, SymBool, SymInt, is_symbolic, is_symbolic_bool
+from branching_steps import LazyStep, ConditionalStep
+from stats import Status, ExecutionStats, GlobalStats
+from engine_errors import UnsatBranchError, MissingTypesError
+from engine_errors import RepOkFailException, MaxRecursionException
+from engine_errors import MaxDepthException, RepokNotFoundError
+from helpers import do_add, is_user_defined, keep_first_n_items
+from helpers import set_to_initialized
+from symbolics import Symbolic, SymBool, SymInt, is_symbolic, is_symbolic_bool
 
-from pygse.smt.smt import SMT
-from pygse.smt.sort_z3 import SMTInt, SMTBool, SMTChar, SMTArray
-from pygse.smt.solver_z3 import SMTSolver
+from smt.smt import SMT
+from smt.sort_z3 import SMTInt, SMTBool, SMTChar, SMTArray
+from smt.solver_z3 import SMTSolver
 
 
 def concretize(symbolic, model):
@@ -355,8 +355,8 @@ class SEEngine:
     def _execute_repok(self, instance):
         try:
             result = instance.instrumented_repok()
-            # if is_symbolic_bool(result):
-            #     result = result.__bool__()
+            if is_symbolic_bool(result):
+                result = result.__bool__()
         except UnsatBranchError:
             pass
         except MaxDepthException:
@@ -572,10 +572,6 @@ class SEEngine:
             self._path_condition.append(condition)
         else:
             self._path_condition.append(self.smt.Not(condition))
-
-        # TODO: Check if next lines are necessary
-        if not condition_value:
-            sym_bool.formula = self.smt.Not(sym_bool.formula)
         return condition_value
 
     def conditioned_value(self, sym_bool):

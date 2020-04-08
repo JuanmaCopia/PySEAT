@@ -4,12 +4,20 @@ Parses all the data about the sut: Module, Class, method under test, types of
 classes involved.
 
 """
-
+import os
+import sys
 import importlib
 import copy
+from helpers import is_user_defined
+from engine_errors import MissingTypesError
 
-from pygse.helpers import is_user_defined
-from pygse.engine_errors import MissingTypesError
+
+def get_module(module_name):
+    module_dir = os.path.dirname(module_name)
+    sys.path = [os.path.abspath(os.path.join(module_dir))] + sys.path
+    mod_basename = os.path.splitext(os.path.basename(module_name))[0]
+    module = importlib.import_module(mod_basename)
+    return module
 
 
 class SUT:
@@ -39,16 +47,16 @@ class SUT:
             return self.class_params_map[typ]
 
 
-def parse(module_name, function_name, class_name=None):
+def parse(module_name, class_name, method_name):
     sut = SUT()
-    module = importlib.import_module(module_name)
+    module = get_module(module_name)
     if class_name:
         sut.is_method = True
         sut.sclass = getattr(module, class_name)
-        sut.function = getattr(sut.sclass, function_name)
+        sut.function = getattr(sut.sclass, method_name)
         sut.params = parse_params(sut.function, sut.sclass, module)
         if sut.function.__code__.co_argcount != len(sut.params):
-            raise MissingTypesError("Types missing in: " + function_name)
+            raise MissingTypesError("Types missing in: " + method_name)
         sut.class_params_map = get_user_defined_objects(sut.sclass, module)
     return sut
 

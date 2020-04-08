@@ -1,5 +1,5 @@
-from pygse.smt.solver_base import SMTSolverBase, SMTModelBase
-from pygse.smt.smt import SMTCantFoundModel
+from smt.solver_base import SMTSolverBase, SMTModelBase
+from smt.smt import SMTCantFoundModel
 import z3
 
 
