@@ -88,18 +88,23 @@ def report_statistics(stats):
     pruned = stats.get_amount_pruned()
 
     assert pruned + complete_exec == stats.total_paths
+    print("Exploration Statistiscs:")
     print(
-        "\n" + str(complete_exec) + " of " + str(stats.total_paths) + " paths explored"
+        "\n  "
+        + str(complete_exec)
+        + " of "
+        + str(stats.total_paths)
+        + " paths explored"
     )
-    print(str(stats.successes) + " passed")
-    print(str(stats.failures) + " failed")
+    print("  " + str(stats.successes) + " passed")
+    print("  " + str(stats.failures) + " failed")
     verbose = True
     if verbose:
-        print(str(pruned) + " pruned: ")
-        print("  " + str(stats.pruned_by_depth) + " by depth")
-        print("  " + str(stats.pruned_by_error) + " by error")
-        print("  " + str(stats.pruned_invalid) + " by invalid")
-        print("  " + str(stats.pruned_by_rec_limit) + " by rec limit")
-        print("  " + str(stats.pruned_by_repok) + " by repok" + "\n")
+        print("  " + str(pruned) + " pruned: ")
+        print("    " + str(stats.pruned_by_depth) + " by depth")
+        print("    " + str(stats.pruned_by_error) + " by error")
+        print("    " + str(stats.pruned_invalid) + " by invalid")
+        print("    " + str(stats.pruned_by_rec_limit) + " by rec limit")
+        print("    " + str(stats.pruned_by_repok) + " by repok" + "\n")
     else:
         print(str(pruned) + " pruned")

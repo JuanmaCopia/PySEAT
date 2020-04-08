@@ -39,7 +39,7 @@ test_number = 1
 engine = SEEngine(sut, max_depth)
 tests_gen = []
 test_num = 0
-print("Running tests...\n")
+print("Performing Exploration...\n")
 for run in engine.explore():
     if run:
         print_formatted_result(sut.function, run, True)
@@ -49,9 +49,10 @@ for run in engine.explore():
             tests_gen.append(test)
             testgen.append_to_testfile(filepath, test.code + "\n\n")
 
-print("DONE! " + str(test_num) + " Tests were generated")
+print("\nDONE! " + str(test_num) + " Tests were generated\n")
 report_statistics(engine.statistics())
 
 testgen.append_test_calls(filepath, tests_gen)
 
+print("Running generated tests...\n")
 runpy.run_path(filepath, run_name="__main__")
