@@ -3,6 +3,7 @@
 """
 import os
 import sys
+import runpy
 from optparse import OptionParser
 import sut_parser
 from reports import report_statistics, print_formatted_result
@@ -53,3 +54,4 @@ report_statistics(engine.statistics())
 
 testgen.append_test_calls(filepath, tests_gen)
 
+runpy.run_path(filepath, run_name="__main__")

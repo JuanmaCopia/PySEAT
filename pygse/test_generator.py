@@ -21,7 +21,7 @@ def create_testfile(module_name, class_name, method_name):
     # print("Filename: ", filename)
     filepath = foldername + filename
     # print("Filepath: ", filepath)
-    importstr = "from " + mod_basename + " import Node, " + class_name + "\n\n\n"
+    importstr = "from " + mod_basename + " import Node, " + class_name + "\n\n"
     # print("Importstr: ", importstr)
     # print("")
     create_file(filepath, importstr)
