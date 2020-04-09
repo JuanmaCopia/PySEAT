@@ -8,10 +8,10 @@ dynammically allocated structures with the use of lazy initialization.
 import copy
 
 from branching_steps import LazyStep, ConditionalStep
-from stats import Status, PathExecutionData, ExplorationStats
-from engine_errors import UnsatBranchError, MissingTypesError
-from engine_errors import RepOkFailException, MaxRecursionException
-from engine_errors import MaxDepthException, RepokNotFoundError
+from data import Status, PathExecutionData, ExplorationStats
+from exceptions import UnsatBranchError, MissingTypesError
+from exceptions import RepOkFailException, MaxRecursionException
+from exceptions import MaxDepthException
 from helpers import do_add, is_user_defined, keep_first_n_items
 from helpers import set_to_initialized
 from symbolics import Symbolic, SymBool, SymInt, is_symbolic, is_symbolic_bool

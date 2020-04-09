@@ -5,7 +5,7 @@ of executions.
 
 """
 
-import stats
+import data
 import helpers
 
 INDENT4 = "    "
@@ -59,7 +59,7 @@ def report_statistics(run_data):
         print(INDENT4 + str(run_data.pruned_by_error) + " by error")
         print(INDENT4 + str(run_data.pruned_invalid) + " by invalid")
         print(INDENT4 + str(run_data.pruned_by_rec_limit) + " by rec limit")
-        print(INDENT4 + str(run_data.pruned_by_repok) + " by repok" + "\n")
-        print(INDENT4 + str(run_data.pruned_by_exception) + " by exception" + "\n")
+        print(INDENT4 + str(run_data.pruned_by_repok) + " by repok")
+        print(INDENT4 + str(run_data.pruned_by_exception) + " by exception\n")
     else:
         print(str(pruned) + " pruned")

@@ -16,7 +16,6 @@ class Status(Enum):
 
 class PathExecutionData:
     def __init__(self, exec_number: int, status=None, exception=None, pruned_s=None):
-
         self.symbolic_inself = None
         self.self_end_state = None
         self.input_self = None

@@ -1,7 +1,6 @@
 def is_special_attr(attr_name):
     return attr_name.endswith("_is_initialized") or attr_name in [
         "_identifier",
-        "_generated",
         "_recursion_depth",
         "_vector",
         "_id",

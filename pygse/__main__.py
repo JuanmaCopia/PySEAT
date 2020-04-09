@@ -3,29 +3,34 @@
 """
 import os
 import sys
-import runpy
+import subprocess
 from optparse import OptionParser
+
 import sut_parser
 from reports import report_statistics, print_formatted_result
 from engine import SEEngine
 import test_generator as testgen
-from stats import Status
+from data import Status
 
 
-usage = "usage: %prog [options] <path to a *.py file>"
+usage = "usage: %prog [options] <path to *.py file> <class-name> <method-name>"
 parser = OptionParser(usage=usage)
 parser.add_option(
-    "-m", dest="max_depth", type="int", default=10,
+    "-d", dest="max_depth", type="int", default=10, help="maximum exploration depth",
 )
 parser.add_option(
-    "-v", dest="verbose", action="store_true", default=False,
+    "-v",
+    "--verbose",
+    dest="verbose",
+    action="store_true",
+    default=False,
+    help="show results of each execution",
 )
 (options, args) = parser.parse_args()
 
 if len(args) == 0 or not os.path.exists(args[0]):
-    parser.error("Missing app to execute")
+    parser.error("File Not Found")
     sys.exit(1)
-
 
 module_name = args[0]
 class_name = args[1]
@@ -61,4 +66,4 @@ report_statistics(engine.statistics())
 testgen.append_test_calls(filepath, tests_gen)
 
 print("Running generated tests...\n")
-runpy.run_path(filepath, run_name="__main__")
+subprocess.call([sys.executable, filepath])

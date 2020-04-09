@@ -9,7 +9,7 @@ import sys
 import importlib
 import copy
 from helpers import is_user_defined
-from engine_errors import MissingTypesError
+from exceptions import MissingTypesError
 
 
 def get_module(module_name):
