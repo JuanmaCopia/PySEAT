@@ -2,7 +2,7 @@ import subprocess
 import sys
 
 
-ret = subprocess.call(
+subprocess.call(
     [
         sys.executable,
         "pygse/__main__.py",
@@ -12,7 +12,7 @@ ret = subprocess.call(
     ]
 )
 
-ret = subprocess.call(
+subprocess.call(
     [
         sys.executable,
         "pygse/__main__.py",
@@ -22,7 +22,7 @@ ret = subprocess.call(
     ]
 )
 
-ret = subprocess.call(
+subprocess.call(
     [
         sys.executable,
         "pygse/__main__.py",
@@ -32,7 +32,7 @@ ret = subprocess.call(
     ]
 )
 
-ret = subprocess.call(
+subprocess.call(
     [
         sys.executable,
         "pygse/__main__.py",
