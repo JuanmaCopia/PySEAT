@@ -17,7 +17,6 @@ class Node:
         self._next_is_initialized = False
         self._elem_is_initialized = True
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
@@ -109,10 +108,8 @@ class LinkedList:
 
     def __init__(self, head: "Node" = None):
         self.head = head
-
         self._head_is_initialized = False
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0

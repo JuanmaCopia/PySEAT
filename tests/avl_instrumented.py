@@ -27,7 +27,6 @@ class Node:
         self._parent_is_initialized = False
         self._height_is_initialized = True
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
@@ -205,7 +204,6 @@ class AVL():
 
         self._root_is_initialized = False
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
@@ -411,8 +409,6 @@ class AVL():
                 self.root.parent = None
         else:
             deleted = node.delete()
-        # node.parent is actually the old parent of the node,
-        # which is the first potentially out-of-balance node.
         self.rebalance(deleted.parent)
 
     def repok(self):

@@ -15,7 +15,6 @@ class Node:
         self._next_is_initialized = False
         self._prev_is_initialized = False
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
@@ -106,7 +105,6 @@ class DoublyLinkedList:
         self._head_is_initialized = False
         self._tail_is_initialized = False
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0

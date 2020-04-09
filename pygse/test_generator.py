@@ -2,7 +2,7 @@
 
 """
 
-from helpers import is_special_attr, is_user_defined
+from helpers import is_special_attr, is_user_defined, do_add
 import os
 
 
@@ -11,26 +11,22 @@ def create_testfile(module_name, class_name, method_name):
         if module_name.endswith("_instrumented"):
             return module_name[: -len("_instrumented")]
         return module_name
-    # print(module_name, class_name, method_name)
+
     mod_basename = os.path.splitext(os.path.basename(module_name))[0]
     mod_basename = remove_instrumented(mod_basename)
-    # print("Mod basename: ", mod_basename)
     foldername = os.path.dirname(module_name) + "/"
-    # print("Foldername: ", foldername)
     filename = mod_basename + "_" + method_name + "_tests.py"
-    # print("Filename: ", filename)
     filepath = foldername + filename
-    # print("Filepath: ", filepath)
     importstr = "from " + mod_basename + " import Node, " + class_name + "\n\n"
-    # print("Importstr: ", importstr)
-    # print("")
     create_file(filepath, importstr)
     return filepath
+
 
 def append_test_calls(filepath, tests_gen):
     append_to_testfile(filepath, "if __name__ == '__main__':")
     for test in tests_gen:
         append_to_testfile(filepath, "    " + test.name)
+
 
 def create_file(filepath, str):
     file = open(filepath, "w")
@@ -47,7 +43,7 @@ def append_to_testfile(filepath, str):
 class TestCode:
     def __init__(self, sut, run_stats, number):
         self._sut = sut
-        self._run_stats = run_stats
+        self.run_data = run_stats
         self.test_number = number
         self.code = ""
         self.name = sut.function.__name__ + "_test" + str(number) + "()"
@@ -60,7 +56,7 @@ class TestCode:
         args_ids = ""
         for arg in instance:
             if is_user_defined(arg):
-                args_ids += self.generate_structure_code(arg) + ", "
+                args_ids += self.generate_structure_code2(arg) + ", "
             else:
                 args_ids += str(arg) + ", "
         return args_ids[:-2]
@@ -69,29 +65,28 @@ class TestCode:
         self.gen_test_header()
         self.gen_test_comment()
         self._add_line("# Self Generation")
-        self_id = self.generate_structure_code(self._run_stats.builded_in_self)
+        self_id = self.generate_structure_code2(self.run_data.input_self)
         self._add_line("# Repok check")
-        self.add_repok_check(self._run_stats.builded_in_self)
-        self._add_line("")
+        self.add_repok_check(self.run_data.input_self)
         self._add_line("# Method call")
         self.generate_method_call(
-            self_id, self._sut.function.__name__, self._run_stats.concrete_return
+            self_id, self._sut.function.__name__, self.run_data.returnv
         )
         self._add_line("# Assertions")
-        self.gen_returnv_assert(self._run_stats.concrete_return)
+        self.gen_returnv_assert(self.run_data.returnv)
         self._add_line("# Repok check")
-        self.add_repok_check(self._run_stats.concrete_end_self)
-        self.gen_structure_assertions(self._run_stats.concrete_end_self)
+        self.add_repok_check(self.run_data.self_end_state)
+        self.gen_structure_assertions(self.run_data.self_end_state)
         self._add_line("print('Test" + str(self.test_number) + ": OK')")
 
     def gen_test_comment(self):
         self._add_line("'''")
         self._add_line("Self:")
-        self._add_line("    " + self._run_stats.builded_in_self.__repr__())
+        self._add_line("    " + self.run_data.input_self.__repr__())
         self._add_line("Return:")
-        self._add_line("    " + self._run_stats.concrete_return.__repr__())
+        self._add_line("    " + self.run_data.returnv.__repr__())
         self._add_line("End Self:")
-        self._add_line("    " + self._run_stats.concrete_end_self.__repr__())
+        self._add_line("    " + self.run_data.self_end_state.__repr__())
         self._add_line("'''")
 
     def gen_test_header(self):
@@ -118,35 +113,35 @@ class TestCode:
 
     def gen_returnv_assert(self, returnv):
         if is_user_defined(returnv):
-            # self.create_return_assert_code(returnv._identifier)
             self.gen_structure_assertions(returnv, "returnv")
         else:
             if returnv:
                 self.create_return_assert_code(returnv)
 
-    def gen_structure_assertions(self, instance, defined_identifier=None):
-        if not instance._generated:
-            instance._generated = True
-
-            if defined_identifier:
-                identifier = defined_identifier
-            else:
-                identifier = instance._identifier
-
-            attr = self.get_attr_value_dict(instance)
-
-            userdef = []
-            for field, value in attr.items():
+    def gen_structure_assertions(self, structure, identifier=None):
+        if not is_user_defined(structure):
+            return
+        visited = set()
+        visited.add((structure))
+        worklist = []
+        if identifier:
+            worklist.append((structure, identifier))
+        else:
+            worklist.append((structure, structure._identifier))
+        while worklist:
+            current = worklist.pop(0)
+            curstruct = current[0]
+            curident = current[1]
+            structdict = self.get_attr_value_dict(curstruct)
+            for attr_name, value in structdict.items():
                 if is_user_defined(value):
-                    userdef.append((field, value))
+                    if do_add(visited, value):
+                        worklist.append((value, curident + "." + attr_name))
                 else:
-                    self.create_assert_code(identifier, field, value)
-
-            for field, value in userdef:
-                self.gen_structure_assertions(value, identifier + "." + field)
+                    self.create_assert_code(curident, attr_name, value)
 
     def generate_method_call(self, self_id, method_name, returnv=None):
-        args_ids = self.generate_arguments_code(self._run_stats.concrete_args)
+        args_ids = self.generate_arguments_code(self.run_data.input_args)
         if returnv:
             self._add_line(
                 "returnv = " + self_id + "." + method_name + "(" + args_ids + ")"
@@ -162,20 +157,17 @@ class TestCode:
             if not is_special_attr(key)
         }
 
-    def generate_structure_code(self, instance):
+    def generate_structure_code2(self, instance, visited=set()):
         if not instance:
-            return "Attempted to generate the code for a None self\n"
-        if instance._generated:
+            return
+        if not do_add(visited, instance):
             return instance._identifier
 
-        instance._generated = True
         identifier = instance._identifier
-
         attr = self.get_attr_value_dict(instance)
         self.create_constructor_call(
             identifier, type(instance), attr, self._sut.get_init_params(type(instance)),
         )
-
         userdef = []
         for field, value in attr.items():
             if not is_user_defined(value):
@@ -184,9 +176,8 @@ class TestCode:
                 userdef.append((field, value))
         field_id = ""
         for field, value in userdef:
-            field_id = self.generate_structure_code(value)
+            field_id = self.generate_structure_code2(value, visited)
             self.create_assign_code(identifier, field, field_id)
-
         return identifier
 
     def create_assign_code(self, identifier, field, value):
@@ -207,7 +198,7 @@ class TestCode:
         for name, value in ctor_params.items():
             obj_name = ""
             if is_user_defined(value):
-                obj_name = self.generate_structure_code(value)
+                obj_name = self.generate_structure_code2(value)
                 code_line += obj_name + ", "
             else:
                 code_line += str(ctor_params[name]) + ", "

@@ -8,7 +8,7 @@ dynammically allocated structures with the use of lazy initialization.
 import copy
 
 from branching_steps import LazyStep, ConditionalStep
-from stats import Status, ExecutionStats, GlobalStats
+from stats import Status, PathExecutionData, ExplorationStats
 from engine_errors import UnsatBranchError, MissingTypesError
 from engine_errors import RepOkFailException, MaxRecursionException
 from engine_errors import MaxDepthException, RepokNotFoundError
@@ -95,7 +95,7 @@ class SEEngine:
         _max_depth (int): Max depth search, any execution that exeeds this value
         is pruned.
 
-        _globalstats (GlobalStats): Contains the overall statistics of all executed
+        _globalstats (ExplorationStats): Contains the overall statistics of all executed
         program paths.
 
         _sut (SUT): Data of the program under test, contains the method or function,
@@ -114,16 +114,13 @@ class SEEngine:
         self.smt = SMT((SMTInt, SMTBool, SMTChar, SMTArray), SMTSolver)
         self._sut = sut_data
         self._real_to_proxy = Symbolic.get_symtypes_mapping()
-        self._globalstats = GlobalStats()
-
         self._max_depth = max_depth
+        self._stats = ExplorationStats()
         self._current_depth = 0
         self._current_bp = 0
         self._recursion_limit = 0
-
         self._branching_points = []
         self._path_condition = []
-
         self._lazy_backups = {}
         self._current_self = None
 
@@ -140,7 +137,7 @@ class SEEngine:
         """Main method, implements the generalized symbolic execution.
 
         Yields:
-            ExecutionStats: The result of the execution of the function under test
+            PathExecutionData: The result of the execution of the function under test
         """
         self._branching_points = []
         unexplored_paths = True
@@ -183,10 +180,10 @@ class SEEngine:
                 or method.
 
         Returns:
-            ExecutionStats: The result of the execution of the function
+            PathExecutionData: The result of the execution of the function
             under test
         """
-        self._globalstats.total_paths += 1
+        self._stats.total_paths += 1
 
         returnv = None
         exception = None
@@ -204,33 +201,28 @@ class SEEngine:
             if is_symbolic_bool(returnv):
                 returnv = returnv.__bool__()
         except UnsatBranchError:
-            self._globalstats.pruned_by_error += 1
+            self._stats.pruned_by_error += 1
         except MaxDepthException:
-            self._globalstats.pruned_by_depth += 1
+            self._stats.pruned_by_depth += 1
         except RepOkFailException:
-            self._globalstats.pruned_by_repok += 1
+            self._stats.pruned_by_repok += 1
         except MaxRecursionException:
-            self._globalstats.pruned_by_rec_limit += 1
-        except RecursionError as e:
-            status = Status.PRUNED
-            exception = e
+            self._stats.pruned_by_rec_limit += 1
         except Exception as e:
-            status = Status.PRUNED
+            self._stats.pruned_by_exception += 1
             exception = e
         else:
             status = Status.OK
         finally:
-            if exception:
-                raise exception
             if status == Status.PRUNED:
-                exec_num = self._globalstats.total_paths
+                exec_num = self._stats.total_paths
                 model = self.smt.get_model(self._path_condition)
                 pruned_s = self._lazy_backups[self._sut.sclass].get_entity()
                 pruned_s = concretize(pruned_s, model)
-                return ExecutionStats(exec_num, status, exception, pruned_s)
+                return PathExecutionData(exec_num, status, exception, pruned_s)
 
             stats = self.build_stats(status, args, returnv)
-            self._globalstats.status_count(stats.status)
+            self._stats.status_count(stats.status)
             return stats
 
     def build_stats(self, status, args, returnv):
@@ -239,41 +231,40 @@ class SEEngine:
         model = self.smt.get_model(path)
 
         # Input Self
-        input_self = self._lazy_backups[self._sut.sclass].get_entity()
-        builded_in_self = self.build(input_self, model)
+        symbolic_inself = self._lazy_backups[self._sut.sclass].get_entity()
+        input_self = self.build(symbolic_inself, model)
 
-        if builded_in_self is None:
-            self._globalstats.pruned_invalid += 1
-            return ExecutionStats(self._globalstats.total_paths, Status.PRUNED)
+        if input_self is None:
+            self._stats.pruned_invalid += 1
+            return PathExecutionData(self._stats.total_paths, Status.PRUNED)
 
         # input arguments
         self.retrieve_inputs(args)
-        args = self.build(args, model)
+        input_args = self.build(args, model)
 
         # Execution of method with concrete input
-        end_self = copy.deepcopy(builded_in_self)
-        input_args = copy.deepcopy(args)
-        method = getattr(end_self, self._sut.function.__name__)
+        self_end_state = copy.deepcopy(input_self)
+        args = copy.deepcopy(input_args)
+        method = getattr(self_end_state, self._sut.function.__name__)
         if args:
-            returnv = method(*input_args)
+            returnv = method(*args)
         else:
             returnv = method()
 
-        if end_self.repok():
+        if self_end_state.repok():
             status = Status.OK
         else:
             status = Status.FAIL
 
-        stats = ExecutionStats(self._globalstats.total_paths, status)
-        stats.concrete_args = args
-        stats.pathcondition = path
-        stats.model = model
-        stats.concrete_end_self = copy.deepcopy(end_self)
-        stats.builded_in_self = builded_in_self
-        stats.input_self = input_self
-        stats.returnv = returnv
-        stats.concrete_return = copy.deepcopy(returnv)
-        return stats
+        pathdata = PathExecutionData(self._stats.total_paths, status)
+        pathdata.input_args = input_args
+        pathdata.pathcondition = path
+        pathdata.model = model
+        pathdata.self_end_state = self_end_state
+        pathdata.input_self = input_self
+        pathdata.symbolic_inself = symbolic_inself
+        pathdata.returnv = returnv
+        return pathdata
 
     def _reset_for_repok(self, iself, pc_len):
         self._path_condition = keep_first_n_items(self._path_condition, pc_len)
@@ -656,7 +647,7 @@ class SEEngine:
     def statistics(self):
         """Returns the collected statistics of all executions.
         """
-        return self._globalstats
+        return self._stats
 
     def save_lazy_step(self, sclass):
         self._lazy_backups[sclass].new_backup(sclass)

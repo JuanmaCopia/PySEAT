@@ -36,7 +36,6 @@ def insert_after_test1():
     doublylinkedlist0.tail = node5
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -44,11 +43,11 @@ def insert_after_test1():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 1
+    assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 1
     assert doublylinkedlist0.head.next.next.data == 1
-    assert doublylinkedlist0.head.next.next.next.data == 1
-    assert doublylinkedlist0.head.next.next.next.next.data == 1
-    assert doublylinkedlist0.head.next.next.next.next.next is None
     print('Test1: OK')
 
 
@@ -95,7 +94,6 @@ def insert_after_test2():
     doublylinkedlist0.tail = node91
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -103,14 +101,14 @@ def insert_after_test2():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 0
     assert doublylinkedlist0.head.next.next.data == 1
+    assert doublylinkedlist0.tail.prev.prev.data == 0
     assert doublylinkedlist0.head.next.next.next.data == 1
-    assert doublylinkedlist0.head.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.next.next.next is None
+    assert doublylinkedlist0.tail.prev.prev.prev.data == 0
     print('Test2: OK')
 
 
@@ -149,7 +147,6 @@ def insert_after_test3():
     doublylinkedlist0.tail = node5
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -157,12 +154,12 @@ def insert_after_test3():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 0
     assert doublylinkedlist0.head.next.next.data == 1
-    assert doublylinkedlist0.head.next.next.next.data == 1
-    assert doublylinkedlist0.head.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.next is None
+    assert doublylinkedlist0.tail.prev.prev.data == 1
     print('Test3: OK')
 
 
@@ -197,7 +194,6 @@ def insert_after_test4():
     doublylinkedlist0.tail = node4
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -205,10 +201,10 @@ def insert_after_test4():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 1
+    assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.head.next.next.data == 1
-    assert doublylinkedlist0.head.next.next.next.data == 1
-    assert doublylinkedlist0.head.next.next.next.next is None
+    assert doublylinkedlist0.tail.prev.data == 1
     print('Test4: OK')
 
 
@@ -255,7 +251,6 @@ def insert_after_test5():
     doublylinkedlist0.tail = node101
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -263,14 +258,14 @@ def insert_after_test5():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 0
     assert doublylinkedlist0.head.next.next.data == 1
+    assert doublylinkedlist0.tail.prev.prev.data == 0
     assert doublylinkedlist0.head.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.next.next.next is None
+    assert doublylinkedlist0.tail.prev.prev.prev.data == 0
     print('Test5: OK')
 
 
@@ -305,7 +300,6 @@ def insert_after_test6():
     doublylinkedlist0.tail = node4
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -313,11 +307,11 @@ def insert_after_test6():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 0
     assert doublylinkedlist0.head.next.next.data == 1
-    assert doublylinkedlist0.head.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next is None
     print('Test6: OK')
 
 
@@ -348,7 +342,6 @@ def insert_after_test7():
     doublylinkedlist0.tail = node3
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -356,9 +349,9 @@ def insert_after_test7():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 1
+    assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.head.next.next.data == 1
-    assert doublylinkedlist0.head.next.next.next is None
     print('Test7: OK')
 
 
@@ -401,7 +394,6 @@ def insert_after_test8():
     doublylinkedlist0.tail = node110
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -409,13 +401,13 @@ def insert_after_test8():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 0
     assert doublylinkedlist0.head.next.next.data == 0
+    assert doublylinkedlist0.tail.prev.prev.data == 0
     assert doublylinkedlist0.head.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.next.next is None
     print('Test8: OK')
 
 
@@ -446,7 +438,6 @@ def insert_after_test9():
     doublylinkedlist0.tail = node3
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -454,10 +445,10 @@ def insert_after_test9():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.head.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next is None
+    assert doublylinkedlist0.tail.prev.data == 0
     print('Test9: OK')
 
 
@@ -484,7 +475,6 @@ def insert_after_test10():
     doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -492,8 +482,8 @@ def insert_after_test10():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.head.next.next is None
+    assert doublylinkedlist0.tail.data == 1
+    assert doublylinkedlist0.tail.next is None
     print('Test10: OK')
 
 
@@ -536,7 +526,6 @@ def insert_after_test11():
     doublylinkedlist0.tail = node114
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -544,13 +533,13 @@ def insert_after_test11():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
     assert doublylinkedlist0.head.next.next.data == 0
+    assert doublylinkedlist0.tail.prev.prev.data == 0
     assert doublylinkedlist0.head.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.next.next is None
     print('Test11: OK')
 
 
@@ -577,7 +566,6 @@ def insert_after_test12():
     doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -585,9 +573,9 @@ def insert_after_test12():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 0
-    assert doublylinkedlist0.head.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next is None
     print('Test12: OK')
 
 
@@ -610,7 +598,6 @@ def insert_after_test13():
     doublylinkedlist0.tail = node1
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -657,7 +644,6 @@ def insert_after_test14():
     doublylinkedlist0.tail = node123
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -665,12 +651,12 @@ def insert_after_test14():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
     assert doublylinkedlist0.head.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.data == 0
-    assert doublylinkedlist0.head.next.next.next.next.next.next is None
+    assert doublylinkedlist0.tail.prev.prev.data == 0
     print('Test14: OK')
 
 
@@ -693,7 +679,6 @@ def insert_after_test15():
     doublylinkedlist0.tail = node1
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions
@@ -701,8 +686,8 @@ def insert_after_test15():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.head.next.data == 0
-    assert doublylinkedlist0.head.next.next is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
     print('Test15: OK')
 
 
@@ -721,7 +706,6 @@ def insert_after_test16():
     doublylinkedlist0.tail = None
     # Repok check
     assert doublylinkedlist0.repok()
-    
     # Method call
     doublylinkedlist0.insert_after(0, 0)
     # Assertions

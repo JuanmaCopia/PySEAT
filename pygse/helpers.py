@@ -37,3 +37,15 @@ def set_to_initialized(structure, attr_name):
 
 def get_initialized_name(attr_name):
     return "_" + attr_name + "_is_initialized"
+
+
+def helper_print_dict(dictionary):
+    print("")
+    for (k, v) in dictionary.items():
+        print(k, "   ", v)
+    print("")
+
+
+def print_list(l: list, indent):
+    for elem in l:
+        print(indent + str(elem))

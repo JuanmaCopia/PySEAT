@@ -24,7 +24,6 @@ def swap_node_test1():
     linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
-    
     # Method call
     returnv = linkedlist0.swap_node()
     # Assertions
@@ -61,7 +60,6 @@ def swap_node_test2():
     linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
-    
     # Method call
     returnv = linkedlist0.swap_node()
     # Assertions
@@ -96,7 +94,6 @@ def swap_node_test3():
     linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
-    
     # Method call
     returnv = linkedlist0.swap_node()
     # Assertions
@@ -128,7 +125,6 @@ def swap_node_test4():
     linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
-    
     # Method call
     returnv = linkedlist0.swap_node()
     # Assertions
@@ -155,7 +151,6 @@ def swap_node_test5():
     linkedlist0.head = None
     # Repok check
     assert linkedlist0.repok()
-    
     # Method call
     linkedlist0.swap_node()
     # Assertions

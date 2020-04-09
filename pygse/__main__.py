@@ -15,9 +15,11 @@ from stats import Status
 usage = "usage: %prog [options] <path to a *.py file>"
 parser = OptionParser(usage=usage)
 parser.add_option(
-    "-m", "--max-depth", dest="max_depth", type="int", default=10,
+    "-m", dest="max_depth", type="int", default=10,
 )
-
+parser.add_option(
+    "-v", dest="verbose", action="store_true", default=False,
+)
 (options, args) = parser.parse_args()
 
 if len(args) == 0 or not os.path.exists(args[0]):
@@ -29,7 +31,7 @@ module_name = args[0]
 class_name = args[1]
 method_name = args[2]
 max_depth = options.max_depth
-
+verbose = options.verbose
 
 sut = sut_parser.parse(module_name, class_name, method_name)
 filepath = testgen.create_testfile(module_name, class_name, method_name)
@@ -39,10 +41,14 @@ test_number = 1
 engine = SEEngine(sut, max_depth)
 tests_gen = []
 test_num = 0
-print("Performing Exploration...\n")
+
+print("\n ========================  PyGSE  =====================\n")
+print("Method " + method_name + " of class " + class_name)
+
+print("\nPerforming Exploration...\n")
 for run in engine.explore():
     if run:
-        print_formatted_result(sut.function, run, True)
+        print_formatted_result(sut.function, run, verbose)
         if run.status != Status.PRUNED:
             test_num += 1
             test = testgen.TestCode(sut, run, test_num)

@@ -15,7 +15,6 @@ class Node:
         self._next_is_initialized = False
         self._prev_is_initialized = False
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
@@ -106,7 +105,6 @@ class CDLinkedList:
 
         self._head_is_initialized = False
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
@@ -222,9 +220,9 @@ class CDLinkedList:
                 new_node._set_prev(current_node)
 
                 # added
-                if next_node:
+                # if next_node:
                 #########
-                    next_node._set_prev(new_node)
+                next_node._set_prev(new_node)
 
                 return
             else:

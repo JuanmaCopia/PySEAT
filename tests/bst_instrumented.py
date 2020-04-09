@@ -25,7 +25,6 @@ class Node:
         self._left_is_initialized = False
         self._parent_is_initialized = False
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
@@ -103,10 +102,8 @@ class BST:
 
     def __init__(self, root: "Node" = None):
         self.root = root
-
         self._root_is_initialized = False
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
