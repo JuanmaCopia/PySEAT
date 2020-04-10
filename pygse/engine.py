@@ -116,12 +116,12 @@ class SEEngine:
         self._real_to_proxy = Symbolic.get_symtypes_mapping()
         self._max_depth = max_depth
         self._stats = ExplorationStats()
+        self._backups = LazyBackup()
         self._current_depth = 0
         self._current_bp = 0
         self._recursion_limit = 0
         self._branching_points = []
         self._path_condition = []
-        self._lazy_backups = {}
         self._current_self = None
 
         for k in self._sut.class_params_map.keys():
@@ -146,6 +146,7 @@ class SEEngine:
             self._reset_exploration()
 
             args = [self._symbolic_instantiation(typ) for name, typ in self._sut.params.items()]
+            self._backups.initialize_backup(args)
 
             result = self._execute_program(args)
             yield (result)
@@ -162,10 +163,10 @@ class SEEngine:
         self._current_bp = 0
         self._current_depth = 0
         self._recursion_limit = 10
+        self._backups = LazyBackup()
         for k in self._sut.class_params_map.keys():
             k._vector = []
             k._id = 0
-            self._lazy_backups[k] = LazyBackup()
 
     def _execute_program(self, args):
         """Executes the method and returns the result.
@@ -217,7 +218,7 @@ class SEEngine:
             if status == Status.PRUNED:
                 exec_num = self._stats.total_paths
                 model = self.smt.get_model(self._path_condition)
-                pruned_s = self._lazy_backups[self._sut.sclass].get_entity()
+                pruned_s = self._backups.get_self()
                 pruned_s = concretize(pruned_s, model)
                 return PathExecutionData(exec_num, status, exception, pruned_s)
 
@@ -231,16 +232,15 @@ class SEEngine:
         model = self.smt.get_model(path)
 
         # Input Self
-        symbolic_inself = self._lazy_backups[self._sut.sclass].get_entity()
-        input_self = self.build(symbolic_inself, model)
+        symbolic_inself = self._backups.get_self()
+        symbolic_args = self._backups.get_args()
 
+        input_self = self.build(symbolic_inself, model)
         if input_self is None:
             self._stats.pruned_invalid += 1
             return PathExecutionData(self._stats.total_paths, Status.PRUNED)
 
-        # input arguments
-        self.retrieve_inputs(args)
-        input_args = self.build(args, model)
+        input_args = self.build(symbolic_args, model)
 
         # Execution of method with concrete input
         self_end_state = copy.deepcopy(input_self)
@@ -268,12 +268,13 @@ class SEEngine:
 
     def _reset_for_repok(self, iself, pc_len):
         self._path_condition = keep_first_n_items(self._path_condition, pc_len)
+        self._backups = LazyBackup()
+        self._backups.init_self_backup(iself)
         self._current_bp = 0
         self._current_depth = 0
         self._recursion_limit = 200
         for k in self._sut.class_params_map.keys():
             k._vector = []
-            self._lazy_backups[k] = LazyBackup()
         self.fill_class_vectors(iself)
 
     def build(self, symbolic, model):
@@ -310,6 +311,7 @@ class SEEngine:
             useless += 1
             iself = copy.deepcopy(input_self)
             self._reset_for_repok(iself, pc_len)
+
             result = self._execute_repok(iself)
 
             if result is not None and result.repok():
@@ -365,11 +367,6 @@ class SEEngine:
                 assert new_object.repok()
                 return new_object
             return None
-
-    def retrieve_inputs(self, args_list):
-        for i, arg in enumerate(args_list):
-            if is_user_defined(arg):
-                args_list[i] = self._lazy_backups[type(arg)].get_entity()
 
     def _check_repok(self, instance):
         """Checks whether an instance pass it's class invariant o not.
@@ -472,7 +469,6 @@ class SEEngine:
         elif is_user_defined(typ):
             instance = self._symbolize_partially(typ)
             typ._vector.append(instance)
-            self._lazy_backups[typ].add_entity(typ._vector)
             return instance
         return typ()
 
@@ -642,7 +638,8 @@ class SEEngine:
 
     @staticmethod
     def is_tracked(obj):
-        return obj._identifier in [x._identifier for x in obj._vector if x is not None]
+        obj = next((x for x in obj._vector if x._identifier == obj._identifier), None)
+        return obj is not None
 
     def statistics(self):
         """Returns the collected statistics of all executions.
@@ -650,32 +647,57 @@ class SEEngine:
         return self._stats
 
     def save_lazy_step(self, sclass):
-        self._lazy_backups[sclass].new_backup(sclass)
-        if (sclass != self._sut.sclass):
-            class_backup = self._lazy_backups[self._sut.sclass]
-            class_backup.new_backup(self._sut.sclass)
+        self._backups.make_backup()
 
 
 class LazyBackup:
-    def __init__(self, vector=[], amount_entities=0):
-        self.vector = copy.deepcopy(vector)
-        self.amount_entities = amount_entities
-        self.next_entity = 0
+    def __init__(self):
+        self.self_id = ""
+        self.args_bkp = []
+        self.self_bkp = None
 
-    def add_entity(self, vector):
-        self.vector = copy.deepcopy(vector)
-        self.amount_entities += 1
+    def init_self_backup(self, instance):
+        self.self_id = instance._identifier
+        self.self_bkp = copy.deepcopy(instance)
 
-    def new_backup(self, cls):
-        self.vector = copy.deepcopy(cls._vector)
+    def _add_argument(self, instance):
+        bkp = copy.deepcopy(instance)
+        if is_user_defined(instance):
+            self.args_bkp.append((instance._identifier, bkp))
+        else:
+            self.args_bkp.append(("", bkp))
+
+    def init_args_backup(self, args_list):
+        for arg in args_list:
+            self._add_argument(arg)
+
+    def initialize_backup(self, datalist):
+        self.init_self_backup(datalist[0])
+        self.init_args_backup(datalist[1:])
 
     def get_self(self):
-        return self.vector[0]
+        return copy.deepcopy(self.self_bkp)
 
-    def get_entity(self):
-        entity = self.vector[self.next_entity]
-        self.next_entity += 1
-        return entity
+    def get_args(self):
+        return [x[1] for x in self.args_bkp]
 
-    def get_vector(self):
-        return self.vector
+    def make_backup(self):
+        self.make_self_backup()
+        self.make_args_backup()
+
+    def make_args_backup(self):
+        for (argid, bkp) in self.args_bkp:
+            if is_user_defined(bkp):
+                arg_bkp = next((x for x in bkp._vector if x._identifier == argid), None)
+                if arg_bkp is not None:
+                    bkp = copy.deepcopy(arg_bkp)
+                else:
+                    assert False
+
+    def make_self_backup(self):
+        vector = self.self_bkp._vector
+        self_bkp = next((x for x in vector if x._identifier == self.self_id), None)
+        if self_bkp is not None:
+            self.self_bkp = copy.deepcopy(self_bkp)
+        else:
+            assert False
