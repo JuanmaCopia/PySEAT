@@ -9,51 +9,59 @@ def do_add(s, x):
 
 
 class Node:
-    def __init__(self, data=None):
+    def __init__(self, data: int):
         self.data = data
-        self.left = None
         self.right = None
-        self.parent = None
+        self.left = None
+
+    def repok(self):
+        return True
 
     def __repr__(self):
-        return str(self.data) + "\n"
+        return str(self.data)
 
 
 class BST:
-    def __init__(self, root=None):
-        self.root = None
+    def __init__(self, root: "Node" = None):
+        self.root = root
 
     def repok(self):
-        if self.root is None:
+        if not self.root:
             return True
-        if self.root.parent is not None:
+        if not (self.is_acyclic() and self.is_ordered()):
             return False
+        return True
+
+    def is_acyclic(self):
         visited = set()
         visited.add(self.root)
-        return self.is_BST(self.root, INT_MIN, INT_MAX, visited)
+        worklist = []
+        worklist.append(self.root)
+        while worklist:
+            current = worklist.pop(0)
+            if current.left:
+                if not do_add(visited, current.left):
+                    return False
+                worklist.append(current.left)
+            if current.right:
+                if not do_add(visited, current.right):
+                    return False
+                worklist.append(current.right)
+        return True
 
-    def is_BST(self, node, min, max, visited):
-        if node is None:
-            return True
-        if (
-            node.data <= min
-            or node.data >= max
-            or (node is not self.root and node.parent is None)
-            or (node.parent is not None and do_add(visited, node.parent))
-            or (
-                node.left is not None
-                and (not do_add(visited, node.left) or node.left.parent is not node)
-            )
-            or (
-                node.right is not None
-                and (not do_add(visited, node.right) or node.right.parent is not node)
-            )
-        ):
+    def is_ordered(self):
+        return self.is_ordered2(self.root, INT_MIN, INT_MAX)
+
+    def is_ordered2(self, node, min, max):
+        if node.data <= min or node.data >= max:
             return False
-
-        return self.is_BST(node.left, min, node.data, visited) and self.is_BST(
-            node.right, node.data, max, visited
-        )
+        if node.left:
+            if not self.is_ordered2(node.left, min, node.data):
+                return False
+        if node.right:
+            if not self.is_ordered2(node.right, node.data, max):
+                return False
+        return True
 
     def insert(self, data):
         if self.root is None:
@@ -65,40 +73,15 @@ class BST:
         if data < cur_node.data:
             if cur_node.left is None:
                 cur_node.left = Node(data)
-                cur_node.left.parent = cur_node  # set parent
             else:
                 self._insert(data, cur_node.left)
         elif data > cur_node.data:
             if cur_node.right is None:
                 cur_node.right = Node(data)
-                cur_node.right.parent = cur_node  # set parent
             else:
                 self._insert(data, cur_node.right)
         else:
             print("data already in tree!")
-
-    def print_tree(self):
-        if self.root is not None:
-            self._print_tree(self.root)
-
-    def _print_tree(self, cur_node):
-        if cur_node is not None:
-            self._print_tree(cur_node.left)
-            print(str(cur_node.data))
-            self._print_tree(cur_node.right)
-
-    def height(self):
-        if self.root is not None:
-            return self._height(self.root, 0)
-        else:
-            return 0
-
-    def _height(self, cur_node, cur_height):
-        if cur_node is None:
-            return cur_height
-        left_height = self._height(cur_node.left, cur_height + 1)
-        right_height = self._height(cur_node.right, cur_height + 1)
-        return max(left_height, right_height)
 
     def find(self, data):
         if self.root is not None:
@@ -114,121 +97,104 @@ class BST:
         elif data > cur_node.data and cur_node.right is not None:
             return self._find(data, cur_node.right)
 
-    def delete_data(self, data):
-        return self.delete_node(self.find(data))
+    # def display(self):
+    #     lines, _, _, _ = self.to_str(self.root)
+    #     for line in lines:
+    #         print(line)
 
-    def delete_node(self, node):
-        # Protect against deleting a node not found in the tree
-        if node is None or self.find(node.data) is None:
-            print("Node to be deleted not found in the tree!")
-            return None
-
-        # returns the node with min data in tree rooted at input node
-        def min_data_node(n):
-            current = n
-            while current.left is not None:
-                current = current.left
-            return current
-
-        # returns the number of children for the specified node
-        def num_children(n):
-            num_children = 0
-            if n.left is not None:
-                num_children += 1
-            if n.right is not None:
-                num_children += 1
-            return num_children
-
-        # get the parent of the node to be deleted
-        node_parent = node.parent
-
-        # get the number of children of the node to be deleted
-        node_children = num_children(node)
-
-        # break operation into different cases based on the
-        # structure of the tree & node to be deleted
-
-        # CASE 1 (node has no children)
-        if node_children == 0:
-
-            # Added this if statement post-video, previously if you
-            # deleted the root node it would delete entire tree.
-            if node_parent is not None:
-                # remove reference to the node from the parent
-                if node_parent.left == node:
-                    node_parent.left = None
-                else:
-                    node_parent.right = None
-            else:
-                self.root = None
-
-        # CASE 2 (node has a single child)
-        if node_children == 1:
-
-            # get the single child node
-            if node.left is not None:
-                child = node.left
-            else:
-                child = node.right
-
-            # Added this if statement post-video, previously if you
-            # deleted the root node it would delete entire tree.
-            if node_parent is not None:
-                # replace the node to be deleted with its child
-                if node_parent.left == node:
-                    node_parent.left = child
-                else:
-                    node_parent.right = child
-            else:
-                self.root = child
-
-            # correct the parent pointer in node
-            child.parent = node_parent
-
-        # CASE 3 (node has two children)
-        if node_children == 2:
-
-            # get the inorder successor of the deleted node
-            successor = min_data_node(node.right)
-
-            # copy the inorder successor's data to the node formerly
-            # holding the data we wished to delete
-            node.data = successor.data
-
-            # delete the inorder successor now that it's data was
-            # copied into the other node
-            self.delete_node(successor)
-
-    def search(self, data):
-        if self.root is not None:
-            return self._search(data, self.root)
-        else:
-            return False
-
-    def _search(self, data, cur_node):
-        if data == cur_node.data:
-            return True
-        elif data < cur_node.data and cur_node.left is not None:
-            return self._search(data, cur_node.left)
-        elif data > cur_node.data and cur_node.right is not None:
-            return self._search(data, cur_node.right)
-        return False
-
-    def __repr__(self):
-        if not self.root:
-            return "Empty"
-        visited = set()
-        visited.add(self.root)
-        return self.to_str(self.root, visited, "")
-
-    def to_str(self, node, visited, indent):
-        str_rep = ""
-        indent2 = "      "
+    def to_str(self, node, visited):
+        """Returns list of strings, width, height, and horizontal coord. of root."""
+        # No child.
 
         if node is None:
-            return indent + "-->" + "None\n"
+            line = "%s" % node.data + "N"
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
 
-        str_rep += self.to_str(node.right, visited, indent + indent2)
-        str_rep += indent + "-->" + node.__repr__()
-        str_rep += self.to_str(node.left, visited, indent + indent2)
-        return str_rep
+        if not do_add(visited, node):
+            line = "%s" % node.data + "*"
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        if node.right is None and node.left is None:
+            line = "%s" % node.data
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        # Only left child.
+        if node.right is None:
+            lines, n, p, x = self.to_str(node.left, visited)
+            s = "%s" % node.data
+            u = len(s)
+            first_line = (x + 1) * " " + (n - x - 1) * "_" + s
+            second_line = x * " " + "/" + (n - x - 1 + u) * " "
+            shifted_lines = [line + u * " " for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
+
+        # Only right child.
+        if node.left is None:
+            lines, n, p, x = self.to_str(node.right, visited)
+            s = "%s" % node.data
+            u = len(s)
+            first_line = s + x * "_" + (n - x) * " "
+            second_line = (u + x) * " " + "\\" + (n - x - 1) * " "
+            shifted_lines = [u * " " + line for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
+
+        # Two children.
+        left, n, p, x = self.to_str(node.left, visited)
+        right, m, q, y = self.to_str(node.right, visited)
+        s = "%s" % node.data
+        u = len(s)
+        first_line = (x + 1) * " " + (n - x - 1) * "_" + s + y * "_" + (m - y) * " "
+        second_line = (
+            x * " " + "/" + (n - x - 1 + u + y) * " " + "\\" + (m - y - 1) * " "
+        )
+        if p < q:
+            left += [n * " "] * (q - p)
+        elif q < p:
+            right += [m * " "] * (p - q)
+        zipped_lines = zip(left, right)
+        lines = [first_line, second_line] + [a + u * " " + b for a, b in zipped_lines]
+        return lines, n + m + u, max(p, q) + 2, n + u // 2
+
+    def __repr__(self):
+        if self.root is None:
+            return "<empty tree>"
+        visited = set()
+        lines, _, _, _ = self.to_str(self.root, visited)
+        result = ""
+        for line in lines:
+            result += "        " + line + "\n"
+        return "\n" + result
+
+
+# import random
+# if __name__ == "__main__":
+#     bst0 = BST()
+#     for _ in range(50):
+#         bst0.insert(random.randint(0, 100))
+#     print(bst0.__repr__())
+# if __name__ == "__main__":
+#     node0 = Node(0)
+#     node0.data = 0
+#     node0.right = None
+#     node1 = Node(0)
+#     node1.data = 0
+#     node1.right = None
+#     node2 = Node(-1)
+#     node2.data = -1
+#     node2.right = None
+#     node2.left = None
+#     node1.left = node2
+#     node0.left = node1
+#     bst0 = BST(node0)
+#     bst0.root = node0
+#     # Repok check
+#     assert bst0.repok()

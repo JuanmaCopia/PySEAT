@@ -8,12 +8,12 @@ dynammically allocated structures with the use of lazy initialization.
 import copy
 
 from branching_steps import LazyStep, ConditionalStep
-from data import Status, PathExecutionData, ExplorationStats
+from data import Status, PathExecutionData, ExplorationStats, Mode
 from exceptions import UnsatBranchError, MissingTypesError
 from exceptions import RepOkFailException, MaxRecursionException
 from exceptions import MaxDepthException
 from helpers import do_add, is_user_defined, keep_first_n_items
-from helpers import set_to_initialized
+from helpers import set_to_initialized, get_initialized_name
 from symbolics import Symbolic, SymBool, SymInt, is_symbolic, is_symbolic_bool
 
 from smt.smt import SMT
@@ -117,6 +117,7 @@ class SEEngine:
         self._max_depth = max_depth
         self._stats = ExplorationStats()
         self._backups = LazyBackup()
+        self.mode = Mode.PROGRAM_EXECUTION
         self._current_depth = 0
         self._current_bp = 0
         self._recursion_limit = 0
@@ -132,6 +133,9 @@ class SEEngine:
 
     def sym_bool(self, formula=None):
         return SymBool(self, formula)
+
+    def set_mode_cr(self, mode):
+        self.mode = Mode.CONSERVATIVE_REPOK
 
     def explore(self):
         """Main method, implements the generalized symbolic execution.
@@ -218,9 +222,12 @@ class SEEngine:
             if status == Status.PRUNED:
                 exec_num = self._stats.total_paths
                 model = self.smt.get_model(self._path_condition)
-                pruned_s = self._backups.get_self()
-                pruned_s = concretize(pruned_s, model)
-                return PathExecutionData(exec_num, status, exception, pruned_s)
+                pruned_sym = self._backups.get_self()
+                pruned = concretize(pruned_sym, model)
+                run_data = PathExecutionData(exec_num, status, exception, pruned)
+                run_data.pathcondition = self._path_condition
+                run_data.symbolic_inself = pruned_sym
+                return run_data
 
             stats = self.build_stats(status, args, returnv)
             self._stats.status_count(stats.status)
@@ -346,6 +353,7 @@ class SEEngine:
                     worklist.append(attr)
 
     def _execute_repok(self, instance):
+        self._current_self = instance
         try:
             result = instance.instrumented_repok()
             if is_symbolic_bool(result):
@@ -357,6 +365,7 @@ class SEEngine:
         except RepOkFailException:
             pass
         except MaxRecursionException:
+            assert False
             raise MaxRecursionException("Max recursion reached on repok")
         except AttributeError as e:
             raise e
@@ -367,19 +376,6 @@ class SEEngine:
                 assert new_object.repok()
                 return new_object
             return None
-
-    def _check_repok(self, instance):
-        """Checks whether an instance pass it's class invariant o not.
-
-        Args:
-            instance: instance of a user_defined_class
-
-        Returns:
-            True if instance is valid (pass it's repok), False otherwise.
-        """
-        if is_user_defined(type(instance)):
-            return instance.conservative_repok()
-        return True
 
     def _remove_explored_branches(self):
         """Removes fully explored branhes.
@@ -400,6 +396,48 @@ class SEEngine:
             if self._branching_points:
                 last_bp = self._branching_points[-1]
                 last_bp.advance_branch()
+
+    # def lazy_initialization(self, instance, attr_name):
+    #     isinit_name = get_initialized_name(attr_name)
+    #     if hasattr(instance, isinit_name):
+    #         is_init = getattr(instance, isinit_name)
+    #     if hasattr(instance, attr_name):
+    #         attr = getattr(instance, attr_name)
+    #     if is_init is True or not self._engine.is_tracked(instance):
+    #         self.check_recursion_limit(attr)
+    #         return attr
+
+    #     setattr(instance, isinit_name, True)
+    #     # make get attr type
+    #     new_value = self._engine.get_next_lazy_step(get_attr_type(type(instance), attr_name))
+    #     setattr(instance, attr_name, new_value)
+    #     self._backups.make_backup()
+    #     # ignore if
+    #     # set conservative repok mode
+
+    #     if not instance.conservative_repok():
+    #         raise RepOkFailException()
+
+    #     if instance.__identifier != self._current_self._identifier:
+    #         if not self._current_self.conservative_repok():
+    #             raise RepOkFailException()
+    #     return new_value
+
+    def ignore_if(self, value, instance):
+        """Ignores this execution path if value is true.
+
+        Value deepends on instance repok, if repok is violated,
+        value will be True and an exception is raised.
+
+        Raises:
+            RepOkFailException: RepOk of instances failed.
+        """
+        if value:
+            raise RepOkFailException()
+        repok_passed = self._current_self.conservative_repok()
+        if not repok_passed:
+            raise RepOkFailException()
+        return None
 
     def get_next_lazy_step(self, lazy_class, vector):
         """Implements a lazy initialization step.
@@ -614,22 +652,6 @@ class SEEngine:
         self._current_bp += 1
         return bool_value
 
-    def ignore_if(self, value, instance):
-        """Ignores this execution path if value is true.
-
-        Value deepends on instance repok, if repok is violated,
-        value will be True and an exception is raised.
-
-        Raises:
-            RepOkFailException: RepOk of instances failed.
-        """
-        if value:
-            raise RepOkFailException()
-        repok_passed = self._current_self.conservative_repok()
-        if not repok_passed:
-            raise RepOkFailException()
-        return None
-
     def check_recursion_limit(self, obj):
         if obj is not None:
             obj._recursion_depth += 1
@@ -646,7 +668,7 @@ class SEEngine:
         """
         return self._stats
 
-    def save_lazy_step(self, sclass):
+    def save_lazy_step(self, sclass=None):
         self._backups.make_backup()
 
 

@@ -18,12 +18,10 @@ class Node:
         self.data = data
         self.right = None
         self.left = None
-        self.parent = None
 
         self._data_is_initialized = True
         self._right_is_initialized = False
         self._left_is_initialized = False
-        self._parent_is_initialized = False
 
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
@@ -67,133 +65,17 @@ class Node:
         self.left = value
         self._left_is_initialized = True
 
-    def _get_parent(self):
-        if not self._parent_is_initialized and self._engine.is_tracked(self):
-            self._parent_is_initialized = True
-            self.parent = self._engine.get_next_lazy_step(Node, Node._vector)
-            self._engine.save_lazy_step(Node)
-            self._engine.ignore_if(not self.conservative_repok(), self)
-        else:
-            self._engine.check_recursion_limit(self.parent)
-        return self.parent
-
-    def _set_parent(self, value):
-        self.parent = value
-        self._parent_is_initialized = True
-
     def repok(self):
-        visited = set()
-        visited.add(self)
-        if self.left is not None:
-            if not do_add(visited, self.left) or self.left.data >= self.data:
-                return False
-            if self.left.parent is None or self.left.parent is not self:
-                return False
-        if self.right is not None:
-            if not do_add(visited, self.right) or self.right.data <= self.data:
-                return False
-            if self.right.parent is None or self.right.parent is not self:
-                return False
-
-        if self.parent is not None:
-            if not do_add(visited, self.parent):
-                return False
-            if self.parent.left is None:
-                if self.parent.right is None or self.parent.right is not self:
-                    return False
-
-            if self.parent.right is None:
-                if self.parent.left is None or self.parent.left is not self:
-                    return False
-
-            if self.parent.left is not None and self.parent.right is not None:
-                if not (self.parent.left is self or self.parent.right is self):
-                    return False
-
-            if self.parent.left is self and self.data >= self.parent.data:
-                return False
-            if self.parent.right is self and self.data <= self.parent.data:
-                return False
         return True
 
     def conservative_repok(self):
-        visited = set()
-        visited.add(self)
-        if not self._left_is_initialized:
-            return True
-        if self.left is not None:
-            if not self.left._data_is_initialized or not self._data_is_initialized:
-                return True
-            if not do_add(visited, self.left) or self.left.data >= self.data:
-                return False
-
-            if not self.left._parent_is_initialized:
-                return True
-            if self.left.parent is None or self.left.parent is not self:
-                return False
-
-        if not self._right_is_initialized:
-            return True
-        if self.right is not None:
-            if not self.right._data_is_initialized or not self._data_is_initialized:
-                return True
-            if not do_add(visited, self.right) or self.right.data <= self.data:
-                return False
-
-            if not self.right._parent_is_initialized:
-                return True
-            if self.right.parent is None or self.right.parent is not self:
-                return False
-
-        if not self._parent_is_initialized:
-            return True
-        if self.parent is not None:
-            if not do_add(visited, self.parent):
-                return False
-            if not self.parent._left_is_initialized:
-                return True
-            if self.parent.left is None:
-                if not self.parent._right_is_initialized:
-                    return True
-                if self.parent.right is None or self.parent.right is not self:
-                    return False
-
-            if not self.parent._right_is_initialized:
-                return True
-            if self.parent.right is None:
-                if not self.parent._left_is_initialized:
-                    return True
-                if self.parent.left is None or self.parent.left is not self:
-                    return False
-
-            if self.parent.left is not None and self.parent.right is not None:
-                if not (self.parent.left is self or self.parent.right is self):
-                    return False
-
-            if not self._data_is_initialized or not self.parent._data_is_initialized:
-                return True
-            if self.parent.left is self and self.data >= self.parent.data:
-                return False
-
-            if self.parent.right is self and self.data <= self.parent.data:
-                return False
         return True
-
-    # def repok(self):
-    #     return True
-
-    # def conservative_repok(self):
-    #     return True
 
     def instrumented_repok(self):
         return True
 
     def __repr__(self):
-        if self.parent is not None:
-            return self.parent._identifier + " <- " + self._identifier + ": " + str(self.data)
-        if self._parent_is_initialized:
-            return "None" + " <- " + self._identifier + ": " + str(self.data)
-        return "CLOUD" + " <- " + self._identifier + ": " + str(self.data)
+        return self._identifier + ": " + str(self.data)
 
 
 class BST:
@@ -225,134 +107,132 @@ class BST:
         self._root_is_initialized = True
 
     def repok(self):
-        if self.root is None:
+        if not self.root:
             return True
-        if self.root.parent is not None:
+        if not (self.is_acyclic() and self.is_ordered()):
             return False
+        return True
+
+    def is_acyclic(self):
         visited = set()
         visited.add(self.root)
-        return self.is_BST(self.root, INT_MIN, INT_MAX, visited)
+        worklist = []
+        worklist.append(self.root)
+        while worklist:
+            current = worklist.pop(0)
+            if current.left:
+                if not do_add(visited, current.left):
+                    return False
+                worklist.append(current.left)
+            if current.right:
+                if not do_add(visited, current.right):
+                    return False
+                worklist.append(current.right)
+        return True
+
+    def is_ordered(self):
+        return self.is_ordered2(self.root, INT_MIN, INT_MAX)
+
+    def is_ordered2(self, node, min, max):
+        if node.data <= min or node.data >= max:
+            return False
+        if node.left:
+            if not self.is_ordered2(node.left, min, node.data):
+                return False
+        if node.right:
+            if not self.is_ordered2(node.right, node.data, max):
+                return False
+        return True
 
     def conservative_repok(self):
         if not self._root_is_initialized:
             return True
-
-        if self.root is None:
+        if not self.root:
             return True
-
-        if not self.root._parent_is_initialized:
-            return True
-
-        if self.root.parent is not None:
+        if not (self.cons_is_acyclic() and self.cons_is_ordered()):
             return False
+        return True
+
+    def cons_is_acyclic(self):
         visited = set()
         visited.add(self.root)
-        return self.conservative_is_BST(self.root, INT_MIN, INT_MAX, visited)
+        worklist = []
+        worklist.append(self.root)
+        while worklist:
+            current = worklist.pop(0)
+            if not current._left_is_initialized:
+                return True
+            if current.left:
+                if not do_add(visited, current.left):
+                    return False
+                worklist.append(current.left)
+            if not current._right_is_initialized:
+                return True
+            if current.right:
+                if not do_add(visited, current.right):
+                    return False
+                worklist.append(current.right)
+        return True
 
-    def instrumented_repok(self):
-        if self._get_root() is None:
+    def cons_is_ordered(self):
+        return self.cons_is_ordered2(self.root, INT_MIN, INT_MAX)
+
+    def cons_is_ordered2(self, node, min, max):
+        if not node._data_is_initialized:
             return True
-        if self._get_root()._get_parent() is not None:
-            return False
-        visited = set()
-        visited.add(self._get_root())
-        return self.instrumented_is_BST(self._get_root(), INT_MIN, INT_MAX, visited)
-
-    def is_BST(self, node, min, max, visited):
-        if node is None:
-            return True
-        if node is not self.root:
-            if node.parent is None:
-                return False
-            if node.parent.right is not node and node.parent.left is not node:
-                return False
-
-        if node.left is not None:
-            if not do_add(visited, node.left) or node.left.parent is not node:
-                return False
-
-        if node.right is not None:
-            if not do_add(visited, node.right) or node.right.parent is not node:
-                return False
-
         if node.data <= min or node.data >= max:
             return False
 
-        return self.is_BST(node.left, min, node.data, visited) and self.is_BST(
-            node.right, node.data, max, visited
-        )
-
-    def conservative_is_BST(self, node, min, max, visited):
-        if node is None:
-            return True
-
-        if node is not self.root:
-            if not node._parent_is_initialized:
-                return
-
-            if node.parent is None:
-                return False
-
-            if not node.parent._right_is_initialized or not node.parent._left_is_initialized:
-                return True
-
-            if node.parent.right is not node and node.parent.left is not node:
-                return False
-
         if not node._left_is_initialized:
             return True
-
-        if node.left is not None:
-            if not node.left._parent_is_initialized:
-                return True
-            if not do_add(visited, node.left) or node.left.parent is not node:
+        if node.left:
+            if not self.cons_is_ordered2(node.left, min, node.data):
                 return False
 
         if not node._right_is_initialized:
             return True
-
-        if node.right is not None:
-
-            if not node.right._parent_is_initialized:
-                return True
-
-            if not do_add(visited, node.right) or node.right.parent is not node:
+        if node.right:
+            if not self.cons_is_ordered2(node.right, node.data, max):
                 return False
+        return True
 
-        if not node._data_is_initialized:
+    def instrumented_repok(self):
+        if not self._get_root():
             return True
-
-        if node.data <= min or node.data >= max:
+        if not (self.ins_is_acyclic() and self.ins_is_ordered()):
             return False
+        return True
 
-        return self.conservative_is_BST(node.left, min, node.data, visited) and self.conservative_is_BST(
-            node.right, node.data, max, visited
-        )
+    def ins_is_acyclic(self):
+        visited = set()
+        visited.add(self._get_root())
+        worklist = []
+        worklist.append(self._get_root())
+        while worklist:
+            current = worklist.pop(0)
+            if current._get_left():
+                if not do_add(visited, current._get_left()):
+                    return False
+                worklist.append(current._get_left())
+            if current._get_right():
+                if not do_add(visited, current._get_right()):
+                    return False
+                worklist.append(current._get_right())
+        return True
 
-    def instrumented_is_BST(self, node, min, max, visited):
-        if node is None:
-            return True
+    def ins_is_ordered(self):
+        return self.ins_is_ordered2(self._get_root(), INT_MIN, INT_MAX)
 
-        if node is not self._get_root():
-            if node._get_parent() is None:
-                return False
-            if node._get_parent()._get_right() is not node and node._get_parent()._get_left() is not node:
-                return False
-
-        if node._get_left() is not None:
-            if not do_add(visited, node._get_left()) or node._get_left()._get_parent() is not node:
-                return False
-
-        if node._get_right() is not None:
-            if not do_add(visited, node._get_right()) or node._get_right()._get_parent() is not node:
-                return False
-
+    def ins_is_ordered2(self, node, min, max):
         if node._get_data() <= min or node._get_data() >= max:
             return False
-
-        return self.instrumented_is_BST(node._get_left(), min, node._get_data(), visited) and self.instrumented_is_BST(
-            node._get_right(), node._get_data(), max, visited
-        )
+        if node._get_left():
+            if not self.ins_is_ordered2(node._get_left(), min, node._get_data()):
+                return False
+        if node._get_right():
+            if not self.ins_is_ordered2(node._get_right(), node._get_data(), max):
+                return False
+        return True
 
     def insert(self, data: int):
         if self._get_root() is None:
@@ -364,40 +244,15 @@ class BST:
         if data < cur_node._get_data():
             if cur_node._get_left() is None:
                 cur_node._get_left()._set_left(Node(data))
-                cur_node._get_left().parent._set_parent(cur_node)
             else:
                 self._insert(data, cur_node._get_left())
         elif data > cur_node._get_data():
             if cur_node._get_right() is None:
                 cur_node._get_right()._set_right(Node(data))
-                cur_node._get_right().parent._set_parent(cur_node)
             else:
                 self._insert(data, cur_node._get_right())
         else:
             print("data already in tree!")
-
-    def print_tree(self):
-        if self.root is not None:
-            self._print_tree(self.root)
-
-    def _print_tree(self, cur_node):
-        if cur_node is not None:
-            self._print_tree(cur_node.left)
-            print(str(cur_node.data))
-            self._print_tree(cur_node.right)
-
-    def height(self):
-        if self.root is not None:
-            return self._height(self.root, 0)
-        else:
-            return 0
-
-    def _height(self, cur_node, cur_height):
-        if cur_node is None:
-            return cur_height
-        left_height = self._height(cur_node.left, cur_height + 1)
-        right_height = self._height(cur_node.right, cur_height + 1)
-        return max(left_height, right_height)
 
     def find(self, data: int):
         if self._get_root() is not None:
@@ -413,157 +268,74 @@ class BST:
         elif data > cur_node._get_data() and cur_node._get_right() is not None:
             return self._find(data, cur_node._get_right())
 
-    def delete_data(self, data):
-        return self.delete_node(self.find(data))
-
-    def delete_node(self, node):
-        # Protect against deleting a node not found in the tree
-        if node is None or self.find(node.data) is None:
-            print("Node to be deleted not found in the tree!")
-            return None
-
-        # returns the node with min data in tree rooted at input node
-        def min_data_node(n):
-            current = n
-            while current.left is not None:
-                current = current.left
-            return current
-
-        # returns the number of children for the specified node
-        def num_children(n):
-            num_children = 0
-            if n.left is not None:
-                num_children += 1
-            if n.right is not None:
-                num_children += 1
-            return num_children
-
-        # get the parent of the node to be deleted
-        node_parent = node.parent
-
-        # get the number of children of the node to be deleted
-        node_children = num_children(node)
-
-        # break operation into different cases based on the
-        # structure of the tree & node to be deleted
-
-        # CASE 1 (node has no children)
-        if node_children == 0:
-
-            # Added this if statement post-video, previously if you
-            # deleted the root node it would delete entire tree.
-            if node_parent is not None:
-                # remove reference to the node from the parent
-                if node_parent.left == node:
-                    node_parent.left = None
-                else:
-                    node_parent.right = None
-            else:
-                self.root = None
-
-        # CASE 2 (node has a single child)
-        if node_children == 1:
-
-            # get the single child node
-            if node.left is not None:
-                child = node.left
-            else:
-                child = node.right
-
-            # Added this if statement post-video, previously if you
-            # deleted the root node it would delete entire tree.
-            if node_parent is not None:
-                # replace the node to be deleted with its child
-                if node_parent.left == node:
-                    node_parent.left = child
-                else:
-                    node_parent.right = child
-            else:
-                self.root = child
-
-            # correct the parent pointer in node
-            child.parent = node_parent
-
-        # CASE 3 (node has two children)
-        if node_children == 2:
-
-            # get the inorder successor of the deleted node
-            successor = min_data_node(node.right)
-
-            # copy the inorder successor's data to the node formerly
-            # holding the data we wished to delete
-            node.data = successor.data
-
-            # delete the inorder successor now that it's data was
-            # copied into the other node
-            self.delete_node(successor)
-
-    def search(self, data):
-        if self.root is not None:
-            return self._search(data, self.root)
-        else:
-            return False
-
-    def _search(self, data, cur_node):
-        if data == cur_node.data:
-            return True
-        elif data < cur_node.data and cur_node.left is not None:
-            return self._search(data, cur_node.left)
-        elif data > cur_node.data and cur_node.right is not None:
-            return self._search(data, cur_node.right)
-        return False
-
     def to_str(self, node, visited):
-        """Internal method for ASCII art."""
-        label = node.__repr__()
-        if node.left is None:
-            if node._right_is_initialized:
-                left_lines, left_pos, left_width = ["None"], 0, 0
-            else:
-                left_lines, left_pos, left_width = [], 0, 0
-        else:
-            if do_add(visited, node.left):
-                left_lines, left_pos, left_width = self.to_str(node.left, visited)
-            else:
-                left_lines, left_pos, left_width = [str(node.left.data) + "*"], 0, 0
+        """Returns list of strings, width, height, and horizontal coord of root."""
+        # No child.
+
+        if node is None:
+            line = "%s" % node.data + "N"
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        if not do_add(visited, node):
+            line = "%s" % node.data + "*"
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        if node.right is None and node.left is None:
+            line = "%s" % node.data
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        # Only left child.
         if node.right is None:
-            if node._right_is_initialized:
-                right_lines, right_pos, right_width = ["None"], 0, 0
-            else:
-                right_lines, right_pos, right_width = [], 0, 0
-        else:
-            if do_add(visited, node.right):
-                right_lines, right_pos, right_width = self.to_str(node.right, visited)
-            else:
-                right_lines, right_pos, right_width = [str(node.right.data) + "*"], 0, 0
-        middle = max(right_pos + left_width - left_pos + 1, len(label), 2)
-        pos = left_pos + middle // 2
-        width = left_pos + middle + right_width - right_pos
-        while len(left_lines) < len(right_lines):
-            left_lines.append(' ' * left_width)
-        while len(right_lines) < len(left_lines):
-            right_lines.append(' ' * right_width)
-        if (middle - len(label)) % 2 == 1 and node.parent is not None and \
-           node is node.parent.left and len(label) < middle:
-            label += '.'
-        label = label.center(middle, '.')
-        if label[0] == '.':
-            label = ' ' + label[1:]
-        if label[-1] == '.':
-            label = label[:-1] + ' '
-        lines = [' ' * left_pos + label + ' ' * (right_width - right_pos),
-                 ' ' * left_pos + '/' + ' ' * (middle-2) +
-                 '\\' + ' ' * (right_width - right_pos)] + \
-                [left_line + ' ' * (width - left_width - right_width) + right_line for left_line, right_line in zip(left_lines, right_lines)]
-        return lines, pos, width
+            lines, n, p, x = self.to_str(node.left, visited)
+            s = "%s" % node.data
+            u = len(s)
+            first_line = (x + 1) * " " + (n - x - 1) * "_" + s
+            second_line = x * " " + "/" + (n - x - 1 + u) * " "
+            shifted_lines = [line + u * " " for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
+
+        # Only right child.
+        if node.left is None:
+            lines, n, p, x = self.to_str(node.right, visited)
+            s = "%s" % node.data
+            u = len(s)
+            first_line = s + x * "_" + (n - x) * " "
+            second_line = (u + x) * " " + "\\" + (n - x - 1) * " "
+            shifted_lines = [u * " " + line for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
+
+        # Two children.
+        left, n, p, x = self.to_str(node.left, visited)
+        right, m, q, y = self.to_str(node.right, visited)
+        s = "%s" % node.data
+        u = len(s)
+        first_line = (x + 1) * " " + (n - x - 1) * "_" + s + y * "_" + (m - y) * " "
+        second_line = (
+            x * " " + "/" + (n - x - 1 + u + y) * " " + "\\" + (m - y - 1) * " "
+        )
+        if p < q:
+            left += [n * " "] * (q - p)
+        elif q < p:
+            right += [m * " "] * (p - q)
+        zipped_lines = zip(left, right)
+        lines = [first_line, second_line] + [a + u * " " + b for a, b in zipped_lines]
+        return lines, n + m + u, max(p, q) + 2, n + u // 2
 
     def __repr__(self):
         if self.root is None:
-            return '<empty tree>'
+            return "<empty tree>"
         visited = set()
-        visited.add(self.root)
-        s = '\n'.join(self.to_str(self.root, visited)[0])
+        lines, _, _, _ = self.to_str(self.root, visited)
         result = ""
-        for line in s.splitlines():
+        for line in lines:
             result += "        " + line + "\n"
         return "\n" + result

@@ -20,7 +20,7 @@ def print_formatted_result(function, run_data, verbose):
             print(" Path Condition:")
             helpers.print_list(run_data.pathcondition, INDENT8)
             print(
-                " Symbolic input self:\n"
+                " \nSymbolic input self:\n"
                 + INDENT8
                 + run_data.symbolic_inself.__repr__()
             )
@@ -29,6 +29,13 @@ def print_formatted_result(function, run_data, verbose):
             print("")
         else:
             print("\n#" + str(run_data.number) + " " + run_data.status.name + ":\n")
+            print(" Path Condition:")
+            helpers.print_list(run_data.pathcondition, INDENT8)
+            print(
+                " \nSymbolic input self:\n"
+                + INDENT8
+                + run_data.symbolic_inself.__repr__()
+            )
             print(" Pruned self:\n" + INDENT8 + run_data.pruned_structure.__repr__())
             if run_data.exception:
                 print("  Exception: " + str(run_data.exception))
