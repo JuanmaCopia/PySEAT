@@ -15,7 +15,7 @@ INDENT8 = "        "
 
 def print_formatted_result(function, run_data, verbose):
     if verbose:
-        if run_data.status != stats.Status.PRUNED:
+        if run_data.status != data.Status.PRUNED:
             print("\n#" + str(run_data.number) + " " + run_data.status.name + ":\n")
             print(" Path Condition:")
             helpers.print_list(run_data.pathcondition, INDENT8)

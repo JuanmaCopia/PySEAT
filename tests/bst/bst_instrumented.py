@@ -82,16 +82,118 @@ class Node:
         self._parent_is_initialized = True
 
     def repok(self):
+        visited = set()
+        visited.add(self)
+        if self.left is not None:
+            if not do_add(visited, self.left) or self.left.data >= self.data:
+                return False
+            if self.left.parent is None or self.left.parent is not self:
+                return False
+        if self.right is not None:
+            if not do_add(visited, self.right) or self.right.data <= self.data:
+                return False
+            if self.right.parent is None or self.right.parent is not self:
+                return False
+
+        if self.parent is not None:
+            if not do_add(visited, self.parent):
+                return False
+            if self.parent.left is None:
+                if self.parent.right is None or self.parent.right is not self:
+                    return False
+
+            if self.parent.right is None:
+                if self.parent.left is None or self.parent.left is not self:
+                    return False
+
+            if self.parent.left is not None and self.parent.right is not None:
+                if not (self.parent.left is self or self.parent.right is self):
+                    return False
+
+            if self.parent.left is self and self.data >= self.parent.data:
+                return False
+            if self.parent.right is self and self.data <= self.parent.data:
+                return False
         return True
 
     def conservative_repok(self):
+        visited = set()
+        visited.add(self)
+        if not self._left_is_initialized:
+            return True
+        if self.left is not None:
+            if not self.left._data_is_initialized or not self._data_is_initialized:
+                return True
+            if not do_add(visited, self.left) or self.left.data >= self.data:
+                return False
+
+            if not self.left._parent_is_initialized:
+                return True
+            if self.left.parent is None or self.left.parent is not self:
+                return False
+
+        if not self._right_is_initialized:
+            return True
+        if self.right is not None:
+            if not self.right._data_is_initialized or not self._data_is_initialized:
+                return True
+            if not do_add(visited, self.right) or self.right.data <= self.data:
+                return False
+
+            if not self.right._parent_is_initialized:
+                return True
+            if self.right.parent is None or self.right.parent is not self:
+                return False
+
+        if not self._parent_is_initialized:
+            return True
+        if self.parent is not None:
+            if not do_add(visited, self.parent):
+                return False
+            if not self.parent._left_is_initialized:
+                return True
+            if self.parent.left is None:
+                if not self.parent._right_is_initialized:
+                    return True
+                if self.parent.right is None or self.parent.right is not self:
+                    return False
+
+            if not self.parent._right_is_initialized:
+                return True
+            if self.parent.right is None:
+                if not self.parent._left_is_initialized:
+                    return True
+                if self.parent.left is None or self.parent.left is not self:
+                    return False
+
+            if self.parent.left is not None and self.parent.right is not None:
+                if not (self.parent.left is self or self.parent.right is self):
+                    return False
+
+            if not self._data_is_initialized or not self.parent._data_is_initialized:
+                return True
+            if self.parent.left is self and self.data >= self.parent.data:
+                return False
+
+            if self.parent.right is self and self.data <= self.parent.data:
+                return False
         return True
+
+    # def repok(self):
+    #     return True
+
+    # def conservative_repok(self):
+    #     return True
 
     def instrumented_repok(self):
         return True
 
     def __repr__(self):
-        return self.data.__repr__()
+        if self.parent is not None:
+            return self.parent._identifier + " <- " + self._identifier + ": " + str(self.data)
+        if self._parent_is_initialized:
+            return "None" + " <- " + self._identifier + ": " + str(self.data)
+        return "CLOUD" + " <- " + self._identifier + ": " + str(self.data)
 
 
 class BST:
@@ -252,25 +354,25 @@ class BST:
             node._get_right(), node._get_data(), max, visited
         )
 
-    def insert(self, data):
-        if self.root is None:
-            self.root = Node(data)
+    def insert(self, data: int):
+        if self._get_root() is None:
+            self._set_root(Node(data))
         else:
-            self._insert(data, self.root)
+            self._insert(data, self._get_root())
 
     def _insert(self, data, cur_node):
-        if data < cur_node.data:
-            if cur_node.left is None:
-                cur_node.left = Node(data)
-                cur_node.left.parent = cur_node  # set parent
+        if data < cur_node._get_data():
+            if cur_node._get_left() is None:
+                cur_node._get_left()._set_left(Node(data))
+                cur_node._get_left().parent._set_parent(cur_node)
             else:
-                self._insert(data, cur_node.left)
-        elif data > cur_node.data:
-            if cur_node.right is None:
-                cur_node.right = Node(data)
-                cur_node.right.parent = cur_node  # set parent
+                self._insert(data, cur_node._get_left())
+        elif data > cur_node._get_data():
+            if cur_node._get_right() is None:
+                cur_node._get_right()._set_right(Node(data))
+                cur_node._get_right().parent._set_parent(cur_node)
             else:
-                self._insert(data, cur_node.right)
+                self._insert(data, cur_node._get_right())
         else:
             print("data already in tree!")
 
@@ -416,9 +518,9 @@ class BST:
         label = node.__repr__()
         if node.left is None:
             if node._right_is_initialized:
-                left_lines, left_pos, left_width = [], 0, 0
+                left_lines, left_pos, left_width = ["None"], 0, 0
             else:
-                left_lines, left_pos, left_width = ["CL"], 0, 0
+                left_lines, left_pos, left_width = [], 0, 0
         else:
             if do_add(visited, node.left):
                 left_lines, left_pos, left_width = self.to_str(node.left, visited)
@@ -426,9 +528,9 @@ class BST:
                 left_lines, left_pos, left_width = [str(node.left.data) + "*"], 0, 0
         if node.right is None:
             if node._right_is_initialized:
-                right_lines, right_pos, right_width = [], 0, 0
+                right_lines, right_pos, right_width = ["None"], 0, 0
             else:
-                right_lines, right_pos, right_width = ["CL"], 0, 0
+                right_lines, right_pos, right_width = [], 0, 0
         else:
             if do_add(visited, node.right):
                 right_lines, right_pos, right_width = self.to_str(node.right, visited)
@@ -461,4 +563,7 @@ class BST:
         visited = set()
         visited.add(self.root)
         s = '\n'.join(self.to_str(self.root, visited)[0])
-        return "\n" + s
+        result = ""
+        for line in s.splitlines():
+            result += "        " + line + "\n"
+        return "\n" + result

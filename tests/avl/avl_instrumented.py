@@ -83,18 +83,156 @@ class Node:
         self.parent = value
         self._parent_is_initialized = True
 
+    def is_balanced(self, node):
+        return self.is_balanced_helper(node) > -1
+
+    def con_is_balanced(self, node):
+        return self.con_is_balanced_helper(node) > -1
+
+    def is_balanced_helper(self, node):
+        if node is None:
+            return 0
+        left_height = self.is_balanced_helper(node.left)
+        if left_height == -1:
+            return -1
+        right_height = self.is_balanced_helper(node.right)
+        if right_height == -1:
+            return -1
+        if abs(left_height - right_height) > 1:
+            return -1
+        return max(left_height, right_height) + 1
+
+    def con_is_balanced_helper(self, node):
+        if node is None:
+            return 0
+        if not node._left_is_initialized:
+            return 0
+        left_height = self.con_is_balanced_helper(node.left)
+        if left_height == -1:
+            return -1
+        if not node._right_is_initialized:
+            return 0
+        right_height = self.con_is_balanced_helper(node.right)
+        if right_height == -1:
+            return -1
+        if abs(left_height - right_height) > 1:
+            return -1
+        return max(left_height, right_height) + 1
+
     def repok(self):
+        visited = set()
+        visited.add(self)
+        if self.left is not None:
+            if not do_add(visited, self.left) or self.left.data > self.data:
+                return False
+            if self.left.parent is None or self.left.parent is not self:
+                return False
+        if self.right is not None:
+            if not do_add(visited, self.right) or self.right.data < self.data:
+                return False
+            if self.right.parent is None or self.right.parent is not self:
+                return False
+
+        if self.parent is not None:
+            if not do_add(visited, self.parent):
+                return False
+            if self.parent.left is None:
+                if self.parent.right is None or self.parent.right is not self:
+                    return False
+
+            if self.parent.right is None:
+                if self.parent.left is None or self.parent.left is not self:
+                    return False
+
+            if self.parent.left is not None and self.parent.right is not None:
+                if not (self.parent.left is self or self.parent.right is self):
+                    return False
+
+            if self.parent.left is self and self.data > self.parent.data:
+                return False
+            if self.parent.right is self and self.data < self.parent.data:
+                return False
+
+            # return self.is_balanced(self.parent)
         return True
 
     def conservative_repok(self):
+        visited = set()
+        visited.add(self)
+        if not self._left_is_initialized:
+            return True
+        if self.left is not None:
+            if not self.left._data_is_initialized or not self._data_is_initialized:
+                return True
+            if not do_add(visited, self.left) or self.left.data > self.data:
+                return False
+
+            if not self.left._parent_is_initialized:
+                return True
+            if self.left.parent is None or self.left.parent is not self:
+                return False
+
+        if not self._right_is_initialized:
+            return True
+        if self.right is not None:
+            if not self.right._data_is_initialized or not self._data_is_initialized:
+                return True
+            if not do_add(visited, self.right) or self.right.data < self.data:
+                return False
+
+            if not self.right._parent_is_initialized:
+                return True
+            if self.right.parent is None or self.right.parent is not self:
+                return False
+
+        if not self._parent_is_initialized:
+            return True
+        if self.parent is not None:
+            if not do_add(visited, self.parent):
+                return False
+            if not self.parent._left_is_initialized:
+                return True
+            if self.parent.left is None:
+                if not self.parent._right_is_initialized:
+                    return True
+                if self.parent.right is None or self.parent.right is not self:
+                    return False
+
+            if not self.parent._right_is_initialized:
+                return True
+            if self.parent.right is None:
+                if not self.parent._left_is_initialized:
+                    return True
+                if self.parent.left is None or self.parent.left is not self:
+                    return False
+
+            if self.parent.left is not None and self.parent.right is not None:
+                if not (self.parent.left is self or self.parent.right is self):
+                    return False
+
+            if not self._data_is_initialized or not self.parent._data_is_initialized:
+                return True
+            if self.parent.left is self and self.data > self.parent.data:
+                return False
+
+            if self.parent.right is self and self.data < self.parent.data:
+                return False
+
+            # return self.con_is_balanced(self.parent)
         return True
+
+    # def repok(self):
+    #     return True
+
+    # def conservative_repok(self):
+    #     return True
 
     def instrumented_repok(self):
         return True
 
     def __repr__(self):
         if self.parent is not None:
-            return self.parent._identifier + ": " + str(self.parent.data) + " <- " + self._identifier + ": " + str(self.data)
+            return self.parent._identifier + " <- " + self._identifier + ": " + str(self.data)
         if self._parent_is_initialized:
             return "None" + " <- " + self._identifier + ": " + str(self.data)
         return "CLOUD" + " <- " + self._identifier + ": " + str(self.data)
@@ -229,7 +367,7 @@ class AVL():
             if node._right_is_initialized:
                 left_lines, left_pos, left_width = ["None"], 0, 0
             else:
-                left_lines, left_pos, left_width = ["CL"], 0, 0
+                left_lines, left_pos, left_width = [], 0, 0
         else:
             if do_add(visited, node.left):
                 left_lines, left_pos, left_width = self.to_str(node.left, visited)
@@ -239,7 +377,7 @@ class AVL():
             if node._right_is_initialized:
                 right_lines, right_pos, right_width = ["None"], 0, 0
             else:
-                right_lines, right_pos, right_width = ["CL"], 0, 0
+                right_lines, right_pos, right_width = [], 0, 0
         else:
             if do_add(visited, node.right):
                 right_lines, right_pos, right_width = self.to_str(node.right, visited)
@@ -272,7 +410,10 @@ class AVL():
         visited = set()
         visited.add(self.root)
         s = '\n'.join(self.to_str(self.root, visited)[0])
-        return "\n" + s
+        result = ""
+        for line in s.splitlines():
+            result += "        " + line + "\n"
+        return "\n" + result
 
     def find(self, k: int):
         """Finds and returns the node with key k from the subtree rooted at this
@@ -457,12 +598,12 @@ class AVL():
         if node is None:
             return 0
         if not node._left_is_initialized:
-            return True
+            return 0
         left_height = self.con_is_balanced_helper(node.left)
         if left_height == -1:
             return -1
         if not node._right_is_initialized:
-            return True
+            return 0
         right_height = self.con_is_balanced_helper(node.right)
         if right_height == -1:
             return -1

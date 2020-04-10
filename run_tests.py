@@ -2,42 +2,117 @@ import subprocess
 import sys
 
 
-subprocess.call(
-    [
-        sys.executable,
-        "pygse/__main__.py",
-        "tests/linkedlist/ll_instrumented.py",
-        "LinkedList",
-        "swap_node",
-    ]
-)
+verbose = False
+if len(sys.argv) > 1:
+    if sys.argv[1] == "-v":
+        verbose = True
+    else:
+        print("usage1: run_tests.py")
+        print("usage2: run_tests.py -v (Display execution information)")
+        sys.exit(-1)
 
-subprocess.call(
-    [
-        sys.executable,
-        "pygse/__main__.py",
-        "tests/linkedlist/llnr_instrumented.py",
-        "LinkedList",
-        "swap_node",
-    ]
-)
 
-subprocess.call(
-    [
-        sys.executable,
-        "pygse/__main__.py",
-        "tests/doublylinkedlist/dll_instrumented.py",
-        "DoublyLinkedList",
-        "insert_after",
-    ]
-)
+def execute(filepath, class_name, method_name, verbose, max_depth=10):
+    if verbose:
+        subprocess.call(
+            [
+                sys.executable,
+                "pygse/__main__.py",
+                "-v",
+                "-d" + str(max_depth),
+                filepath,
+                class_name,
+                method_name,
+            ]
+        )
+    else:
+        subprocess.call(
+            [
+                sys.executable,
+                "pygse/__main__.py",
+                "-d" + str(max_depth),
+                filepath,
+                class_name,
+                method_name,
+            ]
+        )
 
-subprocess.call(
-    [
-        sys.executable,
-        "pygse/__main__.py",
-        "tests/circulardoublylinkedlist/cdll_instrumented.py",
-        "CDLinkedList",
-        "insert_after_node",
-    ]
+
+execute("tests/linkedlist/ll_instrumented.py", "LinkedList", "swap_node", verbose)
+execute("tests/linkedlist/llnr_instrumented.py", "LinkedList", "swap_node", verbose)
+execute(
+    "tests/doublylinkedlist/dll_instrumented.py",
+    "DoublyLinkedList",
+    "insert_after",
+    verbose,
 )
+execute(
+    "tests/circulardoublylinkedlist/cdll_instrumented.py",
+    "CDLinkedList",
+    "insert_after_node",
+    verbose,
+)
+execute("tests/bst/bst_instrumented.py", "BST", "insert", verbose, 8)
+execute("tests/avl/avl_instrumented.py", "AVL", "insert", verbose, 8)
+
+# subprocess.call(
+#     [
+#         sys.executable,
+#         "pygse/__main__.py" + verbose,
+#         "tests/linkedlist/ll_instrumented.py",
+#         "LinkedList",
+#         "swap_node",
+#     ]
+# )
+
+# subprocess.call(
+#     [
+#         sys.executable,
+#         "pygse/__main__.py" + verbose,
+#         "tests/linkedlist/llnr_instrumented.py",
+#         "LinkedList",
+#         "swap_node",
+#     ]
+# )
+
+# subprocess.call(
+#     [
+#         sys.executable,
+#         "pygse/__main__.py" + verbose,
+#         "tests/doublylinkedlist/dll_instrumented.py",
+#         "DoublyLinkedList",
+#         "insert_after",
+#     ]
+# )
+
+# subprocess.call(
+#     [
+#         sys.executable,
+#         "pygse/__main__.py" + verbose,
+#         "tests/circulardoublylinkedlist/cdll_instrumented.py",
+#         "CDLinkedList",
+#         "insert_after_node",
+#     ]
+# )
+
+# subprocess.call(
+#     [
+#         sys.executable,
+#         "pygse/__main__.py" + verbose,
+#         "-d 8",
+#         "tests/avl/avl_instrumented.py",
+#         "AVL",
+#         "insert",
+#     ]
+# )
+
+# subprocess.call(
+#     [
+#         sys.executable,
+#         "pygse/__main__.py" + verbose,
+#         "-d 8",
+#         "tests/bst/bst_instrumented.py",
+#         "BST",
+#         "insert",
+#     ]
+# )
