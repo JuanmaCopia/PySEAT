@@ -196,15 +196,18 @@ class TestCode:
             else:
                 assert False
 
-        code_line = identifier + " = " + typ.__name__ + "("
+        if ctor_params:
+            code_line = identifier + " = " + typ.__name__ + "("
 
-        for name, value in ctor_params.items():
-            obj_name = ""
-            if is_user_defined(value):
-                obj_name = self.generate_structure_code(value)
-                code_line += obj_name + ", "
-            else:
-                code_line += str(ctor_params[name]) + ", "
+            for name, value in ctor_params.items():
+                obj_name = ""
+                if is_user_defined(value):
+                    obj_name = self.generate_structure_code(value)
+                    code_line += obj_name + ", "
+                else:
+                    code_line += str(ctor_params[name]) + ", "
 
-        code_line = code_line[:-2] + ")"
+            code_line = code_line[:-2] + ")"
+        else:
+            code_line = identifier + " = " + typ.__name__ + "()"
         self._add_line(code_line)

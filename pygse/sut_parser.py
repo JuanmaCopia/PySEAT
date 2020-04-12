@@ -48,10 +48,10 @@ def get_default_type(generic_alias):
     return args[0]
 
 
-def get_types_list(param_list, type_dict) -> list:
+def get_types_list(param_list, types_dict) -> list:
     types = []
     for param_name in param_list.keys():
-        types.append(type_dict[param_name])
+        types.append(types_dict[param_name])
     return types
 
 
@@ -70,7 +70,7 @@ def map_all_classes(types_list) -> set:
         cls_data = ClassData(current)
         class_map[current] = cls_data
 
-        for typ in cls_data.init_data.types_list:
+        for typ in cls_data.instance_attr_list:
             if is_user_defined(typ) and do_add(classes, typ):
                 worklist.append(typ)
     return class_map
@@ -80,6 +80,7 @@ class ClassData:
     def __init__(self, this_class):
         self.this_class = this_class
         self.instance_attr_types = typing.get_type_hints(this_class)
+        self.instance_attr_list = list(self.instance_attr_types.values())
         self.repok_method = self.get_repok()
         self.init_data = MethodData(this_class.__init__, this_class)
 
@@ -121,6 +122,7 @@ class SUT:
     def __init__(self, the_class, method):
         self.method_data = MethodData(method, the_class)
         self.class_map = map_all_classes(self.method_data.types_list)
+        x = 0
 
     def get_method(self):
         return self.method_data.method
@@ -136,3 +138,6 @@ class SUT:
 
     def get_params_type_dict(self, clss):
         return copy.deepcopy(self.class_map[clss].init_data.types_dict)
+
+    def get_attr_type(self, clss, attr_name):
+        return self.class_map[clss].instance_attr_types[attr_name]

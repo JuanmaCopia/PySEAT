@@ -311,6 +311,8 @@ class SEEngine:
         else:
             status = Status.OK
         finally:
+            # if exception:
+            #     raise exception
             if status == Status.PRUNED:
                 exec_num = self._stats.total_paths
                 model = self.smt.get_model(self._path_condition)
@@ -489,31 +491,54 @@ class SEEngine:
                 last_bp = self._branching_points[-1]
                 last_bp.advance_branch()
 
-    # def lazy_initialization(self, instance, attr_name):
-    #     isinit_name = get_initialized_name(attr_name)
-    #     if hasattr(instance, isinit_name):
-    #         is_init = getattr(instance, isinit_name)
-    #     if hasattr(instance, attr_name):
-    #         attr = getattr(instance, attr_name)
-    #     if is_init is True or not self._engine.is_tracked(instance):
-    #         self.check_recursion_limit(attr)
-    #         return attr
+    def lazy_initialization(self, instance, attr_name):
+        assert instance is not None
+        isinit_name = get_initialized_name(attr_name)
+        if hasattr(instance, isinit_name) and hasattr(instance, attr_name):
+            is_init = getattr(instance, isinit_name)
+            attr = getattr(instance, attr_name)
 
-    #     setattr(instance, isinit_name, True)
-    #     # make get attr type
-    #     new_value = self._engine.get_next_lazy_step(get_attr_type(type(instance), attr_name))
-    #     setattr(instance, attr_name, new_value)
-    #     self._backups.make_backup()
-    #     # ignore if
-    #     # set conservative repok mode
+            if is_init is False and self.is_tracked(instance):
 
-    #     if not instance.conservative_repok():
-    #         raise RepOkFailException()
+                setattr(instance, isinit_name, True)
+                # make get attr type
+                attr_type = self._sut.get_attr_type(type(instance), attr_name)
+                new_value = self.get_next_lazy_step(attr_type)
+                setattr(instance, attr_name, new_value)
+                self._backups.make_backup()
+                # ignore if
+                # set conservative repok mode
+                if not instance.conservative_repok():
+                    raise RepOkFailException()
 
-    #     if instance.__identifier != self._current_self._identifier:
-    #         if not self._current_self.conservative_repok():
-    #             raise RepOkFailException()
-    #     return new_value
+                if instance._identifier != self._current_self._identifier:
+                    if not self._current_self.conservative_repok():
+                        raise RepOkFailException()
+                return new_value
+            # else
+            self.check_recursion_limit(attr)
+            return attr
+
+    def lazy_set_attr(self, instance, attr_name, value):
+        set_to_initialized(instance, attr_name)
+        setattr(instance, attr_name, value)
+
+    # def _set_head(self, value):
+    #     self.head = value
+    #     self._head_is_initialized = True
+
+    # def _get_root(self):
+    #     if not self._root_is_initialized and self._engine.is_tracked(self):
+    #         self._root_is_initialized = True
+    #         self.root = self._engine.get_next_lazy_step(Node, Node._vector)
+    #         self._engine.save_lazy_step(Node)
+    #         self._engine.ignore_if(not self.conservative_repok(), self)
+    #     else:
+    #         self._engine.check_recursion_limit(self.root)
+    #     return self.root
+
+    # def _get_root(self):
+    #     self._engine.lazy_initialization(self, "root")
 
     def ignore_if(self, value, instance):
         """Ignores this execution path if value is true.
@@ -531,7 +556,7 @@ class SEEngine:
             raise RepOkFailException()
         return None
 
-    def get_next_lazy_step(self, lazy_class, vector):
+    def get_next_lazy_step(self, lazy_class):
         """Implements a lazy initialization step.
 
         If it's a new initialization step creates the branching
@@ -543,7 +568,7 @@ class SEEngine:
             - A new lazy_class instance.
 
         Args:
-            lazy_class: The instance type to be initialized.
+            lazy_class: Type of the instance to be created.
             vector: A vector containing the previous created
                 instances of lazy_class.
 
@@ -562,21 +587,20 @@ class SEEngine:
 
             if index == 0:
                 n = self._symbolize_partially(lazy_class)
-                vector.append(n)
+                lazy_class._vector.append(n)
                 return n
             elif index == 1:
                 return None
             else:
                 assert index - 2 >= 0
-                assert index - 2 < len(vector)
-                return vector[index - 2]
+                assert index - 2 < len(lazy_class._vector)
+                return lazy_class._vector[index - 2]
 
-        self._branching_points.append(LazyStep(len(vector) + 1))
+        self._branching_points.append(LazyStep(len(lazy_class._vector) + 1))
         self._current_bp += 1
         n = self._symbolize_partially(lazy_class)
-        vector.append(n)
+        lazy_class._vector.append(n)
         return n
-
 
     def evaluate(self, sym_bool):
         """Evaluates a condition represented by a symbolic bool.

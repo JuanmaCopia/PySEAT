@@ -11,6 +11,7 @@ def insert_after_test1():
         (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 1 -> node5) (node4 <- node5: 1 -> None)  None
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(1)
     node1.data = 1
     node1.prev = None
@@ -31,7 +32,6 @@ def insert_after_test1():
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    doublylinkedlist0 = DoublyLinkedList(node1, node5)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node5
     # Repok check
@@ -61,6 +61,7 @@ def insert_after_test2():
         (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 1 -> node5) (node4 <- node5: 0 -> node92) (node5 <- node92: 0 -> node6) (node92 <- node6: 0 -> node91) (node6 <- node91: 0 -> None)  None
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(1)
     node1.data = 1
     node1.prev = None
@@ -89,7 +90,6 @@ def insert_after_test2():
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    doublylinkedlist0 = DoublyLinkedList(node1, node91)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node91
     # Repok check
@@ -122,6 +122,7 @@ def insert_after_test3():
         (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 1 -> node5) (node4 <- node5: 0 -> node64) (node5 <- node64: 0 -> CLOUD)  CLOUD
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(1)
     node1.data = 1
     node1.prev = None
@@ -142,7 +143,6 @@ def insert_after_test3():
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    doublylinkedlist0 = DoublyLinkedList(node1, node5)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node5
     # Repok check
@@ -173,6 +173,7 @@ def insert_after_test4():
         (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 1 -> None)  None
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(1)
     node1.data = 1
     node1.prev = None
@@ -189,7 +190,6 @@ def insert_after_test4():
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    doublylinkedlist0 = DoublyLinkedList(node1, node4)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node4
     # Repok check
@@ -218,6 +218,7 @@ def insert_after_test5():
         (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 0 -> node103) (node4 <- node103: 0 -> node5) (node103 <- node5: 0 -> node102) (node5 <- node102: 0 -> node101) (node102 <- node101: 0 -> None)  None
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(1)
     node1.data = 1
     node1.prev = None
@@ -246,7 +247,6 @@ def insert_after_test5():
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    doublylinkedlist0 = DoublyLinkedList(node1, node101)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node101
     # Repok check
@@ -279,6 +279,7 @@ def insert_after_test6():
         (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 0 -> node48) (node4 <- node48: 0 -> CLOUD)  CLOUD
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(1)
     node1.data = 1
     node1.prev = None
@@ -295,7 +296,6 @@ def insert_after_test6():
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    doublylinkedlist0 = DoublyLinkedList(node1, node4)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node4
     # Repok check
@@ -325,6 +325,7 @@ def insert_after_test7():
         (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> None)  None
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(1)
     node1.data = 1
     node1.prev = None
@@ -337,7 +338,6 @@ def insert_after_test7():
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    doublylinkedlist0 = DoublyLinkedList(node1, node3)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node3
     # Repok check
@@ -365,6 +365,7 @@ def insert_after_test8():
         (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node112) (node3 <- node112: 0 -> node4) (node112 <- node4: 0 -> node111) (node4 <- node111: 0 -> node110) (node111 <- node110: 0 -> None)  None
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(1)
     node1.data = 1
     node1.prev = None
@@ -389,7 +390,6 @@ def insert_after_test8():
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    doublylinkedlist0 = DoublyLinkedList(node1, node110)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node110
     # Repok check
@@ -421,6 +421,7 @@ def insert_after_test9():
         (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node34) (node3 <- node34: 0 -> CLOUD)  CLOUD
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(1)
     node1.data = 1
     node1.prev = None
@@ -433,7 +434,6 @@ def insert_after_test9():
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    doublylinkedlist0 = DoublyLinkedList(node1, node3)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node3
     # Repok check
@@ -462,6 +462,7 @@ def insert_after_test10():
         (None <- node1: 1 -> node2) (node1 <- node2: 1 -> None)  None
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(1)
     node1.data = 1
     node1.prev = None
@@ -470,7 +471,6 @@ def insert_after_test10():
     node2.next = None
     node2.prev = node1
     node1.next = node2
-    doublylinkedlist0 = DoublyLinkedList(node1, node2)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node2
     # Repok check
@@ -497,6 +497,7 @@ def insert_after_test11():
         (None <- node1: 1 -> node2) (node1 <- node2: 0 -> node117) (node2 <- node117: 0 -> node3) (node117 <- node3: 0 -> node115) (node3 <- node115: 0 -> node116) (node115 <- node116: 0 -> node114) (node116 <- node114: 0 -> None)  None
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(1)
     node1.data = 1
     node1.prev = None
@@ -521,7 +522,6 @@ def insert_after_test11():
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    doublylinkedlist0 = DoublyLinkedList(node1, node114)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node114
     # Repok check
@@ -553,6 +553,7 @@ def insert_after_test12():
         (None <- node1: 1 -> node2) (node1 <- node2: 0 -> node22) (node2 <- node22: 0 -> CLOUD)  CLOUD
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(1)
     node1.data = 1
     node1.prev = None
@@ -561,7 +562,6 @@ def insert_after_test12():
     node2.next = None
     node2.prev = node1
     node1.next = node2
-    doublylinkedlist0 = DoublyLinkedList(node1, node2)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node2
     # Repok check
@@ -589,11 +589,11 @@ def insert_after_test13():
         (None <- node1: 1 -> None)  None
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(1)
     node1.data = 1
     node1.next = None
     node1.prev = None
-    doublylinkedlist0 = DoublyLinkedList(node1, node1)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node1
     # Repok check
@@ -619,6 +619,7 @@ def insert_after_test14():
         (None <- node1: 0 -> node126) (node1 <- node126: 0 -> node2) (node126 <- node2: 0 -> node124) (node2 <- node124: 0 -> node125) (node124 <- node125: 0 -> node123) (node125 <- node123: 0 -> None)  None
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(0)
     node1.data = 0
     node1.prev = None
@@ -639,7 +640,6 @@ def insert_after_test14():
     node2.next = node124
     node2.prev = node1
     node1.next = node2
-    doublylinkedlist0 = DoublyLinkedList(node1, node123)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node123
     # Repok check
@@ -670,11 +670,11 @@ def insert_after_test15():
         (None <- node1: 0 -> node12) (node1 <- node12: 0 -> CLOUD)  CLOUD
     '''
     # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(0)
     node1.data = 0
     node1.next = None
     node1.prev = None
-    doublylinkedlist0 = DoublyLinkedList(node1, node1)
     doublylinkedlist0.head = node1
     doublylinkedlist0.tail = node1
     # Repok check
@@ -701,7 +701,7 @@ def insert_after_test16():
         Empty
     '''
     # Self Generation
-    doublylinkedlist0 = DoublyLinkedList(None, None)
+    doublylinkedlist0 = DoublyLinkedList()
     doublylinkedlist0.head = None
     doublylinkedlist0.tail = None
     # Repok check

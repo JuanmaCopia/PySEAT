@@ -36,32 +36,16 @@ class Node:
         self._data_is_initialized = True
 
     def _get_next(self):
-        if not self._next_is_initialized and self._engine.is_tracked(self):
-            self._next_is_initialized = True
-            self.next = self._engine.get_next_lazy_step(Node, Node._vector)
-            self._engine.save_lazy_step(Node)
-            self._engine.ignore_if(not self.conservative_repok(), self)
-        else:
-            self._engine.check_recursion_limit(self.next)
-        return self.next
+        return self._engine.lazy_initialization(self, "next")
 
     def _set_next(self, value):
-        self.next = value
-        self._next_is_initialized = True
+        return self._engine.lazy_set_attr(self, "next", value)
 
     def _get_prev(self):
-        if not self._prev_is_initialized and self._engine.is_tracked(self):
-            self._prev_is_initialized = True
-            self.prev = self._engine.get_next_lazy_step(Node, Node._vector)
-            self._engine.save_lazy_step(Node)
-            self._engine.ignore_if(not self.conservative_repok(), self)
-        else:
-            self._engine.check_recursion_limit(self.prev)
-        return self.prev
+        return self._engine.lazy_initialization(self, "prev")
 
     def _set_prev(self, value):
-        self.prev = value
-        self._prev_is_initialized = True
+        return self._engine.lazy_set_attr(self, "prev", value)
 
     def __str__(self):
         return self.__repr__()
@@ -109,9 +93,9 @@ class DoublyLinkedList:
     tail: "Node"
 
     # Init params should be annotated also
-    def __init__(self, head: "Node" = None, tail: "Node" = None):
-        self.head = head
-        self.tail = tail
+    def __init__(self):
+        self.head = None
+        self.tail = None
 
         self._head_is_initialized = False
         self._tail_is_initialized = False
@@ -121,32 +105,16 @@ class DoublyLinkedList:
         self._recursion_depth = 0
 
     def _get_head(self):
-        if not self._head_is_initialized and self._engine.is_tracked(self):
-            self._head_is_initialized = True
-            self.head = self._engine.get_next_lazy_step(Node, Node._vector)
-            self._engine.ignore_if(not self.conservative_repok(), self)
-            self._engine.save_lazy_step(Node)
-        else:
-            self._engine.check_recursion_limit(self.head)
-        return self.head
+        return self._engine.lazy_initialization(self, "head")
 
     def _set_head(self, value):
-        self.head = value
-        self._head_is_initialized = True
+        return self._engine.lazy_set_attr(self, "head", value)
 
     def _get_tail(self):
-        if not self._tail_is_initialized and self._engine.is_tracked(self):
-            self._tail_is_initialized = True
-            self.tail = self._engine.get_next_lazy_step(Node, Node._vector)
-            self._engine.save_lazy_step(Node)
-            self._engine.ignore_if(not self.conservative_repok(), self)
-        else:
-            self._engine.check_recursion_limit(self.tail)
-        return self.tail
+        return self._engine.lazy_initialization(self, "tail")
 
     def _set_tail(self, value):
-        self.tail = value
-        self._tail_is_initialized = True
+        return self._engine.lazy_set_attr(self, "tail", value)
 
     # Insert 'value' at the front of the list
     def insert_at_front(self, value: int):

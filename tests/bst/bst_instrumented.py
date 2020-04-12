@@ -44,32 +44,16 @@ class Node:
         self._data_is_initialized = True
 
     def _get_right(self):
-        if not self._right_is_initialized and self._engine.is_tracked(self):
-            self._right_is_initialized = True
-            self.right = self._engine.get_next_lazy_step(Node, Node._vector)
-            self._engine.save_lazy_step(Node)
-            self._engine.ignore_if(not self.conservative_repok(), self)
-        else:
-            self._engine.check_recursion_limit(self.right)
-        return self.right
+        return self._engine.lazy_initialization(self, "right")
 
     def _set_right(self, value):
-        self.right = value
-        self._right_is_initialized = True
+        return self._engine.lazy_set_attr(self, "right", value)
 
     def _get_left(self):
-        if not self._left_is_initialized and self._engine.is_tracked(self):
-            self._left_is_initialized = True
-            self.left = self._engine.get_next_lazy_step(Node, Node._vector)
-            self._engine.save_lazy_step(Node)
-            self._engine.ignore_if(not self.conservative_repok(), self)
-        else:
-            self._engine.check_recursion_limit(self.left)
-        return self.left
+        return self._engine.lazy_initialization(self, "left")
 
     def _set_left(self, value):
-        self.left = value
-        self._left_is_initialized = True
+        return self._engine.lazy_set_attr(self, "left", value)
 
     def repok(self):
         return True
@@ -94,8 +78,8 @@ class BST:
     root: "Node"
 
     # Init params should be annotated also
-    def __init__(self, root: "Node" = None):
-        self.root = root
+    def __init__(self):
+        self.root = None
 
         self._root_is_initialized = False
 
@@ -104,18 +88,10 @@ class BST:
         self._recursion_depth = 0
 
     def _get_root(self):
-        if not self._root_is_initialized and self._engine.is_tracked(self):
-            self._root_is_initialized = True
-            self.root = self._engine.get_next_lazy_step(Node, Node._vector)
-            self._engine.save_lazy_step(Node)
-            self._engine.ignore_if(not self.conservative_repok(), self)
-        else:
-            self._engine.check_recursion_limit(self.root)
-        return self.root
+        return self._engine.lazy_initialization(self, "root")
 
     def _set_root(self, value):
-        self.root = value
-        self._root_is_initialized = True
+        return self._engine.lazy_set_attr(self, "root", value)
 
     def repok(self):
         if not self.root:
