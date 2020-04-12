@@ -6,6 +6,12 @@ class Node:
     _engine = None
     _id = 0
 
+    # Instance attributes annotations (will be treated as symbolic)
+    key: int
+    next: "Node"
+    prev: "Node"
+
+    # Init params should be annotated also
     def __init__(self, key: int):
         self.key = key
         self.next = None
@@ -100,6 +106,10 @@ class CDLinkedList:
     _engine = None
     _id = 0
 
+    # Instance attributes annotations (will be treated as symbolic)
+    head: "Node"
+
+    # Init params should be annotated also
     def __init__(self, head: "Node" = None):
         self.head = head
 

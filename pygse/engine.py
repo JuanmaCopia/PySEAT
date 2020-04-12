@@ -125,7 +125,7 @@ class SEEngine:
         self._path_condition = []
         self._current_self = None
 
-        for k in self._sut.class_params_map.keys():
+        for k in self._sut.class_map.keys():
             k._engine = self
 
     def sym_int(self, value=None):
@@ -149,7 +149,8 @@ class SEEngine:
         while unexplored_paths:
             self._reset_exploration()
 
-            args = [self._symbolic_instantiation(typ) for name, typ in self._sut.params.items()]
+            # args = [self._symbolic_instantiation(typ) for name, typ in self._sut.method_data.param_types.items()]
+            args = self.instantiate_method_params()
             self._backups.initialize_backup(args)
 
             result = self._execute_program(args)
@@ -160,6 +161,97 @@ class SEEngine:
             if not self._branching_points:
                 unexplored_paths = False
 
+    def instantiate_method_params(self):
+        types = self._sut.get_method_types()
+        return [self._symbolic_instantiation(typ) for typ in types]
+
+    def _symbolic_instantiation(self, typ):
+        """Creates a symbolic or a partially symbolic instance.
+
+        If it's a supported builtin type it returns the appropiate
+        symbolic instance.
+        If it's an user-defined class returns a partially symbolic
+        instance of that class
+
+        Args:
+            typ: The type to be instantiated. Could be builtin or
+            user defined.
+
+        Returns:
+            A symbolic or partially symbolic instance.
+        """
+        if typ in self._real_to_proxy.keys():
+            return self._real_to_proxy[typ](self)
+        elif isinstance(typ, type(None)):
+            return None
+        elif is_user_defined(typ):
+            instance = self._symbolize_partially(typ)
+            typ._vector.append(instance)
+            return instance
+        return typ()
+
+    def _symbolize_partially(self, user_def_class):
+        """Creates partially symbolic instance of a class.
+
+        Returns an instance of user_def_class with all it's builtin
+        instance attributes symbolized and it's user-defined attributes
+        initialized to None.
+
+        Args:
+            user_def_class: The class to be partially symbolized.
+
+        Returns:
+            A partially symbolic instance of user_def_class.
+        """
+        init_types = self._get_init_types(user_def_class)[1:]
+        init_args = [self._make_symbolic(a) for a in init_types]
+        if init_args:
+            partial_ins = user_def_class(*init_args)
+        else:
+            partial_ins = user_def_class()
+        return partial_ins
+
+    def _get_init_types(self, user_def_class):
+        """Returns the types of the parameters of the class.
+
+        Returns a list containing the types of the parameters
+        of the init method of user_def_class.
+
+        Args:
+            user_def_class: An user-defined class.
+
+        Returns:
+            A list of types.
+        """
+        return self._sut.get_cls_init_types(user_def_class)
+        # init_types = list(self._sut.class_map[user_def_class].values())
+        # number_params = user_def_class.__init__.__code__.co_argcount
+        # if number_params - 1 != len(init_types):
+        #     raise MissingTypesError(
+        #         "Incomplete type annotations in: " + str(user_def_class)
+        #     )
+        # return init_types
+
+    def _make_symbolic(self, typ):
+        """Creates a symbolic instance.
+
+        If it's a supported builtin type it returns the appropiate
+        symbolic instance.
+        If it's an user-defined class returns None
+
+        Args:
+            typ: The type to be instantiated. Could be builtin or
+            user defined.
+
+        Returns:
+            A symbolic instance of a builtin type or None.
+        """
+        if typ in self._real_to_proxy.keys():
+            return self._real_to_proxy[typ](self)
+        elif isinstance(typ, type(None)) or is_user_defined(typ):
+            return None
+        return typ()
+
     def _reset_exploration(self):
         """Resets the exploration variables to it's initial values.
         """
@@ -168,7 +260,7 @@ class SEEngine:
         self._current_depth = 0
         self._recursion_limit = 10
         self._backups = LazyBackup()
-        for k in self._sut.class_params_map.keys():
+        for k in self._sut.class_map.keys():
             k._vector = []
             k._id = 0
 
@@ -196,7 +288,7 @@ class SEEngine:
 
         self._current_self = args[0]
         args = args[1:]
-        method = getattr(self._current_self, self._sut.function.__name__)
+        method = getattr(self._current_self, self._sut.get_method_name())
 
         try:
             if args:
@@ -252,7 +344,7 @@ class SEEngine:
         # Execution of method with concrete input
         self_end_state = copy.deepcopy(input_self)
         args = copy.deepcopy(input_args)
-        method = getattr(self_end_state, self._sut.function.__name__)
+        method = getattr(self_end_state, self._sut.get_method_name())
         if args:
             returnv = method(*args)
         else:
@@ -280,7 +372,7 @@ class SEEngine:
         self._current_bp = 0
         self._current_depth = 0
         self._recursion_limit = 200
-        for k in self._sut.class_params_map.keys():
+        for k in self._sut.class_map.keys():
             k._vector = []
         self.fill_class_vectors(iself)
 
@@ -485,91 +577,6 @@ class SEEngine:
         vector.append(n)
         return n
 
-    def _symbolic_instantiation(self, typ):
-        """Creates a symbolic or a partially symbolic instance.
-
-        If it's a supported builtin type it returns the appropiate
-        symbolic instance.
-        If it's an user-defined class returns a partially symbolic
-        instance of that class
-
-        Args:
-            typ: The type to be instantiated. Could be builtin or
-            user defined.
-
-        Returns:
-            A symbolic or partially symbolic instance.
-        """
-        if typ in self._real_to_proxy.keys():
-            return self._real_to_proxy[typ](self)
-        elif isinstance(typ, type(None)):
-            return None
-        elif is_user_defined(typ):
-            instance = self._symbolize_partially(typ)
-            typ._vector.append(instance)
-            return instance
-        return typ()
-
-    def _symbolize_partially(self, user_def_class):
-        """Creates partially symbolic instance of a class.
-
-        Returns an instance of user_def_class with all it's builtin
-        instance attributes symbolized and it's user-defined attributes
-        initialized to None.
-
-        Args:
-            user_def_class: The class to be partially symbolized.
-
-        Returns:
-            A partially symbolic instance of user_def_class.
-        """
-        init_types = self._get_init_types(user_def_class)
-        init_args = [self._make_symbolic(a) for a in init_types]
-        if init_args:
-            partial_ins = user_def_class(*init_args)
-        else:
-            partial_ins = user_def_class()
-        return partial_ins
-
-    def _get_init_types(self, user_def_class):
-        """Returns the types of the parameters of the class.
-
-        Returns a list containing the types of the parameters
-        of the init method of user_def_class.
-
-        Args:
-            user_def_class: An user-defined class.
-
-        Returns:
-            A list of types.
-        """
-        init_types = list(self._sut.class_params_map[user_def_class].values())
-        number_params = user_def_class.__init__.__code__.co_argcount
-        if number_params - 1 != len(init_types):
-            raise MissingTypesError(
-                "Incomplete type annotations in: " + str(user_def_class)
-            )
-        return init_types
-
-    def _make_symbolic(self, typ):
-        """Creates a symbolic instance.
-
-        If it's a supported builtin type it returns the appropiate
-        symbolic instance.
-        If it's an user-defined class returns None
-
-        Args:
-            typ: The type to be instantiated. Could be builtin or
-            user defined.
-
-        Returns:
-            A symbolic instance of a builtin type or None.
-        """
-        if typ in self._real_to_proxy.keys():
-            return self._real_to_proxy[typ](self)
-        elif isinstance(typ, type(None)) or is_user_defined(typ):
-            return None
-        return typ()
 
     def evaluate(self, sym_bool):
         """Evaluates a condition represented by a symbolic bool.

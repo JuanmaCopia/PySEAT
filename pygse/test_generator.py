@@ -46,7 +46,7 @@ class TestCode:
         self.run_data = run_stats
         self.test_number = number
         self.code = ""
-        self.name = sut.function.__name__ + "_test" + str(number) + "()"
+        self.name = sut.get_method_name() + "_test" + str(number) + "()"
         self.generate_test_code()
 
     def _add_line(self, line):
@@ -56,7 +56,7 @@ class TestCode:
         args_ids = ""
         for arg in instance:
             if is_user_defined(arg):
-                args_ids += self.generate_structure_code2(arg) + ", "
+                args_ids += self.generate_structure_code(arg) + ", "
             else:
                 args_ids += str(arg) + ", "
         return args_ids[:-2]
@@ -65,12 +65,12 @@ class TestCode:
         self.gen_test_header()
         self.gen_test_comment()
         self._add_line("# Self Generation")
-        self_id = self.generate_structure_code2(self.run_data.input_self)
+        self_id = self.generate_structure_code(self.run_data.input_self)
         self._add_line("# Repok check")
         self.add_repok_check(self.run_data.input_self)
         self._add_line("# Method call")
         self.generate_method_call(
-            self_id, self._sut.function.__name__, self.run_data.returnv
+            self_id, self._sut.get_method_name(), self.run_data.returnv
         )
         self._add_line("# Assertions")
         self.gen_returnv_assert(self.run_data.returnv)
@@ -92,7 +92,7 @@ class TestCode:
     def gen_test_header(self):
         self.code += (
             "def "
-            + self._sut.function.__name__
+            + self._sut.get_method_name()
             + "_test"
             + str(self.test_number)
             + "():"
@@ -157,7 +157,7 @@ class TestCode:
             if not is_special_attr(key)
         }
 
-    def generate_structure_code2(self, instance, visited=set()):
+    def generate_structure_code(self, instance, visited=set()):
         if not instance:
             return
         if not do_add(visited, instance):
@@ -166,7 +166,10 @@ class TestCode:
         identifier = instance._identifier
         attr = self.get_attr_value_dict(instance)
         self.create_constructor_call(
-            identifier, type(instance), attr, self._sut.get_init_params(type(instance)),
+            identifier,
+            type(instance),
+            attr,
+            self._sut.get_params_type_dict(type(instance)),
         )
         userdef = []
         for field, value in attr.items():
@@ -176,7 +179,7 @@ class TestCode:
                 userdef.append((field, value))
         field_id = ""
         for field, value in userdef:
-            field_id = self.generate_structure_code2(value, visited)
+            field_id = self.generate_structure_code(value, visited)
             self.create_assign_code(identifier, field, field_id)
         return identifier
 
@@ -198,7 +201,7 @@ class TestCode:
         for name, value in ctor_params.items():
             obj_name = ""
             if is_user_defined(value):
-                obj_name = self.generate_structure_code2(value)
+                obj_name = self.generate_structure_code(value)
                 code_line += obj_name + ", "
             else:
                 code_line += str(ctor_params[name]) + ", "

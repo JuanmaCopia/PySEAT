@@ -6,6 +6,12 @@ class Node:
     _engine = None
     _id = 0
 
+    # Instance attributes annotations (will be treated as symbolic)
+    data: int
+    next: "Node"
+    prev: "Node"
+
+    # Init params should be annotated also
     def __init__(self, data: int):
         self.data = data
         self.next = None
@@ -98,6 +104,11 @@ class DoublyLinkedList:
     _engine = None
     _id = 0
 
+    # Instance attributes annotations (will be treated as symbolic)
+    head: "Node"
+    tail: "Node"
+
+    # Init params should be annotated also
     def __init__(self, head: "Node" = None, tail: "Node" = None):
         self.head = head
         self.tail = tail

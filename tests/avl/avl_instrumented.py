@@ -14,6 +14,13 @@ class Node:
     _engine = None
     _id = 0
 
+    # Instance attributes annotations (will be treated as symbolic)
+    data: int
+    right: "Node"
+    left: "Node"
+    parent: "Node"
+
+    # Init params should be annotated also
     def __init__(self, parent: "Node", data: int):
         self.data = data
         self.right = None
@@ -337,6 +344,10 @@ class AVL():
     _engine = None
     _id = 0
 
+    # Instance attributes annotations (will be treated as symbolic)
+    root: "Node"
+
+    # Init params should be annotated also
     def __init__(self, root: "Node" = None):
         self.root = root
 

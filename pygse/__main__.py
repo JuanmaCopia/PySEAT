@@ -53,7 +53,7 @@ print("Method " + method_name + " of class " + class_name)
 print("\nPerforming Exploration...\n")
 for run in engine.explore():
     if run:
-        print_formatted_result(sut.function, run, verbose)
+        print_formatted_result(sut.get_method(), run, verbose)
         if run.status != Status.PRUNED:
             test_num += 1
             test = testgen.TestCode(sut, run, test_num)

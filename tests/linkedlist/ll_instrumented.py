@@ -5,11 +5,16 @@ def do_add(s, x):
 
 
 class Node:
-
+    # Class attribues
     _vector = []
     _engine = None
     _id = 0
 
+    # Instance attributes annotations (will be treated as symbolic)
+    elem: int
+    next: "Node"
+
+    # Init params should be annotated also
     def __init__(self, elem: int):
         self.elem = elem
         self.next = None
@@ -106,6 +111,10 @@ class LinkedList:
     _engine = None
     _id = 0
 
+    # Instance attributes annotations (will be treated as symbolic)
+    head: "Node"
+
+    # Init params should be annotated also
     def __init__(self, head: "Node" = None):
         self.head = head
         self._head_is_initialized = False
