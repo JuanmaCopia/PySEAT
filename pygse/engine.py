@@ -118,6 +118,7 @@ class SEEngine:
         self._stats = ExplorationStats()
         self._backups = LazyBackup()
         self.mode = Mode.PROGRAM_EXECUTION
+        self.prev_mode = Mode.PROGRAM_EXECUTION
         self._current_depth = 0
         self._current_bp = 0
         self._recursion_limit = 0
@@ -134,8 +135,19 @@ class SEEngine:
     def sym_bool(self, formula=None):
         return SymBool(self, formula)
 
-    def set_mode_cr(self, mode):
-        self.mode = Mode.CONSERVATIVE_REPOK
+    def new_symbolic(self, typ):
+        if isinstance(typ, SymInt):
+            return self.sym_int()
+        elif isinstance(typ, SymBool):
+            return self.sym_bool()
+        assert False
+
+    def set_mode(self, mode):
+        self.prev_mode = self.mode
+        self.mode = mode
+
+    def restore_prev_mode(self):
+        self.mode = self.prev_mode
 
     def explore(self):
         """Main method, implements the generalized symbolic execution.
@@ -149,7 +161,6 @@ class SEEngine:
         while unexplored_paths:
             self._reset_exploration()
 
-            # args = [self._symbolic_instantiation(typ) for name, typ in self._sut.method_data.param_types.items()]
             args = self.instantiate_method_params()
             self._backups.initialize_backup(args)
 
@@ -224,13 +235,6 @@ class SEEngine:
             A list of types.
         """
         return self._sut.get_cls_init_types(user_def_class)
-        # init_types = list(self._sut.class_map[user_def_class].values())
-        # number_params = user_def_class.__init__.__code__.co_argcount
-        # if number_params - 1 != len(init_types):
-        #     raise MissingTypesError(
-        #         "Incomplete type annotations in: " + str(user_def_class)
-        #     )
-        # return init_types
 
     def _make_symbolic(self, typ):
         """Creates a symbolic instance.
@@ -260,6 +264,7 @@ class SEEngine:
         self._current_depth = 0
         self._recursion_limit = 10
         self._backups = LazyBackup()
+        self.mode = Mode.PROGRAM_EXECUTION
         for k in self._sut.class_map.keys():
             k._vector = []
             k._id = 0
@@ -374,6 +379,7 @@ class SEEngine:
         self._current_bp = 0
         self._current_depth = 0
         self._recursion_limit = 200
+        self.mode = Mode.INSTRUMENTED_REPOK
         for k in self._sut.class_map.keys():
             k._vector = []
         self.fill_class_vectors(iself)
@@ -493,68 +499,45 @@ class SEEngine:
 
     def lazy_initialization(self, instance, attr_name):
         assert instance is not None
+        assert self.mode != Mode.CONSERVATIVE_REPOK
+
         isinit_name = get_initialized_name(attr_name)
         if hasattr(instance, isinit_name) and hasattr(instance, attr_name):
             is_init = getattr(instance, isinit_name)
             attr = getattr(instance, attr_name)
+            attr_type = self._sut.get_attr_type(type(instance), attr_name)
+            if is_user_defined(attr_type):
+                if is_init is False and self.is_tracked(instance):
+                    setattr(instance, isinit_name, True)
 
-            if is_init is False and self.is_tracked(instance):
+                    new_value = self.get_next_lazy_step(attr_type)
+                    setattr(instance, attr_name, new_value)
+                    self._backups.make_backup()
 
-                setattr(instance, isinit_name, True)
-                # make get attr type
-                attr_type = self._sut.get_attr_type(type(instance), attr_name)
-                new_value = self.get_next_lazy_step(attr_type)
-                setattr(instance, attr_name, new_value)
-                self._backups.make_backup()
-                # ignore if
-                # set conservative repok mode
-                if not instance.conservative_repok():
-                    raise RepOkFailException()
+                    if self.mode != Mode.INSTRUMENTED_REPOK:
+                        self.set_mode(Mode.CONSERVATIVE_REPOK)
+                        if not instance.conservative_repok():
+                            raise RepOkFailException()
+                        if instance._identifier != self._current_self._identifier:
+                            if not self._current_self.conservative_repok():
+                                raise RepOkFailException()
+                        self.restore_prev_mode()
 
-                if instance._identifier != self._current_self._identifier:
-                    if not self._current_self.conservative_repok():
-                        raise RepOkFailException()
-                return new_value
-            # else
-            self.check_recursion_limit(attr)
-            return attr
+                    return getattr(instance, attr_name)
+                # else
+                self.check_recursion_limit(attr)
+                return attr
+            else:
+                assert Symbolic.is_supported_builtin(attr_type)
+                if not is_init:
+                    assert attr is not None
+                    setattr(instance, isinit_name, True)
+                    setattr(instance, attr_name, self.new_symbolic(attr_type))
+                return attr
 
     def lazy_set_attr(self, instance, attr_name, value):
         set_to_initialized(instance, attr_name)
         setattr(instance, attr_name, value)
-
-    # def _set_head(self, value):
-    #     self.head = value
-    #     self._head_is_initialized = True
-
-    # def _get_root(self):
-    #     if not self._root_is_initialized and self._engine.is_tracked(self):
-    #         self._root_is_initialized = True
-    #         self.root = self._engine.get_next_lazy_step(Node, Node._vector)
-    #         self._engine.save_lazy_step(Node)
-    #         self._engine.ignore_if(not self.conservative_repok(), self)
-    #     else:
-    #         self._engine.check_recursion_limit(self.root)
-    #     return self.root
-
-    # def _get_root(self):
-    #     self._engine.lazy_initialization(self, "root")
-
-    def ignore_if(self, value, instance):
-        """Ignores this execution path if value is true.
-
-        Value deepends on instance repok, if repok is violated,
-        value will be True and an exception is raised.
-
-        Raises:
-            RepOkFailException: RepOk of instances failed.
-        """
-        if value:
-            raise RepOkFailException()
-        repok_passed = self._current_self.conservative_repok()
-        if not repok_passed:
-            raise RepOkFailException()
-        return None
 
     def get_next_lazy_step(self, lazy_class):
         """Implements a lazy initialization step.
@@ -698,10 +681,6 @@ class SEEngine:
         """Returns the collected statistics of all executions.
         """
         return self._stats
-
-    def save_lazy_step(self, sclass=None):
-        self._backups.make_backup()
-
 
 class LazyBackup:
     def __init__(self):

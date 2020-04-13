@@ -34,14 +34,10 @@ class Node:
         self._recursion_depth = 0
 
     def _get_data(self):
-        if not self._data_is_initialized:
-            self._key_is_initialized = True
-            self.data = self._engine.sym_int()
-        return self.data
+        return self._engine.lazy_initialization(self, "data")
 
     def _set_data(self, value):
-        self.data = value
-        self._data_is_initialized = True
+        return self._engine.lazy_set_attr(self, "data", value)
 
     def _get_right(self):
         return self._engine.lazy_initialization(self, "right")

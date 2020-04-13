@@ -27,14 +27,10 @@ class Node:
         self._recursion_depth = 0
 
     def _get_elem(self):
-        if not self._elem_is_initialized:
-            self._elem_is_initialized = True
-            self.elem = self._engine.sym_int()
-        return self.elem
+        return self._engine.lazy_initialization(self, "elem")
 
     def _set_elem(self, value):
-        self.elem = value
-        self._elem_is_initialized = True
+        return self._engine.lazy_set_attr(self, "elem", value)
 
     def _get_next(self):
         return self._engine.lazy_initialization(self, "next")

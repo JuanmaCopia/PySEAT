@@ -122,7 +122,6 @@ class SUT:
     def __init__(self, the_class, method):
         self.method_data = MethodData(method, the_class)
         self.class_map = map_all_classes(self.method_data.types_list)
-        x = 0
 
     def get_method(self):
         return self.method_data.method
