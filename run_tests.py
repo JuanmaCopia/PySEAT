@@ -53,4 +53,4 @@ execute(
     verbose,
 )
 execute("tests/bst/bst_instrumented.py", "BST", "insert", verbose)
-# execute("tests/avl/avl_instrumented.py", "AVL", "insert", verbose, 8)
+execute("tests/avl/avl_instrumented.py", "AVL", "insert", verbose, 8)

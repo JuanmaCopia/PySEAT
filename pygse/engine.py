@@ -507,7 +507,7 @@ class SEEngine:
             attr = getattr(instance, attr_name)
             attr_type = self._sut.get_attr_type(type(instance), attr_name)
             if is_user_defined(attr_type):
-                if is_init is False and self.is_tracked(instance):
+                if is_init is False and self.is_tracked(instance) and self.mode != Mode.CONSERVATIVE_REPOK:
                     setattr(instance, isinit_name, True)
 
                     new_value = self.get_next_lazy_step(attr_type)
@@ -529,7 +529,7 @@ class SEEngine:
                 return attr
             else:
                 assert Symbolic.is_supported_builtin(attr_type)
-                if not is_init:
+                if not is_init and self.mode != Mode.CONSERVATIVE_REPOK:
                     assert attr is not None
                     setattr(instance, isinit_name, True)
                     setattr(instance, attr_name, self.new_symbolic(attr_type))
