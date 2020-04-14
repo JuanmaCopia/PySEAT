@@ -58,9 +58,6 @@ class Node:
                 nxt = nxt._get_next()
             return True
 
-    def conservative_repok(self):
-        return True
-
     def repok(self):
         return True
 
@@ -162,9 +159,6 @@ class LinkedList:
         return self
 
     def repok(self):
-        return True
-
-    def conservative_repok(self):
         return True
 
     def instrumented_repok(self):

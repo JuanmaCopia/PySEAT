@@ -9,7 +9,7 @@ import copy
 
 from branching_steps import LazyStep, ConditionalStep
 from data import Status, PathExecutionData, ExplorationStats, Mode
-from exceptions import UnsatBranchError, MissingTypesError
+from exceptions import UnsatBranchError, NoInitializedException
 from exceptions import RepOkFailException, MaxRecursionException
 from exceptions import MaxDepthException
 from helpers import do_add, is_user_defined, keep_first_n_items
@@ -117,8 +117,8 @@ class SEEngine:
         self._max_depth = max_depth
         self._stats = ExplorationStats()
         self._backups = LazyBackup()
-        self.mode = Mode.PROGRAM_EXECUTION
-        self.prev_mode = Mode.PROGRAM_EXECUTION
+        self.mode = Mode.NOMODE
+        self.prev_mode = Mode.NOMODE
         self._current_depth = 0
         self._current_bp = 0
         self._recursion_limit = 0
@@ -262,9 +262,8 @@ class SEEngine:
         self._path_condition = []
         self._current_bp = 0
         self._current_depth = 0
-        self._recursion_limit = 10
+        self._recursion_limit = 20
         self._backups = LazyBackup()
-        self.mode = Mode.PROGRAM_EXECUTION
         for k in self._sut.class_map.keys():
             k._vector = []
             k._id = 0
@@ -294,7 +293,7 @@ class SEEngine:
         self._current_self = args[0]
         args = args[1:]
         method = getattr(self._current_self, self._sut.get_method_name())
-
+        self.set_mode(Mode.PROGRAM_EXECUTION)
         try:
             if args:
                 returnv = method(*args)
@@ -316,6 +315,7 @@ class SEEngine:
         else:
             status = Status.OK
         finally:
+            self.restore_prev_mode()
             # if exception:
             #     raise exception
             if status == Status.PRUNED:
@@ -379,7 +379,6 @@ class SEEngine:
         self._current_bp = 0
         self._current_depth = 0
         self._recursion_limit = 200
-        self.mode = Mode.INSTRUMENTED_REPOK
         for k in self._sut.class_map.keys():
             k._vector = []
         self.fill_class_vectors(iself)
@@ -421,7 +420,7 @@ class SEEngine:
 
             result = self._execute_repok(iself)
 
-            if result is not None and result.repok():
+            if result is not None:
                 self._path_condition = keep_first_n_items(self._path_condition, pc_len)
                 self._branching_points = backup_bp
                 return result
@@ -454,6 +453,7 @@ class SEEngine:
 
     def _execute_repok(self, instance):
         self._current_self = instance
+        self.set_mode(Mode.INSTRUMENTED_REPOK)
         try:
             result = instance.instrumented_repok()
             if is_symbolic_bool(result):
@@ -473,9 +473,10 @@ class SEEngine:
             if result:
                 model = self.smt.get_model(self._path_condition)
                 new_object = concretize(instance, model)
-                assert new_object.repok()
                 return new_object
             return None
+        finally:
+            self.restore_prev_mode()
 
     def _remove_explored_branches(self):
         """Removes fully explored branhes.
@@ -497,47 +498,66 @@ class SEEngine:
                 last_bp = self._branching_points[-1]
                 last_bp.advance_branch()
 
-    def lazy_initialization(self, instance, attr_name):
-        assert instance is not None
-        assert self.mode != Mode.CONSERVATIVE_REPOK
+    def check_conservative_repok(self, obj):
+        self.set_mode(Mode.CONSERVATIVE_REPOK)
+        try:
+            if hasattr(obj, "instrumented_repok") and not obj.instrumented_repok():
+                raise RepOkFailException()
+            if obj._identifier != self._current_self._identifier:
+                if not self._current_self.instrumented_repok():
+                    raise RepOkFailException()
+        except NoInitializedException:
+            pass
+        except RepOkFailException as e:
+            raise e
+        except AttributeError as e:
+            raise e
+        finally:
+            self.restore_prev_mode()
 
+    def lazy_initialization(self, obj, attr_name):
+        assert obj is not None
+        # assert self.mode != Mode.CONSERVATIVE_REPOK
         isinit_name = get_initialized_name(attr_name)
-        if hasattr(instance, isinit_name) and hasattr(instance, attr_name):
-            is_init = getattr(instance, isinit_name)
-            attr = getattr(instance, attr_name)
-            attr_type = self._sut.get_attr_type(type(instance), attr_name)
-            if is_user_defined(attr_type):
-                if is_init is False and self.is_tracked(instance) and self.mode != Mode.CONSERVATIVE_REPOK:
-                    setattr(instance, isinit_name, True)
+        assert hasattr(obj, isinit_name) and hasattr(obj, attr_name)
 
-                    new_value = self.get_next_lazy_step(attr_type)
-                    setattr(instance, attr_name, new_value)
-                    self._backups.make_backup()
+        is_init = getattr(obj, isinit_name)
+        attr = getattr(obj, attr_name)
 
-                    if self.mode != Mode.INSTRUMENTED_REPOK:
-                        self.set_mode(Mode.CONSERVATIVE_REPOK)
-                        if not instance.conservative_repok():
-                            raise RepOkFailException()
-                        if instance._identifier != self._current_self._identifier:
-                            if not self._current_self.conservative_repok():
-                                raise RepOkFailException()
-                        self.restore_prev_mode()
+        if self.mode == Mode.CONSERVATIVE_REPOK:
+            if not is_init:
+                raise NoInitializedException()
+            self.check_recursion_limit(attr)
+            return attr
 
-                    return getattr(instance, attr_name)
-                # else
-                self.check_recursion_limit(attr)
-                return attr
-            else:
-                assert Symbolic.is_supported_builtin(attr_type)
-                if not is_init and self.mode != Mode.CONSERVATIVE_REPOK:
-                    assert attr is not None
-                    setattr(instance, isinit_name, True)
-                    setattr(instance, attr_name, self.new_symbolic(attr_type))
-                return attr
+        attr_type = self._sut.get_attr_type(type(obj), attr_name)
+        if is_user_defined(attr_type):
+            if is_init is False and self.is_tracked(obj):
+                setattr(obj, isinit_name, True)
 
-    def lazy_set_attr(self, instance, attr_name, value):
-        set_to_initialized(instance, attr_name)
-        setattr(instance, attr_name, value)
+                new_value = self.get_next_lazy_step(attr_type)
+                setattr(obj, attr_name, new_value)
+                self._backups.make_backup()
+
+                if self.mode != Mode.INSTRUMENTED_REPOK:
+                    obj._recursion_depth = 0
+                    self.check_conservative_repok(obj)
+
+                return getattr(obj, attr_name)
+            # else
+            self.check_recursion_limit(attr)
+            return attr
+        else:
+            assert Symbolic.is_supported_builtin(attr_type)
+            if not is_init and self.mode:
+                assert attr is not None
+                setattr(obj, isinit_name, True)
+                setattr(obj, attr_name, self.new_symbolic(attr_type))
+            return attr
+
+    def lazy_set_attr(self, obj, attr_name, value):
+        set_to_initialized(obj, attr_name)
+        setattr(obj, attr_name, value)
 
     def get_next_lazy_step(self, lazy_class):
         """Implements a lazy initialization step.
@@ -667,7 +687,7 @@ class SEEngine:
         return bool_value
 
     def check_recursion_limit(self, obj):
-        if obj is not None:
+        if obj is not None and is_user_defined(obj):
             obj._recursion_depth += 1
             if obj._recursion_depth > self._recursion_limit:
                 raise MaxRecursionException(str(obj._recursion_depth))
@@ -681,6 +701,7 @@ class SEEngine:
         """Returns the collected statistics of all executions.
         """
         return self._stats
+
 
 class LazyBackup:
     def __init__(self):

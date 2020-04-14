@@ -58,9 +58,6 @@ class Node:
                 nxt = nxt._get_next()
             return True
 
-    def conservative_repok(self):
-        return True
-
     def repok(self):
         return True
 
@@ -173,28 +170,6 @@ class LinkedList:
             if not do_add(visited, current.next):
                 return False
             current = current.next
-        return True
-
-    def conservative_repok(self):
-        return self.conservative_acyclic()
-
-    def conservative_acyclic(self):
-        if not self._head_is_initialized:
-            return True
-        if self.head is None:
-            return True
-        visited = set()
-        visited.add(self.head)
-        current = self.head
-
-        if not current._next_is_initialized:
-            return True
-        while current.next:
-            if not do_add(visited, current.next):
-                return False
-            current = current.next
-            if not current._next_is_initialized:
-                return True
         return True
 
     def instrumented_repok(self):

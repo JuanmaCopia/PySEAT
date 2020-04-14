@@ -289,6 +289,49 @@ def insert_after_node_test5():
 def insert_after_node_test6():
     '''
     Self:
+        (node3 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node0) **node0
+    Return:
+        None
+    End Self:
+        (node8 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node8) (node3 <- node8: 0 -> node0) **node0
+    '''
+    # Self Generation
+    cdlinkedlist0 = CDLinkedList()
+    node0 = Node(1)
+    node0.key = 1
+    node1 = Node(1)
+    node1.key = 1
+    node2 = Node(1)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 0
+    node3.next = node0
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node0
+    node0.next = node1
+    node0.prev = node3
+    cdlinkedlist0.head = node0
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    cdlinkedlist0.insert_after_node(0, 0)
+    # Assertions
+    # Repok check
+    assert cdlinkedlist0.repok()
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 0
+    assert cdlinkedlist0.head.next.next.key == 1
+    assert cdlinkedlist0.head.prev.prev.key == 0
+    print('Test6: OK')
+
+
+def insert_after_node_test7():
+    '''
+    Self:
         (node3 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node0) **node0
     Return:
         None
@@ -325,10 +368,10 @@ def insert_after_node_test6():
     assert cdlinkedlist0.head.next.key == 1
     assert cdlinkedlist0.head.prev.key == 1
     assert cdlinkedlist0.head.next.next.key == 1
-    print('Test6: OK')
+    print('Test7: OK')
 
 
-def insert_after_node_test7():
+def insert_after_node_test8():
     '''
     Self:
         (node2 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 0 -> node0) **node0
@@ -363,10 +406,10 @@ def insert_after_node_test7():
     assert cdlinkedlist0.head.next.key == 1
     assert cdlinkedlist0.head.prev.key == 0
     assert cdlinkedlist0.head.next.next.key == 0
-    print('Test7: OK')
+    print('Test8: OK')
 
 
-def insert_after_node_test8():
+def insert_after_node_test9():
     '''
     Self:
         (node2 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node0) **node0
@@ -400,10 +443,10 @@ def insert_after_node_test8():
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
     assert cdlinkedlist0.head.prev.key == 1
-    print('Test8: OK')
+    print('Test9: OK')
 
 
-def insert_after_node_test9():
+def insert_after_node_test10():
     '''
     Self:
         (node1 <- node0: 1 -> node1) (node0 <- node1: 0 -> node0) **node0
@@ -433,10 +476,10 @@ def insert_after_node_test9():
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 0
     assert cdlinkedlist0.head.prev.key == 0
-    print('Test9: OK')
+    print('Test10: OK')
 
 
-def insert_after_node_test10():
+def insert_after_node_test11():
     '''
     Self:
         (node1 <- node0: 1 -> node1) (node0 <- node1: 1 -> node0) **node0
@@ -465,10 +508,10 @@ def insert_after_node_test10():
     assert cdlinkedlist0.repok()
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
-    print('Test10: OK')
+    print('Test11: OK')
 
 
-def insert_after_node_test11():
+def insert_after_node_test12():
     '''
     Self:
         (node0 <- node0: 0 -> node0) 
@@ -493,10 +536,10 @@ def insert_after_node_test11():
     assert cdlinkedlist0.repok()
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
-    print('Test11: OK')
+    print('Test12: OK')
 
 
-def insert_after_node_test12():
+def insert_after_node_test13():
     '''
     Self:
         (node0 <- node0: 1 -> node0) 
@@ -520,10 +563,10 @@ def insert_after_node_test12():
     # Repok check
     assert cdlinkedlist0.repok()
     assert cdlinkedlist0.head.key == 1
-    print('Test12: OK')
+    print('Test13: OK')
 
 
-def insert_after_node_test13():
+def insert_after_node_test14():
     '''
     Self:
         Empty
@@ -543,7 +586,7 @@ def insert_after_node_test13():
     # Repok check
     assert cdlinkedlist0.repok()
     assert cdlinkedlist0.head is None
-    print('Test13: OK')
+    print('Test14: OK')
 
 
 if __name__ == '__main__':
@@ -560,3 +603,4 @@ if __name__ == '__main__':
     insert_after_node_test11()
     insert_after_node_test12()
     insert_after_node_test13()
+    insert_after_node_test14()

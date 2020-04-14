@@ -4,6 +4,15 @@ class Error(Exception):
     pass
 
 
+class NoInitializedException(Error):
+    """Exception raised when the conservative repok
+    checking finds an uninitialized attr
+    """
+
+    def __init__(self):
+        self.message = "Attr not initialized"
+
+
 class MaxDepthException(Error):
     """Exception raised when the maximum exploration depth
     is reached.

@@ -71,9 +71,6 @@ class Node:
     def repok(self):
         return True
 
-    def conservative_repok(self):
-        return True
-
     def instrumented_repok(self):
         return True
 
@@ -310,48 +307,6 @@ class DoublyLinkedList:
             if not self.do_add(visited, next_node):
                 return False
             current = next_node
-            next_node = next_node.next
-
-        if self.do_add(visited, self.tail):
-            return False
-        return True
-
-    def conservative_repok(self):
-
-        if not self._head_is_initialized or not self._tail_is_initialized:
-            return True
-
-        if self.head is None and self.tail is None:
-            return True
-        if self.head is None or self.tail is None:
-            return
-
-        if not self.head._prev_is_initialized or not self.tail._next_is_initialized:
-            return True
-
-        if self.head.prev is not None or self.tail.next is not None:
-            return False
-
-        visited = set()
-        visited.add(self.head)
-
-        current = self.head
-        next_node = current.next
-
-        while next_node:
-
-            if not next_node._prev_is_initialized:
-                return True
-
-            if next_node.prev is not current:
-                return False
-            if not self.do_add(visited, next_node):
-                return False
-            current = next_node
-
-            if not next_node._next_is_initialized:
-                return True
-
             next_node = next_node.next
 
         if self.do_add(visited, self.tail):

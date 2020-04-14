@@ -71,9 +71,6 @@ class Node:
     def repok(self):
         return True
 
-    def conservative_repok(self):
-        return True
-
     def instrumented_repok(self):
         return True
 
@@ -310,55 +307,6 @@ class CDLinkedList:
                 return False
             if next_node.next is next_node:
                 return False
-            if next_node.prev is not current or current.next is not next_node:
-                return False
-            current = next_node
-            if not CDLinkedList.do_add(visited, next_node):
-                return False
-            next_node = current.next
-            if next_node is self.head:
-                if current is not self.head.prev:
-                    return False
-        return True
-
-    def conservative_repok(self):
-        if not self._head_is_initialized:
-            return True
-
-        if self.head is None:
-            return True
-
-        if not self.head._prev_is_initialized or not self.head._next_is_initialized:
-            return True
-
-        if not self.head.prev or not self.head.next:
-            return False
-        if self.head.next is self.head and self.head.prev is self.head:
-            return True
-
-        if self.head.next is self.head and self.head.prev is not self.head:
-            return False
-        if self.head.prev is self.head and self.head.next is not self.head:
-            return False
-
-        visited = set()
-        current = self.head
-        next_node = current.next
-        visited.add(current)
-
-        while next_node is not self.head:
-
-            if not next_node._next_is_initialized or not next_node._prev_is_initialized:
-                return True
-
-            if next_node.next is None or next_node.prev is None:
-                return False
-            if next_node.next is next_node:
-                return False
-
-            if not current._next_is_initialized:
-                return True
-
             if next_node.prev is not current or current.next is not next_node:
                 return False
             current = next_node

@@ -98,73 +98,7 @@ class Node:
 
         return True
 
-    def conservative_repok(self):
-        visited = set()
-        visited.add(self)
-        if not self._left_is_initialized:
-            return True
-        if self.left is not None:
-            if not self.left._data_is_initialized or not self._data_is_initialized:
-                return True
-            if not do_add(visited, self.left) or self.left.data > self.data:
-                return False
-
-            if not self.left._parent_is_initialized:
-                return True
-            if self.left.parent is None or self.left.parent is not self:
-                return False
-
-        if not self._right_is_initialized:
-            return True
-        if self.right is not None:
-            if not self.right._data_is_initialized or not self._data_is_initialized:
-                return True
-            if not do_add(visited, self.right) or self.right.data < self.data:
-                return False
-
-            if not self.right._parent_is_initialized:
-                return True
-            if self.right.parent is None or self.right.parent is not self:
-                return False
-
-        if not self._parent_is_initialized:
-            return True
-        if self.parent is not None:
-            if not do_add(visited, self.parent):
-                return False
-            if not self.parent._left_is_initialized:
-                return True
-            if self.parent.left is None:
-                if not self.parent._right_is_initialized:
-                    return True
-                if self.parent.right is None or self.parent.right is not self:
-                    return False
-
-            if not self.parent._right_is_initialized:
-                return True
-            if self.parent.right is None:
-                if not self.parent._left_is_initialized:
-                    return True
-                if self.parent.left is None or self.parent.left is not self:
-                    return False
-
-            if self.parent.left is not None and self.parent.right is not None:
-                if not (self.parent.left is self or self.parent.right is self):
-                    return False
-
-            if not self._data_is_initialized or not self.parent._data_is_initialized:
-                return True
-            if self.parent.left is self and self.data > self.parent.data:
-                return False
-
-            if self.parent.right is self and self.data < self.parent.data:
-                return False
-        return True
-
     # def repok(self):
-    #     return True
-
-    # def conservative_repok(self):
     #     return True
 
     def instrumented_repok(self):
@@ -548,77 +482,15 @@ class AVL():
                 return False
         return True
 
-    def conservative_repok(self):
-        if not self._root_is_initialized:
-            return True
-        if not self.root:
-            return True
-        visited = set()
-        visited.add(self.root)
-        if not (
-            self.conservative_is_BST(self.root, INT_MIN, INT_MAX, visited) and
-            self.cons_is_balanced(self.root) and
-            self.cons_parents_ok(self.root)
-        ):
-            return False
-        if not self.root._parent_is_initialized:
-            return True
-        if self.root.parent is not None:
-            return False
-        return True
-
-    def cons_is_acyclic(self):
-        visited = set()
-        visited.add(self.root)
-        worklist = []
-        worklist.append(self.root)
-        while worklist:
-            current = worklist.pop(0)
-            if not current._left_is_initialized:
-                return True
-            if current.left:
-                if not do_add(visited, current.left):
-                    return False
-                worklist.append(current.left)
-            if not current._right_is_initialized:
-                return True
-            if current.right:
-                if not do_add(visited, current.right):
-                    return False
-                worklist.append(current.right)
-        return True
-
-    def cons_is_ordered(self):
-        return self.cons_is_ordered2(self.root, INT_MIN, INT_MAX)
-
-    def cons_is_ordered2(self, node, min, max):
-        if not node._data_is_initialized:
-            return True
-        if node.data < min or node.data > max:
-            return False
-
-        if not node._left_is_initialized:
-            return True
-        if node.left:
-            if not self.cons_is_ordered2(node.left, min, node.data):
-                return False
-
-        if not node._right_is_initialized:
-            return True
-        if node.right:
-            if not self.cons_is_ordered2(node.right, node.data, max):
-                return False
-        return True
-
     def instrumented_repok(self):
         if not self._get_root():
             return True
         visited = set()
-        visited.add(self.root)
+        visited.add(self._get_root())
         if not (
             self.instrumented_is_BST(self.root, INT_MIN, INT_MAX, visited) and
             self.ins_is_balanced(self._get_root()) and
-            self.ins_parents_ok(self.root)
+            self.ins_parents_ok(self._get_root())
         ):
             return False
         if self._get_root()._get_parent() is not None:
@@ -680,28 +552,6 @@ class AVL():
             return 0
         return max(self.ins_get_height(node._get_left()), self.ins_get_height(node._get_right())) + 1
 
-    def cons_is_balanced(self, node):
-        if node is None:
-            return True
-        if not node._left_is_initialized:
-            return True
-        left_height = self.con_height(node.left)
-        if left_height is True:
-            return True
-        if not node._right_is_initialized:
-            return True
-        right_height = self.con_height(node.right)
-        if right_height is True:
-            return True
-        return abs(left_height - right_height) <= 1
-
-    def con_height(self, node):
-        if node is None:
-            return 0
-        if not node._left_is_initialized or not node._right_is_initialized:
-            return True
-        return max(self.con_height(node.left), self.con_height(node.right)) + 1
-
     def parents_ok(self, node):
         if node is None:
             return True
@@ -715,30 +565,6 @@ class AVL():
                 return False
 
         return self.parents_ok(node.left) and self.parents_ok(node.right)
-
-    def cons_parents_ok(self, node):
-        if node is None:
-            return True
-
-        if not node._left_is_initialized:
-            return True
-
-        if node.left is not None:
-            if not node.left._parent_is_initialized:
-                return True
-            if node.left.parent is not node:
-                return False
-
-        if not node._right_is_initialized:
-            return True
-
-        if node.right is not None:
-            if not node.right._parent_is_initialized:
-                return True
-            if node.right.parent is not node:
-                return False
-
-        return self.cons_parents_ok(node.left) and self.cons_parents_ok(node.right)
 
     def ins_parents_ok(self, node):
         if node is None:
@@ -770,40 +596,6 @@ class AVL():
             return False
 
         return self.is_BST(node.left, min, node.data, visited) and self.is_BST(
-            node.right, node.data, max, visited
-        )
-
-    def conservative_is_BST(self, node, min, max, visited):
-        if node is None:
-            return True
-
-        if not node._left_is_initialized:
-            return True
-
-        if node.left is not None:
-            if not node.left._parent_is_initialized:
-                return True
-            if not do_add(visited, node.left) or node.left.parent is not node:
-                return False
-
-        if not node._right_is_initialized:
-            return True
-
-        if node.right is not None:
-
-            if not node.right._parent_is_initialized:
-                return True
-
-            if not do_add(visited, node.right) or node.right.parent is not node:
-                return False
-
-        if not node._data_is_initialized:
-            return True
-
-        if node.data < min or node.data > max:
-            return False
-
-        return self.conservative_is_BST(node.left, min, node.data, visited) and self.conservative_is_BST(
             node.right, node.data, max, visited
         )
 

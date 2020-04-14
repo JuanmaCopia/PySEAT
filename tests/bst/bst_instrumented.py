@@ -54,9 +54,6 @@ class Node:
     def repok(self):
         return True
 
-    def conservative_repok(self):
-        return True
-
     def instrumented_repok(self):
         return True
 
@@ -124,58 +121,6 @@ class BST:
                 return False
         if node.right:
             if not self.is_ordered2(node.right, node.data, max):
-                return False
-        return True
-
-    def conservative_repok(self):
-        if not self._root_is_initialized:
-            return True
-        if not self.root:
-            return True
-        if not (self.cons_is_acyclic() and self.cons_is_ordered()):
-            return False
-        return True
-
-    def cons_is_acyclic(self):
-        visited = set()
-        visited.add(self.root)
-        worklist = []
-        worklist.append(self.root)
-        while worklist:
-            current = worklist.pop(0)
-            if not current._left_is_initialized:
-                return True
-            if current.left:
-                if not do_add(visited, current.left):
-                    return False
-                worklist.append(current.left)
-            if not current._right_is_initialized:
-                return True
-            if current.right:
-                if not do_add(visited, current.right):
-                    return False
-                worklist.append(current.right)
-        return True
-
-    def cons_is_ordered(self):
-        return self.cons_is_ordered2(self.root, INT_MIN, INT_MAX)
-
-    def cons_is_ordered2(self, node, min, max):
-        if not node._data_is_initialized:
-            return True
-        if node.data <= min or node.data >= max:
-            return False
-
-        if not node._left_is_initialized:
-            return True
-        if node.left:
-            if not self.cons_is_ordered2(node.left, min, node.data):
-                return False
-
-        if not node._right_is_initialized:
-            return True
-        if node.right:
-            if not self.cons_is_ordered2(node.right, node.data, max):
                 return False
         return True
 
