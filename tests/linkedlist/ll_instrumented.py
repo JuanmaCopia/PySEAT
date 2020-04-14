@@ -1,7 +1,3 @@
-import pygse.symbolic_execution_engine as see
-import pygse.proxy as proxy
-
-
 def do_add(s, x):
     length = len(s)
     s.add(x)
@@ -9,11 +5,16 @@ def do_add(s, x):
 
 
 class Node:
-
+    # Class attribues
     _vector = []
-    _is_user_defined = True
+    _engine = None
     _id = 0
 
+    # Instance attributes annotations (will be treated as symbolic)
+    elem: int
+    next: "Node"
+
+    # Init params should be annotated also
     def __init__(self, elem: int):
         self.elem = elem
         self.next = None
@@ -21,34 +22,21 @@ class Node:
         self._next_is_initialized = False
         self._elem_is_initialized = True
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
 
     def _get_elem(self):
-        if not self._elem_is_initialized:
-            self._elem_is_initialized = True
-            self.elem = proxy.IntProxy()
-        return self.elem
+        return self._engine.lazy_initialization(self, "elem")
 
     def _set_elem(self, value):
-        self.elem = value
-        self._elem_is_initialized = True
+        return self._engine.lazy_set_attr(self, "elem", value)
 
     def _get_next(self):
-        if not self._next_is_initialized and see.SEEngine.is_tracked(self):
-            self._next_is_initialized = True
-            self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            see.SEEngine.save_lazy_step(Node)
-            see.SEEngine.ignore_if(not self.conservative_repok(), self)
-        else:
-            see.SEEngine.check_recursion_limit(self.next)
-        return self.next
+        return self._engine.lazy_initialization(self, "next")
 
     def _set_next(self, value):
-        self.next = value
-        self._next_is_initialized = True
+        return self._engine.lazy_set_attr(self, "next", value)
 
     def swap_node(self):
         if self._get_next() is not None:
@@ -69,9 +57,6 @@ class Node:
                 current = nxt
                 nxt = nxt._get_next()
             return True
-
-    def conservative_repok(self):
-        return True
 
     def repok(self):
         return True
@@ -108,32 +93,26 @@ class Node:
 class LinkedList:
 
     _vector = []
-    _is_user_defined = True
+    _engine = None
     _id = 0
 
-    def __init__(self, head: "Node" = None):
-        self.head = head
-        # Instrumentation instance attributes
+    # Instance attributes annotations (will be treated as symbolic)
+    head: "Node"
+
+    # Init params should be annotated also
+    def __init__(self):
+        self.head = None
         self._head_is_initialized = False
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
 
     def _get_head(self):
-        if not self._head_is_initialized and see.SEEngine.is_tracked(self):
-            self._head_is_initialized = True
-            self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            see.SEEngine.save_lazy_step(Node)
-            see.SEEngine.ignore_if(not self.conservative_repok(), self)
-        else:
-            see.SEEngine.check_recursion_limit(self.head)
-        return self.head
+        return self._engine.lazy_initialization(self, "head")
 
     def _set_head(self, value):
-        self.head = value
-        self._head_is_initialized = True
+        return self._engine.lazy_set_attr(self, "head", value)
 
     def insert(self, elem: int):
         new_node = Node(elem)
@@ -179,12 +158,33 @@ class LinkedList:
         return self
 
     def repok(self):
-        return True
+        return self.acyclic()
 
-    def conservative_repok(self):
+    def acyclic(self):
+        if self.head is None:
+            return True
+        visited = set()
+        visited.add(self.head)
+        current = self.head
+        while current.next:
+            if not do_add(visited, current.next):
+                return False
+            current = current.next
         return True
 
     def instrumented_repok(self):
+        return self.instrumented_acyclic()
+
+    def instrumented_acyclic(self):
+        if self._get_head() is None:
+            return True
+        visited = set()
+        visited.add(self._get_head())
+        current = self._get_head()
+        while current._get_next():
+            if not do_add(visited, current._get_next()):
+                return False
+            current = current._get_next()
         return True
 
     def swap_node(self):
@@ -197,16 +197,7 @@ class LinkedList:
                 self._set_head(t)
         return self._get_head()
 
-    def swap_node2(self):
-        head = self._get_head()
-        if head and head._get_next() is not None:
-            if head._get_elem() - head._get_next()._get_elem() > 0:
-                t = head._get_next()
-                head._set_next(t._get_next())
-                t._set_next(head)
-                self._set_head(t)
-
     def __repr__(self):
-        if self.head:
-            return self.head.__repr__()
-        return "EmptyList"
+        if not self.head:
+            return "Empty"
+        return self.head.__repr__()

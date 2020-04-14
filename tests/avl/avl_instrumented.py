@@ -1,6 +1,3 @@
-import pygse.symbolic_execution_engine as see
-import pygse.proxy as proxy
-
 INT_MAX = 4294967296
 INT_MIN = -4294967296
 
@@ -14,9 +11,16 @@ def do_add(s, x):
 class Node:
 
     _vector = []
-    _is_user_defined = True
+    _engine = None
     _id = 0
 
+    # Instance attributes annotations (will be treated as symbolic)
+    data: int
+    right: "Node"
+    left: "Node"
+    parent: "Node"
+
+    # Init params should be annotated also
     def __init__(self, parent: "Node", data: int):
         self.data = data
         self.right = None
@@ -30,75 +34,79 @@ class Node:
         self._parent_is_initialized = False
         self._height_is_initialized = True
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
 
     def _get_data(self):
-        if not self._data_is_initialized:
-            self._key_is_initialized = True
-            self.data = proxy.IntProxy()
-        return self.data
+        return self._engine.lazy_initialization(self, "data")
 
     def _set_data(self, value):
-        self.data = value
-        self._data_is_initialized = True
+        return self._engine.lazy_set_attr(self, "data", value)
 
     def _get_right(self):
-        if not self._right_is_initialized and see.SEEngine.is_tracked(self):
-            self._right_is_initialized = True
-            self.right = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            see.SEEngine.save_lazy_step(Node)
-            see.SEEngine.ignore_if(not self.conservative_repok(), self)
-        else:
-            see.SEEngine.check_recursion_limit(self.right)
-        return self.right
+        return self._engine.lazy_initialization(self, "right")
 
     def _set_right(self, value):
-        self.right = value
-        self._right_is_initialized = True
+        return self._engine.lazy_set_attr(self, "right", value)
 
     def _get_left(self):
-        if not self._left_is_initialized and see.SEEngine.is_tracked(self):
-            self._left_is_initialized = True
-            self.left = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            see.SEEngine.save_lazy_step(Node)
-            see.SEEngine.ignore_if(not self.conservative_repok(), self)
-        else:
-            see.SEEngine.check_recursion_limit(self.left)
-        return self.left
+        return self._engine.lazy_initialization(self, "left")
 
     def _set_left(self, value):
-        self.left = value
-        self._left_is_initialized = True
+        return self._engine.lazy_set_attr(self, "left", value)
 
     def _get_parent(self):
-        if not self._parent_is_initialized and see.SEEngine.is_tracked(self):
-            self._parent_is_initialized = True
-            self.parent = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            see.SEEngine.save_lazy_step(Node)
-            see.SEEngine.ignore_if(not self.conservative_repok(), self)
-        else:
-            see.SEEngine.check_recursion_limit(self.parent)
-        return self.parent
+        return self._engine.lazy_initialization(self, "parent")
 
     def _set_parent(self, value):
-        self.parent = value
-        self._parent_is_initialized = True
+        return self._engine.lazy_set_attr(self, "parent", value)
 
     def repok(self):
+        visited = set()
+        visited.add(self)
+        if self.left is not None:
+            if not do_add(visited, self.left) or self.left.data > self.data:
+                return False
+            if self.left.parent is None or self.left.parent is not self:
+                return False
+        if self.right is not None:
+            if not do_add(visited, self.right) or self.right.data < self.data:
+                return False
+            if self.right.parent is None or self.right.parent is not self:
+                return False
+
+        if self.parent is not None:
+            if not do_add(visited, self.parent):
+                return False
+            if self.parent.left is None:
+                if self.parent.right is None or self.parent.right is not self:
+                    return False
+
+            if self.parent.right is None:
+                if self.parent.left is None or self.parent.left is not self:
+                    return False
+
+            if self.parent.left is not None and self.parent.right is not None:
+                if not (self.parent.left is self or self.parent.right is self):
+                    return False
+
+            if self.parent.left is self and self.data > self.parent.data:
+                return False
+            if self.parent.right is self and self.data < self.parent.data:
+                return False
+
         return True
 
-    def conservative_repok(self):
-        return True
+    # def repok(self):
+    #     return True
 
     def instrumented_repok(self):
         return True
 
     def __repr__(self):
         if self.parent is not None:
-            return self.parent._identifier + ": " +str(self.parent.data) + " <- " + self._identifier + ": " + str(self.data)
+            return self.parent._identifier + " <- " + self._identifier + ": " + str(self.data)
         if self._parent_is_initialized:
             return "None" + " <- " + self._identifier + ": " + str(self.data)
         return "CLOUD" + " <- " + self._identifier + ": " + str(self.data)
@@ -200,32 +208,27 @@ def height(node):
 class AVL():
 
     _vector = []
-    _is_user_defined = True
+    _engine = None
     _id = 0
 
-    def __init__(self, root: "Node" = None):
-        self.root = root
+    # Instance attributes annotations (will be treated as symbolic)
+    root: "Node"
+
+    # Init params should be annotated also
+    def __init__(self):
+        self.root = None
 
         self._root_is_initialized = False
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
 
     def _get_root(self):
-        if not self._root_is_initialized and see.SEEngine.is_tracked(self):
-            self._root_is_initialized = True
-            self.root = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            see.SEEngine.save_lazy_step(Node)
-            see.SEEngine.ignore_if(not self.conservative_repok(), self)
-        else:
-            see.SEEngine.check_recursion_limit(self.root)
-        return self.root
+        return self._engine.lazy_initialization(self, "root")
 
     def _set_root(self, value):
-        self.root = value
-        self._root_is_initialized = True
+        return self._engine.lazy_set_attr(self, "root", value)
 
     def to_str(self, node, visited):
         """Internal method for ASCII art."""
@@ -234,7 +237,7 @@ class AVL():
             if node._right_is_initialized:
                 left_lines, left_pos, left_width = ["None"], 0, 0
             else:
-                left_lines, left_pos, left_width = ["CL"], 0, 0
+                left_lines, left_pos, left_width = [], 0, 0
         else:
             if do_add(visited, node.left):
                 left_lines, left_pos, left_width = self.to_str(node.left, visited)
@@ -244,7 +247,7 @@ class AVL():
             if node._right_is_initialized:
                 right_lines, right_pos, right_width = ["None"], 0, 0
             else:
-                right_lines, right_pos, right_width = ["CL"], 0, 0
+                right_lines, right_pos, right_width = [], 0, 0
         else:
             if do_add(visited, node.right):
                 right_lines, right_pos, right_width = self.to_str(node.right, visited)
@@ -277,7 +280,10 @@ class AVL():
         visited = set()
         visited.add(self.root)
         s = '\n'.join(self.to_str(self.root, visited)[0])
-        return "\n" + s
+        result = ""
+        for line in s.splitlines():
+            result += "        " + line + "\n"
+        return "\n" + result
 
     def find(self, k: int):
         """Finds and returns the node with key k from the subtree rooted at this
@@ -414,111 +420,169 @@ class AVL():
                 self.root.parent = None
         else:
             deleted = node.delete()
-        # node.parent is actually the old parent of the node,
-        # which is the first potentially out-of-balance node.
         self.rebalance(deleted.parent)
 
+    # def repok(self):
+    #     if not self.root:
+    #         return True
+    #     if not (
+    #         self.is_acyclic() and
+    #         self.is_ordered() and
+    #         self.is_balanced(self.root) and
+    #         self.parents_ok(self.root)
+    #     ):
+    #         return False
+    #     if self.root.parent is not None:
+    #         return False
+    #     return True
+
     def repok(self):
-        if self.root is None:
+        if not self.root:
             return True
-        if self.root.parent is not None:
-            return False
         visited = set()
         visited.add(self.root)
-        isbst = self.is_BST(self.root, INT_MIN, INT_MAX, visited)
-        return isbst and self.is_balanced()
-
-    def is_balanced_helper(self, node):
-        if node is None:
-            return 0
-        left_height = self.is_balanced_helper(node.left)
-        if left_height == -1:
-            return -1
-        right_height = self.is_balanced_helper(node.right)
-        if right_height == -1:
-            return -1
-        if abs(left_height - right_height) > 1:
-            return -1
-        return max(left_height, right_height) + 1
-
-    def is_balanced(self):
-        return self.is_balanced_helper(self.root) > -1
-
-    def ins_is_balanced_helper(self, node):
-        if node is None:
-            return 0
-        left_height = self.ins_is_balanced_helper(node._get_left())
-        if left_height == -1:
-            return -1
-        right_height = self.ins_is_balanced_helper(node._get_right())
-        if right_height == -1:
-            return -1
-        if abs(left_height - right_height) > 1:
-            return -1
-        return max(left_height, right_height) + 1
-
-    def ins_is_balanced(self):
-        return self.ins_is_balanced_helper(self._get_root()) > -1
-
-    def con_is_balanced_helper(self, node):
-        if node is None:
-            return 0
-        if not node._left_is_initialized:
-            return True
-        left_height = self.con_is_balanced_helper(node.left)
-        if left_height == -1:
-            return -1
-        if not node._right_is_initialized:
-            return True
-        right_height = self.con_is_balanced_helper(node.right)
-        if right_height == -1:
-            return -1
-        if abs(left_height - right_height) > 1:
-            return -1
-        return max(left_height, right_height) + 1
-
-    def con_is_balanced(self):
-        if not self._root_is_initialized:
-            return True
-        return self.con_is_balanced_helper(self.root) > -1
-
-    def conservative_repok(self):
-
-        if not self._root_is_initialized:
-            return True
-
-        if self.root is None:
-            return True
-
-        if not self.root._parent_is_initialized:
-            return True
-
+        if not (
+            self.is_BST(self.root, INT_MIN, INT_MAX, visited) and
+            self.is_balanced(self.root) and
+            self.parents_ok(self.root)
+        ):
+            return False
         if self.root.parent is not None:
             return False
+        return True
 
+    def is_acyclic(self):
         visited = set()
         visited.add(self.root)
-        isbst = self.conservative_is_BST(self.root, INT_MIN, INT_MAX, visited)
-        return isbst and self.con_is_balanced()
+        worklist = []
+        worklist.append(self.root)
+        while worklist:
+            current = worklist.pop(0)
+            if current.left:
+                if not do_add(visited, current.left):
+                    return False
+                worklist.append(current.left)
+            if current.right:
+                if not do_add(visited, current.right):
+                    return False
+                worklist.append(current.right)
+        return True
+
+    def is_ordered(self):
+        return self.is_ordered2(self.root, INT_MIN, INT_MAX)
+
+    def is_ordered2(self, node, min, max):
+        if node.data < min or node.data > max:
+            return False
+        if node.left:
+            if not self.is_ordered2(node.left, min, node.data):
+                return False
+        if node.right:
+            if not self.is_ordered2(node.right, node.data, max):
+                return False
+        return True
 
     def instrumented_repok(self):
-        if self._get_root() is None:
+        if not self._get_root():
             return True
-        if self._get_root()._get_parent() is not None:
-            return False
         visited = set()
         visited.add(self._get_root())
-        isbst = self.instrumented_is_BST(self._get_root(), INT_MIN, INT_MAX, visited)
-        return isbst and self.ins_is_balanced()
+        if not (
+            self.instrumented_is_BST(self.root, INT_MIN, INT_MAX, visited) and
+            self.ins_is_balanced(self._get_root()) and
+            self.ins_parents_ok(self._get_root())
+        ):
+            return False
+        if self._get_root()._get_parent() is not None:
+            return False
+        return True
+
+    def ins_is_acyclic(self):
+        visited = set()
+        visited.add(self._get_root())
+        worklist = []
+        worklist.append(self._get_root())
+        while worklist:
+            current = worklist.pop(0)
+            if current._get_left():
+                if not do_add(visited, current._get_left()):
+                    return False
+                worklist.append(current._get_left())
+            if current._get_right():
+                if not do_add(visited, current._get_right()):
+                    return False
+                worklist.append(current._get_right())
+        return True
+
+    def ins_is_ordered(self):
+        return self.ins_is_ordered2(self._get_root(), INT_MIN, INT_MAX)
+
+    def ins_is_ordered2(self, node, min, max):
+        if node._get_data() < min or node._get_data() > max:
+            return False
+        if node._get_left():
+            if not self.ins_is_ordered2(node._get_left(), min, node._get_data()):
+                return False
+        if node._get_right():
+            if not self.ins_is_ordered2(node._get_right(), node._get_data(), max):
+                return False
+        return True
+
+    def is_balanced(self, node):
+        if node is None:
+            return True
+        left_height = self.get_height(node.left)
+        right_height = self.get_height(node.right)
+        return abs(left_height - right_height) <= 1
+
+    def get_height(self, node):
+        if node is None:
+            return 0
+        return max(self.get_height(node.left), self.get_height(node.right)) + 1
+
+    def ins_is_balanced(self, node):
+        if node is None:
+            return True
+        left_height = self.ins_get_height(node._get_left())
+        right_height = self.ins_get_height(node._get_right())
+        return abs(left_height - right_height) <= 1
+
+    def ins_get_height(self, node):
+        if node is None:
+            return 0
+        return max(self.ins_get_height(node._get_left()), self.ins_get_height(node._get_right())) + 1
+
+    def parents_ok(self, node):
+        if node is None:
+            return True
+
+        if node.left is not None:
+            if node.left.parent is not node:
+                return False
+
+        if node.right is not None:
+            if node.right.parent is not node:
+                return False
+
+        return self.parents_ok(node.left) and self.parents_ok(node.right)
+
+    def ins_parents_ok(self, node):
+        if node is None:
+            return True
+
+        if node._get_left() is not None:
+            if node._get_left()._get_parent() is not node:
+                return False
+
+        if node._get_right() is not None:
+            if node._get_right()._get_parent() is not node:
+                return False
+
+        return self.ins_parents_ok(node._get_left()) and self.ins_parents_ok(node._get_right())
 
     def is_BST(self, node, min, max, visited):
         if node is None:
             return True
-        if node is not self.root:
-            if node.parent is None:
-                return False
-            if node.parent.right is not node and node.parent.left is not node:
-                return False
 
         if node.left is not None:
             if not do_add(visited, node.left) or node.left.parent is not node:
@@ -535,62 +599,9 @@ class AVL():
             node.right, node.data, max, visited
         )
 
-    def conservative_is_BST(self, node, min, max, visited):
-        if node is None:
-            return True
-
-        if node is not self.root:
-            if not node._parent_is_initialized:
-                return
-
-            if node.parent is None:
-                return False
-
-            if not node.parent._right_is_initialized or not node.parent._left_is_initialized:
-                return True
-
-            if node.parent.right is not node and node.parent.left is not node:
-                return False
-
-        if not node._left_is_initialized:
-            return True
-
-        if node.left is not None:
-            if not node.left._parent_is_initialized:
-                return True
-            if not do_add(visited, node.left) or node.left.parent is not node:
-                return False
-
-        if not node._right_is_initialized:
-            return True
-
-        if node.right is not None:
-
-            if not node.right._parent_is_initialized:
-                return True
-
-            if not do_add(visited, node.right) or node.right.parent is not node:
-                return False
-
-        if not node._data_is_initialized:
-            return True
-
-        if node.data < min or node.data > max:
-            return False
-
-        return self.conservative_is_BST(node.left, min, node.data, visited) and self.conservative_is_BST(
-            node.right, node.data, max, visited
-        )
-
     def instrumented_is_BST(self, node, min, max, visited):
         if node is None:
             return True
-
-        if node is not self._get_root():
-            if node._get_parent() is None:
-                return False
-            if node._get_parent()._get_right() is not node and node._get_parent()._get_left() is not node:
-                return False
 
         if node._get_left() is not None:
             if not do_add(visited, node._get_left()) or node._get_left()._get_parent() is not node:

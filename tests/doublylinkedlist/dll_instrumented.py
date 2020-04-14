@@ -1,13 +1,17 @@
-import pygse.symbolic_execution_engine as see
-import pygse.proxy as proxy
 
 
 class Node:
 
     _vector = []
-    _is_user_defined = True
+    _engine = None
     _id = 0
 
+    # Instance attributes annotations (will be treated as symbolic)
+    data: int
+    next: "Node"
+    prev: "Node"
+
+    # Init params should be annotated also
     def __init__(self, data: int):
         self.data = data
         self.next = None
@@ -17,48 +21,27 @@ class Node:
         self._next_is_initialized = False
         self._prev_is_initialized = False
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
 
     def _get_data(self):
-        if not self._data_is_initialized:
-            self._key_is_initialized = True
-            self.data = proxy.IntProxy()
-        return self.data
+        return self._engine.lazy_initialization(self, "data")
 
     def _set_data(self, value):
-        self.data = value
-        self._data_is_initialized = True
+        return self._engine.lazy_set_attr(self, "data", value)
 
     def _get_next(self):
-        if not self._next_is_initialized and see.SEEngine.is_tracked(self):
-            self._next_is_initialized = True
-            self.next = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            see.SEEngine.save_lazy_step(Node)
-            see.SEEngine.ignore_if(not self.conservative_repok(), self)
-        else:
-            see.SEEngine.check_recursion_limit(self.next)
-        return self.next
+        return self._engine.lazy_initialization(self, "next")
 
     def _set_next(self, value):
-        self.next = value
-        self._next_is_initialized = True
+        return self._engine.lazy_set_attr(self, "next", value)
 
     def _get_prev(self):
-        if not self._prev_is_initialized and see.SEEngine.is_tracked(self):
-            self._prev_is_initialized = True
-            self.prev = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            see.SEEngine.save_lazy_step(Node)
-            see.SEEngine.ignore_if(not self.conservative_repok(), self)
-        else:
-            see.SEEngine.check_recursion_limit(self.prev)
-        return self.prev
+        return self._engine.lazy_initialization(self, "prev")
 
     def _set_prev(self, value):
-        self.prev = value
-        self._prev_is_initialized = True
+        return self._engine.lazy_set_attr(self, "prev", value)
 
     def __str__(self):
         return self.__repr__()
@@ -88,9 +71,6 @@ class Node:
     def repok(self):
         return True
 
-    def conservative_repok(self):
-        return True
-
     def instrumented_repok(self):
         return True
 
@@ -98,48 +78,36 @@ class Node:
 class DoublyLinkedList:
 
     _vector = []
-    _is_user_defined = True
+    _engine = None
     _id = 0
 
-    def __init__(self, head: "Node" = None, tail: "Node" = None):
-        self.head = head
-        self.tail = tail
+    # Instance attributes annotations (will be treated as symbolic)
+    head: "Node"
+    tail: "Node"
+
+    # Init params should be annotated also
+    def __init__(self):
+        self.head = None
+        self.tail = None
 
         self._head_is_initialized = False
         self._tail_is_initialized = False
 
-        self._generated = False
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
         self._recursion_depth = 0
 
     def _get_head(self):
-        if not self._head_is_initialized and see.SEEngine.is_tracked(self):
-            self._head_is_initialized = True
-            self.head = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            see.SEEngine.ignore_if(not self.conservative_repok(), self)
-            see.SEEngine.save_lazy_step(Node)
-        else:
-            see.SEEngine.check_recursion_limit(self.head)
-        return self.head
+        return self._engine.lazy_initialization(self, "head")
 
     def _set_head(self, value):
-        self.head = value
-        self._head_is_initialized = True
+        return self._engine.lazy_set_attr(self, "head", value)
 
     def _get_tail(self):
-        if not self._tail_is_initialized and see.SEEngine.is_tracked(self):
-            self._tail_is_initialized = True
-            self.tail = see.SEEngine.get_next_lazy_step(Node, Node._vector)
-            see.SEEngine.save_lazy_step(Node)
-            see.SEEngine.ignore_if(not self.conservative_repok(), self)
-        else:
-            see.SEEngine.check_recursion_limit(self.tail)
-        return self.tail
+        return self._engine.lazy_initialization(self, "tail")
 
     def _set_tail(self, value):
-        self.tail = value
-        self._tail_is_initialized = True
+        return self._engine.lazy_set_attr(self, "tail", value)
 
     # Insert 'value' at the front of the list
     def insert_at_front(self, value: int):
@@ -339,48 +307,6 @@ class DoublyLinkedList:
             if not self.do_add(visited, next_node):
                 return False
             current = next_node
-            next_node = next_node.next
-
-        if self.do_add(visited, self.tail):
-            return False
-        return True
-
-    def conservative_repok(self):
-
-        if not self._head_is_initialized or not self._tail_is_initialized:
-            return True
-
-        if self.head is None and self.tail is None:
-            return True
-        if self.head is None or self.tail is None:
-            return
-
-        if not self.head._prev_is_initialized or not self.tail._next_is_initialized:
-            return True
-
-        if self.head.prev is not None or self.tail.next is not None:
-            return False
-
-        visited = set()
-        visited.add(self.head)
-
-        current = self.head
-        next_node = current.next
-
-        while next_node:
-
-            if not next_node._prev_is_initialized:
-                return True
-
-            if next_node.prev is not current:
-                return False
-            if not self.do_add(visited, next_node):
-                return False
-            current = next_node
-
-            if not next_node._next_is_initialized:
-                return True
-
             next_node = next_node.next
 
         if self.do_add(visited, self.tail):

@@ -302,71 +302,82 @@ class AVL():
         self.rebalance(deleted.parent)
 
     def repok(self):
-        if self.root is None:
+        if not self.root:
             return True
-        if self.root.parent is not None:
-            return False
-        visited = set()
-        visited.add(self.root)
-        isbst = self.is_BST(self.root, INT_MIN, INT_MAX, visited)
-        if not isbst:
-            return False
-        height_left = self._height(self.root.left)
-        height_right = self._height(self.root.right)
-        return abs(height_left - height_right) <= 1
-
-    def _height(self, node):
-        if node is None:
-            return 0
-        return max(self._height(node.left), self._height(node.right)) + 1
-
-    def is_BST(self, node, min, max, visited):
-        if node is None:
-            return True
-        if (
-            node.data < min
-            or node.data > max
-            or (node is not self.root and node.parent is None)
-            or (node.parent is not None and do_add(visited, node.parent))
-            or (
-                node.left is not None
-                and (not do_add(visited, node.left) or node.left.parent is not node)
-            )
-            or (
-                node.right is not None
-                and (not do_add(visited, node.right) or node.right.parent is not node)
-            )
+        if not (
+            self.is_acyclic() and
+            self.is_ordered() and
+            self.is_balanced(self.root)
         ):
             return False
+        return True
 
-        return self.is_BST(node.left, min, node.data, visited) and self.is_BST(
-            node.right, node.data, max, visited
-        )
+    def is_acyclic(self):
+        visited = set()
+        visited.add(self.root)
+        worklist = []
+        worklist.append(self.root)
+        while worklist:
+            current = worklist.pop(0)
+            if current.left:
+                if not do_add(visited, current.left):
+                    return False
+                worklist.append(current.left)
+            if current.right:
+                if not do_add(visited, current.right):
+                    return False
+                worklist.append(current.right)
+        return True
+
+    def is_ordered(self):
+        return self.is_ordered2(self.root, INT_MIN, INT_MAX)
+
+    def is_ordered2(self, node, min, max):
+        if node.data < min or node.data > max:
+            return False
+        if node.left:
+            if not self.is_ordered2(node.left, min, node.data):
+                return False
+        if node.right:
+            if not self.is_ordered2(node.right, node.data, max):
+                return False
+        return True
+
+    def is_balanced(self, node):
+        if node is None:
+            return True
+        left_height = self.get_height(node.left)
+        right_height = self.get_height(node.right)
+        return abs(left_height - right_height) <= 1
+
+    def get_height(self, node):
+        if node is None:
+            return 0
+        return max(self.get_height(node.left), self.get_height(node.right)) + 1
+
+# def test(args=None):
+#     import random, sys
+#     if not args:
+#         args = sys.argv[1:]
+#     if not args:
+#         print('usage: %s <number-of-random-items | item item item ...>' % \
+#               sys.argv[0])
+#         sys.exit()
+#     elif len(args) == 1:
+#         items = (random.randrange(100) for i in range(int(args[0])))
+#     else:
+#         items = [int(i) for i in args]
+
+#     tree = AVL()
+#     print(tree)
+#     for item in items:
+#         tree.insert(item)
+#         print()
+#         print(tree)
+#         if tree.repok():
+#             print("ok")
+#         assert tree.repok()
 
 
-def test(args=None):
-    import random, sys
-    if not args:
-        args = sys.argv[1:]
-    if not args:
-        print('usage: %s <number-of-random-items | item item item ...>' % \
-              sys.argv[0])
-        sys.exit()
-    elif len(args) == 1:
-        items = (random.randrange(100) for i in range(int(args[0])))
-    else:
-        items = [int(i) for i in args]
-
-    tree = AVL()
-    print(tree)
-    for item in items:
-        tree.insert(item)
-        print()
-        print(tree)
-        if tree.repok():
-            print("ok")
-        assert tree.repok()
-
-
-if __name__ == '__main__':
-    test()
+# if __name__ == '__main__':
+#     test()

@@ -14,18 +14,20 @@ class Status(Enum):
     FAIL = 2
 
 
-class ExecutionStats:
-    def __init__(self, exec_number: int, status=None, exception=None, pruned_s=None):
+class Mode(Enum):
+    CONSERVATIVE_REPOK = 0
+    PROGRAM_EXECUTION = 1
+    INSTRUMENTED_REPOK = 2
+    NOMODE = 3
 
+
+class PathExecutionData:
+    def __init__(self, exec_number: int, status=None, exception=None, pruned_s=None):
+        self.symbolic_inself = None
+        self.self_end_state = None
         self.input_self = None
-        self.concrete_input_self = None
-        self.end_self = None
-        self.concrete_end_self = None
-        self.builded_in_self = None
-        self.args = []
-        self.concrete_args = []
+        self.input_args = []
         self.returnv = None
-        self.concrete_return = None
         self.exception = exception
         self.model = None
         self.pathcondition = []
@@ -35,13 +37,14 @@ class ExecutionStats:
         self.pruned_structure = pruned_s
 
 
-class GlobalStats:
+class ExplorationStats:
     def __init__(self):
         self.total_paths = 0
         self.pruned_by_depth = 0
         self.pruned_by_error = 0
         self.pruned_by_repok = 0
         self.pruned_by_rec_limit = 0
+        self.pruned_by_exception = 0
         self.pruned_invalid = 0
         self.successes = 0
         self.failures = 0
@@ -58,4 +61,5 @@ class GlobalStats:
         total += self.pruned_by_repok
         total += self.pruned_by_rec_limit
         total += self.pruned_invalid
+        total += self.pruned_by_exception
         return total
