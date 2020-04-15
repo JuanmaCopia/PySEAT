@@ -1,97 +1,72 @@
 """Report Module
 
-Contains the methods to print a formatted console output of the statistics 
+Contains the methods to print a formatted console output of the statistics
 of executions.
 
 """
 
-from pygse.stats import Status
+import data
+import helpers
+
+INDENT4 = "    "
+INDENT2 = "  "
+INDENT8 = "        "
 
 
-INDENT = "        "
-INDENT_LIST = "            "
-
-
-def helper_print_dict(dictionary):
-    print("")
-    for (k, v) in dictionary.items():
-        print(k, "   ", v)
-    print("")
-
-
-def get_concrete_return(stats):
-    if stats.concrete_return is not None:
-        return stats.concrete_return.__repr__()
+def print_formatted_result(function, run_data, verbose):
+    if verbose:
+        if run_data.status != data.Status.PRUNED:
+            print("\n#" + str(run_data.number) + " " + run_data.status.name + ":\n")
+            print(" Path Condition:")
+            helpers.print_list(run_data.pathcondition, INDENT8)
+            print(
+                " \nSymbolic input self:\n"
+                + INDENT8
+                + run_data.symbolic_inself.__repr__()
+            )
+            print(" Input self:\n" + INDENT8 + run_data.input_self.__repr__())
+            print(" Self end states:\n" + INDENT8 + run_data.self_end_state.__repr__())
+            print("")
+        else:
+            print("\n#" + str(run_data.number) + " " + run_data.status.name + ":\n")
+            print(" Path Condition:")
+            helpers.print_list(run_data.pathcondition, INDENT8)
+            print(
+                " \nSymbolic input self:\n"
+                + INDENT8
+                + run_data.symbolic_inself.__repr__()
+            )
+            print(" Pruned self:\n" + INDENT8 + run_data.pruned_structure.__repr__())
+            if run_data.exception:
+                print("  Exception: " + str(run_data.exception))
+            print("")
     else:
-        if stats.exception:
-            return "Exception: " + str(stats.exception)
-        return "None"
+        print("#" + str(run_data.number) + ": " + run_data.status.name)
 
 
-def get_concrete_args_str(stats):
-    result = stats.concrete_self.__repr__()
-    if not stats.concrete_args:
-        return result
+def report_statistics(run_data):
+    complete_exec = run_data.successes + run_data.failures
+    pruned = run_data.get_amount_pruned()
 
-    conc_args = ""
-    if len(stats.concrete_args) == 1:
-        conc_args = stats.concrete_args[0].__repr__()
-    else:
-        for x in stats.concrete_args:
-            conc_args += str(x) + ","
-        conc_args = conc_args[:-1]
-
-    return result + ", " + conc_args
-
-
-def get_function_profile_str(function, stats):
-    return (
-        function.__name__
-        + "("
-        + get_concrete_args_str(stats)
-        + ")"
-        + "  ->  "
-        + get_concrete_return(stats)
-    )
-
-
-def get_header_str(stats):
-    return "#" + str(stats.number) + " [" + stats.status.name + "]: "
-
-
-def print_list(l: list):
-    for elem in l:
-        print(INDENT_LIST + str(elem))
-
-
-def print_formatted_result(function, stats, verbose):
-    if stats.status != Status.PRUNED:
-        print(get_header_str(stats) + get_function_profile_str(function, stats))
-        if not stats.exception:
-            print_list(stats.errors)
-
-            if verbose:
-                print(INDENT + "Path Condition:  ")
-                print_list(stats.pathcondition)
-                print(INDENT + "Symbolic return:  " + stats.returnv.__repr__())
-                print(
-                    INDENT
-                    + "Symbolic self:    "
-                    + stats.self_structure.__repr__()
-                    + "\n"
-                )
-
-
-def report_statistics(stats):
+    assert pruned + complete_exec == run_data.total_paths
+    print("Exploration Statistiscs:")
     print(
-        "\n"
-        + str(stats.complete_exec)
+        "\n  "
+        + str(complete_exec)
         + " of "
-        + str(stats.total_paths)
+        + str(run_data.total_paths)
         + " paths explored"
     )
-    print(str(stats.successes) + " passed")
-    print(str(stats.failures) + " failures")
-    print(str(stats.pruned_by_depth) + " pruned by depth")
-    print(str(stats.pruned_by_error) + " pruned by error")
-    print(str(stats.pruned_by_repok) + " pruned by repok" + "\n")
+    print(INDENT2 + str(run_data.successes) + " passed")
+    print(INDENT2 + str(run_data.failures) + " failed")
+    verbose = True
+    if verbose:
+        print(INDENT2 + str(pruned) + " pruned: ")
+        print(INDENT4 + str(run_data.pruned_by_depth) + " by depth")
+        print(INDENT4 + str(run_data.pruned_by_error) + " by error")
+        print(INDENT4 + str(run_data.pruned_invalid) + " by invalid")
+        print(INDENT4 + str(run_data.pruned_by_rec_limit) + " by rec limit")
+        print(INDENT4 + str(run_data.pruned_by_repok) + " by repok")
+        print(INDENT4 + str(run_data.pruned_by_exception) + " by exception\n")
+    else:
+        print(str(pruned) + " pruned")

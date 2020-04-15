@@ -1,4 +1,4 @@
-import pygse.smt.sort_base as sort_base
+import smt.sort_base as sort_base
 import z3
 
 

@@ -1,15 +1,107 @@
 """System Under Test Parser.
 
-Parses all the data about the sut: Module, Class, method under test, types of 
+Parses all the data about the sut: Module, Class, method under test, types of
 classes involved.
 
 """
-
+import os
+import sys
 import importlib
+import typing
 import copy
+from inspect import signature
+from helpers import is_user_defined, do_add
 
-from pygse.proxy import is_user_defined
-from pygse.engine_errors import MissingTypesError
+# from exceptions import MissingTypesError
+
+
+def parse(module_name, class_name, method_name):
+    module = get_module(module_name)
+    self_class = getattr(module, class_name)
+    method = getattr(self_class, method_name)
+    return SUT(self_class, method)
+
+
+def get_module(module_name):
+    module_dir = os.path.dirname(module_name)
+    sys.path = [os.path.abspath(os.path.join(module_dir))] + sys.path
+    mod_basename = os.path.splitext(os.path.basename(module_name))[0]
+    module = importlib.import_module(mod_basename)
+    return module
+
+
+def get_types_dict(method, belonging_cls) -> dict:
+    pt_dict = typing.get_type_hints(method)
+
+    defaults = typing._get_defaults(method)
+    for name in defaults:
+        pt_dict[name] = get_default_type(pt_dict[name])
+
+    if "self" not in pt_dict:
+        pt_dict["self"] = belonging_cls
+    return pt_dict
+
+
+def get_default_type(generic_alias):
+    args = typing.get_args(generic_alias)
+    assert is_user_defined(args[0])
+    return args[0]
+
+
+def get_types_list(param_list, types_dict) -> list:
+    types = []
+    for param_name in param_list.keys():
+        types.append(types_dict[param_name])
+    return types
+
+
+def map_all_classes(types_list) -> set:
+    classes = set()
+    worklist = []
+    class_map = {}
+
+    for typ in types_list:
+        if is_user_defined(typ) and do_add(classes, typ):
+            worklist.append(typ)
+
+    while worklist:
+        current = worklist.pop(0)
+
+        cls_data = ClassData(current)
+        class_map[current] = cls_data
+
+        for typ in cls_data.instance_attr_list:
+            if is_user_defined(typ) and do_add(classes, typ):
+                worklist.append(typ)
+    return class_map
+
+
+class ClassData:
+    def __init__(self, this_class):
+        self.this_class = this_class
+        self.instance_attr_types = typing.get_type_hints(this_class)
+        self.instance_attr_list = list(self.instance_attr_types.values())
+        self.repok_method = self.get_repok()
+        self.init_data = MethodData(this_class.__init__, this_class)
+
+    def get_repok(self) -> callable:
+        if hasattr(self.this_class, "repok"):
+            return getattr(self.this_class, "repok")
+        return None
+
+
+class MethodData:
+    def __init__(self, method, belonging_cls):
+        self.belonging_cls = belonging_cls
+        self.method = method
+        self.signature = signature(method)
+        self.params = self.signature.parameters
+        self.amount_params = len(self.params)
+
+        self.types_dict = get_types_dict(method, belonging_cls)
+        self.return_type = self.types_dict.pop("return", None)
+        self.types_list = get_types_list(self.params, self.types_dict)
+        assert len(self.types_list) == self.amount_params
 
 
 class SUT:
@@ -18,82 +110,33 @@ class SUT:
     Parses and stores the data objects of the sut.
 
     Attributes:
-        module (module): The module which contains the method under test.
         sclass (class): The class of the method under test.
         function (function): Method Under Test.
         types (list[type]): Ordered list of the types of the method Pprameters.
-        class_params_map (dict): Maps a class to a ordered list of it's 
+        class_params_map (dict): Maps a class to a dict with it's parameters/type
         init method parameter's types.
         is_method (bool): Whether the sut is a method (True) or a Function (False).
-    
+
     """
 
-    def __init__(self):
-        self.module = None
-        self.sclass = None
-        self.function = None
-        self.types = []
-        self.class_params_map = {}
-        self.is_method = False
+    def __init__(self, the_class, method):
+        self.method_data = MethodData(method, the_class)
+        self.class_map = map_all_classes(self.method_data.types_list)
 
-    def parse(self, module_name, function_name, class_name=None):
-        self.module = importlib.import_module(module_name)
-        if class_name:
-            self.sclass = getattr(self.module, class_name)
-            self.function = getattr(self.sclass, function_name)
-            self.types = self.parse_types()
-            self.class_params_map = self.get_user_defined_objects(self.sclass)
-            self.is_method = True
+    def get_method(self):
+        return self.method_data.method
 
-    def parse_types(self):
-        types = self.function.__annotations__
-        not_self = False
-        if "self" not in types:
-            not_self = True
-        if "return" in types:
-            del types["return"]
-        types_list = self.set_classes(list(types.values()))
-        if not_self:
-            types_list.insert(0, self.sclass)
+    def get_method_name(self):
+        return self.method_data.method.__name__
 
-        if self.function.__code__.co_argcount != len(types_list):
-            raise MissingTypesError("Types missing in: " + self.function.__name__)
-        return types_list
+    def get_method_types(self):
+        return copy.deepcopy(self.method_data.types_list)
 
-    def set_classes(self, types):
-        for i, t in enumerate(types):
-            if isinstance(t, str):
-                types[i] = getattr(self.module, t)
-        return types
+    def get_cls_init_types(self, clss):
+        return copy.deepcopy(self.class_map[clss].init_data.types_list)
 
-    def parse_types_whitout_self(self, function):
-        types = function.__annotations__
-        if types:
-            if "self" in types:
-                del types["self"]
-            if "return" in types:
-                del types["return"]
-            return self.set_classes(list(types.values()))
-        return []
+    def get_params_type_dict(self, clss):
+        return copy.deepcopy(self.class_map[clss].init_data.types_dict)
 
-    def get_user_defined_objects(self, user_def_class):
-        class_to_types = {}
-        types = self.parse_types_whitout_self(user_def_class.__init__)
-        class_to_types[user_def_class] = types
-
-        objects_added = copy.deepcopy(class_to_types[user_def_class])
-        added = True if objects_added else False
-
-        while added:
-            added = False
-            new_classes = []
-            for c in objects_added:
-                if is_user_defined(c) and c not in class_to_types.keys():
-                    new_classes.append(c)
-
-            if new_classes:
-                added = True
-                for nc in new_classes:
-                    class_to_types[nc] = self.parse_types_whitout_self(nc.__init__)
-                    objects_added.extend(class_to_types[nc])
-        return class_to_types
+    def get_attr_type(self, clss, attr_name):
+        return self.class_map[clss].instance_attr_types[attr_name]

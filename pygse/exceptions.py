@@ -4,6 +4,15 @@ class Error(Exception):
     pass
 
 
+class NoInitializedException(Error):
+    """Exception raised when the conservative repok
+    checking finds an uninitialized attr
+    """
+
+    def __init__(self):
+        self.message = "Attr not initialized"
+
+
 class MaxDepthException(Error):
     """Exception raised when the maximum exploration depth
     is reached.
@@ -11,6 +20,18 @@ class MaxDepthException(Error):
 
     def __init__(self):
         self.message = "Max exploration depth reached"
+
+
+class MaxRecursionException(Error):
+    """Exception raised when the maximum recursion depth
+    is reached.
+    """
+
+    def __init__(self, message=None):
+        if message:
+            self.message = "Reached max recursion of: " + message
+        else:
+            self.message = "Max exploration recursion reached"
 
 
 class MissingTypesError(Error):
@@ -31,18 +52,32 @@ class UnsatBranchError(Error):
 
 
 class RepOkFailException(Error):
-    """Exception raised when the maximum exploration depth
-    is reached.
+    """
     """
 
     def __init__(self):
         self.message = "Repok Fail"
 
 
+class CouldNotBuildError(Error):
+    """
+    """
+
+    def __init__(self):
+        self.message = "Could not build the complete structure"
+
+
 class ReturnValueRepOkFail(Error):
-    """Exception raised when the maximum exploration depth
-    is reached.
+    """
     """
 
     def __init__(self):
         self.message = "The returned value does not pass the repok()"
+
+
+class RepokNotFoundError(Error):
+    """ desc
+    """
+
+    def __init__(self, message):
+        self.message = message

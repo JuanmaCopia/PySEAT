@@ -1,53 +1,69 @@
 """PyGSE Command Line Interface
 
 """
+import os
+import sys
+import subprocess
+from optparse import OptionParser
 
-import argparse
-
-from pygse.reports import report_statistics, print_formatted_result
-from pygse.symbolic_execution_engine import SEEngine
-from pygse.sut_parser import SUT
-from pygse.run_test import run_tests
-
-
-def parse_command_line_args():
-    parser = argparse.ArgumentParser(add_help=True)
-    parser.add_argument("-t", "--test", action="store_true", help="run all tests")
-    subparser = parser.add_subparsers(help="run")
-    parser2 = subparser.add_parser("run", help="Symbolically execute a function")
-    parser2.add_argument(
-        "mod_class_func", action="store", help="Syntax: <module>:<class>:<function>"
-    )
-    parser2.add_argument(
-        "-d", "--depth", action="store", type=int, default=10, help="Depth limit"
-    )
-    parser2.add_argument(
-        "-v", "--verbose", action="store_true", help="Detailed execution"
-    )
-    return parser.parse_args()
+import sut_parser
+from reports import report_statistics, print_formatted_result
+from engine import SEEngine
+import test_generator as testgen
+from data import Status
 
 
-args = parse_command_line_args()
+usage = "usage: %prog [options] <path to *.py file> <class-name> <method-name>"
+parser = OptionParser(usage=usage)
+parser.add_option(
+    "-d", dest="max_depth", type="int", default=10, help="maximum exploration depth",
+)
+parser.add_option(
+    "-v",
+    "--verbose",
+    dest="verbose",
+    action="store_true",
+    default=False,
+    help="show results of each execution",
+)
+(options, args) = parser.parse_args()
 
-if args.test:
-    run_tests()
-else:
-    mod_cls_func = args.mod_class_func.strip().split(":")
-    module_name = mod_cls_func[0].strip()
-    class_name = mod_cls_func[1].strip()
-    function_name = mod_cls_func[2].strip()
-    max_depth = args.depth
+if len(args) == 0 or not os.path.exists(args[0]):
+    parser.error("File Not Found")
+    sys.exit(1)
 
-    sut = SUT()
-    sut.parse(module_name, function_name, class_name)
+module_name = args[0]
+class_name = args[1]
+method_name = args[2]
+max_depth = options.max_depth
+verbose = options.verbose
 
-    if sut.is_method:
-        SEEngine.initialize(sut, max_depth)
+sut = sut_parser.parse(module_name, class_name, method_name)
+filepath = testgen.create_testfile(module_name, class_name, method_name)
 
-        for run in SEEngine.explore():
-            print_formatted_result(sut.function, run, True)
+runs = []
+test_number = 1
+engine = SEEngine(sut, max_depth)
+tests_gen = []
+test_num = 0
 
-        report_statistics(SEEngine.statistics())
-    else:
-        # TODO: Make it support functions (functions that not belong to a class)
-        raise NotImplementedError
+print("\n ========================  PyGSE  =====================\n")
+print("Method " + method_name + " of class " + class_name)
+
+print("\nPerforming Exploration...\n")
+for run in engine.explore():
+    if run:
+        print_formatted_result(sut.get_method(), run, verbose)
+        if run.status != Status.PRUNED:
+            test_num += 1
+            test = testgen.TestCode(sut, run, test_num)
+            tests_gen.append(test)
+            testgen.append_to_testfile(filepath, test.code + "\n\n")
+
+print("\nDONE! " + str(test_num) + " Tests were generated\n")
+report_statistics(engine.statistics())
+
+testgen.append_test_calls(filepath, tests_gen)
+
+print("Running generated tests...\n")
+subprocess.call([sys.executable, filepath])
