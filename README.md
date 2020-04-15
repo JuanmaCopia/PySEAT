@@ -196,6 +196,39 @@ def swap_node_test1():
 
 And we can find all the tests on the file: ```/tests/linkedlist/ll_swap_node_test.py ```
 
+## Running the prgram
+
+To run the program for other files you can:
+
+Execute it as a module:
+
+```
+python -m pygse <path-to-instrumented-module.py> <class-name> <method-name>
+```
+
+Or execute the main file:
+
+```
+python pygse/__main__.py <path-to-instrumented-module.py> <class-name> <method-name>
+```
+
+Test generated would be on the same folder of the file.py ins a file callled:
+
+```
+<module-name>_<method_name>_tests.py
+```
+
+For example to run the program on the swap_node method of LinkedList:
+
+```
+python -m pygse tests/linkedlist/ll_instrumented.py LinkedList swap_node
+```
+
+Test generated at:
+
+```
+tests/linkedlist/ll_swap_node_tests.py
+```
 
 ## License
 
