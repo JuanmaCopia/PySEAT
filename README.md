@@ -44,14 +44,14 @@ Done! If everything went well you are ready to use it.
 To run the tests:
 
 ```
-python run_test.py
+python run_tests.py
 ```
 
 To see more information of the exploration paths like pruned paths or fully explored
 and it's extructures run in verbose mode:
 
 ```
-python run_test.py -v
+python run_tests.py -v
 ```
 
 All tests should pass and no exceptions should be raised. Generated test are saved
