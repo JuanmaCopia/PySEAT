@@ -196,7 +196,7 @@ def swap_node_test1():
 
 And we can find all the tests on the file: ```/tests/linkedlist/ll_swap_node_test.py ```
 
-## Running the prgram
+## Running the program
 
 To run the program for other files you can:
 
@@ -232,5 +232,5 @@ tests/linkedlist/ll_swap_node_tests.py
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE.md](LICENSE.md) file for details
 
