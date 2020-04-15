@@ -66,4 +66,5 @@ report_statistics(engine.statistics())
 testgen.append_test_calls(filepath, tests_gen)
 
 print("Running generated tests...\n")
-subprocess.call([sys.executable, filepath])
+subprocess.call(["coverage", "run", "--branch", filepath])
+subprocess.call(["coverage", "html"])
