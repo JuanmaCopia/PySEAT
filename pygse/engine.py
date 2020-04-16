@@ -11,7 +11,8 @@ from branching_steps import LazyStep, ConditionalStep
 from data import Status, PathExecutionData, ExplorationStats, Mode
 from exceptions import UnsatBranchError, NoInitializedException
 from exceptions import RepOkFailException, MaxRecursionException
-from exceptions import MaxDepthException
+from exceptions import MaxDepthException, CantMakeDecisionException
+from exceptions import TimeOutException
 from helpers import do_add, is_user_defined, keep_first_n_items
 from helpers import set_to_initialized, get_initialized_name
 from symbolics import Symbolic, SymBool, SymInt, is_symbolic, is_symbolic_bool
@@ -164,7 +165,7 @@ class SEEngine:
             args = self.instantiate_method_params()
             self._backups.initialize_backup(args)
 
-            result = self._execute_program(args)
+            result = self._execute_method_exploration(args)
             yield (result)
 
             self._remove_explored_branches()
@@ -268,7 +269,7 @@ class SEEngine:
             k._vector = []
             k._id = 0
 
-    def _execute_program(self, args):
+    def _execute_method_exploration(self, args):
         """Executes the method and returns the result.
 
         Collect and returns all the execution data, like the returned
@@ -293,7 +294,7 @@ class SEEngine:
         self._current_self = args[0]
         args = args[1:]
         method = getattr(self._current_self, self._sut.get_method_name())
-        self.set_mode(Mode.PROGRAM_EXECUTION)
+        self.set_mode(Mode.METHOD_EXPLORATION)
         try:
             if args:
                 returnv = method(*args)
@@ -379,6 +380,8 @@ class SEEngine:
                 returnv = method()
         except AttributeError as e:
             raise e
+        except TimeOutException as e:
+            raise e
         finally:
             self.restore_prev_mode()
             return returnv
@@ -388,6 +391,8 @@ class SEEngine:
         try:
             result = obj.repok()
         except AttributeError as e:
+            raise e
+        except TimeOutException as e:
             raise e
         finally:
             self.restore_prev_mode()
@@ -422,7 +427,7 @@ class SEEngine:
     def build_partial_struture(self, input_self, model):
         self._recursion_limit = 200
         concretei = concretize(input_self, model)
-        if concretei.repok():
+        if self.execute_repok_concretely(concretei):
             return concretei
 
         backup_bp = copy.deepcopy(self._branching_points)
@@ -439,7 +444,7 @@ class SEEngine:
             iself = copy.deepcopy(input_self)
             self._reset_for_repok(iself, pc_len)
 
-            result = self._execute_repok(iself)
+            result = self._execute_repok_exploration(iself)
 
             if result is not None:
                 self._path_condition = keep_first_n_items(self._path_condition, pc_len)
@@ -472,9 +477,9 @@ class SEEngine:
                 if is_user_defined(attr) and do_add(visited, attr):
                     worklist.append(attr)
 
-    def _execute_repok(self, instance):
+    def _execute_repok_exploration(self, instance):
         self._current_self = instance
-        self.set_mode(Mode.INSTRUMENTED_REPOK)
+        self.set_mode(Mode.REPOK_EXPLORATION)
         try:
             result = instance.instrumented_repok()
             if is_symbolic_bool(result):
@@ -485,6 +490,8 @@ class SEEngine:
             pass
         except RepOkFailException:
             pass
+        except TimeOutException as e:
+            raise e
         except MaxRecursionException:
             assert False
             raise MaxRecursionException("Max recursion reached on repok")
@@ -520,7 +527,7 @@ class SEEngine:
                 last_bp.advance_branch()
 
     def check_conservative_repok(self, obj):
-        self.set_mode(Mode.CONSERVATIVE_REPOK)
+        self.set_mode(Mode.CONSERVATIVE_EXECUTION)
         try:
             if hasattr(obj, "instrumented_repok") and not obj.instrumented_repok():
                 raise RepOkFailException()
@@ -528,6 +535,8 @@ class SEEngine:
                 if not self._current_self.instrumented_repok():
                     raise RepOkFailException()
         except NoInitializedException:
+            pass
+        except CantMakeDecisionException:
             pass
         except RepOkFailException as e:
             raise e
@@ -544,7 +553,7 @@ class SEEngine:
         is_init = getattr(obj, isinit_name)
         attr = getattr(obj, attr_name)
 
-        if self.mode == Mode.CONSERVATIVE_REPOK:
+        if self.mode == Mode.CONSERVATIVE_EXECUTION:
             if not is_init:
                 raise NoInitializedException()
             self.check_recursion_limit(attr)
@@ -559,7 +568,7 @@ class SEEngine:
                 setattr(obj, attr_name, new_value)
                 self._backups.make_backup()
 
-                if self.mode == Mode.PROGRAM_EXECUTION:
+                if self.mode == Mode.METHOD_EXPLORATION:
                     obj._recursion_depth = 0
                     self.check_conservative_repok(obj)
 
@@ -645,7 +654,7 @@ class SEEngine:
         if bool_value is not None:
             return bool_value
 
-        if self.mode == Mode.CONSERVATIVE_REPOK:
+        if self.mode == Mode.CONSERVATIVE_EXECUTION:
             raise NoInitializedException()
 
         condition = sym_bool.formula
