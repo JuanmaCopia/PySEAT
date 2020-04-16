@@ -351,13 +351,10 @@ class SEEngine:
         # Execution of method with concrete input
         self_end_state = copy.deepcopy(input_self)
         args = copy.deepcopy(input_args)
-        method = getattr(self_end_state, self._sut.get_method_name())
-        if args:
-            returnv = method(*args)
-        else:
-            returnv = method()
 
-        if self_end_state.repok():
+        returnv = self.execute_method_concretely(self_end_state, args)
+
+        if self.execute_repok_concretely(self_end_state):
             status = Status.OK
         else:
             status = Status.FAIL
@@ -371,6 +368,30 @@ class SEEngine:
         pathdata.symbolic_inself = symbolic_inself
         pathdata.returnv = returnv
         return pathdata
+
+    def execute_method_concretely(self, obj, args):
+        self.set_mode(Mode.CONCRETE_EXECUTION)
+        try:
+            method = getattr(obj, self._sut.get_method_name())
+            if args:
+                returnv = method(*args)
+            else:
+                returnv = method()
+        except AttributeError as e:
+            raise e
+        finally:
+            self.restore_prev_mode()
+            return returnv
+
+    def execute_repok_concretely(self, obj):
+        self.set_mode(Mode.CONCRETE_EXECUTION)
+        try:
+            result = obj.repok()
+        except AttributeError as e:
+            raise e
+        finally:
+            self.restore_prev_mode()
+            return result
 
     def _reset_for_repok(self, iself, pc_len):
         self._path_condition = keep_first_n_items(self._path_condition, pc_len)
@@ -517,7 +538,6 @@ class SEEngine:
 
     def lazy_initialization(self, obj, attr_name):
         assert obj is not None
-        # assert self.mode != Mode.CONSERVATIVE_REPOK
         isinit_name = get_initialized_name(attr_name)
         assert hasattr(obj, isinit_name) and hasattr(obj, attr_name)
 
@@ -539,7 +559,7 @@ class SEEngine:
                 setattr(obj, attr_name, new_value)
                 self._backups.make_backup()
 
-                if self.mode != Mode.INSTRUMENTED_REPOK:
+                if self.mode == Mode.PROGRAM_EXECUTION:
                     obj._recursion_depth = 0
                     self.check_conservative_repok(obj)
 
@@ -620,9 +640,13 @@ class SEEngine:
         Returns:
             True or False, depending on the evaluation.
         """
+        assert self.mode != Mode.CONCRETE_EXECUTION
         bool_value = self.conditioned_value(sym_bool)
         if bool_value is not None:
             return bool_value
+
+        if self.mode == Mode.CONSERVATIVE_REPOK:
+            raise NoInitializedException()
 
         condition = sym_bool.formula
         condition_value = self._get_next_conditional_step()

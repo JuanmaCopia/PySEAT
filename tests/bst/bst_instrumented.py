@@ -171,12 +171,12 @@ class BST:
     def _insert(self, data, cur_node):
         if data < cur_node._get_data():
             if cur_node._get_left() is None:
-                cur_node._get_left()._set_left(Node(data))
+                cur_node._set_left(Node(data))
             else:
                 self._insert(data, cur_node._get_left())
         elif data > cur_node._get_data():
             if cur_node._get_right() is None:
-                cur_node._get_right()._set_right(Node(data))
+                cur_node._set_right(Node(data))
             else:
                 self._insert(data, cur_node._get_right())
         else:
