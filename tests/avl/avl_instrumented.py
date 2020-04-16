@@ -194,8 +194,9 @@ class Node:
             self.data, s.data = s.data, self.data
             return s.delete()
 
-    def update_height(self):
-        self.height = max(height(self._get_left()), height(self._get_right())) + 1
+
+def update_height(node):
+    node.height = max(height(node._get_left()), height(node._get_right())) + 1
 
 
 def height(node):
@@ -330,8 +331,8 @@ class AVL():
             x._get_right()._set_parent(x)
         y._set_left(x)
         x._set_parent(y)
-        x.update_height()
-        y.update_height()
+        update_height(x)
+        update_height(y)
 
     def right_rotate(self, x):
         y = x._get_left()
@@ -348,12 +349,12 @@ class AVL():
             x._get_left()._set_parent(x)
         y._set_right(x)
         x._set_parent(y)
-        x.update_height()
-        y.update_height()
+        update_height(x)
+        update_height(y)
 
     def rebalance(self, node):
         while node is not None:
-            node.update_height()
+            update_height(node)
             if height(node._get_left()) >= 2 + height(node._get_right()):
                 if height(node._get_left()._get_left()) >= height(node._get_left()._get_right()):
                     self.right_rotate(node)
