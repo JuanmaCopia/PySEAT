@@ -19,6 +19,7 @@ class Mode(Enum):
     PROGRAM_EXECUTION = 1
     INSTRUMENTED_REPOK = 2
     NOMODE = 3
+    CONCRETE_EXECUTION = 4
 
 
 class PathExecutionData:

@@ -5,32 +5,32 @@ def insert_test1():
     '''
     Self:
         
-                     None <- node1: 4294753519
-                     /                       \
-        node1 <- node0: 4294753518            None
-        /                        \            
-        None                          None            
+                None <- node1: 1
+                /              \
+        node1 <- node0: 0       None
+        /               \       
+        None                 None       
 
     Return:
         None
     End Self:
         
-                      None <- node2: 4294753518              
-                     /                         \             
-        node2 <- node0: 4294753518 node2 <- node1: 4294753519
-        /                        \ /                        \
-        None                          None None                          None
+                 None <- node2: 0          
+                /                \         
+        node2 <- node0: 0 node2 <- node1: 1
+        /               \ /               \
+        None                 None None                 None
 
     '''
     # Self Generation
     avl0 = AVL()
-    node1 = Node(None, 4294753519)
-    node1.data = 4294753519
+    node1 = Node(None, 1)
+    node1.data = 1
     node1.right = None
     node1.parent = None
     node1.height = 1
-    node0 = Node(node1, 4294753518)
-    node0.data = 4294753518
+    node0 = Node(node1, 0)
+    node0.data = 0
     node0.right = None
     node0.left = None
     node0.height = 0
@@ -40,18 +40,18 @@ def insert_test1():
     # Repok check
     assert avl0.repok()
     # Method call
-    avl0.insert(4294753518)
+    avl0.insert(0)
     # Assertions
     # Repok check
     assert avl0.repok()
-    assert avl0.root.data == 4294753518
+    assert avl0.root.data == 0
     assert avl0.root.parent is None
     assert avl0.root.height == 1
-    assert avl0.root.right.data == 4294753519
+    assert avl0.root.right.data == 1
     assert avl0.root.right.right is None
     assert avl0.root.right.left is None
     assert avl0.root.right.height == 0
-    assert avl0.root.left.data == 4294753518
+    assert avl0.root.left.data == 0
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
@@ -62,32 +62,32 @@ def insert_test2():
     '''
     Self:
         
-        None <- node1: 4294731024             
-        /                       \             
-        None            node1 <- node0: 4294731024
-                    /                        \
-                    None                          None
+        None <- node1: 0         
+        /              \         
+        None        node1 <- node0: 0
+                /               \
+                None                 None
 
     Return:
         None
     End Self:
         
-                      None <- node0: 4294731024              
-                     /                         \             
-        node0 <- node1: 4294731024 node0 <- node2: 4294731024
-        /                        \ /                        \
-        None                          None                           
+                 None <- node0: 0          
+                /                \         
+        node0 <- node1: 0 node0 <- node2: 0
+        /               \ /               \
+        None                 None                  
 
     '''
     # Self Generation
     avl0 = AVL()
-    node1 = Node(None, 4294731024)
-    node1.data = 4294731024
+    node1 = Node(None, 0)
+    node1.data = 0
     node1.left = None
     node1.parent = None
     node1.height = 1
-    node0 = Node(node1, 4294731024)
-    node0.data = 4294731024
+    node0 = Node(node1, 0)
+    node0.data = 0
     node0.right = None
     node0.left = None
     node0.height = 0
@@ -97,18 +97,18 @@ def insert_test2():
     # Repok check
     assert avl0.repok()
     # Method call
-    avl0.insert(4294731024)
+    avl0.insert(0)
     # Assertions
     # Repok check
     assert avl0.repok()
-    assert avl0.root.data == 4294731024
+    assert avl0.root.data == 0
     assert avl0.root.parent is None
     assert avl0.root.height == 1
-    assert avl0.root.right.data == 4294731024
+    assert avl0.root.right.data == 0
     assert avl0.root.right.right is None
     assert avl0.root.right.left is None
     assert avl0.root.right.height == 0
-    assert avl0.root.left.data == 4294731024
+    assert avl0.root.left.data == 0
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
