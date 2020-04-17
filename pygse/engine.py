@@ -528,20 +528,23 @@ class SEEngine:
                 return attr
 
             setattr(obj, isinit_name, True)
-            new_value = self.get_next_lazy_step(attr_type)
-            setattr(obj, pref_name, new_value)
-            self._backups.make_backup()
+            if attr is None:
+                new_value = self.get_next_lazy_step(attr_type)
+                setattr(obj, pref_name, new_value)
+                self._backups.make_backup()
 
-            if self.mode == Mode.METHOD_EXPLORATION:
-                obj._recursion_depth = 0
-                self.check_conservative_repok(obj)
+                if self.mode == Mode.METHOD_EXPLORATION:
+                    obj._recursion_depth = 0
+                    self.check_conservative_repok(obj)
+
         else:
             assert Symbolic.is_supported_builtin(attr_type)
+            assert attr is not None
             if not is_init:
-                assert attr is not None
                 setattr(obj, isinit_name, True)
-                new_sym = self.new_symbolic(attr_type)
-                setattr(obj, pref_name, new_sym)
+                if not is_symbolic(attr):
+                    new_sym = self.new_symbolic(attr_type)
+                    setattr(obj, pref_name, new_sym)
 
         return getattr(obj, pref_name)
 

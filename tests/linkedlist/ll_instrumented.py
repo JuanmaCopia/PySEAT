@@ -20,7 +20,7 @@ class Node:
         self.s_next = None
         # Instrumentation instance attributes
         self._next_is_initialized = False
-        self._elem_is_initialized = True
+        self._elem_is_initialized = False
 
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1

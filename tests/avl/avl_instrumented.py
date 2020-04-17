@@ -28,11 +28,10 @@ class Node:
         self.s_parent = parent
         self.height = 0
 
-        self._data_is_initialized = True
+        self._data_is_initialized = False
         self._right_is_initialized = False
         self._left_is_initialized = False
         self._parent_is_initialized = False
-        self._height_is_initialized = True
 
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1

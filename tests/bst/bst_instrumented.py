@@ -25,7 +25,7 @@ class Node:
         self.s_right = None
         self.s_left = None
 
-        self._data_is_initialized = True
+        self._data_is_initialized = False
         self._right_is_initialized = False
         self._left_is_initialized = False
 

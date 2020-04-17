@@ -15,7 +15,7 @@ class Node:
         self.s_next = None
         self.s_prev = None
 
-        self._data_is_initialized = True
+        self._data_is_initialized = False
         self._next_is_initialized = False
         self._prev_is_initialized = False
 
