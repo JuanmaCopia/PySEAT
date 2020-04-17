@@ -21,9 +21,9 @@ class Node:
 
     # Init params should be annotated also
     def __init__(self, data: int):
-        self.data = data
-        self.right = None
-        self.left = None
+        self.s_data = data
+        self.s_right = None
+        self.s_left = None
 
         self._data_is_initialized = True
         self._right_is_initialized = False
@@ -33,22 +33,28 @@ class Node:
         self.__class__._id += 1
         self._recursion_depth = 0
 
-    def _get_data(self):
+    @property
+    def data(self):
         return self._engine.lazy_initialization(self, "data")
 
-    def _set_data(self, value):
+    @data.setter
+    def data(self, value):
         return self._engine.lazy_set_attr(self, "data", value)
 
-    def _get_right(self):
+    @property
+    def right(self):
         return self._engine.lazy_initialization(self, "right")
 
-    def _set_right(self, value):
+    @right.setter
+    def right(self, value):
         return self._engine.lazy_set_attr(self, "right", value)
 
-    def _get_left(self):
+    @property
+    def left(self):
         return self._engine.lazy_initialization(self, "left")
 
-    def _set_left(self, value):
+    @left.setter
+    def left(self, value):
         return self._engine.lazy_set_attr(self, "left", value)
 
     def repok(self):
@@ -72,7 +78,7 @@ class BST:
 
     # Init params should be annotated also
     def __init__(self):
-        self.root = None
+        self.s_root = None
 
         self._root_is_initialized = False
 
@@ -80,10 +86,12 @@ class BST:
         self.__class__._id += 1
         self._recursion_depth = 0
 
-    def _get_root(self):
+    @property
+    def root(self):
         return self._engine.lazy_initialization(self, "root")
 
-    def _set_root(self, value):
+    @root.setter
+    def root(self, value):
         return self._engine.lazy_set_attr(self, "root", value)
 
     def repok(self):
@@ -124,77 +132,39 @@ class BST:
                 return False
         return True
 
-    def instrumented_repok(self):
-        if not self._get_root():
-            return True
-        if not (self.ins_is_acyclic() and self.ins_is_ordered()):
-            return False
-        return True
-
-    def ins_is_acyclic(self):
-        visited = set()
-        visited.add(self._get_root())
-        worklist = []
-        worklist.append(self._get_root())
-        while worklist:
-            current = worklist.pop(0)
-            if current._get_left():
-                if not do_add(visited, current._get_left()):
-                    return False
-                worklist.append(current._get_left())
-            if current._get_right():
-                if not do_add(visited, current._get_right()):
-                    return False
-                worklist.append(current._get_right())
-        return True
-
-    def ins_is_ordered(self):
-        return self.ins_is_ordered2(self._get_root(), INT_MIN, INT_MAX)
-
-    def ins_is_ordered2(self, node, min, max):
-        if node._get_data() <= min or node._get_data() >= max:
-            return False
-        if node._get_left():
-            if not self.ins_is_ordered2(node._get_left(), min, node._get_data()):
-                return False
-        if node._get_right():
-            if not self.ins_is_ordered2(node._get_right(), node._get_data(), max):
-                return False
-        return True
-
     def insert(self, data: int):
-        if self._get_root() is None:
-            self._set_root(Node(data))
+        if self.root is None:
+            self.root = Node(data)
         else:
-            self._insert(data, self._get_root())
+            self._insert(data, self.root)
 
     def _insert(self, data, cur_node):
-        if data < cur_node._get_data():
-            if cur_node._get_left() is None:
-                cur_node._set_left(Node(data))
+        if data < cur_node.data:
+            if cur_node.left is None:
+                cur_node.left = Node(data)
             else:
-                self._insert(data, cur_node._get_left())
-        elif data > cur_node._get_data():
-            if cur_node._get_right() is None:
-                cur_node._set_right(Node(data))
+                self._insert(data, cur_node.left)
+        elif data > cur_node.data:
+            if cur_node.right is None:
+                cur_node.right = Node(data)
             else:
-                self._insert(data, cur_node._get_right())
+                self._insert(data, cur_node.right)
         else:
             print("data already in tree!")
 
-    def find(self, data: int):
-        if self._get_root() is not None:
-            return self._find(data, self._get_root())
+    def find(self, data):
+        if self.root is not None:
+            return self._find(data, self.root)
         else:
             return None
 
     def _find(self, data, cur_node):
-        if data == cur_node._get_data():
+        if data == cur_node.data:
             return cur_node
-        elif data < cur_node._get_data() and cur_node._get_left() is not None:
-            return self._find(data, cur_node._get_left())
-        elif data > cur_node._get_data() and cur_node._get_right() is not None:
-            return self._find(data, cur_node._get_right())
+        elif data < cur_node.data and cur_node.left is not None:
+            return self._find(data, cur_node.left)
+        elif data > cur_node.data and cur_node.right is not None:
+            return self._find(data, cur_node.right)
 
     def to_str(self, node, visited):
         """Returns list of strings, width, height, and horizontal coord of root."""

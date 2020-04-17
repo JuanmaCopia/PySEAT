@@ -13,9 +13,9 @@ class Node:
 
     # Init params should be annotated also
     def __init__(self, key: int):
-        self.key = key
-        self.next = None
-        self.prev = None
+        self.s_key = key
+        self.s_next = None
+        self.s_prev = None
 
         self._key_is_initialized = True
         self._next_is_initialized = False
@@ -25,22 +25,28 @@ class Node:
         self.__class__._id += 1
         self._recursion_depth = 0
 
-    def _get_key(self):
+    @property
+    def key(self):
         return self._engine.lazy_initialization(self, "key")
 
-    def _set_key(self, value):
+    @key.setter
+    def key(self, value):
         return self._engine.lazy_set_attr(self, "key", value)
 
-    def _get_next(self):
+    @property
+    def next(self):
         return self._engine.lazy_initialization(self, "next")
 
-    def _set_next(self, value):
+    @next.setter
+    def next(self, value):
         return self._engine.lazy_set_attr(self, "next", value)
 
-    def _get_prev(self):
+    @property
+    def prev(self):
         return self._engine.lazy_initialization(self, "prev")
 
-    def _set_prev(self, value):
+    @prev.setter
+    def prev(self, value):
         return self._engine.lazy_set_attr(self, "prev", value)
 
     def __str__(self):
@@ -86,7 +92,7 @@ class CDLinkedList:
 
     # Init params should be annotated also
     def __init__(self):
-        self.head = None
+        self.s_head = None
 
         self._head_is_initialized = False
 
@@ -94,10 +100,12 @@ class CDLinkedList:
         self.__class__._id += 1
         self._recursion_depth = 0
 
-    def _get_head(self):
+    @property
+    def head(self):
         return self._engine.lazy_initialization(self, "head")
 
-    def _set_head(self, value):
+    @head.setter
+    def head(self, value):
         return self._engine.lazy_set_attr(self, "head", value)
 
     def __repr__(self):
@@ -130,23 +138,23 @@ class CDLinkedList:
         new_node = Node(key)
 
         # If there are no elements in the circular doubly linked list
-        if self._get_head() is None:
-            self._set_head(new_node)
-            new_node._set_next(self._get_head())
-            new_node._set_prev(self._get_head())
+        if self.head is None:
+            self.head = new_node
+            new_node.next = self.head
+            new_node.prev = self.head
 
         # If there are more elements in the circular doubly linked list
         else:
-            last_node = self._get_head()._get_prev()
+            last_node = self.head.prev
 
-            last_node._set_next(new_node)
-            new_node._set_next(self._get_head())
+            last_node.next = new_node
+            new_node.next = self.head
 
-            new_node._set_prev(last_node)
-            self._get_head()._set_prev(new_node)
+            new_node.prev = last_node
+            self.head.prev = new_node
 
     # Insert node at the beginning of the circular doubly linked list
-    def prepend(self, key):
+    def prepend(self, key: int):
         new_node = Node(key)
 
         # If there are no elements in the circular doubly linked list
@@ -175,36 +183,32 @@ class CDLinkedList:
 
     # Insert after a specific node in the circular doubly linked list
     def insert_after_node(self, afterkey: int, key: int):
-        current_node = self._get_head()
+        current_node = self.head
         while current_node:
 
-            if current_node._get_next() == self._get_head() and current_node._get_key() == afterkey:
+            if current_node.next == self.head and current_node.key == afterkey:
                 # New node is to be appended to the list
                 self.append(key)
                 return
 
             # New node to be added in between nodes
-            elif current_node._get_key() == afterkey:
+            elif current_node.key == afterkey:
                 new_node = Node(key)
-                next_node = current_node._get_next()
+                next_node = current_node.next
 
                 # Update next pointers
-                current_node._set_next(new_node)
-                new_node._set_next(next_node)
+                current_node.next = new_node
+                new_node.next = next_node
 
                 # Update prev pointers
-                new_node._set_prev(current_node)
-
-                # added
-                # if next_node:
-                #########
-                next_node._set_prev(new_node)
+                new_node.prev = current_node
+                next_node.prev = new_node
 
                 return
             else:
-                if current_node._get_next() == self._get_head():
+                if current_node.next == self.head:
                     break
-            current_node = current_node._get_next()
+            current_node = current_node.next
 
     # Insert before a specific node in the circular doubly linked list
     def insert_before_node(self, beforekey, key):
@@ -315,39 +319,5 @@ class CDLinkedList:
             next_node = current.next
             if next_node is self.head:
                 if current is not self.head.prev:
-                    return False
-        return True
-
-    def instrumented_repok(self):
-        if self._get_head() is None:
-            return True
-        if not self._get_head()._get_prev() or not self._get_head()._get_next():
-            return False
-        if self._get_head()._get_next() is self._get_head() and self._get_head()._get_prev() is self._get_head():
-            return True
-
-        if self._get_head()._get_next() is self._get_head() and self._get_head()._get_prev() is not self._get_head():
-            return False
-        if self._get_head()._get_prev() is self._get_head() and self._get_head()._get_next() is not self._get_head():
-            return False
-
-        visited = set()
-        current = self._get_head()
-        next_node = current._get_next()
-        visited.add(current)
-
-        while next_node is not self._get_head():
-            if next_node._get_next() is None or next_node._get_prev() is None:
-                return False
-            if next_node._get_next() is next_node:
-                return False
-            if next_node._get_prev() is not current or current._get_next() is not next_node:
-                return False
-            current = next_node
-            if not CDLinkedList.do_add(visited, next_node):
-                return False
-            next_node = current._get_next()
-            if next_node is self._get_head():
-                if current is not self._get_head()._get_prev():
                     return False
         return True

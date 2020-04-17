@@ -7,6 +7,20 @@ def is_special_attr(attr_name):
     ]
 
 
+def has_prefix(attr_name):
+    return attr_name.startswith("s_")
+
+
+def remove_prefix(attr_name):
+    if attr_name.startswith("s_"):
+        return attr_name[2:]
+    return attr_name
+
+
+def add_prefix(attr_name):
+    return "s_" + attr_name
+
+
 def keep_first_n_items(l, n):
     new_list = []
     i = 0
@@ -29,9 +43,13 @@ def is_user_defined(obj):
 
 
 def set_to_initialized(structure, attr_name):
-    init_name = get_initialized_name(attr_name)
-    if hasattr(structure, init_name):
-        setattr(structure, init_name, True)
+    if not is_special_attr(attr_name):
+        name = attr_name
+        if has_prefix(name):
+            name = remove_prefix(name)
+        init_name = get_initialized_name(name)
+        if hasattr(structure, init_name):
+            setattr(structure, init_name, True)
 
 
 def get_initialized_name(attr_name):

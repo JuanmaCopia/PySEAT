@@ -2,7 +2,7 @@
 
 """
 
-from helpers import is_special_attr, is_user_defined, do_add
+from helpers import is_special_attr, is_user_defined, do_add, remove_prefix
 import os
 
 
@@ -152,7 +152,7 @@ class TestCode:
     @classmethod
     def get_attr_value_dict(cls, instance):
         return {
-            key: value
+            remove_prefix(key): value
             for (key, value) in instance.__dict__.items()
             if not is_special_attr(key)
         }

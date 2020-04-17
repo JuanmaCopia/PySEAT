@@ -1,5 +1,3 @@
-
-
 class Node:
 
     _vector = []
@@ -13,9 +11,9 @@ class Node:
 
     # Init params should be annotated also
     def __init__(self, data: int):
-        self.data = data
-        self.next = None
-        self.prev = None
+        self.s_data = data
+        self.s_next = None
+        self.s_prev = None
 
         self._data_is_initialized = True
         self._next_is_initialized = False
@@ -25,22 +23,28 @@ class Node:
         self.__class__._id += 1
         self._recursion_depth = 0
 
-    def _get_data(self):
+    @property
+    def data(self):
         return self._engine.lazy_initialization(self, "data")
 
-    def _set_data(self, value):
+    @data.setter
+    def data(self, value):
         return self._engine.lazy_set_attr(self, "data", value)
 
-    def _get_next(self):
+    @property
+    def next(self):
         return self._engine.lazy_initialization(self, "next")
 
-    def _set_next(self, value):
+    @next.setter
+    def next(self, value):
         return self._engine.lazy_set_attr(self, "next", value)
 
-    def _get_prev(self):
+    @property
+    def prev(self):
         return self._engine.lazy_initialization(self, "prev")
 
-    def _set_prev(self, value):
+    @prev.setter
+    def prev(self, value):
         return self._engine.lazy_set_attr(self, "prev", value)
 
     def __str__(self):
@@ -66,12 +70,19 @@ class Node:
         else:
             ns = "CLOUD"
 
-        return "(" + ps + " <- " + self._identifier + ": " + self.data.__repr__() + " -> " + ns + ") "
+        return (
+            "("
+            + ps
+            + " <- "
+            + self._identifier
+            + ": "
+            + self.data.__repr__()
+            + " -> "
+            + ns
+            + ") "
+        )
 
     def repok(self):
-        return True
-
-    def instrumented_repok(self):
         return True
 
 
@@ -87,8 +98,8 @@ class DoublyLinkedList:
 
     # Init params should be annotated also
     def __init__(self):
-        self.head = None
-        self.tail = None
+        self.s_head = None
+        self.s_tail = None
 
         self._head_is_initialized = False
         self._tail_is_initialized = False
@@ -97,69 +108,73 @@ class DoublyLinkedList:
         self.__class__._id += 1
         self._recursion_depth = 0
 
-    def _get_head(self):
+    @property
+    def head(self):
         return self._engine.lazy_initialization(self, "head")
 
-    def _set_head(self, value):
+    @head.setter
+    def head(self, value):
         return self._engine.lazy_set_attr(self, "head", value)
 
-    def _get_tail(self):
+    @property
+    def tail(self):
         return self._engine.lazy_initialization(self, "tail")
 
-    def _set_tail(self, value):
+    @tail.setter
+    def tail(self, value):
         return self._engine.lazy_set_attr(self, "tail", value)
 
     # Insert 'value' at the front of the list
-    def insert_at_front(self, value: int):
+    def insert_at_front(self, value):
         node = Node(value)
-        if self.instrumented_is_empty():
-            self._set_head(node)
-            self._set_tail(node)
+        if self.is_empty():
+            self.head = node
+            self.tail = node
         else:
-            node._set_next(self._get_head())
-            self._get_head()._set_prev(node)
-            self._set_head(node)
+            node.next = self.head
+            self.head.prev = node
+            self.head = node
 
     #  insert value at the back of the linked list
-    def insert_at_back(self, value: int):
+    def insert_at_back(self, value):
         node = Node(value)
-        if self.instrumented_is_empty():
-            self._set_head(node)
-            self._set_tail(node)
+        if self.is_empty():
+            self.head = node
+            self.tail = node
         else:
-            self._get_tail()._set_next(node)
-            node._set_prev(self._get_tail())
-            self._set_tail(node)
+            self.tail.next = node
+            node.prev = self.tail
+            self.tail = node
 
     # inserts value after key
     def insert_after(self, key: int, value: int):
         node = Node(value)
 
         # find the position of key
-        curr = self._get_head()
-        while curr is not None and curr._get_data() != key:
-            curr = curr._get_next()
+        curr = self.head
+        while curr is not None and curr.data != key:
+            curr = curr.next
 
         if curr is None:
+            print("Key not found")
             return
 
-        if curr._get_next() is None:
-            curr._set_next(node)
-            node._set_prev(curr)
-            self._set_tail(node)
+        if curr.next is None:
+            curr.next = node
+            node.prev = curr
+            self.tail = node
         else:
-            next_node = curr._get_next()
-            curr._set_next(node)
-            node._set_prev(curr)
-            node._set_next(next_node)
-            next_node._set_prev(node)
+            next_node = curr.next
+            curr.next = node
+            node.prev = curr
+            node.next = next_node
+            next_node.prev = node
 
     # returns the data at first node
     def top_front(self):
         if self.is_empty():
             print("List is empty")
             return
-
         return self.head.data
 
     # returns the data at last node
@@ -310,32 +325,6 @@ class DoublyLinkedList:
             next_node = next_node.next
 
         if self.do_add(visited, self.tail):
-            return False
-        return True
-
-    def instrumented_repok(self):
-        if self._get_head() is None and self._get_tail() is None:
-            return True
-        if self._get_head() is None or self._get_tail() is None:
-            return False
-        if self._get_head()._get_prev() is not None or self._get_tail()._get_next() is not None:
-            return False
-
-        visited = set()
-        visited.add(self._get_head())
-
-        current = self._get_head()
-        next_node = current._get_next()
-
-        while next_node:
-            if next_node._get_prev() is not current:
-                return False
-            if not self.do_add(visited, next_node):
-                return False
-            current = next_node
-            next_node = next_node._get_next()
-
-        if self.do_add(visited, self._get_tail()):
             return False
         return True
 
