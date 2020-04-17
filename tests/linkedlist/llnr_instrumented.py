@@ -14,8 +14,8 @@ class Node:
 
     # Init params should be annotated also
     def __init__(self, elem: int):
-        self.s_elem = elem
-        self.s_next = None
+        self.elem = elem
+        self.next = None
 
     @property
     def elem(self):
@@ -80,7 +80,7 @@ class LinkedList:
 
     # Init params should be annotated also
     def __init__(self):
-        self.s_head = None
+        self.head = None
 
     @property
     def head(self):

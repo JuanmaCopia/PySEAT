@@ -9,9 +9,9 @@ class Node:
 
     # Init params should be annotated also
     def __init__(self, key: int):
-        self.s_key = key
-        self.s_next = None
-        self.s_prev = None
+        self.key = key
+        self.next = None
+        self.prev = None
 
     @property
     def key(self):
@@ -95,7 +95,7 @@ class CDLinkedList:
 
     # Init params should be annotated also
     def __init__(self):
-        self.s_head = None
+        self.head = None
 
     @property
     def head(self):

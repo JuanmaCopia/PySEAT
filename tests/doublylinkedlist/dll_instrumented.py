@@ -9,9 +9,9 @@ class Node:
 
     # Init params should be annotated also
     def __init__(self, data: int):
-        self.s_data = data
-        self.s_next = None
-        self.s_prev = None
+        self.data = data
+        self.next = None
+        self.prev = None
 
     @property
     def data(self):
@@ -90,8 +90,8 @@ class DoublyLinkedList:
 
     # Init params should be annotated also
     def __init__(self):
-        self.s_head = None
-        self.s_tail = None
+        self.head = None
+        self.tail = None
 
     @property
     def head(self):

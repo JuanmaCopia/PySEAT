@@ -19,9 +19,9 @@ class Node:
 
     # Init params should be annotated also
     def __init__(self, data: int):
-        self.s_data = data
-        self.s_right = None
-        self.s_left = None
+        self.data = data
+        self.right = None
+        self.left = None
 
     @property
     def data(self):
@@ -66,7 +66,7 @@ class BST:
 
     # Init params should be annotated also
     def __init__(self):
-        self.s_root = None
+        self.root = None
 
     @property
     def root(self):
