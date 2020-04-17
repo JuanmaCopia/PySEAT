@@ -2,7 +2,8 @@
 
 """
 
-from helpers import is_special_attr, is_user_defined, do_add, remove_prefix
+from helpers import is_user_defined, do_add
+from helpers import get_dict
 import os
 
 
@@ -132,7 +133,7 @@ class TestCode:
             current = worklist.pop(0)
             curstruct = current[0]
             curident = current[1]
-            structdict = self.get_attr_value_dict(curstruct)
+            structdict = get_dict(curstruct)
             for attr_name, value in structdict.items():
                 if is_user_defined(value):
                     if do_add(visited, value):
@@ -149,14 +150,6 @@ class TestCode:
         else:
             self._add_line(self_id + "." + method_name + "(" + args_ids + ")")
 
-    @classmethod
-    def get_attr_value_dict(cls, instance):
-        return {
-            remove_prefix(key): value
-            for (key, value) in instance.__dict__.items()
-            if not is_special_attr(key)
-        }
-
     def generate_structure_code(self, instance, visited=set()):
         if not instance:
             return
@@ -164,7 +157,7 @@ class TestCode:
             return instance._identifier
 
         identifier = instance._identifier
-        attr = self.get_attr_value_dict(instance)
+        attr = get_dict(instance)
         self.create_constructor_call(
             identifier,
             type(instance),

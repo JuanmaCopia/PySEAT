@@ -18,13 +18,9 @@ class Node:
     def __init__(self, elem: int):
         self.s_elem = elem
         self.s_next = None
-        # Instrumentation instance attributes
-        self._next_is_initialized = False
-        self._elem_is_initialized = False
 
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
-        self._recursion_depth = 0
 
     @property
     def elem(self):
@@ -48,13 +44,15 @@ class Node:
     def to_str(self, visited=False):
         if visited:
             return " **" + self._identifier + "(" + str(self.elem) + ")"
-        if self._next_is_initialized:
-            if self.next is None:
-                return " " + self._identifier + "(" + str(self.elem) + ") -> None"
-            else:
-                return " " + self._identifier + "(" + str(self.elem) + ") ->"
-        else:
-            return " " + self._identifier + "(" + str(self.elem) + ") -> CLOUD"
+
+        if self.next is None:
+            if hasattr(self, "_next_is_initialized"):
+                if getattr(self, "_next_is_initialized"):
+                    return " " + self._identifier + "(" + str(self.elem) + ") -> None"
+                else:
+                    return " " + self._identifier + "(" + str(self.elem) + ") -> CLOUD"
+            return " " + self._identifier + "(" + str(self.elem) + ") -> None"
+        return " " + self._identifier + "(" + str(self.elem) + ") ->"
 
     def __repr__(self):
         str_rep = ""
@@ -86,11 +84,9 @@ class LinkedList:
     # Init params should be annotated also
     def __init__(self):
         self.s_head = None
-        self._head_is_initialized = False
 
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
-        self._recursion_depth = 0
 
     @property
     def head(self):

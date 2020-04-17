@@ -28,14 +28,8 @@ class Node:
         self.s_parent = parent
         self.height = 0
 
-        self._data_is_initialized = False
-        self._right_is_initialized = False
-        self._left_is_initialized = False
-        self._parent_is_initialized = False
-
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
-        self._recursion_depth = 0
 
     @property
     def data(self):
@@ -106,10 +100,21 @@ class Node:
 
     def __repr__(self):
         if self.parent is not None:
-            return self.parent._identifier + " <- " + self._identifier + ": " + str(self.data)
-        if self._parent_is_initialized:
-            return "None" + " <- " + self._identifier + ": " + str(self.data)
-        return "CLOUD" + " <- " + self._identifier + ": " + str(self.data)
+            return (
+                "("
+                + self.parent._identifier
+                + " <- "
+                + self._identifier
+                + ": "
+                + str(self.data)
+                + ")"
+            )
+        if hasattr(self, "_parent_is_initialized"):
+            if getattr(self, "_parent_is_initialized"):
+                return "None" + "<- " + self._identifier + ": " + str(self.data)
+            return "CLOUD" + "<- " + self._identifier + ": " + str(self.data)
+        else:
+            return "None" + "<- " + self._identifier + ": " + str(self.data)
 
     def find(self, k):
         """Finds and returns the node with key k from the subtree rooted at this
@@ -219,11 +224,8 @@ class AVL():
     def __init__(self):
         self.s_root = None
 
-        self._root_is_initialized = False
-
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
-        self._recursion_depth = 0
 
     @property
     def root(self):

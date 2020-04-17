@@ -25,13 +25,8 @@ class Node:
         self.s_right = None
         self.s_left = None
 
-        self._data_is_initialized = False
-        self._right_is_initialized = False
-        self._left_is_initialized = False
-
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
-        self._recursion_depth = 0
 
     @property
     def data(self):
@@ -80,11 +75,8 @@ class BST:
     def __init__(self):
         self.s_root = None
 
-        self._root_is_initialized = False
-
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
-        self._recursion_depth = 0
 
     @property
     def root(self):
@@ -169,13 +161,6 @@ class BST:
     def to_str(self, node, visited):
         """Returns list of strings, width, height, and horizontal coord of root."""
         # No child.
-
-        if node is None:
-            line = "%s" % node.data + "N"
-            width = len(line)
-            height = 1
-            middle = width // 2
-            return [line], width, height, middle
 
         if not do_add(visited, node):
             line = "%s" % node.data + "*"

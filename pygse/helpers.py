@@ -66,3 +66,11 @@ def helper_print_dict(dictionary):
 def print_list(l: list, indent):
     for elem in l:
         print(indent + str(elem))
+
+
+def get_dict(instance):
+    return {
+        remove_prefix(key): value
+        for (key, value) in instance.__dict__.items()
+        if not is_special_attr(key)
+    }

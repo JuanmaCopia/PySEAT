@@ -140,3 +140,6 @@ class SUT:
 
     def get_attr_type(self, clss, attr_name):
         return self.class_map[clss].instance_attr_types[attr_name]
+
+    def get_instance_attr_dict(self, clss):
+        return self.class_map[clss].instance_attr_types

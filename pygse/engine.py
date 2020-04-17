@@ -179,6 +179,10 @@ class SEEngine:
             partial_ins = user_def_class(*init_args)
         else:
             partial_ins = user_def_class()
+        # Instrumentation
+        # adding initialized fields
+        for attr_name in self._sut.get_instance_attr_dict(user_def_class).keys():
+            setattr(partial_ins, get_initialized_name(attr_name), False)
         return partial_ins
 
     def _get_init_types(self, user_def_class):
@@ -507,8 +511,13 @@ class SEEngine:
         assert obj is not None
         pref_name = add_prefix(attr_name)
         isinit_name = get_initialized_name(attr_name)
-        assert hasattr(obj, isinit_name) and hasattr(obj, pref_name)
-        is_init = getattr(obj, isinit_name)
+        assert hasattr(obj, pref_name)
+
+        if hasattr(obj, isinit_name):
+            is_init = getattr(obj, isinit_name)
+        else:
+            setattr(obj, isinit_name, False)
+            is_init = False
 
         attr = getattr(obj, pref_name)
 
@@ -534,7 +543,7 @@ class SEEngine:
                 self._backups.make_backup()
 
                 if self.mode == Mode.METHOD_EXPLORATION:
-                    obj._recursion_depth = 0
+                    setattr(obj, "_recursion_depth", 0)
                     self.check_conservative_repok(obj)
 
         else:
@@ -686,9 +695,13 @@ class SEEngine:
 
     def check_recursion_limit(self, obj):
         if obj is not None and is_user_defined(obj):
-            obj._recursion_depth += 1
-            if obj._recursion_depth > self._recursion_limit:
-                raise MaxRecursionException(str(obj._recursion_depth))
+            # see this
+            if not hasattr(obj, "_recursion_depth"):
+                setattr(obj, "_recursion_depth", 1)
+            else:
+                obj._recursion_depth += 1
+                if obj._recursion_depth > self._recursion_limit:
+                    raise MaxRecursionException(str(obj._recursion_depth))
 
     @staticmethod
     def is_tracked(obj):

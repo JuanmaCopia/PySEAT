@@ -119,7 +119,7 @@ def insert_after_test3():
     Return:
         None
     End Self:
-        (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 1 -> node5) (node4 <- node5: 0 -> node64) (node5 <- node64: 0 -> CLOUD)  CLOUD
+        (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 1 -> node5) (node4 <- node5: 0 -> node64) (node5 <- node64: 0 -> None)  CLOUD
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -276,7 +276,7 @@ def insert_after_test6():
     Return:
         None
     End Self:
-        (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 0 -> node48) (node4 <- node48: 0 -> CLOUD)  CLOUD
+        (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 0 -> node48) (node4 <- node48: 0 -> None)  CLOUD
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -418,7 +418,7 @@ def insert_after_test9():
     Return:
         None
     End Self:
-        (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node34) (node3 <- node34: 0 -> CLOUD)  CLOUD
+        (None <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node34) (node3 <- node34: 0 -> None)  CLOUD
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -550,7 +550,7 @@ def insert_after_test12():
     Return:
         None
     End Self:
-        (None <- node1: 1 -> node2) (node1 <- node2: 0 -> node22) (node2 <- node22: 0 -> CLOUD)  CLOUD
+        (None <- node1: 1 -> node2) (node1 <- node2: 0 -> node22) (node2 <- node22: 0 -> None)  CLOUD
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -667,7 +667,7 @@ def insert_after_test15():
     Return:
         None
     End Self:
-        (None <- node1: 0 -> node12) (node1 <- node12: 0 -> CLOUD)  CLOUD
+        (None <- node1: 0 -> node12) (node1 <- node12: 0 -> None)  CLOUD
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()

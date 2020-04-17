@@ -1,5 +1,3 @@
-
-
 class Node:
 
     _vector = []
@@ -17,13 +15,8 @@ class Node:
         self.s_next = None
         self.s_prev = None
 
-        self._key_is_initialized = False
-        self._next_is_initialized = False
-        self._prev_is_initialized = False
-
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
-        self._recursion_depth = 0
 
     @property
     def key(self):
@@ -53,26 +46,47 @@ class Node:
         return self.__repr__()
 
     def __repr__(self):
-        # return " " + self._identifier + "(" + str(self.key) + ")"
         ps = None
-        if self._prev_is_initialized:
+        if hasattr(self, "prev_is_initialized"):
+            if getattr(self, "prev_is_initialized"):
+                if self.prev:
+                    ps = self.prev._identifier
+                else:
+                    ps = "None"
+            else:
+                ps = "CLOUD"
+        else:
             if self.prev:
                 ps = self.prev._identifier
             else:
                 ps = "None"
-        else:
-            ps = "CLOUD"
 
         ns = None
-        if self._next_is_initialized:
+        if hasattr(self, "next_is_initialized"):
+            if getattr(self, "next_is_initialized"):
+                if self.next:
+                    ns = self.next._identifier
+                else:
+                    ns = "None"
+            else:
+                ns = "CLOUD"
+        else:
             if self.next:
                 ns = self.next._identifier
             else:
                 ns = "None"
-        else:
-            ns = "CLOUD"
 
-        return "(" + ps + " <- " + self._identifier + ": " + self.key.__repr__() + " -> " + ns + ") "
+        return (
+            "("
+            + ps
+            + " <- "
+            + self._identifier
+            + ": "
+            + self.key.__repr__()
+            + " -> "
+            + ns
+            + ") "
+        )
 
     def repok(self):
         return True
@@ -94,11 +108,8 @@ class CDLinkedList:
     def __init__(self):
         self.s_head = None
 
-        self._head_is_initialized = False
-
         self._identifier = self.__class__.__name__.lower() + str(self._id)
         self.__class__._id += 1
-        self._recursion_depth = 0
 
     @property
     def head(self):
@@ -127,10 +138,13 @@ class CDLinkedList:
                 else:
                     worklist.append(current.next)
             else:
-                if current._next_is_initialized:
-                    str_rep += " None"
+                if hasattr(current, "_next_is_initialized"):
+                    if getattr(current, "_next_is_initialized"):
+                        str_rep += " None"
+                    else:
+                        str_rep += " CLOUD"
                 else:
-                    str_rep += " CLOUD"
+                    str_rep += " None"
         return str_rep
 
     # Insert node at the end of the circular doubly linked list

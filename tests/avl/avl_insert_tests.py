@@ -5,21 +5,21 @@ def insert_test1():
     '''
     Self:
         
-                None <- node1: 1
-                /              \
-        node1 <- node0: 0       None
-        /               \       
-        None                 None       
+                 None<- node1: 1
+                 /             \
+        (node1 <- node0: 0)     None
+        /                 \     
+        None                   None     
 
     Return:
         None
     End Self:
         
-                 None <- node2: 0          
-                /                \         
-        node2 <- node0: 0 node2 <- node1: 1
-        /               \ /               \
-        None                 None None                 None
+                  .None<- node2: 0..           
+                 /                  \          
+        (node2 <- node0: 0) (node2 <- node1: 1)
+        /                 \ /                 \
+        None                   None None                   None
 
     '''
     # Self Generation
@@ -62,21 +62,21 @@ def insert_test2():
     '''
     Self:
         
-        None <- node1: 0         
-        /              \         
-        None        node1 <- node0: 0
-                /               \
-                None                 None
+        None<- node1: 0          
+        /             \          
+        None      (node1 <- node0: 0)
+              /                 \
+              None                   None
 
     Return:
         None
     End Self:
         
-                 None <- node0: 0          
-                /                \         
-        node0 <- node1: 0 node0 <- node2: 0
-        /               \ /               \
-        None                 None                  
+                  .None<- node0: 0..           
+                 /                  \          
+        (node0 <- node1: 0) (node0 <- node2: 0)
+        /                 \ /                 \
+        None                   None                    
 
     '''
     # Self Generation
@@ -123,8 +123,8 @@ def insert_test3():
         None
     End Self:
         
-        CLOUD <- node1: 0
-        /               \
+        CLOUD<- node1: 0
+        /              \
 
     '''
     # Self Generation
