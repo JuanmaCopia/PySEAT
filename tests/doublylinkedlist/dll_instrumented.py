@@ -1,8 +1,6 @@
 class Node:
 
-    _vector = []
     _engine = None
-    _id = 0
 
     # Instance attributes annotations (will be treated as symbolic)
     data: int
@@ -14,9 +12,6 @@ class Node:
         self.s_data = data
         self.s_next = None
         self.s_prev = None
-
-        self._identifier = self.__class__.__name__.lower() + str(self._id)
-        self.__class__._id += 1
 
     @property
     def data(self):
@@ -42,37 +37,29 @@ class Node:
     def prev(self, value):
         return self._engine.lazy_set_attr(self, "prev", value)
 
-    def __str__(self):
-        return self.__repr__()
-
     def __repr__(self):
         ps = None
-        if hasattr(self, "prev_is_initialized"):
-            if getattr(self, "prev_is_initialized"):
-                if self.prev:
-                    ps = self.prev._identifier
-                else:
-                    ps = "None"
-            else:
-                ps = "CLOUD"
+
+        if self.prev:
+            ps = "node" + str(self.prev._objid)
         else:
-            if self.prev:
-                ps = self.prev._identifier
+            if hasattr(self, "prev_is_initialized"):
+                if getattr(self, "prev_is_initialized"):
+                    ps = "None"
+                else:
+                    ps = "CLOUD"
             else:
                 ps = "None"
 
         ns = None
-        if hasattr(self, "next_is_initialized"):
-            if getattr(self, "next_is_initialized"):
-                if self.next:
-                    ns = self.next._identifier
-                else:
-                    ns = "None"
-            else:
-                ns = "CLOUD"
+        if self.next:
+            ns = "node" + str(self.next._objid)
         else:
-            if self.next:
-                ns = self.next._identifier
+            if hasattr(self, "next_is_initialized"):
+                if getattr(self, "next_is_initialized"):
+                    ns = "None"
+                else:
+                    ns = "CLOUD"
             else:
                 ns = "None"
 
@@ -80,7 +67,8 @@ class Node:
             "("
             + ps
             + " <- "
-            + self._identifier
+            + "node"
+            + str(self._objid)
             + ": "
             + self.data.__repr__()
             + " -> "
@@ -94,9 +82,7 @@ class Node:
 
 class DoublyLinkedList:
 
-    _vector = []
     _engine = None
-    _id = 0
 
     # Instance attributes annotations (will be treated as symbolic)
     head: "Node"
@@ -106,9 +92,6 @@ class DoublyLinkedList:
     def __init__(self):
         self.s_head = None
         self.s_tail = None
-
-        self._identifier = self.__class__.__name__.lower() + str(self._id)
-        self.__class__._id += 1
 
     @property
     def head(self):
@@ -268,10 +251,6 @@ class DoublyLinkedList:
 
         return True
 
-    # check if the list is empty
-    def instrumented_is_empty(self):
-        return self._get_head() is None
-
     def is_empty(self):
         return self.head is None
 
@@ -294,7 +273,7 @@ class DoublyLinkedList:
             str_rep += current.__repr__()
             if current.next:
                 if not self.do_add(visited, current.next):
-                    str_rep += "**" + current.next._identifier
+                    str_rep += "**node" + str(current.next._objid)
                 else:
                     worklist.append(current.next)
             else:
@@ -332,4 +311,3 @@ class DoublyLinkedList:
         if self.do_add(visited, self.tail):
             return False
         return True
-

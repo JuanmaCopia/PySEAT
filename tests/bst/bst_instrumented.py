@@ -10,9 +10,7 @@ def do_add(s, x):
 
 class Node:
 
-    _vector = []
     _engine = None
-    _id = 0
 
     # Instance attributes annotations (will be treated as symbolic)
     data: int
@@ -24,9 +22,6 @@ class Node:
         self.s_data = data
         self.s_right = None
         self.s_left = None
-
-        self._identifier = self.__class__.__name__.lower() + str(self._id)
-        self.__class__._id += 1
 
     @property
     def data(self):
@@ -59,14 +54,12 @@ class Node:
         return True
 
     def __repr__(self):
-        return self._identifier + ": " + str(self.data)
+        return "node" + str(self._objid) + ": " + str(self.data)
 
 
 class BST:
 
-    _vector = []
     _engine = None
-    _id = 0
 
     # Instance attributes annotations (will be treated as symbolic)
     root: "Node"
@@ -74,9 +67,6 @@ class BST:
     # Init params should be annotated also
     def __init__(self):
         self.s_root = None
-
-        self._identifier = self.__class__.__name__.lower() + str(self._id)
-        self.__class__._id += 1
 
     @property
     def root(self):

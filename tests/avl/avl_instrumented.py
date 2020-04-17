@@ -10,9 +10,7 @@ def do_add(s, x):
 
 class Node:
 
-    _vector = []
     _engine = None
-    _id = 0
 
     # Instance attributes annotations (will be treated as symbolic)
     data: int
@@ -27,9 +25,6 @@ class Node:
         self.s_left = None
         self.s_parent = parent
         self.height = 0
-
-        self._identifier = self.__class__.__name__.lower() + str(self._id)
-        self.__class__._id += 1
 
     @property
     def data(self):
@@ -99,22 +94,23 @@ class Node:
         return True
 
     def __repr__(self):
+        ident = "node" + str(self._objid)
         if self.parent is not None:
             return (
                 "("
-                + self.parent._identifier
+                + "node" + str(self.parent._objid)
                 + " <- "
-                + self._identifier
+                + ident
                 + ": "
                 + str(self.data)
                 + ")"
             )
         if hasattr(self, "_parent_is_initialized"):
             if getattr(self, "_parent_is_initialized"):
-                return "None" + "<- " + self._identifier + ": " + str(self.data)
-            return "CLOUD" + "<- " + self._identifier + ": " + str(self.data)
+                return "None" + "<- " + ident + ": " + str(self.data)
+            return "CLOUD" + "<- " + ident + ": " + str(self.data)
         else:
-            return "None" + "<- " + self._identifier + ": " + str(self.data)
+            return "None" + "<- " + ident + ": " + str(self.data)
 
     def find(self, k):
         """Finds and returns the node with key k from the subtree rooted at this
@@ -213,9 +209,7 @@ def update_height(node):
 
 class AVL():
 
-    _vector = []
     _engine = None
-    _id = 0
 
     # Instance attributes annotations (will be treated as symbolic)
     root: "Node"
@@ -223,9 +217,6 @@ class AVL():
     # Init params should be annotated also
     def __init__(self):
         self.s_root = None
-
-        self._identifier = self.__class__.__name__.lower() + str(self._id)
-        self.__class__._id += 1
 
     @property
     def root(self):

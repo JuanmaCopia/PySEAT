@@ -6,9 +6,7 @@ def do_add(s, x):
 
 class Node:
     # Class attribues
-    _vector = []
     _engine = None
-    _id = 0
 
     # Instance attributes annotations (will be treated as symbolic)
     elem: int
@@ -18,9 +16,6 @@ class Node:
     def __init__(self, elem: int):
         self.s_elem = elem
         self.s_next = None
-
-        self._identifier = self.__class__.__name__.lower() + str(self._id)
-        self.__class__._id += 1
 
     @property
     def elem(self):
@@ -43,16 +38,20 @@ class Node:
 
     def to_str(self, visited=False):
         if visited:
-            return " **" + self._identifier + "(" + str(self.elem) + ")"
+            return " **node" + str(self._objid) + "(" + str(self.elem) + ")"
 
         if self.next is None:
             if hasattr(self, "_next_is_initialized"):
                 if getattr(self, "_next_is_initialized"):
-                    return " " + self._identifier + "(" + str(self.elem) + ") -> None"
+                    return (
+                        " node" + str(self._objid) + "(" + str(self.elem) + ") -> None"
+                    )
                 else:
-                    return " " + self._identifier + "(" + str(self.elem) + ") -> CLOUD"
-            return " " + self._identifier + "(" + str(self.elem) + ") -> None"
-        return " " + self._identifier + "(" + str(self.elem) + ") ->"
+                    return (
+                        " node" + str(self._objid) + "(" + str(self.elem) + ") -> CLOUD"
+                    )
+            return " node" + str(self._objid) + "(" + str(self.elem) + ") -> None"
+        return " node" + str(self._objid) + "(" + str(self.elem) + ") ->"
 
     def __repr__(self):
         str_rep = ""
@@ -74,9 +73,7 @@ class Node:
 
 class LinkedList:
 
-    _vector = []
     _engine = None
-    _id = 0
 
     # Instance attributes annotations (will be treated as symbolic)
     head: "Node"
@@ -84,9 +81,6 @@ class LinkedList:
     # Init params should be annotated also
     def __init__(self):
         self.s_head = None
-
-        self._identifier = self.__class__.__name__.lower() + str(self._id)
-        self.__class__._id += 1
 
     @property
     def head(self):

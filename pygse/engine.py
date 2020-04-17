@@ -85,7 +85,9 @@ class SEEngine:
         self._current_self = None
 
         for k in self._sut.class_map.keys():
-            k._engine = self
+            setattr(k, "_engine", self)
+            setattr(k, "_vector", [])
+            setattr(k, "_id", 0)
 
     def sym_int(self, value=None):
         return SymInt(self, value)
@@ -183,6 +185,9 @@ class SEEngine:
         # adding initialized fields
         for attr_name in self._sut.get_instance_attr_dict(user_def_class).keys():
             setattr(partial_ins, get_initialized_name(attr_name), False)
+
+        setattr(partial_ins, "_objid", user_def_class._id)
+        user_def_class._id += 1
         return partial_ins
 
     def _get_init_types(self, user_def_class):
@@ -431,6 +436,9 @@ class SEEngine:
         while worklist:
             current = worklist.pop(0)
             setattr(current, "_recursion_depth", 0)
+            if not hasattr(current, "_objid"):
+                setattr(current, "_objid", type(current)._id)
+                type(current)._id += 1
             current._vector.append(current)
             for name in current.__dict__:
                 attr = None
@@ -493,7 +501,10 @@ class SEEngine:
         try:
             if hasattr(obj, "repok") and not obj.repok():
                 raise RepOkFailException()
-            if obj._identifier != self._current_self._identifier:
+            if (
+                obj._objid != self._current_self._objid or
+                not isinstance(obj, type(self._current_self))
+            ):
                 if not self._current_self.repok():
                     raise RepOkFailException()
         except NoInitializedException:
@@ -705,7 +716,11 @@ class SEEngine:
 
     @staticmethod
     def is_tracked(obj):
-        obj = next((x for x in obj._vector if x._identifier == obj._identifier), None)
+        if not hasattr(obj, "_objid"):
+            setattr(obj, "_objid", type(obj)._id)
+            type(obj)._id += 1
+            return False
+        obj = next((x for x in obj._vector if x._objid == obj._objid), None)
         return obj is not None
 
     def statistics(self):
@@ -765,13 +780,13 @@ class LazyBackup:
         self.self_bkp = None
 
     def init_self_backup(self, instance):
-        self.self_id = instance._identifier
+        self.self_id = instance._objid
         self.self_bkp = copy.deepcopy(instance)
 
     def _add_argument(self, instance):
         bkp = copy.deepcopy(instance)
         if is_user_defined(instance):
-            self.args_bkp.append((instance._identifier, bkp))
+            self.args_bkp.append((instance._objid, bkp))
         else:
             self.args_bkp.append(("", bkp))
 
@@ -796,7 +811,7 @@ class LazyBackup:
     def make_args_backup(self):
         for (argid, bkp) in self.args_bkp:
             if is_user_defined(bkp):
-                arg_bkp = next((x for x in bkp._vector if x._identifier == argid), None)
+                arg_bkp = next((x for x in bkp._vector if x._objid == argid), None)
                 if arg_bkp is not None:
                     bkp = copy.deepcopy(arg_bkp)
                 else:
@@ -804,7 +819,7 @@ class LazyBackup:
 
     def make_self_backup(self):
         vector = self.self_bkp._vector
-        self_bkp = next((x for x in vector if x._identifier == self.self_id), None)
+        self_bkp = next((x for x in vector if x._objid == self.self_id), None)
         if self_bkp is not None:
             self.self_bkp = copy.deepcopy(self_bkp)
         else:

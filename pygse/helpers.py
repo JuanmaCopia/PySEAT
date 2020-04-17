@@ -1,6 +1,6 @@
 def is_special_attr(attr_name):
     return attr_name.endswith("_is_initialized") or attr_name in [
-        "_identifier",
+        "_objid",
         "_recursion_depth",
         "_vector",
         "_id",
@@ -39,7 +39,7 @@ def do_add(s, x):
 def is_user_defined(obj):
     if obj is None:
         return False
-    return hasattr(obj, "_vector")
+    return hasattr(obj, "_engine")
 
 
 def set_to_initialized(structure, attr_name):
@@ -74,3 +74,9 @@ def get_dict(instance):
         for (key, value) in instance.__dict__.items()
         if not is_special_attr(key)
     }
+
+
+def var_name(obj):
+    if hasattr(obj, "_objid"):
+        return type(obj).__name__.lower() + str(obj._objid)
+    assert False

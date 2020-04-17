@@ -4,11 +4,11 @@ from cdll import Node, CDLinkedList
 def insert_after_node_test1():
     '''
     Self:
-        (node642 <- node0: 0 -> node1) (node0 <- node1: 0 -> node643) (node1 <- node643: 0 -> node644) (node643 <- node644: 0 -> node645) (node644 <- node645: 0 -> node642) (node645 <- node642: 0 -> node0) **node0
+        (node641 <- node0: 0 -> node1) (node0 <- node1: 0 -> node642) (node1 <- node642: 0 -> node643) (node642 <- node643: 0 -> node644) (node643 <- node644: 0 -> node641) (node644 <- node641: 0 -> node0) **node0
     Return:
         None
     End Self:
-        (node642 <- node0: 0 -> node646) (node0 <- node646: 0 -> node1) (node646 <- node1: 0 -> node643) (node1 <- node643: 0 -> node644) (node643 <- node644: 0 -> node645) (node644 <- node645: 0 -> node642) (node645 <- node642: 0 -> node0) **node0
+        (node641 <- node0: 0 -> node646) (node0 <- node646: 0 -> node1) (node646 <- node1: 0 -> node642) (node1 <- node642: 0 -> node643) (node642 <- node643: 0 -> node644) (node643 <- node644: 0 -> node641) (node644 <- node641: 0 -> node0) **node0
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -16,26 +16,26 @@ def insert_after_node_test1():
     node0.key = 0
     node1 = Node(0)
     node1.key = 0
+    node642 = Node(0)
+    node642.key = 0
     node643 = Node(0)
     node643.key = 0
     node644 = Node(0)
     node644.key = 0
-    node645 = Node(0)
-    node645.key = 0
-    node642 = Node(0)
-    node642.key = 0
-    node642.next = node0
-    node642.prev = node645
-    node645.next = node642
-    node645.prev = node644
-    node644.next = node645
+    node641 = Node(0)
+    node641.key = 0
+    node641.next = node0
+    node641.prev = node644
+    node644.next = node641
     node644.prev = node643
     node643.next = node644
-    node643.prev = node1
-    node1.next = node643
+    node643.prev = node642
+    node642.next = node643
+    node642.prev = node1
+    node1.next = node642
     node1.prev = node0
     node0.next = node1
-    node0.prev = node642
+    node0.prev = node641
     cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
@@ -57,11 +57,11 @@ def insert_after_node_test1():
 def insert_after_node_test2():
     '''
     Self:
-        (node645 <- node0: 1 -> node1) (node0 <- node1: 0 -> node2) (node1 <- node2: 0 -> node646) (node2 <- node646: 0 -> node647) (node646 <- node647: 0 -> node645) (node647 <- node645: 0 -> node0) **node0
+        (node644 <- node0: 1 -> node1) (node0 <- node1: 0 -> node2) (node1 <- node2: 0 -> node645) (node2 <- node645: 0 -> node646) (node645 <- node646: 0 -> node644) (node646 <- node644: 0 -> node0) **node0
     Return:
         None
     End Self:
-        (node645 <- node0: 1 -> node1) (node0 <- node1: 0 -> node648) (node1 <- node648: 0 -> node2) (node648 <- node2: 0 -> node646) (node2 <- node646: 0 -> node647) (node646 <- node647: 0 -> node645) (node647 <- node645: 0 -> node0) **node0
+        (node644 <- node0: 1 -> node1) (node0 <- node1: 0 -> node648) (node1 <- node648: 0 -> node2) (node648 <- node2: 0 -> node645) (node2 <- node645: 0 -> node646) (node645 <- node646: 0 -> node644) (node646 <- node644: 0 -> node0) **node0
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -71,24 +71,24 @@ def insert_after_node_test2():
     node1.key = 0
     node2 = Node(0)
     node2.key = 0
-    node646 = Node(0)
-    node646.key = 0
-    node647 = Node(0)
-    node647.key = 0
     node645 = Node(0)
     node645.key = 0
-    node645.next = node0
-    node645.prev = node647
-    node647.next = node645
-    node647.prev = node646
-    node646.next = node647
-    node646.prev = node2
-    node2.next = node646
+    node646 = Node(0)
+    node646.key = 0
+    node644 = Node(0)
+    node644.key = 0
+    node644.next = node0
+    node644.prev = node646
+    node646.next = node644
+    node646.prev = node645
+    node645.next = node646
+    node645.prev = node2
+    node2.next = node645
     node2.prev = node1
     node1.next = node2
     node1.prev = node0
     node0.next = node1
-    node0.prev = node645
+    node0.prev = node644
     cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
@@ -110,11 +110,11 @@ def insert_after_node_test2():
 def insert_after_node_test3():
     '''
     Self:
-        (node668 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 0 -> node3) (node2 <- node3: 0 -> node669) (node3 <- node669: 0 -> node670) (node669 <- node670: 0 -> node668) (node670 <- node668: 0 -> node0) **node0
+        (node667 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 0 -> node3) (node2 <- node3: 0 -> node668) (node3 <- node668: 0 -> node669) (node668 <- node669: 0 -> node667) (node669 <- node667: 0 -> node0) **node0
     Return:
         None
     End Self:
-        (node668 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 0 -> node671) (node2 <- node671: 0 -> node3) (node671 <- node3: 0 -> node669) (node3 <- node669: 0 -> node670) (node669 <- node670: 0 -> node668) (node670 <- node668: 0 -> node0) **node0
+        (node667 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 0 -> node671) (node2 <- node671: 0 -> node3) (node671 <- node3: 0 -> node668) (node3 <- node668: 0 -> node669) (node668 <- node669: 0 -> node667) (node669 <- node667: 0 -> node0) **node0
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -126,26 +126,26 @@ def insert_after_node_test3():
     node2.key = 0
     node3 = Node(0)
     node3.key = 0
-    node669 = Node(0)
-    node669.key = 0
-    node670 = Node(0)
-    node670.key = 0
     node668 = Node(0)
     node668.key = 0
-    node668.next = node0
-    node668.prev = node670
-    node670.next = node668
-    node670.prev = node669
-    node669.next = node670
-    node669.prev = node3
-    node3.next = node669
+    node669 = Node(0)
+    node669.key = 0
+    node667 = Node(0)
+    node667.key = 0
+    node667.next = node0
+    node667.prev = node669
+    node669.next = node667
+    node669.prev = node668
+    node668.next = node669
+    node668.prev = node3
+    node3.next = node668
     node3.prev = node2
     node2.next = node3
     node2.prev = node1
     node1.next = node2
     node1.prev = node0
     node0.next = node1
-    node0.prev = node668
+    node0.prev = node667
     cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
@@ -168,11 +168,11 @@ def insert_after_node_test3():
 def insert_after_node_test4():
     '''
     Self:
-        (node610 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node4) (node3 <- node4: 0 -> node611) (node4 <- node611: 0 -> node610) (node611 <- node610: 0 -> node0) **node0
+        (node609 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node4) (node3 <- node4: 0 -> node610) (node4 <- node610: 0 -> node609) (node610 <- node609: 0 -> node0) **node0
     Return:
         None
     End Self:
-        (node610 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node612) (node3 <- node612: 0 -> node4) (node612 <- node4: 0 -> node611) (node4 <- node611: 0 -> node610) (node611 <- node610: 0 -> node0) **node0
+        (node609 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node612) (node3 <- node612: 0 -> node4) (node612 <- node4: 0 -> node610) (node4 <- node610: 0 -> node609) (node610 <- node609: 0 -> node0) **node0
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -186,15 +186,15 @@ def insert_after_node_test4():
     node3.key = 0
     node4 = Node(0)
     node4.key = 0
-    node611 = Node(0)
-    node611.key = 0
     node610 = Node(0)
     node610.key = 0
-    node610.next = node0
-    node610.prev = node611
-    node611.next = node610
-    node611.prev = node4
-    node4.next = node611
+    node609 = Node(0)
+    node609.key = 0
+    node609.next = node0
+    node609.prev = node610
+    node610.next = node609
+    node610.prev = node4
+    node4.next = node610
     node4.prev = node3
     node3.next = node4
     node3.prev = node2
@@ -203,7 +203,7 @@ def insert_after_node_test4():
     node1.next = node2
     node1.prev = node0
     node0.next = node1
-    node0.prev = node610
+    node0.prev = node609
     cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
@@ -226,11 +226,11 @@ def insert_after_node_test4():
 def insert_after_node_test5():
     '''
     Self:
-        (node625 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 0 -> node5) (node4 <- node5: 0 -> node626) (node5 <- node626: 0 -> node625) (node626 <- node625: 0 -> node0) **node0
+        (node624 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 0 -> node5) (node4 <- node5: 0 -> node625) (node5 <- node625: 0 -> node624) (node625 <- node624: 0 -> node0) **node0
     Return:
         None
     End Self:
-        (node625 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 0 -> node627) (node4 <- node627: 0 -> node5) (node627 <- node5: 0 -> node626) (node5 <- node626: 0 -> node625) (node626 <- node625: 0 -> node0) **node0
+        (node624 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 0 -> node627) (node4 <- node627: 0 -> node5) (node627 <- node5: 0 -> node625) (node5 <- node625: 0 -> node624) (node625 <- node624: 0 -> node0) **node0
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -246,15 +246,15 @@ def insert_after_node_test5():
     node4.key = 0
     node5 = Node(0)
     node5.key = 0
-    node626 = Node(0)
-    node626.key = 0
     node625 = Node(0)
     node625.key = 0
-    node625.next = node0
-    node625.prev = node626
-    node626.next = node625
-    node626.prev = node5
-    node5.next = node626
+    node624 = Node(0)
+    node624.key = 0
+    node624.next = node0
+    node624.prev = node625
+    node625.next = node624
+    node625.prev = node5
+    node5.next = node625
     node5.prev = node4
     node4.next = node5
     node4.prev = node3
@@ -265,7 +265,7 @@ def insert_after_node_test5():
     node1.next = node2
     node1.prev = node0
     node0.next = node1
-    node0.prev = node625
+    node0.prev = node624
     cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
