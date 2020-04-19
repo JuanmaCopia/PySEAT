@@ -15,6 +15,7 @@ from exceptions import MaxDepthException, CantMakeDecisionException
 from exceptions import TimeOutException
 from helpers import do_add, is_user_defined, keep_first_n_items, has_prefix
 from helpers import set_to_initialized, get_initialized_name, add_prefix
+from helpers import search_obj, is_same, get_dict_of_prefixed
 from symbolics import Symbolic, SymBool, SymInt, is_symbolic, is_symbolic_bool
 
 from smt.smt import SMT
@@ -175,7 +176,7 @@ class SEEngine:
         Returns:
             A partially symbolic instance of user_def_class.
         """
-        init_types = self._get_init_types(user_def_class)[1:]
+        init_types = self._sut.get_cls_init_types(user_def_class)[1:]
         init_args = [self._make_symbolic(a) for a in init_types]
         if init_args:
             partial_ins = user_def_class(*init_args)
@@ -189,20 +190,6 @@ class SEEngine:
         setattr(partial_ins, "_objid", user_def_class._id)
         user_def_class._id += 1
         return partial_ins
-
-    def _get_init_types(self, user_def_class):
-        """Returns the types of the parameters of the class.
-
-        Returns a list containing the types of the parameters
-        of the init method of user_def_class.
-
-        Args:
-            user_def_class: An user-defined class.
-
-        Returns:
-            A list of types.
-        """
-        return self._sut.get_cls_init_types(user_def_class)
 
     def _make_symbolic(self, typ):
         """Creates a symbolic instance.
@@ -374,7 +361,6 @@ class SEEngine:
         for k in self._sut.class_map.keys():
             k._vector = []
         self.fill_class_vectors(iself)
-        self._backups.init_self_backup(iself)
 
     def build(self, symbolic, model):
         if symbolic is None:
@@ -436,16 +422,10 @@ class SEEngine:
         while worklist:
             current = worklist.pop(0)
             setattr(current, "_recursion_depth", 0)
-            if not hasattr(current, "_objid"):
-                setattr(current, "_objid", type(current)._id)
-                type(current)._id += 1
             current._vector.append(current)
-            for name in current.__dict__:
-                attr = None
-                if hasattr(current, name):
-                    attr = getattr(current, name)
-                if is_user_defined(attr) and do_add(visited, attr):
-                    worklist.append(attr)
+            for value in get_dict_of_prefixed(current).values():
+                if is_user_defined(value) and do_add(visited, value):
+                    worklist.append(value)
 
     def _execute_repok_exploration(self, instance):
         self._current_self = instance
@@ -501,10 +481,7 @@ class SEEngine:
         try:
             if hasattr(obj, "repok") and not obj.repok():
                 raise RepOkFailException()
-            if (
-                obj._objid != self._current_self._objid or
-                not isinstance(obj, type(self._current_self))
-            ):
+            if not is_same(obj, self._current_self):
                 if not self._current_self.repok():
                     raise RepOkFailException()
         except NoInitializedException:
@@ -551,11 +528,11 @@ class SEEngine:
             if attr is None:
                 new_value = self.get_next_lazy_step(attr_type)
                 setattr(obj, pref_name, new_value)
+                setattr(obj, "_recursion_depth", 0)
 
                 if self.mode == Mode.METHOD_EXPLORATION:
-                    self.mimic_change(obj, pref_name, new_value)
-                    setattr(obj, "_recursion_depth", 0)
                     self.check_conservative_repok(obj)
+                    self.mimic_change(obj, pref_name, new_value)
 
         else:
             assert Symbolic.is_supported_builtin(attr_type)
@@ -570,8 +547,9 @@ class SEEngine:
 
     def lazy_set_attr(self, obj, attr_name, value):
         assert self.mode != Mode.CONSERVATIVE_EXECUTION
-        set_to_initialized(obj, attr_name)
-        setattr(obj, add_prefix(attr_name), value)
+        pref_name = add_prefix(attr_name)
+        set_to_initialized(obj, pref_name)
+        setattr(obj, pref_name, value)
 
     def get_next_lazy_step(self, lazy_class):
         """Implements a lazy initialization step.
@@ -705,23 +683,14 @@ class SEEngine:
         return bool_value
 
     def check_recursion_limit(self, obj):
-        if obj is not None and is_user_defined(obj):
-            # see this
-            if not hasattr(obj, "_recursion_depth"):
-                setattr(obj, "_recursion_depth", 1)
-            else:
-                obj._recursion_depth += 1
-                if obj._recursion_depth > self._recursion_limit:
-                    raise MaxRecursionException(str(obj._recursion_depth))
+        if hasattr(obj, "_recursion_depth"):
+            obj._recursion_depth += 1
+            if obj._recursion_depth > self._recursion_limit:
+                raise MaxRecursionException(str(obj._recursion_depth))
 
     @staticmethod
     def is_tracked(obj):
-        if not hasattr(obj, "_objid"):
-            setattr(obj, "_objid", type(obj)._id)
-            type(obj)._id += 1
-            return False
-        obj = next((x for x in obj._vector if x._objid == obj._objid), None)
-        return obj is not None
+        return hasattr(obj, "_objid")
 
     def statistics(self):
         """Returns the collected statistics of all executions.
@@ -729,14 +698,11 @@ class SEEngine:
         return self._stats
 
     def concretize(self, symbolic, model):
-        self.set_mode(Mode.CONCRETE_EXECUTION)
         visited = set()
         sym_copy = copy.deepcopy(symbolic)
         if is_user_defined(sym_copy):
             visited.add(sym_copy)
-        conc = self._concretize(sym_copy, model, visited)
-        self.restore_prev_mode()
-        return conc
+        return self._concretize(sym_copy, model, visited)
 
     def _concretize(self, symbolic, model, visited):
         """Creates the concrete object.
@@ -763,59 +729,27 @@ class SEEngine:
                 symbolic[i] = self._concretize(x, model, visited)
             return symbolic
         elif is_user_defined(symbolic):
-            setattr(symbolic, "_recursion_depth", 0)
-            for attr_name, value in symbolic.__dict__.items():
-                set_to_initialized(symbolic, attr_name)
-                attr = value
-                if not callable(attr) and do_add(visited, attr):
-                    setattr(symbolic, attr_name, self._concretize(attr, model, visited))
+            for pref_name, value in get_dict_of_prefixed(symbolic).items():
+                set_to_initialized(symbolic, pref_name)
+                if not callable(value) and do_add(visited, value):
+                    setattr(symbolic, pref_name, self._concretize(value, model, visited))
             return symbolic
         return symbolic
 
     def mimic_change(self, obj, attr_name, new_value):
         # if its an initialization to an existing object
-        existing_obj = False
-        if self._branching_points[self._current_bp - 1].get_branch() > 1:
-            existing_obj = True
-            new_val = SEEngine.search_obj(new_value, self._backups.self_bkp)
-            if new_val is None:
-                assert False
 
-        obj_backup = SEEngine.search_obj(obj, self._backups.self_bkp)
+        obj_backup = self._backups.get_backup_of(obj)
         if obj_backup is None:
             assert False
-            # for arg in self._backups.args_bkp:self._backups.self_bkp
-            #     if is_user_defined(arg):
-            #         obj_backup = self.search_obj(obj, arg)
-            #         if obj_backup is not None:
-            #             break
 
-        if existing_obj:
+        if self._branching_points[self._current_bp - 1].get_branch() > 1:
+            new_val = self._backups.get_backup_of(new_value)
+            if new_val is None:
+                assert False
             setattr(obj_backup, attr_name, new_val)
         else:
             setattr(obj_backup, attr_name, copy.deepcopy(new_value))
-
-
-    # def get_backup_obj(self, obj):
-
-    @staticmethod
-    def is_same(obj1, obj2):
-        return obj1._objid == obj2._objid and isinstance(obj1, type(obj2))
-
-    @staticmethod
-    def search_obj(obj, structure):
-        visited = set()
-        visited.add(structure)
-        worklist = []
-        worklist.append(structure)
-        while worklist:
-            current = worklist.pop(0)
-            if SEEngine.is_same(obj, current):
-                return current
-            for name, value in current.__dict__.items():
-                if is_user_defined(value) and has_prefix(name) and do_add(visited, value):
-                    worklist.append(value)
-        return None
 
 
 class LazyBackup:
@@ -835,3 +769,13 @@ class LazyBackup:
 
     def get_args(self):
         return copy.deepcopy(self.args_bkp)
+
+    def get_backup_of(self, obj):
+        obj_backup = search_obj(obj, self.self_bkp)
+        if obj_backup is None:
+            for arg in self.args_bkp:
+                if is_user_defined(arg):
+                    obj_backup = search_obj(obj, arg)
+                    if obj_backup is not None:
+                        break
+        return obj_backup

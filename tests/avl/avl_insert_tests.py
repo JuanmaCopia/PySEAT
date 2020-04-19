@@ -15,8 +15,9 @@ def insert_test1():
         
                  None<- node0: 1
                  /             \
-        (node0 <- node3: 0)     None
+        (node0 <- node2: 0)     None
         /                 \     
+        None                   None     
 
     '''
     # Self Generation
@@ -60,8 +61,9 @@ def insert_test2():
         
         None<- node0: 0          
         /             \          
-        None      (node0 <- node3: 0)
+        None      (node0 <- node2: 0)
               /                 \
+              None                   None
 
     '''
     # Self Generation
@@ -99,8 +101,9 @@ def insert_test3():
         None
     End Self:
         
-        CLOUD<- node2: 0
+        CLOUD<- node1: 0
         /              \
+        None                None
 
     '''
     # Self Generation
