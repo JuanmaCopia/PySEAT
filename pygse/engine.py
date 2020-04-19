@@ -13,56 +13,14 @@ from exceptions import UnsatBranchError, NoInitializedException
 from exceptions import RepOkFailException, MaxRecursionException
 from exceptions import MaxDepthException, CantMakeDecisionException
 from exceptions import TimeOutException
-from helpers import do_add, is_user_defined, keep_first_n_items
+from helpers import do_add, is_user_defined, keep_first_n_items, set_attr, get_attr
 from helpers import set_to_initialized, get_initialized_name
+from helpers import search_obj, is_same, get_dict_of_prefixed, is_initialized
 from symbolics import Symbolic, SymBool, SymInt, is_symbolic, is_symbolic_bool
 
 from smt.smt import SMT
 from smt.sort_z3 import SMTInt, SMTBool, SMTChar, SMTArray
 from smt.solver_z3 import SMTSolver
-
-
-def concretize(symbolic, model):
-    visited = set()
-    sym_copy = copy.deepcopy(symbolic)
-    if is_user_defined(sym_copy):
-        visited.add(sym_copy)
-    return _concretize(sym_copy, model, visited)
-
-
-def _concretize(symbolic, model, visited):
-    """Creates the concrete object.
-
-    Creates the concrete object from a symbolic (builtin symbolic)
-    or a partially symbolic (user-defined) one and the model
-    describing it's restrictions.
-
-    Args:
-        symbolic: a symbolic builtin or a partially symbolic
-            user-defined class.
-        model: Model describing the constraints that the object
-            must acomplish.
-
-    Returns:
-        The concrete object represented by symbolic and the model.
-    """
-    if symbolic is None:
-        return None
-    elif is_symbolic(symbolic):
-        return symbolic.concretize(model)
-    elif isinstance(symbolic, list):
-        for i, x in enumerate(symbolic):
-            symbolic[i] = _concretize(x, model, visited)
-        return symbolic
-    elif is_user_defined(symbolic):
-        setattr(symbolic, "_recursion_depth", 0)
-        for attr_name, value in symbolic.__dict__.items():
-            set_to_initialized(symbolic, attr_name)
-            attr = value
-            if not callable(attr) and do_add(visited, attr):
-                setattr(symbolic, attr_name, _concretize(attr, model, visited))
-        return symbolic
-    return symbolic
 
 
 class SEEngine:
@@ -128,7 +86,9 @@ class SEEngine:
         self._current_self = None
 
         for k in self._sut.class_map.keys():
-            k._engine = self
+            setattr(k, "_engine", self)
+            setattr(k, "_vector", [])
+            setattr(k, "_id", 0)
 
     def sym_int(self, value=None):
         return SymInt(self, value)
@@ -166,6 +126,7 @@ class SEEngine:
             self._backups.initialize_backup(args)
 
             result = self._execute_method_exploration(args)
+            self.set_mode(Mode.CONCRETE_EXECUTION)
             yield (result)
 
             self._remove_explored_branches()
@@ -215,27 +176,20 @@ class SEEngine:
         Returns:
             A partially symbolic instance of user_def_class.
         """
-        init_types = self._get_init_types(user_def_class)[1:]
+        init_types = self._sut.get_cls_init_types(user_def_class)[1:]
         init_args = [self._make_symbolic(a) for a in init_types]
         if init_args:
             partial_ins = user_def_class(*init_args)
         else:
             partial_ins = user_def_class()
+        # Instrumentation
+        # adding initialized fields
+        for attr_name in self._sut.get_instance_attr_dict(user_def_class).keys():
+            setattr(partial_ins, get_initialized_name(attr_name), False)
+
+        setattr(partial_ins, "_objid", user_def_class._id)
+        user_def_class._id += 1
         return partial_ins
-
-    def _get_init_types(self, user_def_class):
-        """Returns the types of the parameters of the class.
-
-        Returns a list containing the types of the parameters
-        of the init method of user_def_class.
-
-        Args:
-            user_def_class: An user-defined class.
-
-        Returns:
-            A list of types.
-        """
-        return self._sut.get_cls_init_types(user_def_class)
 
     def _make_symbolic(self, typ):
         """Creates a symbolic instance.
@@ -316,14 +270,14 @@ class SEEngine:
         else:
             status = Status.OK
         finally:
-            self.restore_prev_mode()
+            self.set_mode(Mode.CONCRETE_EXECUTION)
             # if exception:
             #     raise exception
             if status == Status.PRUNED:
                 exec_num = self._stats.total_paths
                 model = self.smt.get_model(self._path_condition)
                 pruned_sym = self._backups.get_self()
-                pruned = concretize(pruned_sym, model)
+                pruned = self.concretize(pruned_sym, model)
                 run_data = PathExecutionData(exec_num, status, exception, pruned)
                 run_data.pathcondition = self._path_condition
                 run_data.symbolic_inself = pruned_sym
@@ -401,7 +355,6 @@ class SEEngine:
     def _reset_for_repok(self, iself, pc_len):
         self._path_condition = keep_first_n_items(self._path_condition, pc_len)
         self._backups = LazyBackup()
-        self._backups.init_self_backup(iself)
         self._current_bp = 0
         self._current_depth = 0
         self._recursion_limit = 200
@@ -426,7 +379,7 @@ class SEEngine:
 
     def build_partial_struture(self, input_self, model):
         self._recursion_limit = 200
-        concretei = concretize(input_self, model)
+        concretei = self.concretize(input_self, model)
         if self.execute_repok_concretely(concretei):
             return concretei
 
@@ -470,18 +423,15 @@ class SEEngine:
             current = worklist.pop(0)
             setattr(current, "_recursion_depth", 0)
             current._vector.append(current)
-            for name in current.__dict__:
-                attr = None
-                if hasattr(current, name):
-                    attr = getattr(current, name)
-                if is_user_defined(attr) and do_add(visited, attr):
-                    worklist.append(attr)
+            for value in get_dict_of_prefixed(current).values():
+                if is_user_defined(value) and do_add(visited, value):
+                    worklist.append(value)
 
     def _execute_repok_exploration(self, instance):
         self._current_self = instance
         self.set_mode(Mode.REPOK_EXPLORATION)
         try:
-            result = instance.instrumented_repok()
+            result = instance.repok()
             if is_symbolic_bool(result):
                 result = result.__bool__()
         except UnsatBranchError:
@@ -500,7 +450,7 @@ class SEEngine:
         else:
             if result:
                 model = self.smt.get_model(self._path_condition)
-                new_object = concretize(instance, model)
+                new_object = self.concretize(instance, model)
                 return new_object
             return None
         finally:
@@ -529,10 +479,10 @@ class SEEngine:
     def check_conservative_repok(self, obj):
         self.set_mode(Mode.CONSERVATIVE_EXECUTION)
         try:
-            if hasattr(obj, "instrumented_repok") and not obj.instrumented_repok():
+            if hasattr(obj, "repok") and not obj.repok():
                 raise RepOkFailException()
-            if obj._identifier != self._current_self._identifier:
-                if not self._current_self.instrumented_repok():
+            if not is_same(obj, self._current_self):
+                if not self._current_self.repok():
                     raise RepOkFailException()
         except NoInitializedException:
             pass
@@ -546,47 +496,50 @@ class SEEngine:
             self.restore_prev_mode()
 
     def lazy_initialization(self, obj, attr_name):
-        assert obj is not None
-        isinit_name = get_initialized_name(attr_name)
-        assert hasattr(obj, isinit_name) and hasattr(obj, attr_name)
+        attr = get_attr(obj, attr_name)
+        is_init = is_initialized(obj, attr_name)
 
-        is_init = getattr(obj, isinit_name)
-        attr = getattr(obj, attr_name)
-
+        if self.mode == Mode.CONCRETE_EXECUTION:
+            return attr
         if self.mode == Mode.CONSERVATIVE_EXECUTION:
             if not is_init:
                 raise NoInitializedException()
             self.check_recursion_limit(attr)
             return attr
 
+        # Mode is METHOD_EXPLORATION OR REPOK_EXPLORATION
         attr_type = self._sut.get_attr_type(type(obj), attr_name)
-        if is_user_defined(attr_type):
-            if is_init is False and self.is_tracked(obj):
-                setattr(obj, isinit_name, True)
 
+        if is_user_defined(attr_type):
+            if is_init or not self.is_tracked(obj):
+                self.check_recursion_limit(attr)
+                return attr
+
+            set_to_initialized(obj, attr_name)
+            if attr is None:
                 new_value = self.get_next_lazy_step(attr_type)
-                setattr(obj, attr_name, new_value)
-                self._backups.make_backup()
+                set_attr(obj, attr_name, new_value)
+                setattr(obj, "_recursion_depth", 0)
 
                 if self.mode == Mode.METHOD_EXPLORATION:
-                    obj._recursion_depth = 0
                     self.check_conservative_repok(obj)
+                    self.mimic_change(obj, attr_name, new_value)
 
-                return getattr(obj, attr_name)
-            # else
-            self.check_recursion_limit(attr)
-            return attr
         else:
             assert Symbolic.is_supported_builtin(attr_type)
-            if not is_init and self.mode:
-                assert attr is not None
-                setattr(obj, isinit_name, True)
-                setattr(obj, attr_name, self.new_symbolic(attr_type))
-            return attr
+            assert attr is not None
+            if not is_init:
+                set_to_initialized(obj, attr_name)
+                if not is_symbolic(attr):
+                    new_sym = self.new_symbolic(attr_type)
+                    set_attr(obj, attr_name, new_sym)
+
+        return get_attr(obj, attr_name)
 
     def lazy_set_attr(self, obj, attr_name, value):
+        assert self.mode != Mode.CONSERVATIVE_EXECUTION
         set_to_initialized(obj, attr_name)
-        setattr(obj, attr_name, value)
+        set_attr(obj, attr_name, value)
 
     def get_next_lazy_step(self, lazy_class):
         """Implements a lazy initialization step.
@@ -720,70 +673,97 @@ class SEEngine:
         return bool_value
 
     def check_recursion_limit(self, obj):
-        if obj is not None and is_user_defined(obj):
+        if hasattr(obj, "_recursion_depth"):
             obj._recursion_depth += 1
             if obj._recursion_depth > self._recursion_limit:
                 raise MaxRecursionException(str(obj._recursion_depth))
 
     @staticmethod
     def is_tracked(obj):
-        obj = next((x for x in obj._vector if x._identifier == obj._identifier), None)
-        return obj is not None
+        return hasattr(obj, "_objid")
 
     def statistics(self):
         """Returns the collected statistics of all executions.
         """
         return self._stats
 
+    def concretize(self, symbolic, model):
+        visited = set()
+        sym_copy = copy.deepcopy(symbolic)
+        if is_user_defined(sym_copy):
+            visited.add(sym_copy)
+        return self._concretize(sym_copy, model, visited)
+
+    def _concretize(self, symbolic, model, visited):
+        """Creates the concrete object.
+
+        Creates the concrete object from a symbolic (builtin symbolic)
+        or a partially symbolic (user-defined) one and the model
+        describing it's restrictions.
+
+        Args:
+            symbolic: a symbolic builtin or a partially symbolic
+                user-defined class.
+            model: Model describing the constraints that the object
+                must acomplish.
+
+        Returns:
+            The concrete object represented by symbolic and the model.
+        """
+        if symbolic is None:
+            return None
+        elif is_symbolic(symbolic):
+            return symbolic.concretize(model)
+        elif isinstance(symbolic, list):
+            for i, x in enumerate(symbolic):
+                symbolic[i] = self._concretize(x, model, visited)
+            return symbolic
+        elif is_user_defined(symbolic):
+            for pref_name, value in get_dict_of_prefixed(symbolic).items():
+                set_to_initialized(symbolic, pref_name)
+                if not callable(value) and do_add(visited, value):
+                    setattr(symbolic, pref_name, self._concretize(value, model, visited))
+            return symbolic
+        return symbolic
+
+    def mimic_change(self, obj, attr_name, new_value):
+        obj_backup = self._backups.get_backup_of(obj)
+        if obj_backup is None:
+            assert False
+
+        if self._branching_points[self._current_bp - 1].get_branch() > 1:
+            new_val = self._backups.get_backup_of(new_value)
+            if new_val is None:
+                assert False
+            set_attr(obj_backup, attr_name, new_val)
+        else:
+            set_attr(obj_backup, attr_name, copy.deepcopy(new_value))
+
 
 class LazyBackup:
     def __init__(self):
-        self.self_id = ""
         self.args_bkp = []
         self.self_bkp = None
 
-    def init_self_backup(self, instance):
-        self.self_id = instance._identifier
-        self.self_bkp = copy.deepcopy(instance)
-
-    def _add_argument(self, instance):
-        bkp = copy.deepcopy(instance)
-        if is_user_defined(instance):
-            self.args_bkp.append((instance._identifier, bkp))
-        else:
-            self.args_bkp.append(("", bkp))
-
-    def init_args_backup(self, args_list):
-        for arg in args_list:
-            self._add_argument(arg)
+    def init_self_backup(self, self_obj):
+        self.self_bkp = copy.deepcopy(self_obj)
 
     def initialize_backup(self, datalist):
-        self.init_self_backup(datalist[0])
-        self.init_args_backup(datalist[1:])
+        self.self_bkp = copy.deepcopy(datalist[0])
+        self.args_bkp = copy.deepcopy(datalist[1:])
 
     def get_self(self):
         return copy.deepcopy(self.self_bkp)
 
     def get_args(self):
-        return [x[1] for x in self.args_bkp]
+        return copy.deepcopy(self.args_bkp)
 
-    def make_backup(self):
-        self.make_self_backup()
-        self.make_args_backup()
-
-    def make_args_backup(self):
-        for (argid, bkp) in self.args_bkp:
-            if is_user_defined(bkp):
-                arg_bkp = next((x for x in bkp._vector if x._identifier == argid), None)
-                if arg_bkp is not None:
-                    bkp = copy.deepcopy(arg_bkp)
-                else:
-                    assert False
-
-    def make_self_backup(self):
-        vector = self.self_bkp._vector
-        self_bkp = next((x for x in vector if x._identifier == self.self_id), None)
-        if self_bkp is not None:
-            self.self_bkp = copy.deepcopy(self_bkp)
-        else:
-            assert False
+    def get_backup_of(self, obj):
+        obj_backup = search_obj(obj, self.self_bkp)
+        if obj_backup is None:
+            for arg in self.args_bkp:
+                if is_user_defined(arg):
+                    obj_backup = search_obj(obj, arg)
+                    if obj_backup is not None:
+                        break
+        return obj_backup

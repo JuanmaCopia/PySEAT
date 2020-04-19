@@ -10,9 +10,7 @@ def do_add(s, x):
 
 class Node:
 
-    _vector = []
     _engine = None
-    _id = 0
 
     # Instance attributes annotations (will be treated as symbolic)
     data: int
@@ -25,41 +23,39 @@ class Node:
         self.data = data
         self.right = None
         self.left = None
-        self.parent = parent
+        self.s_parent = parent
         self.height = 0
 
-        self._data_is_initialized = True
-        self._right_is_initialized = False
-        self._left_is_initialized = False
-        self._parent_is_initialized = False
-        self._height_is_initialized = True
-
-        self._identifier = self.__class__.__name__.lower() + str(self._id)
-        self.__class__._id += 1
-        self._recursion_depth = 0
-
-    def _get_data(self):
+    @property
+    def data(self):
         return self._engine.lazy_initialization(self, "data")
 
-    def _set_data(self, value):
+    @data.setter
+    def data(self, value):
         return self._engine.lazy_set_attr(self, "data", value)
 
-    def _get_right(self):
+    @property
+    def right(self):
         return self._engine.lazy_initialization(self, "right")
 
-    def _set_right(self, value):
+    @right.setter
+    def right(self, value):
         return self._engine.lazy_set_attr(self, "right", value)
 
-    def _get_left(self):
+    @property
+    def left(self):
         return self._engine.lazy_initialization(self, "left")
 
-    def _set_left(self, value):
+    @left.setter
+    def left(self, value):
         return self._engine.lazy_set_attr(self, "left", value)
 
-    def _get_parent(self):
+    @property
+    def parent(self):
         return self._engine.lazy_initialization(self, "parent")
 
-    def _set_parent(self, value):
+    @parent.setter
+    def parent(self, value):
         return self._engine.lazy_set_attr(self, "parent", value)
 
     def repok(self):
@@ -95,21 +91,26 @@ class Node:
                 return False
             if self.parent.right is self and self.data < self.parent.data:
                 return False
-
-        return True
-
-    # def repok(self):
-    #     return True
-
-    def instrumented_repok(self):
         return True
 
     def __repr__(self):
+        ident = "node" + str(self._objid)
         if self.parent is not None:
-            return self.parent._identifier + " <- " + self._identifier + ": " + str(self.data)
-        if self._parent_is_initialized:
-            return "None" + " <- " + self._identifier + ": " + str(self.data)
-        return "CLOUD" + " <- " + self._identifier + ": " + str(self.data)
+            return (
+                "("
+                + "node" + str(self.parent._objid)
+                + " <- "
+                + ident
+                + ": "
+                + str(self.data)
+                + ")"
+            )
+        if hasattr(self, "_parent_is_initialized"):
+            if getattr(self, "_parent_is_initialized"):
+                return "None" + "<- " + ident + ": " + str(self.data)
+            return "CLOUD" + "<- " + ident + ": " + str(self.data)
+        else:
+            return "None" + "<- " + ident + ": " + str(self.data)
 
     def find(self, k):
         """Finds and returns the node with key k from the subtree rooted at this
@@ -121,18 +122,18 @@ class Node:
         Returns:
             The node with key k.
         """
-        if k == self._get_data():
+        if k == self.data:
             return self
-        elif k < self._get_data():
-            if self._get_left() is None:
+        elif k < self.data:
+            if self.left is None:
                 return None
             else:
-                return self._get_left().find(k)
+                return self.left.find(k)
         else:
-            if self._get_right() is None:
+            if self.right is None:
                 return None
             else:
-                return self._get_right().find(k)
+                return self.right.find(k)
 
     def find_min(self):
         """Finds the node with the minimum key in the subtree rooted at this
@@ -164,18 +165,18 @@ class Node:
         """
         if node is None:
             return
-        if node._get_data() < self._get_data():
-            if self._get_left() is None:
-                node._set_parent(self)
-                self._set_left(node)
+        if node.data < self.data:
+            if self.left is None:
+                node.parent = self
+                self.left = node
             else:
-                self._get_left().insert(node)
+                self.left.insert(node)
         else:
-            if self._get_right() is None:
-                node._set_parent(self)
-                self._set_right(node)
+            if self.right is None:
+                node.parent = self
+                self.right = node
             else:
-                self._get_right().insert(node)
+                self.right.insert(node)
 
     def delete(self):
         """Deletes and returns this node from the tree."""
@@ -195,10 +196,6 @@ class Node:
             return s.delete()
 
 
-def update_height(node):
-    node.height = max(height(node._get_left()), height(node._get_right())) + 1
-
-
 def height(node):
     if node is None:
         return -1
@@ -206,11 +203,13 @@ def height(node):
         return node.height
 
 
+def update_height(node):
+    node.height = max(height(node.left), height(node.right)) + 1
+
+
 class AVL():
 
-    _vector = []
     _engine = None
-    _id = 0
 
     # Instance attributes annotations (will be treated as symbolic)
     root: "Node"
@@ -219,16 +218,12 @@ class AVL():
     def __init__(self):
         self.root = None
 
-        self._root_is_initialized = False
-
-        self._identifier = self.__class__.__name__.lower() + str(self._id)
-        self.__class__._id += 1
-        self._recursion_depth = 0
-
-    def _get_root(self):
+    @property
+    def root(self):
         return self._engine.lazy_initialization(self, "root")
 
-    def _set_root(self, value):
+    @root.setter
+    def root(self, value):
         return self._engine.lazy_set_attr(self, "root", value)
 
     def to_str(self, node, visited):
@@ -296,7 +291,7 @@ class AVL():
         Returns:
             The node with key k or None if the tree is empty.
         """
-        return self._get_root() and self._get_root().find(k)
+        return self.root and self.root.find(k)
 
     def find_min(self):
         """Returns the minimum node of this BST."""
@@ -317,57 +312,57 @@ class AVL():
         return node and node.next_larger()
 
     def left_rotate(self, x):
-        y = x._get_right()
-        y._set_parent(x._get_parent())
-        if y._get_parent() is None:
-            self._set_root(y)
+        y = x.right
+        y.parent = x.parent
+        if y.parent is None:
+            self.root = y
         else:
-            if y._get_parent()._get_left() is x:
-                y._get_parent()._set_left(y)
-            elif y._get_parent()._get_right() is x:
-                y._get_parent()._set_right(y)
-        x._set_right(y._get_left())
-        if x._get_right() is not None:
-            x._get_right()._set_parent(x)
-        y._set_left(x)
-        x._set_parent(y)
+            if y.parent.left is x:
+                y.parent.left = y
+            elif y.parent.right is x:
+                y.parent.right = y
+        x.right = y.left
+        if x.right is not None:
+            x.right.parent = x
+        y.left = x
+        x.parent = y
         update_height(x)
         update_height(y)
 
     def right_rotate(self, x):
-        y = x._get_left()
-        y._set_parent(x._get_parent())
-        if y._get_parent() is None:
-            self._set_root(y)
+        y = x.left
+        y.parent = x.parent
+        if y.parent is None:
+            self.root = y
         else:
-            if y._get_parent()._get_left() is x:
-                y._get_parent()._set_left(y)
-            elif y._get_parent()._get_right() is x:
-                y._get_parent()._set_right(y)
-        x._set_left(y._get_right())
-        if x._get_left() is not None:
-            x._get_left()._set_parent(x)
-        y._set_right(x)
-        x._set_parent(y)
+            if y.parent.left is x:
+                y.parent.left = y
+            elif y.parent.right is x:
+                y.parent.right = y
+        x.left = y.right
+        if x.left is not None:
+            x.left.parent = x
+        y.right = x
+        x.parent = y
         update_height(x)
         update_height(y)
 
     def rebalance(self, node):
         while node is not None:
             update_height(node)
-            if height(node._get_left()) >= 2 + height(node._get_right()):
-                if height(node._get_left()._get_left()) >= height(node._get_left()._get_right()):
+            if height(node.left) >= 2 + height(node.right):
+                if height(node.left.left) >= height(node.left.right):
                     self.right_rotate(node)
                 else:
-                    self.left_rotate(node._get_left())
+                    self.left_rotate(node.left)
                     self.right_rotate(node)
-            elif height(node._get_right()) >= 2 + height(node._get_left()):
-                if height(node._get_right()._get_right()) >= height(node._get_right()._get_left()):
+            elif height(node.right) >= 2 + height(node.left):
+                if height(node.right.right) >= height(node.right.left):
                     self.left_rotate(node)
                 else:
-                    self.right_rotate(node._get_right())
+                    self.right_rotate(node.right)
                     self.left_rotate(node)
-            node = node._get_parent()
+            node = node.parent
 
     def insert(self, k: int):
         """Inserts a node with key k into the subtree rooted at this node.
@@ -377,25 +372,11 @@ class AVL():
             k: The key of the node to be inserted.
         """
         node = Node(None, k)
-        if self._get_root() is None:
+        if self.root is None:
             # The root's parent is None.
-            self._set_root(node)
+            self.root = node
         else:
-            self._get_root().insert(node)
-        self.rebalance(node)
-
-    def insert2(self, node: "Node"):
-        """Inserts a node with key k into the subtree rooted at this node.
-        This AVL version guarantees the balance property: h = O(lg n).
-
-        Args:
-            k: The key of the node to be inserted.
-        """
-        if self._get_root() is None:
-            # The root's parent is None.
-            self._set_root(node)
-        else:
-            self._get_root().insert(node)
+            self.root.insert(node)
         self.rebalance(node)
 
     def delete(self, k):
@@ -483,52 +464,6 @@ class AVL():
                 return False
         return True
 
-    def instrumented_repok(self):
-        if not self._get_root():
-            return True
-        visited = set()
-        visited.add(self._get_root())
-        if not (
-            self.instrumented_is_BST(self.root, INT_MIN, INT_MAX, visited) and
-            self.ins_is_balanced(self._get_root()) and
-            self.ins_parents_ok(self._get_root())
-        ):
-            return False
-        if self._get_root()._get_parent() is not None:
-            return False
-        return True
-
-    def ins_is_acyclic(self):
-        visited = set()
-        visited.add(self._get_root())
-        worklist = []
-        worklist.append(self._get_root())
-        while worklist:
-            current = worklist.pop(0)
-            if current._get_left():
-                if not do_add(visited, current._get_left()):
-                    return False
-                worklist.append(current._get_left())
-            if current._get_right():
-                if not do_add(visited, current._get_right()):
-                    return False
-                worklist.append(current._get_right())
-        return True
-
-    def ins_is_ordered(self):
-        return self.ins_is_ordered2(self._get_root(), INT_MIN, INT_MAX)
-
-    def ins_is_ordered2(self, node, min, max):
-        if node._get_data() < min or node._get_data() > max:
-            return False
-        if node._get_left():
-            if not self.ins_is_ordered2(node._get_left(), min, node._get_data()):
-                return False
-        if node._get_right():
-            if not self.ins_is_ordered2(node._get_right(), node._get_data(), max):
-                return False
-        return True
-
     def is_balanced(self, node):
         if node is None:
             return True
@@ -540,18 +475,6 @@ class AVL():
         if node is None:
             return 0
         return max(self.get_height(node.left), self.get_height(node.right)) + 1
-
-    def ins_is_balanced(self, node):
-        if node is None:
-            return True
-        left_height = self.ins_get_height(node._get_left())
-        right_height = self.ins_get_height(node._get_right())
-        return abs(left_height - right_height) <= 1
-
-    def ins_get_height(self, node):
-        if node is None:
-            return 0
-        return max(self.ins_get_height(node._get_left()), self.ins_get_height(node._get_right())) + 1
 
     def parents_ok(self, node):
         if node is None:
@@ -566,20 +489,6 @@ class AVL():
                 return False
 
         return self.parents_ok(node.left) and self.parents_ok(node.right)
-
-    def ins_parents_ok(self, node):
-        if node is None:
-            return True
-
-        if node._get_left() is not None:
-            if node._get_left()._get_parent() is not node:
-                return False
-
-        if node._get_right() is not None:
-            if node._get_right()._get_parent() is not node:
-                return False
-
-        return self.ins_parents_ok(node._get_left()) and self.ins_parents_ok(node._get_right())
 
     def is_BST(self, node, min, max, visited):
         if node is None:
@@ -598,23 +507,4 @@ class AVL():
 
         return self.is_BST(node.left, min, node.data, visited) and self.is_BST(
             node.right, node.data, max, visited
-        )
-
-    def instrumented_is_BST(self, node, min, max, visited):
-        if node is None:
-            return True
-
-        if node._get_left() is not None:
-            if not do_add(visited, node._get_left()) or node._get_left()._get_parent() is not node:
-                return False
-
-        if node._get_right() is not None:
-            if not do_add(visited, node._get_right()) or node._get_right()._get_parent() is not node:
-                return False
-
-        if node._get_data() < min or node._get_data() > max:
-            return False
-
-        return self.instrumented_is_BST(node._get_left(), min, node._get_data(), visited) and self.instrumented_is_BST(
-            node._get_right(), node._get_data(), max, visited
         )

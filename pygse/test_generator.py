@@ -2,7 +2,8 @@
 
 """
 
-from helpers import is_special_attr, is_user_defined, do_add
+from helpers import is_user_defined, do_add
+from helpers import get_dict, var_name
 import os
 
 
@@ -47,6 +48,10 @@ class TestCode:
         self.test_number = number
         self.code = ""
         self.name = sut.get_method_name() + "_test" + str(number) + "()"
+
+        self.set_missing_ids(self.run_data.returnv)
+        self.set_missing_ids(self.run_data.self_end_state)
+
         self.generate_test_code()
 
     def _add_line(self, line):
@@ -99,7 +104,7 @@ class TestCode:
         )
 
     def add_repok_check(self, structure):
-        self._add_line("assert " + structure._identifier + ".repok()")
+        self._add_line("assert " + var_name(structure) + ".repok()")
 
     def create_return_assert_code(self, value):
         self._add_line("assert returnv == " + str(value))
@@ -127,12 +132,12 @@ class TestCode:
         if identifier:
             worklist.append((structure, identifier))
         else:
-            worklist.append((structure, structure._identifier))
+            worklist.append((structure, var_name(structure)))
         while worklist:
             current = worklist.pop(0)
             curstruct = current[0]
             curident = current[1]
-            structdict = self.get_attr_value_dict(curstruct)
+            structdict = get_dict(curstruct)
             for attr_name, value in structdict.items():
                 if is_user_defined(value):
                     if do_add(visited, value):
@@ -149,22 +154,14 @@ class TestCode:
         else:
             self._add_line(self_id + "." + method_name + "(" + args_ids + ")")
 
-    @classmethod
-    def get_attr_value_dict(cls, instance):
-        return {
-            key: value
-            for (key, value) in instance.__dict__.items()
-            if not is_special_attr(key)
-        }
-
     def generate_structure_code(self, instance, visited=set()):
         if not instance:
             return
         if not do_add(visited, instance):
-            return instance._identifier
+            return var_name(instance)
 
-        identifier = instance._identifier
-        attr = self.get_attr_value_dict(instance)
+        identifier = var_name(instance)
+        attr = get_dict(instance)
         self.create_constructor_call(
             identifier,
             type(instance),
@@ -211,3 +208,20 @@ class TestCode:
         else:
             code_line = identifier + " = " + typ.__name__ + "()"
         self._add_line(code_line)
+
+    @staticmethod
+    def set_missing_ids(structure):
+        if not is_user_defined(structure):
+            return
+        visited = set()
+        visited.add(structure)
+        worklist = []
+        worklist.append(structure)
+        while worklist:
+            current = worklist.pop(0)
+            if not hasattr(current, "_objid"):
+                type(current)._id += 1
+                setattr(current, "_objid", type(current)._id)
+            for value in current.__dict__.values():
+                if is_user_defined(value) and do_add(visited, value):
+                    worklist.append(value)
