@@ -13,7 +13,7 @@ from exceptions import UnsatBranchError, NoInitializedException
 from exceptions import RepOkFailException, MaxRecursionException
 from exceptions import MaxDepthException, CantMakeDecisionException
 from exceptions import TimeOutException
-from helpers import do_add, is_user_defined, keep_first_n_items
+from helpers import do_add, is_user_defined, keep_first_n_items, has_prefix
 from helpers import set_to_initialized, get_initialized_name, add_prefix
 from symbolics import Symbolic, SymBool, SymInt, is_symbolic, is_symbolic_bool
 
@@ -368,13 +368,13 @@ class SEEngine:
     def _reset_for_repok(self, iself, pc_len):
         self._path_condition = keep_first_n_items(self._path_condition, pc_len)
         self._backups = LazyBackup()
-        self._backups.init_self_backup(iself)
         self._current_bp = 0
         self._current_depth = 0
         self._recursion_limit = 200
         for k in self._sut.class_map.keys():
             k._vector = []
         self.fill_class_vectors(iself)
+        self._backups.init_self_backup(iself)
 
     def build(self, symbolic, model):
         if symbolic is None:
@@ -551,9 +551,9 @@ class SEEngine:
             if attr is None:
                 new_value = self.get_next_lazy_step(attr_type)
                 setattr(obj, pref_name, new_value)
-                self._backups.make_backup()
 
                 if self.mode == Mode.METHOD_EXPLORATION:
+                    self.mimic_change(obj, pref_name, new_value)
                     setattr(obj, "_recursion_depth", 0)
                     self.check_conservative_repok(obj)
 
@@ -772,55 +772,66 @@ class SEEngine:
             return symbolic
         return symbolic
 
+    def mimic_change(self, obj, attr_name, new_value):
+        # if its an initialization to an existing object
+        existing_obj = False
+        if self._branching_points[self._current_bp - 1].get_branch() > 1:
+            existing_obj = True
+            new_val = SEEngine.search_obj(new_value, self._backups.self_bkp)
+            if new_val is None:
+                assert False
+
+        obj_backup = SEEngine.search_obj(obj, self._backups.self_bkp)
+        if obj_backup is None:
+            assert False
+            # for arg in self._backups.args_bkp:self._backups.self_bkp
+            #     if is_user_defined(arg):
+            #         obj_backup = self.search_obj(obj, arg)
+            #         if obj_backup is not None:
+            #             break
+
+        if existing_obj:
+            setattr(obj_backup, attr_name, new_val)
+        else:
+            setattr(obj_backup, attr_name, copy.deepcopy(new_value))
+
+
+    # def get_backup_obj(self, obj):
+
+    @staticmethod
+    def is_same(obj1, obj2):
+        return obj1._objid == obj2._objid and isinstance(obj1, type(obj2))
+
+    @staticmethod
+    def search_obj(obj, structure):
+        visited = set()
+        visited.add(structure)
+        worklist = []
+        worklist.append(structure)
+        while worklist:
+            current = worklist.pop(0)
+            if SEEngine.is_same(obj, current):
+                return current
+            for name, value in current.__dict__.items():
+                if is_user_defined(value) and has_prefix(name) and do_add(visited, value):
+                    worklist.append(value)
+        return None
+
 
 class LazyBackup:
     def __init__(self):
-        self.self_id = ""
         self.args_bkp = []
         self.self_bkp = None
 
-    def init_self_backup(self, instance):
-        self.self_id = instance._objid
-        self.self_bkp = copy.deepcopy(instance)
-
-    def _add_argument(self, instance):
-        bkp = copy.deepcopy(instance)
-        if is_user_defined(instance):
-            self.args_bkp.append((instance._objid, bkp))
-        else:
-            self.args_bkp.append(("", bkp))
-
-    def init_args_backup(self, args_list):
-        for arg in args_list:
-            self._add_argument(arg)
+    def init_self_backup(self, self_obj):
+        self.self_bkp = copy.deepcopy(self_obj)
 
     def initialize_backup(self, datalist):
-        self.init_self_backup(datalist[0])
-        self.init_args_backup(datalist[1:])
+        self.self_bkp = copy.deepcopy(datalist[0])
+        self.args_bkp = copy.deepcopy(datalist[1:])
 
     def get_self(self):
         return copy.deepcopy(self.self_bkp)
 
     def get_args(self):
-        return [x[1] for x in self.args_bkp]
-
-    def make_backup(self):
-        self.make_self_backup()
-        self.make_args_backup()
-
-    def make_args_backup(self):
-        for (argid, bkp) in self.args_bkp:
-            if is_user_defined(bkp):
-                arg_bkp = next((x for x in bkp._vector if x._objid == argid), None)
-                if arg_bkp is not None:
-                    bkp = copy.deepcopy(arg_bkp)
-                else:
-                    assert False
-
-    def make_self_backup(self):
-        vector = self.self_bkp._vector
-        self_bkp = next((x for x in vector if x._objid == self.self_id), None)
-        if self_bkp is not None:
-            self.self_bkp = copy.deepcopy(self_bkp)
-        else:
-            assert False
+        return copy.deepcopy(self.args_bkp)
