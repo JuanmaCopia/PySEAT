@@ -63,7 +63,7 @@ class SEEngine:
         _real_to_proxy (dict): Maps builtin supported types to Symbolic Ones.
     """
 
-    def __init__(self, sut_data, max_depth):
+    def __init__(self, sut_data, max_depth, max_nodes):
         """Setups the initial values of the engine.
 
         Args:
@@ -84,6 +84,8 @@ class SEEngine:
         self._branching_points = []
         self._path_condition = []
         self._current_self = None
+        self._max_structures = max_nodes
+        self._structures = 0
 
         for k in self._sut.class_map.keys():
             setattr(k, "_engine", self)
@@ -216,6 +218,7 @@ class SEEngine:
         """
         self._path_condition = []
         self._current_bp = 0
+        self._structures = 0
         self._current_depth = 0
         self._recursion_limit = 20
         self._backups = LazyBackup()
@@ -411,21 +414,23 @@ class SEEngine:
         self._path_condition = keep_first_n_items(self._path_condition, pc_len)
         self._branching_points = backup_bp
 
-    @staticmethod
-    def fill_class_vectors(structure):
+    def fill_class_vectors(self, structure):
         if not is_user_defined(structure):
             return
         visited = set()
         visited.add(structure)
         worklist = []
         worklist.append(structure)
+        structures = 0
         while worklist:
             current = worklist.pop(0)
+            structures += 1
             setattr(current, "_recursion_depth", 0)
             current._vector.append(current)
             for value in get_dict_of_prefixed(current).values():
                 if is_user_defined(value) and do_add(visited, value):
                     worklist.append(value)
+        self._structures = structures - 2
 
     def _execute_repok_exploration(self, instance):
         self._current_self = instance
@@ -571,6 +576,9 @@ class SEEngine:
             self._current_bp += 1
 
             if index == 0:
+                self._structures += 1
+                if self._structures > self._max_structures:
+                    raise MaxDepthException
                 n = self._symbolize_partially(lazy_class)
                 lazy_class._vector.append(n)
                 return n
@@ -580,6 +588,10 @@ class SEEngine:
                 assert index - 2 >= 0
                 assert index - 2 < len(lazy_class._vector)
                 return lazy_class._vector[index - 2]
+
+        self._structures += 1
+        if self._structures + 1 > self._max_structures:
+            raise MaxDepthException
 
         self._branching_points.append(LazyStep(len(lazy_class._vector) + 1))
         self._current_bp += 1

@@ -19,6 +19,9 @@ parser.add_option(
     "-d", dest="max_depth", type="int", default=10, help="maximum exploration depth",
 )
 parser.add_option(
+    "-n", dest="max_nodes", type="int", default=5, help="maximum amount structures",
+)
+parser.add_option(
     "-v",
     "--verbose",
     dest="verbose",
@@ -37,13 +40,14 @@ class_name = args[1]
 method_name = args[2]
 max_depth = options.max_depth
 verbose = options.verbose
+max_nodes = options.max_nodes
 
 sut = sut_parser.parse(module_name, class_name, method_name)
 filepath = testgen.create_testfile(module_name, class_name, method_name)
 
 runs = []
 test_number = 1
-engine = SEEngine(sut, max_depth)
+engine = SEEngine(sut, max_depth, max_nodes)
 tests_gen = []
 test_num = 0
 
