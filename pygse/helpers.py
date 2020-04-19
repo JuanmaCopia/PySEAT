@@ -1,24 +1,27 @@
+PREFIX = "s_"
+ISINIT_PREFIX = "_"
+ISINIT_POSFIX = "_is_initialized"
+
+
 def is_special_attr(attr_name):
-    return attr_name.endswith("_is_initialized") or attr_name in [
+    return attr_name.endswith(ISINIT_POSFIX) or attr_name in [
         "_objid",
         "_recursion_depth",
-        "_vector",
-        "_id",
     ]
 
 
 def has_prefix(attr_name):
-    return attr_name.startswith("s_")
+    return attr_name.startswith(PREFIX)
 
 
 def remove_prefix(attr_name):
-    if attr_name.startswith("s_"):
+    if attr_name.startswith(PREFIX):
         return attr_name[2:]
     return attr_name
 
 
 def add_prefix(attr_name):
-    return "s_" + attr_name
+    return PREFIX + attr_name
 
 
 def keep_first_n_items(l, n):
@@ -44,19 +47,33 @@ def is_user_defined(obj):
 
 def is_initialized(obj, attr_name):
     assert not has_prefix(attr_name)
-    return hasattr(obj, get_initialized_name(attr_name))
+    init_name = get_initialized_name(attr_name)
+    if hasattr(obj, init_name):
+        return getattr(obj, init_name)
+    else:
+        setattr(obj, init_name, False)
+        return False
 
 
-def set_to_initialized(structure, prefixed_name):
-    assert has_prefix(prefixed_name)
-    name = remove_prefix(prefixed_name)
+def set_to_initialized(structure, name):
+    if has_prefix(name):
+        name = remove_prefix(name)
+    assert not has_prefix(name)
     init_name = get_initialized_name(name)
     setattr(structure, init_name, True)
 
 
 def get_initialized_name(attr_name):
     assert not has_prefix(attr_name)
-    return "_" + attr_name + "_is_initialized"
+    return ISINIT_PREFIX + attr_name + ISINIT_POSFIX
+
+
+def get_attr(obj, attr_name):
+    return getattr(obj, add_prefix(attr_name))
+
+
+def set_attr(obj, attr_name, value):
+    return setattr(obj, add_prefix(attr_name), value)
 
 
 def helper_print_dict(dictionary):
@@ -102,7 +119,7 @@ def search_obj(obj, structure):
         current = worklist.pop(0)
         if is_same(obj, current):
             return current
-        for name, value in current.__dict__.items():
-            if is_user_defined(value) and has_prefix(name) and do_add(visited, value):
+        for value in get_dict_of_prefixed(current).values():
+            if is_user_defined(value) and do_add(visited, value):
                 worklist.append(value)
     return None

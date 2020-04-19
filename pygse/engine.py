@@ -13,9 +13,9 @@ from exceptions import UnsatBranchError, NoInitializedException
 from exceptions import RepOkFailException, MaxRecursionException
 from exceptions import MaxDepthException, CantMakeDecisionException
 from exceptions import TimeOutException
-from helpers import do_add, is_user_defined, keep_first_n_items, has_prefix
-from helpers import set_to_initialized, get_initialized_name, add_prefix
-from helpers import search_obj, is_same, get_dict_of_prefixed
+from helpers import do_add, is_user_defined, keep_first_n_items, set_attr, get_attr
+from helpers import set_to_initialized, get_initialized_name
+from helpers import search_obj, is_same, get_dict_of_prefixed, is_initialized
 from symbolics import Symbolic, SymBool, SymInt, is_symbolic, is_symbolic_bool
 
 from smt.smt import SMT
@@ -496,18 +496,8 @@ class SEEngine:
             self.restore_prev_mode()
 
     def lazy_initialization(self, obj, attr_name):
-        assert obj is not None
-        pref_name = add_prefix(attr_name)
-        isinit_name = get_initialized_name(attr_name)
-        assert hasattr(obj, pref_name)
-
-        if hasattr(obj, isinit_name):
-            is_init = getattr(obj, isinit_name)
-        else:
-            setattr(obj, isinit_name, False)
-            is_init = False
-
-        attr = getattr(obj, pref_name)
+        attr = get_attr(obj, attr_name)
+        is_init = is_initialized(obj, attr_name)
 
         if self.mode == Mode.CONCRETE_EXECUTION:
             return attr
@@ -517,6 +507,7 @@ class SEEngine:
             self.check_recursion_limit(attr)
             return attr
 
+        # Mode is METHOD_EXPLORATION OR REPOK_EXPLORATION
         attr_type = self._sut.get_attr_type(type(obj), attr_name)
 
         if is_user_defined(attr_type):
@@ -524,32 +515,31 @@ class SEEngine:
                 self.check_recursion_limit(attr)
                 return attr
 
-            setattr(obj, isinit_name, True)
+            set_to_initialized(obj, attr_name)
             if attr is None:
                 new_value = self.get_next_lazy_step(attr_type)
-                setattr(obj, pref_name, new_value)
+                set_attr(obj, attr_name, new_value)
                 setattr(obj, "_recursion_depth", 0)
 
                 if self.mode == Mode.METHOD_EXPLORATION:
                     self.check_conservative_repok(obj)
-                    self.mimic_change(obj, pref_name, new_value)
+                    self.mimic_change(obj, attr_name, new_value)
 
         else:
             assert Symbolic.is_supported_builtin(attr_type)
             assert attr is not None
             if not is_init:
-                setattr(obj, isinit_name, True)
+                set_to_initialized(obj, attr_name)
                 if not is_symbolic(attr):
                     new_sym = self.new_symbolic(attr_type)
-                    setattr(obj, pref_name, new_sym)
+                    set_attr(obj, attr_name, new_sym)
 
-        return getattr(obj, pref_name)
+        return get_attr(obj, attr_name)
 
     def lazy_set_attr(self, obj, attr_name, value):
         assert self.mode != Mode.CONSERVATIVE_EXECUTION
-        pref_name = add_prefix(attr_name)
-        set_to_initialized(obj, pref_name)
-        setattr(obj, pref_name, value)
+        set_to_initialized(obj, attr_name)
+        set_attr(obj, attr_name, value)
 
     def get_next_lazy_step(self, lazy_class):
         """Implements a lazy initialization step.
@@ -737,8 +727,6 @@ class SEEngine:
         return symbolic
 
     def mimic_change(self, obj, attr_name, new_value):
-        # if its an initialization to an existing object
-
         obj_backup = self._backups.get_backup_of(obj)
         if obj_backup is None:
             assert False
@@ -747,9 +735,9 @@ class SEEngine:
             new_val = self._backups.get_backup_of(new_value)
             if new_val is None:
                 assert False
-            setattr(obj_backup, attr_name, new_val)
+            set_attr(obj_backup, attr_name, new_val)
         else:
-            setattr(obj_backup, attr_name, copy.deepcopy(new_value))
+            set_attr(obj_backup, attr_name, copy.deepcopy(new_value))
 
 
 class LazyBackup:
