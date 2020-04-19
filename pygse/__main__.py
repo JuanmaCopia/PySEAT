@@ -4,6 +4,7 @@
 import os
 import sys
 import subprocess
+import time
 from optparse import OptionParser
 
 import sut_parser
@@ -54,6 +55,8 @@ test_num = 0
 print("\n ========================  PyGSE  =====================\n")
 print("Method " + method_name + " of class " + class_name)
 
+start_time = time.time()
+
 print("\nPerforming Exploration...\n")
 for run in engine.explore():
     if run:
@@ -65,6 +68,7 @@ for run in engine.explore():
             testgen.append_to_testfile(filepath, test.code + "\n\n")
 
 print("\nDONE! " + str(test_num) + " Tests were generated\n")
+print("Elapsed Time:   ---  %s seconds  ---" % (time.time() - start_time))
 report_statistics(engine.statistics())
 
 testgen.append_test_calls(filepath, tests_gen)
