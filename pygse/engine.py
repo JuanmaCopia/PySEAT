@@ -84,8 +84,8 @@ class SEEngine:
         self._branching_points = []
         self._path_condition = []
         self._current_self = None
-        self._max_structures = max_nodes
-        self._structures = 0
+        self._max_nodes = max_nodes
+        self._current_nodes = 0
 
         for k in self._sut.class_map.keys():
             setattr(k, "_engine", self)
@@ -218,7 +218,7 @@ class SEEngine:
         """
         self._path_condition = []
         self._current_bp = 0
-        self._structures = 0
+        self._current_nodes = 0
         self._current_depth = 0
         self._recursion_limit = 20
         self._backups = LazyBackup()
@@ -243,6 +243,7 @@ class SEEngine:
             under test
         """
         self._stats.total_paths += 1
+        print("\n\nExecuting method:")
 
         returnv = None
         exception = None
@@ -299,9 +300,10 @@ class SEEngine:
         symbolic_inself = self._backups.get_self()
         symbolic_args = self._backups.get_args()
 
+        print("Building...")
         input_self = self.build(symbolic_inself, model)
         if input_self is None:
-            self._stats.pruned_invalid += 1
+            self._stats.not_builded += 1
             return PathExecutionData(self._stats.total_paths, Status.PRUNED)
 
         input_args = self.build(symbolic_args, model)
@@ -360,7 +362,6 @@ class SEEngine:
         self._backups = LazyBackup()
         self._current_bp = 0
         self._current_depth = 0
-        self._recursion_limit = 200
         for k in self._sut.class_map.keys():
             k._vector = []
         self.fill_class_vectors(iself)
@@ -421,16 +422,16 @@ class SEEngine:
         visited.add(structure)
         worklist = []
         worklist.append(structure)
-        structures = 0
+        nodes = 0
         while worklist:
             current = worklist.pop(0)
-            structures += 1
+            nodes += 1
             setattr(current, "_recursion_depth", 0)
             current._vector.append(current)
             for value in get_dict_of_prefixed(current).values():
                 if is_user_defined(value) and do_add(visited, value):
                     worklist.append(value)
-        self._structures = structures - 2
+        self._current_nodes = nodes
 
     def _execute_repok_exploration(self, instance):
         self._current_self = instance
@@ -443,14 +444,13 @@ class SEEngine:
             pass
         except MaxDepthException:
             pass
-        except RepOkFailException:
-            pass
         except TimeOutException as e:
             raise e
         except MaxRecursionException:
             assert False
             raise MaxRecursionException("Max recursion reached on repok")
         except AttributeError as e:
+            print("attr error")
             raise e
         else:
             if result:
@@ -509,7 +509,6 @@ class SEEngine:
         if self.mode == Mode.CONSERVATIVE_EXECUTION:
             if not is_init:
                 raise NoInitializedException()
-            self.check_recursion_limit(attr)
             return attr
 
         # Mode is METHOD_EXPLORATION OR REPOK_EXPLORATION
@@ -565,6 +564,9 @@ class SEEngine:
         Returns:
             An instance of lazy_class or None.
         """
+        assert self.mode != Mode.CONSERVATIVE_EXECUTION
+        assert self.mode != Mode.CONCRETE_EXECUTION
+
         if self._max_depth < self._current_depth:
             raise MaxDepthException
         self._current_depth += 1
@@ -576,9 +578,7 @@ class SEEngine:
             self._current_bp += 1
 
             if index == 0:
-                self._structures += 1
-                if self._structures > self._max_structures:
-                    raise MaxDepthException
+                self._current_nodes += 1
                 n = self._symbolize_partially(lazy_class)
                 lazy_class._vector.append(n)
                 return n
@@ -589,15 +589,20 @@ class SEEngine:
                 assert index - 2 < len(lazy_class._vector)
                 return lazy_class._vector[index - 2]
 
-        self._structures += 1
-        if self._structures + 1 > self._max_structures:
-            raise MaxDepthException
-
-        self._branching_points.append(LazyStep(len(lazy_class._vector) + 1))
+        new_bp = LazyStep(len(lazy_class._vector) + 1)
+        self._branching_points.append(new_bp)
         self._current_bp += 1
+        if self.node_limit():
+            new_bp.advance_branch()
+            return None
+        self._current_nodes += 1
         n = self._symbolize_partially(lazy_class)
         lazy_class._vector.append(n)
         return n
+
+    def node_limit(self):
+        if self._current_nodes >= self._max_nodes:
+            return True
 
     def evaluate(self, sym_bool):
         """Evaluates a condition represented by a symbolic bool.

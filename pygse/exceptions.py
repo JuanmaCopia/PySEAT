@@ -13,6 +13,16 @@ class NoInitializedException(Error):
         self.message = "Attr not initialized"
 
 
+class MaxNodesException(Error):
+    def __init__(self):
+        self.message = "Max nodes"
+
+
+class MaxRepokNodesException(Error):
+    def __init__(self):
+        self.message = "Max nodes"
+
+
 class TimeOutException(Error):
     def __init__(self):
         self.message = "Timeout"
