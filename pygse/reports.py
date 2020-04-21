@@ -48,7 +48,6 @@ def report_statistics(run_data):
     complete_exec = run_data.successes + run_data.failures
     pruned = run_data.get_amount_pruned()
 
-    assert pruned + complete_exec + run_data.not_builded == run_data.total_paths
     print("Exploration Statistiscs:")
     print(
         "\n  "

@@ -3,6 +3,44 @@
 """
 
 
+class Path:
+    def __init__(self):
+        self._branch_points = []
+        self._current_bp = 0
+
+    def add_new_lazy_branch_point(self, num_branches):
+        self._branch_points.append(LazyStep(num_branches))
+        self._current_bp += 1
+
+    def add_new_cond_branch_point(self, num_branches):
+        self._branch_points.append(ConditionalStep(num_branches))
+        self._current_bp += 1
+
+    def advance_last_branch(self):
+        self._branch_points[-1].advance_branch()
+
+    def get_current_branch(self):
+        self._branch_points[self._current_bp].get_branch()
+
+    def exists_branch(self):
+        return self._current_bp < len(self._branch_points)
+
+    def reset_path(self):
+        self._current_bp = 0
+
+    def set_next_path(self):
+        if not self._branch_points:
+            return None
+        last_bp = self._branch_points[-1]
+        last_bp.advance_branch()
+
+        while self._branch_points and last_bp.all_branches_covered():
+            del self._branch_points[-1]
+            if self._branch_points:
+                last_bp = self._branch_points[-1]
+                last_bp.advance_branch()
+
+
 class ConditionalStep:
     """Conditional branching step.
 

@@ -54,5 +54,5 @@ execute(
     "insert_after_node",
     verbose,
 )
-execute("tests/bst/bst_instrumented.py", "BST", "insert", verbose, 8, 3)
-execute("tests/avl/avl_instrumented.py", "AVL", "insert", verbose, 8, 2)
+execute("tests/bst/bst_instrumented.py", "BST", "insert", verbose, 10, 3)
+execute("tests/avl/avl_instrumented.py", "AVL", "insert", verbose, 10, 3)

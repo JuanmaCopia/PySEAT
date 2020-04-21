@@ -567,10 +567,6 @@ class SEEngine:
         assert self.mode != Mode.CONSERVATIVE_EXECUTION
         assert self.mode != Mode.CONCRETE_EXECUTION
 
-        if self._max_depth < self._current_depth:
-            raise MaxDepthException
-        self._current_depth += 1
-
         if self._current_bp < len(self._branching_points):
             branch_point = self._branching_points[self._current_bp]
             assert isinstance(branch_point, LazyStep)
