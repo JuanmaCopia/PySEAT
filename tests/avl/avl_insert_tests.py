@@ -5,74 +5,6 @@ def insert_test1():
     '''
     Self:
         
-                  .None<- node0: 0..           
-                 /                  \          
-        (node0 <- node1: 0) (node0 <- node2: 0)
-        /                 \ /                 \
-        None                   None None                   None
-
-    Return:
-        None
-    End Self:
-        
-                  .None<- node0: 0..                     
-                 /                  \                    
-        (node0 <- node1: 0) (node0 <- node2: 0)          
-        /                 \ /                 \          
-        None                   None None          (node2 <- node4: 0)
-                                      /                 \
-                                      None                   None
-
-    '''
-    # Self Generation
-    avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.parent = None
-    node0.height = 0
-    node2 = Node(node0, 0)
-    node2.data = 0
-    node2.right = None
-    node2.left = None
-    node2.height = 0
-    node2.parent = node0
-    node0.right = node2
-    node1 = Node(node0, 0)
-    node1.data = 0
-    node1.right = None
-    node1.left = None
-    node1.height = 0
-    node1.parent = node0
-    node0.left = node1
-    avl0.root = node0
-    # Repok check
-    assert avl0.repok()
-    # Method call
-    avl0.insert(0)
-    # Assertions
-    # Repok check
-    assert avl0.repok()
-    assert avl0.root.data == 0
-    assert avl0.root.parent is None
-    assert avl0.root.height == 2
-    assert avl0.root.right.data == 0
-    assert avl0.root.right.left is None
-    assert avl0.root.right.height == 1
-    assert avl0.root.left.data == 0
-    assert avl0.root.left.right is None
-    assert avl0.root.left.left is None
-    assert avl0.root.left.height == 0
-    assert avl0.root.right.right.data == 0
-    assert avl0.root.right.right.right is None
-    assert avl0.root.right.right.left is None
-    assert avl0.root.right.right.height == 0
-    print('Test1: OK')
-
-
-def insert_test2():
-    '''
-    Self:
-        
                  None<- node0: 1
                  /             \
         (node0 <- node1: 1)     None
@@ -123,78 +55,10 @@ def insert_test2():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test2: OK')
+    print('Test1: OK')
 
 
-def insert_test3():
-    '''
-    Self:
-        
-                   .None<- node0: 0..           
-                  /                  \          
-        (node0 <- node1: -1) (node0 <- node2: 0)
-        /                  \ /                 \
-        None                    None None                   None
-
-    Return:
-        None
-    End Self:
-        
-                   .None<- node0: 0..                     
-                  /                  \                    
-        (node0 <- node1: -1) (node0 <- node2: 0)          
-        /                  \ /                 \          
-        None                    None None          (node2 <- node4: 0)
-                                       /                 \
-                                       None                   None
-
-    '''
-    # Self Generation
-    avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.parent = None
-    node0.height = 0
-    node2 = Node(node0, 0)
-    node2.data = 0
-    node2.right = None
-    node2.left = None
-    node2.height = 0
-    node2.parent = node0
-    node0.right = node2
-    node1 = Node(node0, -1)
-    node1.data = -1
-    node1.right = None
-    node1.left = None
-    node1.height = 0
-    node1.parent = node0
-    node0.left = node1
-    avl0.root = node0
-    # Repok check
-    assert avl0.repok()
-    # Method call
-    avl0.insert(0)
-    # Assertions
-    # Repok check
-    assert avl0.repok()
-    assert avl0.root.data == 0
-    assert avl0.root.parent is None
-    assert avl0.root.height == 2
-    assert avl0.root.right.data == 0
-    assert avl0.root.right.left is None
-    assert avl0.root.right.height == 1
-    assert avl0.root.left.data == -1
-    assert avl0.root.left.right is None
-    assert avl0.root.left.left is None
-    assert avl0.root.left.height == 0
-    assert avl0.root.right.right.data == 0
-    assert avl0.root.right.right.right is None
-    assert avl0.root.right.right.left is None
-    assert avl0.root.right.right.height == 0
-    print('Test3: OK')
-
-
-def insert_test4():
+def insert_test2():
     '''
     Self:
         
@@ -248,10 +112,10 @@ def insert_test4():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test4: OK')
+    print('Test2: OK')
 
 
-def insert_test5():
+def insert_test3():
     '''
     Self:
         
@@ -305,10 +169,10 @@ def insert_test5():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test5: OK')
+    print('Test3: OK')
 
 
-def insert_test6():
+def insert_test4():
     '''
     Self:
         
@@ -351,10 +215,10 @@ def insert_test6():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test6: OK')
+    print('Test4: OK')
 
 
-def insert_test7():
+def insert_test5():
     '''
     Self:
         
@@ -401,6 +265,120 @@ def insert_test7():
     assert avl0.root.parent is None
     assert avl0.root.height == 1
     assert avl0.root.right.data == 1
+    assert avl0.root.right.right is None
+    assert avl0.root.right.left is None
+    assert avl0.root.right.height == 0
+    assert avl0.root.left.data == 0
+    assert avl0.root.left.right is None
+    assert avl0.root.left.left is None
+    assert avl0.root.left.height == 0
+    print('Test5: OK')
+
+
+def insert_test6():
+    '''
+    Self:
+        
+        None<- node0: 0          
+        /             \          
+        None      (node0 <- node1: 1)
+              /                 \
+              None                   None
+
+    Return:
+        None
+    End Self:
+        
+                  .None<- node3: 0..           
+                 /                  \          
+        (node3 <- node0: 0) (node3 <- node1: 1)
+        /                 \ /                 \
+        None                   None None                   None
+
+    '''
+    # Self Generation
+    avl0 = AVL()
+    node0 = Node(None, 0)
+    node0.data = 0
+    node0.left = None
+    node0.parent = None
+    node0.height = 0
+    node1 = Node(node0, 1)
+    node1.data = 1
+    node1.right = None
+    node1.left = None
+    node1.height = 0
+    node1.parent = node0
+    node0.right = node1
+    avl0.root = node0
+    # Repok check
+    assert avl0.repok()
+    # Method call
+    avl0.insert(0)
+    # Assertions
+    # Repok check
+    assert avl0.repok()
+    assert avl0.root.data == 0
+    assert avl0.root.parent is None
+    assert avl0.root.height == 1
+    assert avl0.root.right.data == 1
+    assert avl0.root.right.right is None
+    assert avl0.root.right.left is None
+    assert avl0.root.right.height == 0
+    assert avl0.root.left.data == 0
+    assert avl0.root.left.right is None
+    assert avl0.root.left.left is None
+    assert avl0.root.left.height == 0
+    print('Test6: OK')
+
+
+def insert_test7():
+    '''
+    Self:
+        
+        None<- node0: 0          
+        /             \          
+        None      (node0 <- node1: 0)
+              /                 \
+              None                   None
+
+    Return:
+        None
+    End Self:
+        
+                  .None<- node1: 0..           
+                 /                  \          
+        (node1 <- node0: 0) (node1 <- node3: 0)
+        /                 \ /                 \
+        None                   None None                   None
+
+    '''
+    # Self Generation
+    avl0 = AVL()
+    node0 = Node(None, 0)
+    node0.data = 0
+    node0.left = None
+    node0.parent = None
+    node0.height = 0
+    node1 = Node(node0, 0)
+    node1.data = 0
+    node1.right = None
+    node1.left = None
+    node1.height = 0
+    node1.parent = node0
+    node0.right = node1
+    avl0.root = node0
+    # Repok check
+    assert avl0.repok()
+    # Method call
+    avl0.insert(0)
+    # Assertions
+    # Repok check
+    assert avl0.repok()
+    assert avl0.root.data == 0
+    assert avl0.root.parent is None
+    assert avl0.root.height == 1
+    assert avl0.root.right.data == 0
     assert avl0.root.right.right is None
     assert avl0.root.right.left is None
     assert avl0.root.right.height == 0
@@ -415,45 +393,37 @@ def insert_test8():
     '''
     Self:
         
-                  .None<- node0: 0..           
-                 /                  \          
-        (node0 <- node2: 0) (node0 <- node1: 1)
-        /                 \ /                 \
-        None                   None None                   None
+        None<- node0: 0          
+        /             \          
+        None      (node0 <- node1: 0)
+              /                 \
+              None                   None
 
     Return:
         None
     End Self:
         
-                  ......None<- node0: 0......           
-                 /                           \          
-        (node0 <- node2: 0)          (node0 <- node1: 1)
-        /                 \          /                 \
-        None                   None (node1 <- node4: 0)         None
-                            /                 \         
-                            None                   None         
+                  .None<- node1: 0..           
+                 /                  \          
+        (node1 <- node0: 0) (node1 <- node3: 0)
+        /                 \ /                 \
+        None                   None None                   None
 
     '''
     # Self Generation
     avl0 = AVL()
     node0 = Node(None, 0)
     node0.data = 0
+    node0.left = None
     node0.parent = None
     node0.height = 0
-    node1 = Node(node0, 1)
-    node1.data = 1
+    node1 = Node(node0, 0)
+    node1.data = 0
     node1.right = None
     node1.left = None
     node1.height = 0
     node1.parent = node0
     node0.right = node1
-    node2 = Node(node0, 0)
-    node2.data = 0
-    node2.right = None
-    node2.left = None
-    node2.height = 0
-    node2.parent = node0
-    node0.left = node2
     avl0.root = node0
     # Repok check
     assert avl0.repok()
@@ -464,261 +434,19 @@ def insert_test8():
     assert avl0.repok()
     assert avl0.root.data == 0
     assert avl0.root.parent is None
-    assert avl0.root.height == 2
-    assert avl0.root.right.data == 1
+    assert avl0.root.height == 1
+    assert avl0.root.right.data == 0
     assert avl0.root.right.right is None
-    assert avl0.root.right.height == 1
+    assert avl0.root.right.left is None
+    assert avl0.root.right.height == 0
     assert avl0.root.left.data == 0
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    assert avl0.root.right.left.data == 0
-    assert avl0.root.right.left.right is None
-    assert avl0.root.right.left.left is None
-    assert avl0.root.right.left.height == 0
     print('Test8: OK')
 
 
 def insert_test9():
-    '''
-    Self:
-        
-        None<- node0: 0          
-        /             \          
-        None      (node0 <- node1: 1)
-              /                 \
-              None                   None
-
-    Return:
-        None
-    End Self:
-        
-                  .None<- node3: 0..           
-                 /                  \          
-        (node3 <- node0: 0) (node3 <- node1: 1)
-        /                 \ /                 \
-        None                   None None                   None
-
-    '''
-    # Self Generation
-    avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.left = None
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, 1)
-    node1.data = 1
-    node1.right = None
-    node1.left = None
-    node1.height = 0
-    node1.parent = node0
-    node0.right = node1
-    avl0.root = node0
-    # Repok check
-    assert avl0.repok()
-    # Method call
-    avl0.insert(0)
-    # Assertions
-    # Repok check
-    assert avl0.repok()
-    assert avl0.root.data == 0
-    assert avl0.root.parent is None
-    assert avl0.root.height == 1
-    assert avl0.root.right.data == 1
-    assert avl0.root.right.right is None
-    assert avl0.root.right.left is None
-    assert avl0.root.right.height == 0
-    assert avl0.root.left.data == 0
-    assert avl0.root.left.right is None
-    assert avl0.root.left.left is None
-    assert avl0.root.left.height == 0
-    print('Test9: OK')
-
-
-def insert_test10():
-    '''
-    Self:
-        
-        None<- node0: 0          
-        /             \          
-        None      (node0 <- node1: 0)
-              /                 \
-              None                   None
-
-    Return:
-        None
-    End Self:
-        
-                  .None<- node1: 0..           
-                 /                  \          
-        (node1 <- node0: 0) (node1 <- node3: 0)
-        /                 \ /                 \
-        None                   None None                   None
-
-    '''
-    # Self Generation
-    avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.left = None
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, 0)
-    node1.data = 0
-    node1.right = None
-    node1.left = None
-    node1.height = 0
-    node1.parent = node0
-    node0.right = node1
-    avl0.root = node0
-    # Repok check
-    assert avl0.repok()
-    # Method call
-    avl0.insert(0)
-    # Assertions
-    # Repok check
-    assert avl0.repok()
-    assert avl0.root.data == 0
-    assert avl0.root.parent is None
-    assert avl0.root.height == 1
-    assert avl0.root.right.data == 0
-    assert avl0.root.right.right is None
-    assert avl0.root.right.left is None
-    assert avl0.root.right.height == 0
-    assert avl0.root.left.data == 0
-    assert avl0.root.left.right is None
-    assert avl0.root.left.left is None
-    assert avl0.root.left.height == 0
-    print('Test10: OK')
-
-
-def insert_test11():
-    '''
-    Self:
-        
-                  .None<- node0: 0..           
-                 /                  \          
-        (node0 <- node2: 0) (node0 <- node1: 0)
-        /                 \ /                 \
-        None                   None None                   None
-
-    Return:
-        None
-    End Self:
-        
-                  .None<- node0: 0..                     
-                 /                  \                    
-        (node0 <- node2: 0) (node0 <- node1: 0)          
-        /                 \ /                 \          
-        None                   None None          (node1 <- node4: 0)
-                                      /                 \
-                                      None                   None
-
-    '''
-    # Self Generation
-    avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, 0)
-    node1.data = 0
-    node1.right = None
-    node1.left = None
-    node1.height = 0
-    node1.parent = node0
-    node0.right = node1
-    node2 = Node(node0, 0)
-    node2.data = 0
-    node2.right = None
-    node2.left = None
-    node2.height = 0
-    node2.parent = node0
-    node0.left = node2
-    avl0.root = node0
-    # Repok check
-    assert avl0.repok()
-    # Method call
-    avl0.insert(0)
-    # Assertions
-    # Repok check
-    assert avl0.repok()
-    assert avl0.root.data == 0
-    assert avl0.root.parent is None
-    assert avl0.root.height == 2
-    assert avl0.root.right.data == 0
-    assert avl0.root.right.left is None
-    assert avl0.root.right.height == 1
-    assert avl0.root.left.data == 0
-    assert avl0.root.left.right is None
-    assert avl0.root.left.left is None
-    assert avl0.root.left.height == 0
-    assert avl0.root.right.right.data == 0
-    assert avl0.root.right.right.right is None
-    assert avl0.root.right.right.left is None
-    assert avl0.root.right.right.height == 0
-    print('Test11: OK')
-
-
-def insert_test12():
-    '''
-    Self:
-        
-        None<- node0: 0          
-        /             \          
-        None      (node0 <- node1: 0)
-              /                 \
-              None                   None
-
-    Return:
-        None
-    End Self:
-        
-                  .None<- node1: 0..           
-                 /                  \          
-        (node1 <- node0: 0) (node1 <- node3: 0)
-        /                 \ /                 \
-        None                   None None                   None
-
-    '''
-    # Self Generation
-    avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.left = None
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, 0)
-    node1.data = 0
-    node1.right = None
-    node1.left = None
-    node1.height = 0
-    node1.parent = node0
-    node0.right = node1
-    avl0.root = node0
-    # Repok check
-    assert avl0.repok()
-    # Method call
-    avl0.insert(0)
-    # Assertions
-    # Repok check
-    assert avl0.repok()
-    assert avl0.root.data == 0
-    assert avl0.root.parent is None
-    assert avl0.root.height == 1
-    assert avl0.root.right.data == 0
-    assert avl0.root.right.right is None
-    assert avl0.root.right.left is None
-    assert avl0.root.right.height == 0
-    assert avl0.root.left.data == 0
-    assert avl0.root.left.right is None
-    assert avl0.root.left.left is None
-    assert avl0.root.left.height == 0
-    print('Test12: OK')
-
-
-def insert_test13():
     '''
     Self:
         
@@ -772,10 +500,10 @@ def insert_test13():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test13: OK')
+    print('Test9: OK')
 
 
-def insert_test14():
+def insert_test10():
     '''
     Self:
         
@@ -818,10 +546,10 @@ def insert_test14():
     assert avl0.root.right.right is None
     assert avl0.root.right.left is None
     assert avl0.root.right.height == 0
-    print('Test14: OK')
+    print('Test10: OK')
 
 
-def insert_test15():
+def insert_test11():
     '''
     Self:
         <empty tree>
@@ -849,7 +577,7 @@ def insert_test15():
     assert avl0.root.left is None
     assert avl0.root.parent is None
     assert avl0.root.height == 0
-    print('Test15: OK')
+    print('Test11: OK')
 
 
 if __name__ == '__main__':
@@ -864,7 +592,3 @@ if __name__ == '__main__':
     insert_test9()
     insert_test10()
     insert_test11()
-    insert_test12()
-    insert_test13()
-    insert_test14()
-    insert_test15()

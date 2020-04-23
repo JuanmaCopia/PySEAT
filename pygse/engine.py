@@ -279,13 +279,14 @@ class SEEngine:
             #     raise exception
             if status == Status.PRUNED:
                 exec_num = self._stats.total_paths
-                model = self.smt.get_model(self._path_condition)
-                pruned_sym = self._backups.get_self()
-                pruned = self.concretize(pruned_sym, model)
-                run_data = PathExecutionData(exec_num, status, exception, pruned)
-                run_data.pathcondition = self._path_condition
-                run_data.symbolic_inself = pruned_sym
-                return run_data
+                return PathExecutionData(exec_num, status, exception)
+                # model = self.smt.get_model(self._path_condition)
+                # pruned_sym = self._backups.get_self()
+                # pruned = self.concretize(pruned_sym, model)
+
+                # run_data.pathcondition = self._path_condition
+                # run_data.symbolic_inself = pruned_sym
+                # return run_data
 
             stats = self.build_stats(status, args, returnv)
             self._stats.status_count(stats.status)
@@ -526,7 +527,8 @@ class SEEngine:
                 setattr(obj, "_recursion_depth", 0)
 
                 if self.mode == Mode.METHOD_EXPLORATION:
-                    self.check_conservative_repok(obj)
+                    if self._current_bp - 1 < len(self._branching_points):
+                        self.check_conservative_repok(obj)
                     self.mimic_change(obj, attr_name, new_value)
 
         else:
