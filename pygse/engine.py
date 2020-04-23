@@ -63,7 +63,7 @@ class SEEngine:
         _real_to_proxy (dict): Maps builtin supported types to Symbolic Ones.
     """
 
-    def __init__(self, sut_data, max_depth):
+    def __init__(self, sut_data, max_depth, max_nodes):
         """Setups the initial values of the engine.
 
         Args:
@@ -84,6 +84,8 @@ class SEEngine:
         self._branching_points = []
         self._path_condition = []
         self._current_self = None
+        self._max_nodes = max_nodes
+        self._current_nodes = 0
 
         for k in self._sut.class_map.keys():
             setattr(k, "_engine", self)
@@ -216,6 +218,7 @@ class SEEngine:
         """
         self._path_condition = []
         self._current_bp = 0
+        self._current_nodes = 0
         self._current_depth = 0
         self._recursion_limit = 20
         self._backups = LazyBackup()
@@ -240,6 +243,7 @@ class SEEngine:
             under test
         """
         self._stats.total_paths += 1
+        print("\n\nExecuting method:")
 
         returnv = None
         exception = None
@@ -275,13 +279,14 @@ class SEEngine:
             #     raise exception
             if status == Status.PRUNED:
                 exec_num = self._stats.total_paths
-                model = self.smt.get_model(self._path_condition)
-                pruned_sym = self._backups.get_self()
-                pruned = self.concretize(pruned_sym, model)
-                run_data = PathExecutionData(exec_num, status, exception, pruned)
-                run_data.pathcondition = self._path_condition
-                run_data.symbolic_inself = pruned_sym
-                return run_data
+                return PathExecutionData(exec_num, status, exception)
+                # model = self.smt.get_model(self._path_condition)
+                # pruned_sym = self._backups.get_self()
+                # pruned = self.concretize(pruned_sym, model)
+
+                # run_data.pathcondition = self._path_condition
+                # run_data.symbolic_inself = pruned_sym
+                # return run_data
 
             stats = self.build_stats(status, args, returnv)
             self._stats.status_count(stats.status)
@@ -296,9 +301,10 @@ class SEEngine:
         symbolic_inself = self._backups.get_self()
         symbolic_args = self._backups.get_args()
 
+        print("Building...")
         input_self = self.build(symbolic_inself, model)
         if input_self is None:
-            self._stats.pruned_invalid += 1
+            self._stats.not_builded += 1
             return PathExecutionData(self._stats.total_paths, Status.PRUNED)
 
         input_args = self.build(symbolic_args, model)
@@ -357,7 +363,6 @@ class SEEngine:
         self._backups = LazyBackup()
         self._current_bp = 0
         self._current_depth = 0
-        self._recursion_limit = 200
         for k in self._sut.class_map.keys():
             k._vector = []
         self.fill_class_vectors(iself)
@@ -411,21 +416,23 @@ class SEEngine:
         self._path_condition = keep_first_n_items(self._path_condition, pc_len)
         self._branching_points = backup_bp
 
-    @staticmethod
-    def fill_class_vectors(structure):
+    def fill_class_vectors(self, structure):
         if not is_user_defined(structure):
             return
         visited = set()
         visited.add(structure)
         worklist = []
         worklist.append(structure)
+        nodes = 0
         while worklist:
             current = worklist.pop(0)
+            nodes += 1
             setattr(current, "_recursion_depth", 0)
             current._vector.append(current)
             for value in get_dict_of_prefixed(current).values():
                 if is_user_defined(value) and do_add(visited, value):
                     worklist.append(value)
+        self._current_nodes = nodes
 
     def _execute_repok_exploration(self, instance):
         self._current_self = instance
@@ -438,14 +445,13 @@ class SEEngine:
             pass
         except MaxDepthException:
             pass
-        except RepOkFailException:
-            pass
         except TimeOutException as e:
             raise e
         except MaxRecursionException:
             assert False
             raise MaxRecursionException("Max recursion reached on repok")
         except AttributeError as e:
+            print("attr error")
             raise e
         else:
             if result:
@@ -504,7 +510,6 @@ class SEEngine:
         if self.mode == Mode.CONSERVATIVE_EXECUTION:
             if not is_init:
                 raise NoInitializedException()
-            self.check_recursion_limit(attr)
             return attr
 
         # Mode is METHOD_EXPLORATION OR REPOK_EXPLORATION
@@ -522,7 +527,8 @@ class SEEngine:
                 setattr(obj, "_recursion_depth", 0)
 
                 if self.mode == Mode.METHOD_EXPLORATION:
-                    self.check_conservative_repok(obj)
+                    if self._current_bp - 1 < len(self._branching_points):
+                        self.check_conservative_repok(obj)
                     self.mimic_change(obj, attr_name, new_value)
 
         else:
@@ -560,9 +566,8 @@ class SEEngine:
         Returns:
             An instance of lazy_class or None.
         """
-        if self._max_depth < self._current_depth:
-            raise MaxDepthException
-        self._current_depth += 1
+        assert self.mode != Mode.CONSERVATIVE_EXECUTION
+        assert self.mode != Mode.CONCRETE_EXECUTION
 
         if self._current_bp < len(self._branching_points):
             branch_point = self._branching_points[self._current_bp]
@@ -571,6 +576,7 @@ class SEEngine:
             self._current_bp += 1
 
             if index == 0:
+                self._current_nodes += 1
                 n = self._symbolize_partially(lazy_class)
                 lazy_class._vector.append(n)
                 return n
@@ -581,11 +587,20 @@ class SEEngine:
                 assert index - 2 < len(lazy_class._vector)
                 return lazy_class._vector[index - 2]
 
-        self._branching_points.append(LazyStep(len(lazy_class._vector) + 1))
+        new_bp = LazyStep(len(lazy_class._vector) + 1)
+        self._branching_points.append(new_bp)
         self._current_bp += 1
+        if self.node_limit():
+            new_bp.advance_branch()
+            return None
+        self._current_nodes += 1
         n = self._symbolize_partially(lazy_class)
         lazy_class._vector.append(n)
         return n
+
+    def node_limit(self):
+        if self._current_nodes >= self._max_nodes:
+            return True
 
     def evaluate(self, sym_bool):
         """Evaluates a condition represented by a symbolic bool.

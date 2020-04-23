@@ -48,7 +48,6 @@ def report_statistics(run_data):
     complete_exec = run_data.successes + run_data.failures
     pruned = run_data.get_amount_pruned()
 
-    assert pruned + complete_exec == run_data.total_paths
     print("Exploration Statistiscs:")
     print(
         "\n  "
@@ -59,14 +58,15 @@ def report_statistics(run_data):
     )
     print(INDENT2 + str(run_data.successes) + " passed")
     print(INDENT2 + str(run_data.failures) + " failed")
+    print(INDENT2 + str(run_data.not_builded) + " couldn't build")
     verbose = True
     if verbose:
         print(INDENT2 + str(pruned) + " pruned: ")
         print(INDENT4 + str(run_data.pruned_by_depth) + " by depth")
         print(INDENT4 + str(run_data.pruned_by_error) + " by error")
-        print(INDENT4 + str(run_data.pruned_invalid) + " by invalid")
         print(INDENT4 + str(run_data.pruned_by_rec_limit) + " by rec limit")
         print(INDENT4 + str(run_data.pruned_by_repok) + " by repok")
-        print(INDENT4 + str(run_data.pruned_by_exception) + " by exception\n")
+        print(INDENT4 + str(run_data.pruned_by_exception) + " by exception")
+        print(INDENT4 + str(run_data.pruned_by_timeout) + " by timeout")
     else:
         print(str(pruned) + " pruned")

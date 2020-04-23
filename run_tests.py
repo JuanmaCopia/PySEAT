@@ -12,14 +12,15 @@ if len(sys.argv) > 1:
         sys.exit(-1)
 
 
-def execute(filepath, class_name, method_name, verbose, max_depth=10):
+def execute(filepath, class_name, method_name, verbose, max_depth=10, max_nodes=5):
     if verbose:
         subprocess.call(
             [
                 sys.executable,
                 "pygse/__main__.py",
                 "-v",
-                "-d" + str(max_depth),
+                "-d " + str(max_depth),
+                "-n " + str(max_nodes),
                 filepath,
                 class_name,
                 method_name,
@@ -30,7 +31,8 @@ def execute(filepath, class_name, method_name, verbose, max_depth=10):
             [
                 sys.executable,
                 "pygse/__main__.py",
-                "-d" + str(max_depth),
+                "-d " + str(max_depth),
+                "-n " + str(max_nodes),
                 filepath,
                 class_name,
                 method_name,
@@ -52,5 +54,5 @@ execute(
     "insert_after_node",
     verbose,
 )
-execute("tests/bst/bst_instrumented.py", "BST", "insert", verbose, 8)
-execute("tests/avl/avl_instrumented.py", "AVL", "insert", verbose, 6)
+execute("tests/bst/bst_instrumented.py", "BST", "insert", verbose, 10, 3)
+execute("tests/avl/avl_instrumented.py", "AVL", "insert", verbose, 10, 2)

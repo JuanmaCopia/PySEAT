@@ -46,10 +46,11 @@ class ExplorationStats:
         self.pruned_by_repok = 0
         self.pruned_by_rec_limit = 0
         self.pruned_by_exception = 0
-        self.pruned_invalid = 0
+        self.pruned_by_timeout = 0
         self.successes = 0
         self.failures = 0
         self.complete_exec = 0
+        self.not_builded = 0
 
     def status_count(self, status):
         if status == Status.OK:
@@ -61,6 +62,6 @@ class ExplorationStats:
         total = self.pruned_by_depth + self.pruned_by_error
         total += self.pruned_by_repok
         total += self.pruned_by_rec_limit
-        total += self.pruned_invalid
+        total += self.pruned_by_timeout
         total += self.pruned_by_exception
         return total
