@@ -36,6 +36,8 @@ class PathExecutionData:
         self.number = exec_number
         self.status = status
         self.pruned_structure = pruned_s
+        self.path_repr = ""
+        self.time = 0
 
 
 class ExplorationStats:
@@ -51,6 +53,10 @@ class ExplorationStats:
         self.failures = 0
         self.complete_exec = 0
         self.not_builded = 0
+        self.builded_at0 = 0
+        self.builded_at1 = 0
+        self.builded_at2 = 0
+        self.paths_repr = []
 
     def status_count(self, status):
         if status == Status.OK:

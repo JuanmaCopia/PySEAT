@@ -6,7 +6,7 @@ dynammically allocated structures with the use of lazy initialization.
 """
 
 import copy
-
+import time
 from branching_steps import LazyStep, ConditionalStep
 from data import Status, PathExecutionData, ExplorationStats, Mode
 from exceptions import UnsatBranchError, NoInitializedException
@@ -63,7 +63,7 @@ class SEEngine:
         _real_to_proxy (dict): Maps builtin supported types to Symbolic Ones.
     """
 
-    def __init__(self, sut_data, max_depth, max_nodes):
+    def __init__(self, sut_data, max_depth, max_nodes, max_nodes_repok=1, timeout=20.0):
         """Setups the initial values of the engine.
 
         Args:
@@ -86,11 +86,27 @@ class SEEngine:
         self._current_self = None
         self._max_nodes = max_nodes
         self._current_nodes = 0
+        self._max_r_nodes = max_nodes_repok
+        self._current_repok_max = 0
+        self.max_ok_time = 0
+        self.max_pruned_time = 0
+        self._max_time = timeout
+        self._timeout = 0
+        self._time = 0
 
         for k in self._sut.class_map.keys():
             setattr(k, "_engine", self)
             setattr(k, "_vector", [])
             setattr(k, "_id", 0)
+
+    def path_to_str(self):
+        strrepr = ""
+        for x in self._branching_points:
+            if isinstance(x, LazyStep):
+                strrepr += str(x.get_branch())
+            else:
+                strrepr += str(x.get_branch())
+        return strrepr
 
     def sym_int(self, value=None):
         return SymInt(self, value)
@@ -128,7 +144,10 @@ class SEEngine:
             self._backups.initialize_backup(args)
 
             result = self._execute_method_exploration(args)
+
             self.set_mode(Mode.CONCRETE_EXECUTION)
+            result.path_repr = self.path_to_str()
+            self._stats.paths_repr.append(result.path_repr)
             yield (result)
 
             self._remove_explored_branches()
@@ -253,6 +272,8 @@ class SEEngine:
         args = args[1:]
         method = getattr(self._current_self, self._sut.get_method_name())
         self.set_mode(Mode.METHOD_EXPLORATION)
+        self._timeout = time.time() + self._max_time
+        self._time = time.time()
         try:
             if args:
                 returnv = method(*args)
@@ -279,7 +300,9 @@ class SEEngine:
             #     raise exception
             if status == Status.PRUNED:
                 exec_num = self._stats.total_paths
-                return PathExecutionData(exec_num, status, exception)
+                pathdata = PathExecutionData(exec_num, status, exception)
+                pathdata.time = time.time() - self._time
+                return pathdata
                 # model = self.smt.get_model(self._path_condition)
                 # pruned_sym = self._backups.get_self()
                 # pruned = self.concretize(pruned_sym, model)
@@ -288,9 +311,10 @@ class SEEngine:
                 # run_data.symbolic_inself = pruned_sym
                 # return run_data
 
-            stats = self.build_stats(status, args, returnv)
-            self._stats.status_count(stats.status)
-            return stats
+            pathdata = self.build_stats(status, args, returnv)
+            self._stats.status_count(pathdata.status)
+            pathdata.time = time.time() - self._time
+            return pathdata
 
     def build_stats(self, status, args, returnv):
         # Path condition and model
@@ -301,8 +325,8 @@ class SEEngine:
         symbolic_inself = self._backups.get_self()
         symbolic_args = self._backups.get_args()
 
-        print("Building...")
         input_self = self.build(symbolic_inself, model)
+
         if input_self is None:
             self._stats.not_builded += 1
             return PathExecutionData(self._stats.total_paths, Status.PRUNED)
@@ -379,26 +403,48 @@ class SEEngine:
                     assert False
             return symbolic
         elif is_user_defined(symbolic):
-            return self.build_partial_struture(symbolic, model)
+            self._recursion_limit = 200
+            concretei = self.concretize(symbolic, model)
+            if self.execute_repok_concretely(concretei):
+                return concretei
+
+            self._current_repok_max = 0
+            build = None
+            while not build and self._current_repok_max <= self._max_r_nodes:
+                print("Building for ", self._current_repok_max)
+                build = self.build_partial_struture(symbolic, model)
+                self._current_repok_max += 1
+
+            if build:
+                if self._current_repok_max == 1:
+                    self._stats.builded_at0 += 1
+                elif self._current_repok_max == 2:
+                    self._stats.builded_at1 += 1
+                elif self._current_repok_max == 3:
+                    self._stats.builded_at2 += 1
+                else:
+                    assert False
+            return build
         assert False
 
-    def build_partial_struture(self, input_self, model):
-        self._recursion_limit = 200
-        concretei = self.concretize(input_self, model)
-        if self.execute_repok_concretely(concretei):
-            return concretei
+    def node_limit(self):
+        if self.mode == Mode.METHOD_EXPLORATION:
+            if self._current_nodes >= self._max_nodes:
+                return True
+        elif self.mode == Mode.REPOK_EXPLORATION:
+            if self._current_nodes >= self._current_repok_max:
+                return True
+        else:
+            assert False
 
+    def build_partial_struture(self, input_self, model):
         backup_bp = copy.deepcopy(self._branching_points)
         self._branching_points = []
         pc_len = len(self._path_condition)
 
         unexplored_paths = True
 
-        # just for debug purposes
-        useless = 0
-
         while unexplored_paths:
-            useless += 1
             iself = copy.deepcopy(input_self)
             self._reset_for_repok(iself, pc_len)
 
@@ -432,7 +478,7 @@ class SEEngine:
             for value in get_dict_of_prefixed(current).values():
                 if is_user_defined(value) and do_add(visited, value):
                     worklist.append(value)
-        self._current_nodes = nodes
+        self._current_nodes = 0
 
     def _execute_repok_exploration(self, instance):
         self._current_self = instance
@@ -500,6 +546,10 @@ class SEEngine:
             raise e
         finally:
             self.restore_prev_mode()
+
+    def check_timeout(self):
+        if time.time() > self._timeout:
+            raise TimeOutException()
 
     def lazy_initialization(self, obj, attr_name):
         attr = get_attr(obj, attr_name)
@@ -597,10 +647,6 @@ class SEEngine:
         n = self._symbolize_partially(lazy_class)
         lazy_class._vector.append(n)
         return n
-
-    def node_limit(self):
-        if self._current_nodes >= self._max_nodes:
-            return True
 
     def evaluate(self, sym_bool):
         """Evaluates a condition represented by a symbolic bool.

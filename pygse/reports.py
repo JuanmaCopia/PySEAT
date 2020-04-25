@@ -59,6 +59,9 @@ def report_statistics(run_data):
     print(INDENT2 + str(run_data.successes) + " passed")
     print(INDENT2 + str(run_data.failures) + " failed")
     print(INDENT2 + str(run_data.not_builded) + " couldn't build")
+    print(INDENT4 + str(run_data.builded_at0) + " builded at repok max nodes 0")
+    print(INDENT4 + str(run_data.builded_at1) + " builded at repok max nodes 1")
+    print(INDENT4 + str(run_data.builded_at2) + " builded at repok max nodes 2")
     verbose = True
     if verbose:
         print(INDENT2 + str(pruned) + " pruned: ")
@@ -70,3 +73,20 @@ def report_statistics(run_data):
         print(INDENT4 + str(run_data.pruned_by_timeout) + " by timeout")
     else:
         print(str(pruned) + " pruned")
+
+    print("\n" + INDENT2 + "Paths: " + str(len(run_data.paths_repr)))
+    for x in run_data.paths_repr:
+        print(INDENT8 + x)
+
+    visited = set()
+    not_added = []
+    notadd = 0
+    for x in run_data.paths_repr:
+        if not helpers.do_add(visited, x):
+            not_added.append(x)
+            notadd += 1
+
+    if not_added:
+        print("\n" + INDENT2 + "Repeated Paths: " + str(len(not_added)))
+        for n in not_added:
+            print(INDENT8 + n)
