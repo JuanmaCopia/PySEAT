@@ -10,7 +10,8 @@ import importlib
 import typing
 import copy
 from inspect import signature
-from helpers import is_user_defined, do_add
+import instance_managment as im
+from helpers import do_add
 
 # from exceptions import MissingTypesError
 
@@ -44,7 +45,7 @@ def get_types_dict(method, belonging_cls) -> dict:
 
 def get_default_type(generic_alias):
     args = typing.get_args(generic_alias)
-    assert is_user_defined(args[0])
+    assert im.is_user_defined(args[0])
     return args[0]
 
 
@@ -61,7 +62,7 @@ def map_all_classes(types_list) -> set:
     class_map = {}
 
     for typ in types_list:
-        if is_user_defined(typ) and do_add(classes, typ):
+        if im.is_user_defined(typ) and do_add(classes, typ):
             worklist.append(typ)
 
     while worklist:
@@ -71,7 +72,7 @@ def map_all_classes(types_list) -> set:
         class_map[current] = cls_data
 
         for typ in cls_data.instance_attr_list:
-            if is_user_defined(typ) and do_add(classes, typ):
+            if im.is_user_defined(typ) and do_add(classes, typ):
                 worklist.append(typ)
     return class_map
 

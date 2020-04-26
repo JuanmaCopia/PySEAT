@@ -57,12 +57,22 @@ class ExplorationStats:
         self.builded_at1 = 0
         self.builded_at2 = 0
         self.paths_repr = []
+        self.max_ok_time = 0
+        self.max_pruned_time = 0
 
     def status_count(self, status):
         if status == Status.OK:
             self.successes += 1
         elif status == Status.FAIL:
             self.failures += 1
+
+    def sum_times(self, run):
+        if run.status != Status.PRUNED:
+            if run.time > self.max_ok_time:
+                self.max_ok_time = run.time
+        else:
+            if run.time > self.max_pruned_time:
+                self.max_pruned_time = run.time
 
     def get_amount_pruned(self):
         total = self.pruned_by_depth + self.pruned_by_error

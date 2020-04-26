@@ -2,8 +2,8 @@
 
 """
 
-from helpers import is_user_defined, do_add
-from helpers import get_dict, var_name
+from helpers import do_add
+from instance_managment import get_dict, var_name, is_user_defined
 import os
 
 

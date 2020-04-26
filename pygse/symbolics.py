@@ -13,26 +13,21 @@ def is_symbolic_bool(obj):
     return isinstance(obj, SymBool)
 
 
+def symbolic_factory(engine, typ, value=None):
+    if typ is int:
+        return SymInt(engine, value)
+    elif typ is bool:
+        return SymBool(engine, value)
+    assert False
+
+
 class Symbolic:
 
-    _real_to_sym = {}
-
-    @classmethod
-    def get_supported_builtins(cls):
-        if not cls._real_to_sym:
-            cls._real_to_sym = {x.emulated_class: x for x in Symbolic.__subclasses__()}
-        return cls._real_to_sym.keys()
+    _supported_types = [int, bool]
 
     @classmethod
     def is_supported_builtin(cls, obj):
-        supported_types = cls.get_supported_builtins()
-        return obj in supported_types or type(obj) in supported_types
-
-    @classmethod
-    def get_symtypes_mapping(cls):
-        if not cls._real_to_sym:
-            cls._real_to_sym = {x.emulated_class: x for x in Symbolic.__subclasses__()}
-        return copy.deepcopy(cls._real_to_sym)
+        return obj in cls._supported_types or type(obj) in cls._supported_types
 
 
 class SymInt(Symbolic):

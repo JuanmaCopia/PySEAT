@@ -44,49 +44,33 @@ def print_formatted_result(function, run_data, verbose):
         print("#" + str(run_data.number) + ": " + run_data.status.name)
 
 
-def report_statistics(run_data):
-    complete_exec = run_data.successes + run_data.failures
-    pruned = run_data.get_amount_pruned()
+def report_statistics(stats):
+    complete_exec = stats.successes + stats.failures
+    pruned = stats.get_amount_pruned()
 
     print("Exploration Statistiscs:")
     print(
         "\n  "
         + str(complete_exec)
         + " of "
-        + str(run_data.total_paths)
+        + str(stats.total_paths)
         + " paths explored"
     )
-    print(INDENT2 + str(run_data.successes) + " passed")
-    print(INDENT2 + str(run_data.failures) + " failed")
-    print(INDENT2 + str(run_data.not_builded) + " couldn't build")
-    print(INDENT4 + str(run_data.builded_at0) + " builded at repok max nodes 0")
-    print(INDENT4 + str(run_data.builded_at1) + " builded at repok max nodes 1")
-    print(INDENT4 + str(run_data.builded_at2) + " builded at repok max nodes 2")
-    verbose = True
-    if verbose:
-        print(INDENT2 + str(pruned) + " pruned: ")
-        print(INDENT4 + str(run_data.pruned_by_depth) + " by depth")
-        print(INDENT4 + str(run_data.pruned_by_error) + " by error")
-        print(INDENT4 + str(run_data.pruned_by_rec_limit) + " by rec limit")
-        print(INDENT4 + str(run_data.pruned_by_repok) + " by repok")
-        print(INDENT4 + str(run_data.pruned_by_exception) + " by exception")
-        print(INDENT4 + str(run_data.pruned_by_timeout) + " by timeout")
-    else:
-        print(str(pruned) + " pruned")
+    print(INDENT2 + str(stats.successes) + " passed")
+    print(INDENT2 + str(stats.failures) + " failed")
+    print(INDENT2 + str(stats.not_builded) + " couldn't build")
+    print(INDENT4 + str(stats.builded_at0) + " builded at repok max nodes 0")
+    print(INDENT4 + str(stats.builded_at1) + " builded at repok max nodes 1")
+    print(INDENT4 + str(stats.builded_at2) + " builded at repok max nodes 2")
 
-    print("\n" + INDENT2 + "Paths: " + str(len(run_data.paths_repr)))
-    for x in run_data.paths_repr:
-        print(INDENT8 + x)
+    print(INDENT2 + str(pruned) + " pruned: ")
+    print(INDENT4 + str(stats.pruned_by_depth) + " by depth")
+    print(INDENT4 + str(stats.pruned_by_error) + " by error")
+    print(INDENT4 + str(stats.pruned_by_rec_limit) + " by rec limit")
+    print(INDENT4 + str(stats.pruned_by_repok) + " by repok")
+    print(INDENT4 + str(stats.pruned_by_exception) + " by exception")
+    print(INDENT4 + str(stats.pruned_by_timeout) + " by timeout\n")
 
-    visited = set()
-    not_added = []
-    notadd = 0
-    for x in run_data.paths_repr:
-        if not helpers.do_add(visited, x):
-            not_added.append(x)
-            notadd += 1
+    # print(INDENT2 + "Max OK time: ", stats.max_ok_time)
+    # print(INDENT2 + "Max PRUNED time: ", stats.max_pruned_time)
 
-    if not_added:
-        print("\n" + INDENT2 + "Repeated Paths: " + str(len(not_added)))
-        for n in not_added:
-            print(INDENT8 + n)

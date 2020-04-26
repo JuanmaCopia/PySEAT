@@ -13,16 +13,6 @@ from engine import SEEngine
 import test_generator as testgen
 from data import Status
 
-
-def sum_times(run, eng):
-    if run.status == Status.OK:
-        if run.time > eng.max_ok_time:
-            eng.max_ok_time = run.time
-    else:
-        if run.time > eng.max_pruned_time:
-            eng.max_pruned_time = run.time
-
-
 usage = "usage: %prog [options] <path to *.py file> <class-name> <method-name>"
 parser = OptionParser(usage=usage)
 parser.add_option(
@@ -69,7 +59,6 @@ start_time = time.time()
 print("\nPerforming Exploration...\n")
 for run in engine.explore():
     if run:
-        sum_times(run, engine)
         print_formatted_result(sut.get_method(), run, verbose)
         if run.status != Status.PRUNED:
             test_num += 1
@@ -82,10 +71,6 @@ print("Elapsed Time:   ---  %s seconds  ---" % (time.time() - start_time))
 report_statistics(engine.statistics())
 
 testgen.append_test_calls(filepath, tests_gen)
-
-print("\n Max OK time: ", engine.max_ok_time)
-print("Max PRUNED time: ", engine.max_pruned_time)
-
 
 print("Running generated tests...\n")
 # subprocess.call([sys.executable, filepath])
