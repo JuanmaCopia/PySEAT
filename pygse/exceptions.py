@@ -28,6 +28,11 @@ class TimeOutException(Error):
         self.message = "Timeout"
 
 
+class BuildTimeOutException(Error):
+    def __init__(self):
+        self.message = "Timeout"
+
+
 class CantMakeDecisionException(Error):
     def __init__(self):
         self.message = "The condition value is not defined"

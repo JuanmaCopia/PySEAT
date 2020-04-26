@@ -59,6 +59,7 @@ def report_statistics(stats):
     print(INDENT2 + str(stats.successes) + " passed")
     print(INDENT2 + str(stats.failures) + " failed")
     print(INDENT2 + str(stats.not_builded) + " couldn't build")
+    print(INDENT4 + str(stats.not_builded_by_timeout) + " by timeout")
     print(INDENT2 + str(stats.builded) + " builded")
     for i, num in enumerate(stats.builded_at):
         if num != 0:

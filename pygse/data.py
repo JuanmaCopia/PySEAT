@@ -53,6 +53,7 @@ class ExplorationStats:
         self.failures = 0
         self.complete_exec = 0
         self.not_builded = 0
+        self.not_builded_by_timeout = 0
         self.builded = 0
         self.builded_at = [0, 0, 0, 0, 0, 0]
         self.paths_repr = []

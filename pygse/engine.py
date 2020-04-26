@@ -61,7 +61,7 @@ class SEEngine:
         _real_to_proxy (dict): Maps builtin supported types to Symbolic Ones.
     """
 
-    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, timeout=20.0):
+    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, timeout=5):
         """Setups the initial values of the engine.
 
         Args:
@@ -161,11 +161,11 @@ class SEEngine:
             under test
         """
         self._stats.total_paths += 1
+        pathdata = PathExecutionData(self._stats.total_paths, Status.PRUNED)
         print("\n\nExecuting method:")
 
         returnv = None
         exception = None
-        status = Status.PRUNED
 
         self._current_self = args[0]
         args = args[1:]
@@ -180,6 +180,9 @@ class SEEngine:
                 returnv = method()
             if sym.is_symbolic_bool(returnv):
                 returnv = returnv.__bool__()
+
+            self.build_stats(pathdata, args, returnv)
+
         except excp.UnsatBranchError:
             self._stats.pruned_by_error += 1
         except excp.MaxDepthException:
@@ -188,34 +191,27 @@ class SEEngine:
             self._stats.pruned_by_repok += 1
         except excp.MaxRecursionException:
             self._stats.pruned_by_rec_limit += 1
+        except excp.TimeOutException:
+            self._stats.pruned_by_timeout += 1
+        except excp.CouldNotBuildError:
+            pass
+        except excp.BuildTimeOutException:
+            self._stats.not_builded_by_timeout += 1
+            pass
         except Exception as e:
             self._stats.pruned_by_exception += 1
             exception = e
-        else:
-            status = Status.OK
         finally:
             self.set_mode(Mode.CONCRETE_EXECUTION)
             # if exception:
             #     raise exception
-            if status == Status.PRUNED:
-                exec_num = self._stats.total_paths
-                pathdata = PathExecutionData(exec_num, status, exception)
-                pathdata.time = time.time() - self._time
-                return pathdata
-                # model = self.smt.get_model(self._path_condition)
-                # pruned_sym = self._backups.get_self()
-                # pruned = concretize(pruned_sym, model)
-
-                # run_data.pathcondition = self._path_condition
-                # run_data.symbolic_inself = pruned_sym
-                # return run_data
-
-            pathdata = self.build_stats(status, args, returnv)
-            self._stats.status_count(pathdata.status)
+            pathdata.exception = exception
             pathdata.time = time.time() - self._time
+            self._stats.status_count(pathdata.status)
             return pathdata
 
-    def build_stats(self, status, args, returnv):
+    def build_stats(self, pathdata, args, returnv):
+        self.set_mode(Mode.CONCRETE_EXECUTION)
         # Path condition and model
         path = self._path_condition
         model = self.smt.get_model(path)
@@ -228,7 +224,7 @@ class SEEngine:
         self._stats.builded_count(input_self, self._current_repok_max)
 
         if input_self is None:
-            return PathExecutionData(self._stats.total_paths, Status.PRUNED)
+            raise excp.CouldNotBuildError()
 
         input_args = self.build(symbolic_args, model)
 
@@ -243,7 +239,7 @@ class SEEngine:
         else:
             status = Status.FAIL
 
-        pathdata = PathExecutionData(self._stats.total_paths, status)
+        pathdata.status = status
         pathdata.input_args = input_args
         pathdata.pathcondition = path
         pathdata.model = model
@@ -327,6 +323,14 @@ class SEEngine:
         else:
             assert False
 
+    def check_build_timeout(self):
+        if time.time() > self._timeout:
+            raise excp.BuildTimeOutException()
+
+    def check_method_timeout(self):
+        if time.time() > self._timeout:
+            raise excp.TimeOutException()
+
     def build_partial_struture(self, input_self, model):
         backup_bp = copy.deepcopy(self._branch_points)
         self._branch_points = []
@@ -335,6 +339,8 @@ class SEEngine:
         unexplored_paths = True
 
         while unexplored_paths:
+            self.check_build_timeout()
+
             iself = copy.deepcopy(input_self)
             self._reset_for_repok(iself, pc_len)
 
