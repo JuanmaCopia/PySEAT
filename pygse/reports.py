@@ -63,7 +63,7 @@ def report_statistics(stats):
     print(INDENT2 + str(stats.builded) + " builded")
     for i, num in enumerate(stats.builded_at):
         if num != 0:
-            print(INDENT4 + str(num) + " builded by adding " + str(i) + " nodes")
+            print(INDENT4 + str(num) + " builded by adding " + str(i - 1) + " nodes")
 
     print(INDENT2 + str(pruned) + " pruned: ")
     print(INDENT4 + str(stats.pruned_by_depth) + " by depth")
