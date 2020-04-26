@@ -92,6 +92,8 @@ class TestCode:
         self._add_line("    " + self.run_data.returnv.__repr__())
         self._add_line("End Self:")
         self._add_line("    " + self.run_data.self_end_state.__repr__())
+        self._add_line("Path:")
+        self._add_line("    " + self.run_data.path_repr)
         self._add_line("'''")
 
     def gen_test_header(self):

@@ -61,7 +61,7 @@ class SEEngine:
         _real_to_proxy (dict): Maps builtin supported types to Symbolic Ones.
     """
 
-    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, timeout=5):
+    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, timeout=5.5):
         """Setups the initial values of the engine.
 
         Args:
@@ -203,8 +203,8 @@ class SEEngine:
             exception = e
         finally:
             self.set_mode(Mode.CONCRETE_EXECUTION)
-            # if exception:
-            #     raise exception
+            if exception:
+                raise exception
             pathdata.exception = exception
             pathdata.time = time.time() - self._time
             self._stats.status_count(pathdata.status)
@@ -240,6 +240,7 @@ class SEEngine:
             status = Status.FAIL
 
         pathdata.status = status
+        pathdata.path_repr = helpers.path_to_str(self._branch_points)
         pathdata.input_args = input_args
         pathdata.pathcondition = path
         pathdata.model = model
@@ -324,8 +325,7 @@ class SEEngine:
             assert False
 
     def check_build_timeout(self):
-        if time.time() > self._timeout:
-            raise excp.BuildTimeOutException()
+        return time.time() > self._timeout
 
     def check_method_timeout(self):
         if time.time() > self._timeout:
@@ -339,7 +339,11 @@ class SEEngine:
         unexplored_paths = True
 
         while unexplored_paths:
-            self.check_build_timeout()
+
+            if self.check_build_timeout():
+                self._path_condition = helpers.keep_first_n(self._path_condition, pc_len)
+                self._branch_points = backup_bp
+                raise excp.BuildTimeOutException()
 
             iself = copy.deepcopy(input_self)
             self._reset_for_repok(iself, pc_len)
