@@ -59,9 +59,10 @@ def report_statistics(stats):
     print(INDENT2 + str(stats.successes) + " passed")
     print(INDENT2 + str(stats.failures) + " failed")
     print(INDENT2 + str(stats.not_builded) + " couldn't build")
-    print(INDENT4 + str(stats.builded_at0) + " builded at repok max nodes 0")
-    print(INDENT4 + str(stats.builded_at1) + " builded at repok max nodes 1")
-    print(INDENT4 + str(stats.builded_at2) + " builded at repok max nodes 2")
+    print(INDENT2 + str(stats.builded) + " builded")
+    for i, num in enumerate(stats.builded_at):
+        if num != 0:
+            print(INDENT4 + str(num) + " builded by adding " + str(i) + " nodes")
 
     print(INDENT2 + str(pruned) + " pruned: ")
     print(INDENT4 + str(stats.pruned_by_depth) + " by depth")

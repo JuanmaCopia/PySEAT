@@ -53,9 +53,8 @@ class ExplorationStats:
         self.failures = 0
         self.complete_exec = 0
         self.not_builded = 0
-        self.builded_at0 = 0
-        self.builded_at1 = 0
-        self.builded_at2 = 0
+        self.builded = 0
+        self.builded_at = [0, 0, 0, 0, 0, 0]
         self.paths_repr = []
         self.max_ok_time = 0
         self.max_pruned_time = 0
@@ -73,6 +72,16 @@ class ExplorationStats:
         else:
             if run.time > self.max_pruned_time:
                 self.max_pruned_time = run.time
+
+    def builded_count(self, builded, nodes_num):
+        if builded:
+            self.builded += 1
+            if nodes_num > 4:
+                self.builded_at[5] += 1
+            else:
+                self.builded_at[nodes_num] += 1
+        else:
+            self.not_builded += 1
 
     def get_amount_pruned(self):
         total = self.pruned_by_depth + self.pruned_by_error

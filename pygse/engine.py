@@ -14,7 +14,7 @@ import instance_managment as im
 import helpers
 import symbolics as sym
 
-from branching_steps import LazyStep, ConditionalStep
+from branching_steps import LazyBranchPoint, ConditionalBranchPoint
 from data import Status, PathExecutionData, ExplorationStats, Mode
 from smt.smt import SMT
 from smt.sort_z3 import SMTInt, SMTBool
@@ -44,7 +44,7 @@ class SEEngine:
         _path_condition (list): Collects all the path constraints of the current
         execution.
 
-        _current_bp (LazyStep, ConditionalStep): Is the current branching point, it could
+        _current_bp (int): Is the current branching point, it could
         be a Lazy Initialization Stem or a Conditional Step.
 
         _current_depth (int): Depth's of the current execution tree.
@@ -61,7 +61,7 @@ class SEEngine:
         _real_to_proxy (dict): Maps builtin supported types to Symbolic Ones.
     """
 
-    def __init__(self, sut_data, max_depth, max_nodes, max_nodes_repok=1, timeout=20.0):
+    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, timeout=20.0):
         """Setups the initial values of the engine.
 
         Args:
@@ -83,7 +83,7 @@ class SEEngine:
         self._current_self = None
         self._max_nodes = max_nodes
         self._current_nodes = 0
-        self._max_r_nodes = max_nodes_repok
+        self._max_r_nodes = max_r_nodes
         self._current_repok_max = 0
         self._max_time = timeout
         self._timeout = 0
@@ -107,26 +107,26 @@ class SEEngine:
         Yields:
             PathExecutionData: The result of the execution of the function under test
         """
-        self._branch_points = []
+        assert not self._branch_points
         unexplored_paths = True
 
         while unexplored_paths:
             self._reset_exploration()
 
-            args = self.instantiate_method_params()
+            args = self.instantiate_input()
 
             result = self._execute_method_exploration(args)
 
             self.set_mode(Mode.CONCRETE_EXECUTION)
             yield (result)
 
-            self._remove_explored_branches()
+            self._remove_explored_branch()
 
             if not self._branch_points:
                 unexplored_paths = False
 
-    def instantiate_method_params(self):
-        types = self._sut.get_method_types()
+    def instantiate_input(self):
+        types = self._sut.get_method_param_types()
         args = [inst.symbolic_instantiation(self, typ) for typ in types]
         self._backups.initialize_backup(args)
         return args
@@ -225,9 +225,9 @@ class SEEngine:
         symbolic_args = self._backups.get_args()
 
         input_self = self.build(symbolic_inself, model)
+        self._stats.builded_count(input_self, self._current_repok_max)
 
         if input_self is None:
-            self._stats.not_builded += 1
             return PathExecutionData(self._stats.total_paths, Status.PRUNED)
 
         input_args = self.build(symbolic_args, model)
@@ -314,16 +314,6 @@ class SEEngine:
                 print("Building for ", self._current_repok_max)
                 build = self.build_partial_struture(symbolic, model)
                 self._current_repok_max += 1
-
-            if build:
-                if self._current_repok_max == 1:
-                    self._stats.builded_at0 += 1
-                elif self._current_repok_max == 2:
-                    self._stats.builded_at1 += 1
-                elif self._current_repok_max == 3:
-                    self._stats.builded_at2 += 1
-                else:
-                    assert False
             return build
         assert False
 
@@ -355,7 +345,7 @@ class SEEngine:
                 self._branch_points = backup_bp
                 return result
 
-            self._remove_explored_branches()
+            self._remove_explored_branch()
             if not self._branch_points:
                 unexplored_paths = False
 
@@ -390,7 +380,7 @@ class SEEngine:
         finally:
             self.restore_prev_mode()
 
-    def _remove_explored_branches(self):
+    def _remove_explored_branch(self):
         """Removes fully explored branhes.
 
         Advance the last branching point and removes it if it
@@ -448,7 +438,7 @@ class SEEngine:
         attr_type = self._sut.get_attr_type(type(obj), attr_name)
 
         if im.is_user_defined(attr_type):
-            if is_init or not self.is_tracked(obj):
+            if is_init or not im.is_tracked(obj):
                 self.check_recursion_limit(attr)
                 return attr
 
@@ -503,7 +493,7 @@ class SEEngine:
 
         if self._current_bp < len(self._branch_points):
             branch_point = self._branch_points[self._current_bp]
-            assert isinstance(branch_point, LazyStep)
+            assert isinstance(branch_point, LazyBranchPoint)
             index = branch_point.get_branch()
             self._current_bp += 1
 
@@ -519,7 +509,7 @@ class SEEngine:
                 assert index - 2 < len(lazy_class._vector)
                 return lazy_class._vector[index - 2]
 
-        new_bp = LazyStep(len(lazy_class._vector) + 1)
+        new_bp = LazyBranchPoint(len(lazy_class._vector) + 1)
         self._branch_points.append(new_bp)
         self._current_bp += 1
         if self.node_limit():
@@ -606,10 +596,9 @@ class SEEngine:
         self._current_depth += 1
 
         if self._current_bp < len(self._branch_points):
-            assert isinstance(self._branch_points[self._current_bp], ConditionalStep)
             bool_value = self._branch_points[self._current_bp].get_branch()
         else:
-            self._branch_points.append(ConditionalStep())
+            self._branch_points.append(ConditionalBranchPoint())
             bool_value = True
 
         self._current_bp += 1
@@ -620,10 +609,6 @@ class SEEngine:
             obj._recursion_depth += 1
             if obj._recursion_depth > self._recursion_limit:
                 raise excp.MaxRecursionException(str(obj._recursion_depth))
-
-    @staticmethod
-    def is_tracked(obj):
-        return hasattr(obj, "_objid")
 
     def statistics(self):
         """Returns the collected statistics of all executions.

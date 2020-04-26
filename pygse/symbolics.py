@@ -1,8 +1,6 @@
 from sym_decorators import forward_to_rfun, check_comparable_types
 from sym_decorators import check_equality, check_self_and_other_have_same_type
-
 from smt.sort_z3 import SMTInt, SMTBool
-import copy
 
 
 def is_symbolic(obj):

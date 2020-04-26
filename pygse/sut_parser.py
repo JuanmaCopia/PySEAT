@@ -130,7 +130,7 @@ class SUT:
     def get_method_name(self):
         return self.method_data.method.__name__
 
-    def get_method_types(self):
+    def get_method_param_types(self):
         return copy.deepcopy(self.method_data.types_list)
 
     def get_cls_init_types(self, clss):
