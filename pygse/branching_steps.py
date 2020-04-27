@@ -8,7 +8,6 @@ class Path:
         self._branch_points = []
         self._current_bp = 0
         self.conditions = conditions
-        self.init_num_cond = len(conditions)
 
     # def replace_last_condition(self, condition):
     #     self.conditions[-1] = condition

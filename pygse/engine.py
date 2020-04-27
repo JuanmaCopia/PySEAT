@@ -200,11 +200,10 @@ class SEEngine:
             pass
         except Exception as e:
             self._stats.pruned_by_exception += 1
+            # raise e
             exception = e
         finally:
             self.set_mode(Mode.CONCRETE_EXECUTION)
-            # if exception:
-            #     raise exception
             pathdata.exception = exception
             pathdata.time = time.time() - self._time
             self._stats.status_count(pathdata.status)
@@ -324,12 +323,8 @@ class SEEngine:
         else:
             assert False
 
-    def check_build_timeout(self):
+    def timeout_reached(self):
         return time.time() > self._timeout
-
-    def check_method_timeout(self):
-        if time.time() > self._timeout:
-            raise excp.TimeOutException()
 
     def build_partial_struture(self, input_self, model):
         backup_bp = copy.deepcopy(self._branch_points)
@@ -340,7 +335,7 @@ class SEEngine:
 
         while unexplored_paths:
 
-            if self.check_build_timeout():
+            if self.timeout_reached():
                 self._path_condition = helpers.keep_first_n(self._path_condition, pc_len)
                 self._branch_points = backup_bp
                 raise excp.BuildTimeOutException()
