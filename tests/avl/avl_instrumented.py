@@ -61,35 +61,40 @@ class Node:
     def repok(self):
         visited = set()
         visited.add(self)
+
         if self.left is not None:
-            if not do_add(visited, self.left) or self.left.data > self.data:
+            if not do_add(visited, self.left):
                 return False
-            if self.left.parent is None or self.left.parent is not self:
-                return False
+
         if self.right is not None:
-            if not do_add(visited, self.right) or self.right.data < self.data:
-                return False
-            if self.right.parent is None or self.right.parent is not self:
+            if not do_add(visited, self.right):
                 return False
 
         if self.parent is not None:
             if not do_add(visited, self.parent):
                 return False
-            if self.parent.left is None:
-                if self.parent.right is None or self.parent.right is not self:
-                    return False
 
-            if self.parent.right is None:
-                if self.parent.left is None or self.parent.left is not self:
-                    return False
-
-            if self.parent.left is not None and self.parent.right is not None:
-                if not (self.parent.left is self or self.parent.right is self):
-                    return False
-
-            if self.parent.left is self and self.data > self.parent.data:
+        if self.left is not None:
+            if self.left.data > self.data:
                 return False
-            if self.parent.right is self and self.data < self.parent.data:
+            if self.left.parent is not self:
+                return False
+        if self.right is not None:
+            if self.right.data < self.data:
+                return False
+            if self.right.parent is not self:
+                return False
+
+        if self.parent is not None:
+            isleft = self is self.parent.left
+            isright = self is self.parent.right
+
+            if not isleft and not isright:
+                return False
+
+            if isleft and self.data > self.parent.data:
+                return False
+            if isright and self.data < self.parent.data:
                 return False
         return True
 
@@ -404,28 +409,13 @@ class AVL():
             deleted = node.delete()
         self.rebalance(deleted.parent)
 
-    # def repok(self):
-    #     if not self.root:
-    #         return True
-    #     if not (
-    #         self.is_acyclic() and
-    #         self.is_ordered() and
-    #         self.is_balanced(self.root) and
-    #         self.parents_ok(self.root)
-    #     ):
-    #         return False
-    #     if self.root.parent is not None:
-    #         return False
-    #     return True
-
     def repok(self):
         if not self.root:
             return True
-        visited = set()
-        visited.add(self.root)
         if not (
-            self.is_BST(self.root, INT_MIN, INT_MAX, visited) and
-            self.is_balanced(self.root) and
+            self.is_acyclic() and
+            self.is_ordered() and
+            self.is_balanced() and
             self.parents_ok(self.root)
         ):
             return False
@@ -464,17 +454,17 @@ class AVL():
                 return False
         return True
 
-    def is_balanced(self, node):
-        if node is None:
-            return True
-        left_height = self.get_height(node.left)
-        right_height = self.get_height(node.right)
-        return abs(left_height - right_height) <= 1
+    # def is_balanced(self, node):
+    #     if node is None:
+    #         return True
+    #     left_height = self.get_height(node.left)
+    #     right_height = self.get_height(node.right)
+    #     return abs(left_height - right_height) <= 1
 
-    def get_height(self, node):
-        if node is None:
-            return 0
-        return max(self.get_height(node.left), self.get_height(node.right)) + 1
+    # def get_height(self, node):
+    #     if node is None:
+    #         return 0
+    #     return max(self.get_height(node.left), self.get_height(node.right)) + 1
 
     def parents_ok(self, node):
         if node is None:
@@ -490,21 +480,61 @@ class AVL():
 
         return self.parents_ok(node.left) and self.parents_ok(node.right)
 
-    def is_BST(self, node, min, max, visited):
-        if node is None:
-            return True
+    def is_balanced_helper(self, root):
+        # a None tree is balanced
+        if root is None:
+            return 0
+        left_height = self.is_balanced_helper(root.left)
+        # if the left subtree is not balanced, then:
+        # this tree is also not balanced
+        if left_height == -1:
+            return -1
+        # if the right subtree is not balanced, then:
+        # this tree is also not balanced
+        right_height = self.is_balanced_helper(root.right)
+        if right_height == -1:
+            return -1
+        # if the diffrence in heights is greater than 1, then:
+        # this tree is not balanced
+        if abs(left_height - right_height) > 1:
+            return -1
+        # this tree is balanced, return its height
+        return max(left_height, right_height) + 1
 
-        if node.left is not None:
-            if not do_add(visited, node.left) or node.left.parent is not node:
-                return False
+    def is_balanced(self):
+        return self.is_balanced_helper(self.root) > -1
 
-        if node.right is not None:
-            if not do_add(visited, node.right) or node.right.parent is not node:
-                return False
 
-        if node.data < min or node.data > max:
-            return False
+    # def repok(self):
+    #     if not self.root:
+    #         return True
+    #     visited = set()
+    #     visited.add(self.root)
+    #     if not (
+    #         self.is_BST(self.root, INT_MIN, INT_MAX, visited) and
+    #         self.is_balanced(self.root) and
+    #         self.parents_ok(self.root)
+    #     ):
+    #         return False
+    #     if self.root.parent is not None:
+    #         return False
+    #     return True
 
-        return self.is_BST(node.left, min, node.data, visited) and self.is_BST(
-            node.right, node.data, max, visited
-        )
+    # def is_BST(self, node, min, max, visited):
+    #     if node is None:
+    #         return True
+
+    #     if node.left is not None:
+    #         if not do_add(visited, node.left) or node.left.parent is not node:
+    #             return False
+
+    #     if node.right is not None:
+    #         if not do_add(visited, node.right) or node.right.parent is not node:
+    #             return False
+
+    #     if node.data < min or node.data > max:
+    #         return False
+
+    #     return self.is_BST(node.left, min, node.data, visited) and self.is_BST(
+    #         node.right, node.data, max, visited
+    #     )

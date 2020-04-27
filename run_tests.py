@@ -12,8 +12,8 @@ if len(sys.argv) > 1:
         sys.exit(-1)
 
 
-def execute(filepath, class_name, method_name, verbose, max_depth=10, max_nodes=5):
-    if verbose:
+def execute(filepath, cls, method, verb, max_nodes=5, max_r_nodes=2, max_depth=10):
+    if verb:
         subprocess.call(
             [
                 sys.executable,
@@ -21,9 +21,10 @@ def execute(filepath, class_name, method_name, verbose, max_depth=10, max_nodes=
                 "-v",
                 "-d " + str(max_depth),
                 "-n " + str(max_nodes),
+                "-r " + str(max_r_nodes),
                 filepath,
-                class_name,
-                method_name,
+                cls,
+                method,
             ]
         )
     else:
@@ -33,26 +34,33 @@ def execute(filepath, class_name, method_name, verbose, max_depth=10, max_nodes=
                 "pygse/__main__.py",
                 "-d " + str(max_depth),
                 "-n " + str(max_nodes),
+                "-r " + str(max_r_nodes),
                 filepath,
-                class_name,
-                method_name,
+                cls,
+                method,
             ]
         )
 
 
-execute("tests/linkedlist/ll_instrumented.py", "LinkedList", "swap_node", verbose)
-execute("tests/linkedlist/llnr_instrumented.py", "LinkedList", "swap_node", verbose)
+execute("tests/linkedlist/ll_instrumented.py", "LinkedList", "swap_node", verbose, 5, 0)
+execute(
+    "tests/linkedlist/llnr_instrumented.py", "LinkedList", "swap_node", verbose, 5, 0
+)
 execute(
     "tests/doublylinkedlist/dll_instrumented.py",
     "DoublyLinkedList",
     "insert_after",
     verbose,
+    5,
+    0,
 )
 execute(
     "tests/circulardoublylinkedlist/cdll_instrumented.py",
     "CDLinkedList",
     "insert_after_node",
     verbose,
+    5,
+    0,
 )
-execute("tests/bst/bst_instrumented.py", "BST", "insert", verbose, 10, 3)
-execute("tests/avl/avl_instrumented.py", "AVL", "insert", verbose, 10, 2)
+execute("tests/bst/bst_instrumented.py", "BST", "insert", verbose, 3, 0)
+execute("tests/avl/avl_instrumented.py", "AVL", "insert", verbose, 2, 0)
