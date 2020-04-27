@@ -203,8 +203,8 @@ class SEEngine:
             exception = e
         finally:
             self.set_mode(Mode.CONCRETE_EXECUTION)
-            if exception:
-                raise exception
+            # if exception:
+            #     raise exception
             pathdata.exception = exception
             pathdata.time = time.time() - self._time
             self._stats.status_count(pathdata.status)
