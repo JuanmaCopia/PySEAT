@@ -14,14 +14,6 @@ class Status(Enum):
     FAIL = 2
 
 
-class Mode(Enum):
-    CONSERVATIVE_EXECUTION = 0
-    METHOD_EXPLORATION = 1
-    REPOK_EXPLORATION = 2
-    NOMODE = 3
-    CONCRETE_EXECUTION = 4
-
-
 class PathExecutionData:
     def __init__(self, exec_number: int, status=None, exception=None, pruned_s=None):
         self.symbolic_inself = None

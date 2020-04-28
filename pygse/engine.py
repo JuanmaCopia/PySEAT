@@ -15,10 +15,19 @@ import helpers
 import symbolics as sym
 
 from branching_steps import LazyBranchPoint, ConditionalBranchPoint
-from data import Status, PathExecutionData, ExplorationStats, Mode
+from data import Status, PathExecutionData, ExplorationStats
 from smt.smt import SMT
 from smt.sort_z3 import SMTInt, SMTBool
 from smt.solver_z3 import SMTSolver
+
+
+# Engine modes of execution
+CONSERVATIVE_EXECUTION = 0
+METHOD_EXPLORATION = 1
+REPOK_EXPLORATION = 2
+CONCRETE_EXECUTION = 3
+
+RECURSION_LIMIT = 20
 
 
 class SEEngine:
@@ -73,11 +82,9 @@ class SEEngine:
         self._max_depth = max_depth
         self._stats = ExplorationStats()
         self._backups = LazyBackup()
-        self.mode = Mode.NOMODE
-        self.prev_mode = Mode.NOMODE
+        self.mode = CONCRETE_EXECUTION
         self._current_depth = 0
         self._current_bp = 0
-        self._recursion_limit = 0
         self._branch_points = []
         self._path_condition = []
         self._current_self = None
@@ -94,20 +101,12 @@ class SEEngine:
             setattr(k, "_vector", [])
             setattr(k, "_id", 0)
 
-    def set_mode(self, mode):
-        self.prev_mode = self.mode
-        self.mode = mode
-
-    def restore_prev_mode(self):
-        self.mode = self.prev_mode
-
     def explore(self):
         """Main method, implements the generalized symbolic execution.
 
         Yields:
             PathExecutionData: The result of the execution of the function under test
         """
-        assert not self._branch_points
         unexplored_paths = True
 
         while unexplored_paths:
@@ -117,7 +116,6 @@ class SEEngine:
 
             result = self._execute_method_exploration(args)
 
-            self.set_mode(Mode.CONCRETE_EXECUTION)
             yield (result)
 
             self._remove_explored_branch()
@@ -138,7 +136,6 @@ class SEEngine:
         self._current_bp = 0
         self._current_nodes = 0
         self._current_depth = 0
-        self._recursion_limit = 20
         self._backups = LazyBackup()
         for k in self._sut.class_map.keys():
             k._vector = []
@@ -170,9 +167,10 @@ class SEEngine:
         self._current_self = args[0]
         args = args[1:]
         method = getattr(self._current_self, self._sut.get_method_name())
-        self.set_mode(Mode.METHOD_EXPLORATION)
+
         self._timeout = time.time() + self._max_time
         self._time = time.time()
+        self.mode = METHOD_EXPLORATION
         try:
             if args:
                 returnv = method(*args)
@@ -202,7 +200,7 @@ class SEEngine:
             self._stats.pruned_by_exception += 1
             exception = e
         finally:
-            self.set_mode(Mode.CONCRETE_EXECUTION)
+            self.mode = CONCRETE_EXECUTION
             # if exception:
             #     raise e
             pathdata.exception = exception
@@ -211,7 +209,6 @@ class SEEngine:
             return pathdata
 
     def build_stats(self, pathdata, args, returnv):
-        self.set_mode(Mode.CONCRETE_EXECUTION)
         # Path condition and model
         path = self._path_condition
         model = self.smt.get_model(path)
@@ -251,7 +248,7 @@ class SEEngine:
         return pathdata
 
     def execute_method_concretely(self, obj, args):
-        self.set_mode(Mode.CONCRETE_EXECUTION)
+        self.mode = CONCRETE_EXECUTION
         try:
             method = getattr(obj, self._sut.get_method_name())
             if args:
@@ -263,11 +260,10 @@ class SEEngine:
         except excp.TimeOutException as e:
             raise e
         finally:
-            self.restore_prev_mode()
             return returnv
 
     def execute_repok_concretely(self, obj):
-        self.set_mode(Mode.CONCRETE_EXECUTION)
+        self.mode = CONCRETE_EXECUTION
         try:
             result = obj.repok()
         except AttributeError as e:
@@ -275,12 +271,10 @@ class SEEngine:
         except excp.TimeOutException as e:
             raise e
         finally:
-            self.restore_prev_mode()
             return result
 
     def _reset_for_repok(self, iself, pc_len):
         self._path_condition = helpers.keep_first_n(self._path_condition, pc_len)
-        self._backups = LazyBackup()
         self._current_bp = 0
         self._current_depth = 0
         self._current_nodes = 0
@@ -300,7 +294,6 @@ class SEEngine:
                     assert False
             return symbolic
         elif im.is_user_defined(symbolic):
-            self._recursion_limit = 200
             concretei = inst.concretize(symbolic, model)
             if self.execute_repok_concretely(concretei):
                 return concretei
@@ -315,10 +308,10 @@ class SEEngine:
         assert False
 
     def node_limit(self):
-        if self.mode == Mode.METHOD_EXPLORATION:
+        if self.mode == METHOD_EXPLORATION:
             if self._current_nodes >= self._max_nodes:
                 return True
-        elif self.mode == Mode.REPOK_EXPLORATION:
+        elif self.mode == REPOK_EXPLORATION:
             if self._current_nodes >= self._current_repok_max:
                 return True
         else:
@@ -360,7 +353,7 @@ class SEEngine:
 
     def _execute_repok_exploration(self, instance):
         self._current_self = instance
-        self.set_mode(Mode.REPOK_EXPLORATION)
+        self.mode = REPOK_EXPLORATION
         try:
             result = instance.repok()
             if sym.is_symbolic_bool(result):
@@ -384,7 +377,7 @@ class SEEngine:
                 return new_object
             return None
         finally:
-            self.restore_prev_mode()
+            self.mode = CONCRETE_EXECUTION
 
     def _remove_explored_branch(self):
         """Removes fully explored branhes.
@@ -407,7 +400,7 @@ class SEEngine:
                 last_bp.advance_branch()
 
     def check_conservative_repok(self, obj):
-        self.set_mode(Mode.CONSERVATIVE_EXECUTION)
+        self.mode = CONSERVATIVE_EXECUTION
         try:
             if hasattr(obj, "repok") and not obj.repok():
                 raise excp.RepOkFailException()
@@ -423,7 +416,7 @@ class SEEngine:
         except AttributeError as e:
             raise e
         finally:
-            self.restore_prev_mode()
+            self.mode = METHOD_EXPLORATION
 
     def check_timeout(self):
         if time.time() > self._timeout:
@@ -433,9 +426,9 @@ class SEEngine:
         attr = im.get_attr(obj, attr_name)
         is_init = im.is_initialized(obj, attr_name)
 
-        if self.mode == Mode.CONCRETE_EXECUTION:
+        if self.mode == CONCRETE_EXECUTION:
             return attr
-        if self.mode == Mode.CONSERVATIVE_EXECUTION:
+        if self.mode == CONSERVATIVE_EXECUTION:
             if not is_init:
                 raise excp.NoInitializedException()
             return attr
@@ -454,7 +447,7 @@ class SEEngine:
                 im.set_attr(obj, attr_name, new_value)
                 setattr(obj, "_recursion_depth", 0)
 
-                if self.mode == Mode.METHOD_EXPLORATION:
+                if self.mode == METHOD_EXPLORATION:
                     if self._current_bp - 1 < len(self._branch_points):
                         self.check_conservative_repok(obj)
                     self.mimic_change(obj, attr_name, new_value)
@@ -471,7 +464,6 @@ class SEEngine:
         return im.get_attr(obj, attr_name)
 
     def lazy_set_attr(self, obj, attr_name, value):
-        assert self.mode != Mode.CONSERVATIVE_EXECUTION
         im.set_to_initialized(obj, attr_name)
         im.set_attr(obj, attr_name, value)
 
@@ -494,8 +486,8 @@ class SEEngine:
         Returns:
             An instance of lazy_class or None.
         """
-        assert self.mode != Mode.CONSERVATIVE_EXECUTION
-        assert self.mode != Mode.CONCRETE_EXECUTION
+        assert self.mode != CONSERVATIVE_EXECUTION
+        assert self.mode != CONCRETE_EXECUTION
 
         if self._current_bp < len(self._branch_points):
             branch_point = self._branch_points[self._current_bp]
@@ -541,13 +533,13 @@ class SEEngine:
         Returns:
             True or False, depending on the evaluation.
         """
-        assert self.mode != Mode.CONCRETE_EXECUTION
+        assert self.mode != CONCRETE_EXECUTION
 
         path_conditions = True
         for c in self._path_condition:
             path_conditions = self.smt.And(path_conditions, c)
 
-        if self.mode == Mode.CONSERVATIVE_EXECUTION:
+        if self.mode == CONSERVATIVE_EXECUTION:
             value = self.conditioned_value(path_conditions, condition)
             if value is None:
                 raise excp.NoInitializedException()
@@ -609,9 +601,9 @@ class SEEngine:
         return self.smt.check(self.smt.And(path_conditions, condition))
 
     def check_recursion_limit(self, obj):
-        if hasattr(obj, "_recursion_depth"):
+        if hasattr(obj, "_recursion_depth") and self.mode != REPOK_EXPLORATION:
             obj._recursion_depth += 1
-            if obj._recursion_depth > self._recursion_limit:
+            if obj._recursion_depth > RECURSION_LIMIT:
                 raise excp.MaxRecursionException(str(obj._recursion_depth))
 
     def statistics(self):
