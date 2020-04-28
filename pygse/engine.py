@@ -200,10 +200,11 @@ class SEEngine:
             pass
         except Exception as e:
             self._stats.pruned_by_exception += 1
-            # raise e
             exception = e
         finally:
             self.set_mode(Mode.CONCRETE_EXECUTION)
+            # if exception:
+            #     raise e
             pathdata.exception = exception
             pathdata.time = time.time() - self._time
             self._stats.status_count(pathdata.status)
@@ -525,7 +526,7 @@ class SEEngine:
         lazy_class._vector.append(n)
         return n
 
-    def evaluate(self, sym_bool):
+    def evaluate(self, condition):
         """Evaluates a condition represented by a symbolic bool.
 
         If the value of the symbol represented constraint is conditioned
@@ -541,23 +542,45 @@ class SEEngine:
             True or False, depending on the evaluation.
         """
         assert self.mode != Mode.CONCRETE_EXECUTION
-        bool_value = self.conditioned_value(sym_bool)
-        if bool_value is not None:
-            return bool_value
+
+        path_conditions = True
+        for c in self._path_condition:
+            path_conditions = self.smt.And(path_conditions, c)
 
         if self.mode == Mode.CONSERVATIVE_EXECUTION:
-            raise excp.NoInitializedException()
+            value = self.conditioned_value(path_conditions, condition)
+            if value is None:
+                raise excp.NoInitializedException()
+            return value
 
-        condition = sym_bool.formula
-        condition_value = self._get_next_conditional_step()
+        bp_len = len(self._branch_points)
+        bp_index = self._current_bp
 
-        if condition_value:
-            self._path_condition.append(condition)
+        if bp_index < bp_len:
+            value = self._branch_points[bp_index].get_branch()
         else:
-            self._path_condition.append(self.smt.Not(condition))
-        return condition_value
+            if self._max_depth < bp_len:
+                raise excp.MaxDepthException
+            self._branch_points.append(ConditionalBranchPoint())
+            value = True
+        self._current_bp += 1
 
-    def conditioned_value(self, sym_bool):
+        if value is True:
+            if self.is_sat(path_conditions, condition):
+                self._path_condition.append(condition)
+                return True
+
+            self._branch_points[bp_index].bool_value = False
+            self._path_condition.append(self.smt.Not(condition))
+            return False
+
+        condition = self.smt.Not(condition)
+        if self.is_sat(path_conditions, condition):
+            self._path_condition.append(condition)
+            return False
+        raise excp.UnsatBranchError()
+
+    def conditioned_value(self, path_conditions, condition):
         """Checks if a constraint's value is conditioned by the path.
 
         Checks whether the constraint represented by sym_bool has a
@@ -573,41 +596,17 @@ class SEEngine:
         Raises:
             UnstatBranchError: Unsat constraint Error.
         """
-        conditions = True
-        for c in self._path_condition:
-            conditions = self.smt.And(conditions, c)
-        true_cond = self.smt.check(self.smt.And(conditions, sym_bool.formula))
+        true_cond = self.smt.check(self.smt.And(path_conditions, condition))
         false_cond = self.smt.check(
-            self.smt.And(conditions, self.smt.Not(sym_bool.formula))
+            self.smt.And(path_conditions, self.smt.Not(condition))
         )
         if true_cond and not false_cond:
             return True
         if false_cond and not true_cond:
             return False
-        if not true_cond and not false_cond:
-            raise excp.UnsatBranchError()
 
-    def _get_next_conditional_step(self):
-        """Retrieves the conditional of the current branching point.
-
-        Looks and returns the value that must take the current branching
-        point (conditional branching point).
-
-        Returns:
-            True or False Depending on the current branching point value.
-        """
-        if self._max_depth < self._current_depth:
-            raise excp.MaxDepthException
-        self._current_depth += 1
-
-        if self._current_bp < len(self._branch_points):
-            bool_value = self._branch_points[self._current_bp].get_branch()
-        else:
-            self._branch_points.append(ConditionalBranchPoint())
-            bool_value = True
-
-        self._current_bp += 1
-        return bool_value
+    def is_sat(self, path_conditions, condition):
+        return self.smt.check(self.smt.And(path_conditions, condition))
 
     def check_recursion_limit(self, obj):
         if hasattr(obj, "_recursion_depth"):

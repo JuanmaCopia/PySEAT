@@ -276,7 +276,7 @@ class SymBool(Symbolic):
     def __bool__(self):
         if isinstance(self.formula, bool):
             return self.formula
-        return self.engine.evaluate(self)
+        return self.engine.evaluate(self.formula)
 
     def __nonzero__(self):
         return self.__bool__()
