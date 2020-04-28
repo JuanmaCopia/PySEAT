@@ -71,7 +71,7 @@ class SEEngine:
         _real_to_proxy (dict): Maps builtin supported types to Symbolic Ones.
     """
 
-    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, timeout=5.5):
+    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, timeout=5.0):
         """Setups the initial values of the engine.
 
         Args:
@@ -527,11 +527,11 @@ class SEEngine:
         for c in self._path_condition:
             path_conditions = self.smt.And(path_conditions, c)
 
-        if self.mode == CONSERVATIVE_EXECUTION:
-            value = self.conditioned_value(path_conditions, condition)
-            if value is None:
-                raise excp.CantMakeDecisionException()
-            return value
+        # if self.mode == CONSERVATIVE_EXECUTION:
+        #     value = self.conditioned_value(path_conditions, condition)
+        #     if value is None:
+        #         raise excp.CantMakeDecisionException()
+        #     return value
 
         bp_len = len(self._branch_points)
         bp_index = self._current_bp
