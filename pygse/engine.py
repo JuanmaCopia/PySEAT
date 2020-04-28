@@ -13,9 +13,10 @@ import instances as inst
 import instance_managment as im
 import helpers
 import symbolics as sym
+import data
 
 from branching_steps import LazyBranchPoint, ConditionalBranchPoint
-from data import Status, PathExecutionData, ExplorationStats
+
 from smt.smt import SMT
 from smt.sort_z3 import SMTInt, SMTBool
 from smt.solver_z3 import SMTSolver
@@ -61,7 +62,7 @@ class SEEngine:
         _max_depth (int): Max depth search, any execution that exeeds this value
         is pruned.
 
-        _globalstats (ExplorationStats): Contains the overall statistics of all executed
+        _globalstats (data.ExplorationStats): Contains the overall statistics of all executed
         program paths.
 
         _sut (SUT): Data of the program under test, contains the method or function,
@@ -80,7 +81,7 @@ class SEEngine:
         self.smt = SMT((SMTInt, SMTBool), SMTSolver)
         self._sut = sut_data
         self._max_depth = max_depth
-        self._stats = ExplorationStats()
+        self._stats = data.ExplorationStats()
         self._backups = None
         self.mode = CONCRETE_EXECUTION
         self._current_depth = 0
@@ -105,7 +106,7 @@ class SEEngine:
         """Main method, implements the generalized symbolic execution.
 
         Yields:
-            PathExecutionData: The result of the execution of the function under test
+            data.PathExecutionData: The result of the execution of the function under test
         """
         unexplored_paths = True
 
@@ -152,11 +153,11 @@ class SEEngine:
                 or method.
 
         Returns:
-            PathExecutionData: The result of the execution of the function
+            data.PathExecutionData: The result of the execution of the function
             under test
         """
         self._stats.total_paths += 1
-        pathdata = PathExecutionData(self._stats.total_paths, Status.PRUNED)
+        pathdata = data.PathExecutionData(self._stats.total_paths, data.PRUNED)
         print("\n\nExecuting method:")
 
         returnv = None
@@ -224,9 +225,9 @@ class SEEngine:
         returnv = self.execute_method_concretely(self_end_state, args)
 
         if self.execute_repok_concretely(self_end_state):
-            status = Status.OK
+            status = data.OK
         else:
-            status = Status.FAIL
+            status = data.FAIL
 
         pathdata.status = status
         pathdata.path_repr = helpers.path_to_str(self._branch_points)

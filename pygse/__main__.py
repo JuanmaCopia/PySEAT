@@ -11,7 +11,7 @@ import sut_parser
 from reports import report_statistics, print_formatted_result
 from engine import SEEngine
 import test_generator as testgen
-from data import Status
+import data
 
 usage = "usage: %prog [options] <path to *.py file> <class-name> <method-name>"
 parser = OptionParser(usage=usage)
@@ -68,7 +68,7 @@ print("\nPerforming Exploration...\n")
 for run in engine.explore():
     if run:
         print_formatted_result(sut.get_method(), run, verbose)
-        if run.status != Status.PRUNED:
+        if run.status != data.PRUNED:
             test_num += 1
             test = testgen.TestCode(sut, run, test_num)
             tests_gen.append(test)

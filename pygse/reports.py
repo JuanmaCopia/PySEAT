@@ -15,7 +15,7 @@ INDENT8 = "        "
 
 def print_formatted_result(function, run_data, verbose):
     if verbose:
-        if run_data.status != data.Status.PRUNED:
+        if run_data.status != data.PRUNED:
             print("\n#" + str(run_data.number) + " " + run_data.status.name + ":\n")
             print(" Path Condition:")
             helpers.print_list(run_data.pathcondition, INDENT8)
@@ -41,7 +41,15 @@ def print_formatted_result(function, run_data, verbose):
                 print("  Exception: " + str(run_data.exception))
             print("")
     else:
-        print("#" + str(run_data.number) + ": " + run_data.status.name)
+        print("#" + str(run_data.number) + ": " + get_status_string(run_data.status))
+
+
+def get_status_string(status_num):
+    if status_num == 0:
+        return "OK"
+    elif status_num == 1:
+        return "PRUNED"
+    return "FAIL"
 
 
 def report_statistics(stats):
@@ -75,4 +83,3 @@ def report_statistics(stats):
 
     # print(INDENT2 + "Max OK time: ", stats.max_ok_time)
     # print(INDENT2 + "Max PRUNED time: ", stats.max_pruned_time)
-

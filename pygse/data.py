@@ -5,13 +5,10 @@ executions and for each execution in particular.
 
 """
 
-from enum import Enum
 
-
-class Status(Enum):
-    OK = 0
-    PRUNED = 1
-    FAIL = 2
+OK = 0
+PRUNED = 1
+FAIL = 2
 
 
 class PathExecutionData:
@@ -53,28 +50,18 @@ class ExplorationStats:
         self.max_pruned_time = 0
 
     def status_count(self, status):
-        if status == Status.OK:
+        if status == OK:
             self.successes += 1
-        elif status == Status.FAIL:
+        elif status == FAIL:
             self.failures += 1
 
     def sum_times(self, run):
-        if run.status != Status.PRUNED:
+        if run.status != PRUNED:
             if run.time > self.max_ok_time:
                 self.max_ok_time = run.time
         else:
             if run.time > self.max_pruned_time:
                 self.max_pruned_time = run.time
-
-    def builded_count(self, builded, nodes_num):
-        if builded:
-            self.builded += 1
-            if nodes_num > 4:
-                self.builded_at[5] += 1
-            else:
-                self.builded_at[nodes_num] += 1
-        else:
-            self.not_builded += 1
 
     def get_amount_pruned(self):
         total = self.pruned_by_depth + self.pruned_by_error
