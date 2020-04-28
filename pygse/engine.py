@@ -527,11 +527,11 @@ class SEEngine:
         for c in self._path_condition:
             path_conditions = self.smt.And(path_conditions, c)
 
-        # if self.mode == CONSERVATIVE_EXECUTION:
-        #     value = self.conditioned_value(path_conditions, condition)
-        #     if value is None:
-        #         raise excp.CantMakeDecisionException()
-        #     return value
+        if self.mode == CONSERVATIVE_EXECUTION:
+            value = self.conditioned_value(path_conditions, condition)
+            if value is None:
+                raise excp.CantMakeDecisionException()
+            return value
 
         bp_len = len(self._branch_points)
         bp_index = self._current_bp
