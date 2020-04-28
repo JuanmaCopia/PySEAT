@@ -3,65 +3,6 @@
 """
 
 
-class Path:
-    def __init__(self, conditions=[]):
-        self._branch_points = []
-        self._current_bp = 0
-        self.conditions = conditions
-
-    # def replace_last_condition(self, condition):
-    #     self.conditions[-1] = condition
-
-    # def new_lazy_branch_point(self, num_branches):
-    #     bp = LazyBranchPoint(num_branches)
-    #     self._branch_points.append(bp)
-    #     self._current_bp += 1
-    #     return bp
-
-    # def new_cond_branch_point(self):
-    #     bp = ConditionalBranchPoint()
-    #     self._branch_points.append(bp)
-    #     self._current_bp += 1
-    #     return bp
-
-    # def get_current_branch(self):
-    #     branch = self._branch_points[self._current_bp].get_branch()
-    #     self._current_bp += 1
-    #     return branch
-
-    # def get_current_branch_point(self):
-    #     bp = self._branch_points[self._current_bp]
-    #     self._current_bp += 1
-    #     return bp
-
-    # def get_recent_branch(self):
-    #     return self._branch_points[self._current_bp - 1].get_branch()
-
-    # def exists_branch(self):
-    #     return self._current_bp < len(self._branch_points)
-
-    # def reset(self):
-    #     self._current_bp = 0
-    #     if self.init_num_cond > 0:
-    #         self.conditions = keep_first_n_items(self.conditions, self.init_num_cond)
-
-    # def next(self):
-    #     if not self._branch_points:
-    #         return False
-    #     last_bp = self._branch_points[-1]
-    #     last_bp.advance_branch()
-
-    #     while self._branch_points and last_bp.all_branches_covered():
-    #         del self._branch_points[-1]
-    #         if self._branch_points:
-    #             last_bp = self._branch_points[-1]
-    #             last_bp.advance_branch()
-
-    #     if not self._branch_points:
-    #         return False
-    #     return True
-
-
 class ConditionalBranchPoint:
     """Conditional branching step.
 
