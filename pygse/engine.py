@@ -81,7 +81,7 @@ class SEEngine:
         self._sut = sut_data
         self._max_depth = max_depth
         self._stats = ExplorationStats()
-        self._backups = LazyBackup()
+        self._backups = None
         self.mode = CONCRETE_EXECUTION
         self._current_depth = 0
         self._current_bp = 0
@@ -113,9 +113,9 @@ class SEEngine:
             self._reset_exploration()
 
             args = self.instantiate_input()
+            self._backups = LazyBackup(args)
 
             result = self._execute_method_exploration(args)
-
             yield (result)
 
             self._remove_explored_branch()
@@ -126,7 +126,6 @@ class SEEngine:
     def instantiate_input(self):
         types = self._sut.get_method_param_types()
         args = [inst.symbolic_instantiation(self, typ) for typ in types]
-        self._backups.initialize_backup(args)
         return args
 
     def _reset_exploration(self):
@@ -136,7 +135,6 @@ class SEEngine:
         self._current_bp = 0
         self._current_nodes = 0
         self._current_depth = 0
-        self._backups = LazyBackup()
         for k in self._sut.class_map.keys():
             k._vector = []
             k._id = 0
@@ -195,14 +193,13 @@ class SEEngine:
             pass
         except excp.BuildTimeOutException:
             self._stats.not_builded_by_timeout += 1
-            pass
         except Exception as e:
             self._stats.pruned_by_exception += 1
             exception = e
         finally:
             self.mode = CONCRETE_EXECUTION
             # if exception:
-            #     raise e
+            #     raise exception
             pathdata.exception = exception
             pathdata.time = time.time() - self._time
             self._stats.status_count(pathdata.status)
@@ -218,11 +215,6 @@ class SEEngine:
         symbolic_args = self._backups.get_args()
 
         input_self = self.build(symbolic_inself, model)
-        self._stats.builded_count(input_self, self._current_repok_max)
-
-        if input_self is None:
-            raise excp.CouldNotBuildError()
-
         input_args = self.build(symbolic_args, model)
 
         # Execution of method with concrete input
@@ -245,7 +237,6 @@ class SEEngine:
         pathdata.input_self = input_self
         pathdata.symbolic_inself = symbolic_inself
         pathdata.returnv = returnv
-        return pathdata
 
     def execute_method_concretely(self, obj, args):
         self.mode = CONCRETE_EXECUTION
@@ -290,20 +281,26 @@ class SEEngine:
         elif isinstance(symbolic, list):
             for i, x in enumerate(symbolic):
                 symbolic[i] = self.build(x, model)
-                if x is not None and symbolic[i] is None:
-                    assert False
             return symbolic
         elif im.is_user_defined(symbolic):
+            self._current_repok_max = 0
             concretei = inst.concretize(symbolic, model)
             if self.execute_repok_concretely(concretei):
+                self._stats.builded_at[self._current_repok_max] += 1
                 return concretei
 
+            self.mode = REPOK_EXPLORATION
             self._current_repok_max = 0
             build = None
             while not build and self._current_repok_max <= self._max_r_nodes:
                 print("Building for ", self._current_repok_max)
                 build = self.build_partial_struture(symbolic, model)
                 self._current_repok_max += 1
+
+            if build is None:
+                self._stats.not_builded += 1
+                raise excp.CouldNotBuildError()
+            self._stats.builded_at[self._current_repok_max - 1] += 1
             return build
         assert False
 
@@ -317,9 +314,6 @@ class SEEngine:
         else:
             assert False
 
-    def timeout_reached(self):
-        return time.time() > self._timeout
-
     def build_partial_struture(self, input_self, model):
         backup_bp = copy.deepcopy(self._branch_points)
         self._branch_points = []
@@ -329,7 +323,7 @@ class SEEngine:
 
         while unexplored_paths:
 
-            if self.timeout_reached():
+            if time.time() > self._timeout:
                 self._path_condition = helpers.keep_first_n(self._path_condition, pc_len)
                 self._branch_points = backup_bp
                 raise excp.BuildTimeOutException()
@@ -348,12 +342,9 @@ class SEEngine:
             if not self._branch_points:
                 unexplored_paths = False
 
-        self._path_condition = helpers.keep_first_n(self._path_condition, pc_len)
         self._branch_points = backup_bp
 
     def _execute_repok_exploration(self, instance):
-        self._current_self = instance
-        self.mode = REPOK_EXPLORATION
         try:
             result = instance.repok()
             if sym.is_symbolic_bool(result):
@@ -365,10 +356,8 @@ class SEEngine:
         except excp.TimeOutException as e:
             raise e
         except excp.MaxRecursionException:
-            assert False
             raise excp.MaxRecursionException("Max recursion reached on repok")
         except AttributeError as e:
-            print("attr error")
             raise e
         else:
             if result:
@@ -376,8 +365,6 @@ class SEEngine:
                 new_object = inst.concretize(instance, model)
                 return new_object
             return None
-        finally:
-            self.mode = CONCRETE_EXECUTION
 
     def _remove_explored_branch(self):
         """Removes fully explored branhes.
@@ -542,7 +529,7 @@ class SEEngine:
         if self.mode == CONSERVATIVE_EXECUTION:
             value = self.conditioned_value(path_conditions, condition)
             if value is None:
-                raise excp.NoInitializedException()
+                raise excp.CantMakeDecisionException()
             return value
 
         bp_len = len(self._branch_points)
@@ -601,7 +588,7 @@ class SEEngine:
         return self.smt.check(self.smt.And(path_conditions, condition))
 
     def check_recursion_limit(self, obj):
-        if hasattr(obj, "_recursion_depth") and self.mode != REPOK_EXPLORATION:
+        if self.mode != REPOK_EXPLORATION and hasattr(obj, "_recursion_depth"):
             obj._recursion_depth += 1
             if obj._recursion_depth > RECURSION_LIMIT:
                 raise excp.MaxRecursionException(str(obj._recursion_depth))
@@ -626,14 +613,7 @@ class SEEngine:
 
 
 class LazyBackup:
-    def __init__(self):
-        self.args_bkp = []
-        self.self_bkp = None
-
-    def init_self_backup(self, self_obj):
-        self.self_bkp = copy.deepcopy(self_obj)
-
-    def initialize_backup(self, datalist):
+    def __init__(self, datalist):
         self.self_bkp = copy.deepcopy(datalist[0])
         self.args_bkp = copy.deepcopy(datalist[1:])
 
