@@ -9,9 +9,6 @@ def do_add(s, x):
 
 
 class Node:
-
-    _engine = None
-
     # Instance attributes annotations (will be treated as symbolic)
     data: int
     right: "Node"
@@ -25,38 +22,6 @@ class Node:
         self.left = None
         self.s_parent = parent
         self.height = 0
-
-    @property
-    def data(self):
-        return self._engine.lazy_initialization(self, "data")
-
-    @data.setter
-    def data(self, value):
-        return self._engine.lazy_set_attr(self, "data", value)
-
-    @property
-    def right(self):
-        return self._engine.lazy_initialization(self, "right")
-
-    @right.setter
-    def right(self, value):
-        return self._engine.lazy_set_attr(self, "right", value)
-
-    @property
-    def left(self):
-        return self._engine.lazy_initialization(self, "left")
-
-    @left.setter
-    def left(self, value):
-        return self._engine.lazy_set_attr(self, "left", value)
-
-    @property
-    def parent(self):
-        return self._engine.lazy_initialization(self, "parent")
-
-    @parent.setter
-    def parent(self, value):
-        return self._engine.lazy_set_attr(self, "parent", value)
 
     def repok(self):
         visited = set()
@@ -213,23 +178,12 @@ def update_height(node):
 
 
 class AVL():
-
-    _engine = None
-
     # Instance attributes annotations (will be treated as symbolic)
     root: "Node"
 
     # Init params should be annotated also
     def __init__(self):
         self.root = None
-
-    @property
-    def root(self):
-        return self._engine.lazy_initialization(self, "root")
-
-    @root.setter
-    def root(self, value):
-        return self._engine.lazy_set_attr(self, "root", value)
 
     def to_str(self, node, visited):
         """Internal method for ASCII art."""

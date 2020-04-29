@@ -62,7 +62,7 @@ class SEEngine:
         _max_depth (int): Max depth search, any execution that exeeds this value
         is pruned.
 
-        _globalstats (data.ExplorationStats): Contains the overall statistics of all executed
+        _globalstats (ExplorationStats): Contains the overall statistics of all executed
         program paths.
 
         _sut (SUT): Data of the program under test, contains the method or function,
@@ -99,8 +99,6 @@ class SEEngine:
 
         for k in self._sut.class_map.keys():
             setattr(k, "_engine", self)
-            setattr(k, "_vector", [])
-            setattr(k, "_id", 0)
 
     def explore(self):
         """Main method, implements the generalized symbolic execution.

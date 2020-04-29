@@ -9,9 +9,6 @@ def do_add(s, x):
 
 
 class Node:
-
-    _engine = None
-
     # Instance attributes annotations (will be treated as symbolic)
     data: int
     right: "Node"
@@ -22,30 +19,6 @@ class Node:
         self.data = data
         self.right = None
         self.left = None
-
-    @property
-    def data(self):
-        return self._engine.lazy_initialization(self, "data")
-
-    @data.setter
-    def data(self, value):
-        return self._engine.lazy_set_attr(self, "data", value)
-
-    @property
-    def right(self):
-        return self._engine.lazy_initialization(self, "right")
-
-    @right.setter
-    def right(self, value):
-        return self._engine.lazy_set_attr(self, "right", value)
-
-    @property
-    def left(self):
-        return self._engine.lazy_initialization(self, "left")
-
-    @left.setter
-    def left(self, value):
-        return self._engine.lazy_set_attr(self, "left", value)
 
     def repok(self):
         return True
@@ -58,23 +31,12 @@ class Node:
 
 
 class BST:
-
-    _engine = None
-
     # Instance attributes annotations (will be treated as symbolic)
     root: "Node"
 
     # Init params should be annotated also
     def __init__(self):
         self.root = None
-
-    @property
-    def root(self):
-        return self._engine.lazy_initialization(self, "root")
-
-    @root.setter
-    def root(self, value):
-        return self._engine.lazy_set_attr(self, "root", value)
 
     def repok(self):
         if not self.root:

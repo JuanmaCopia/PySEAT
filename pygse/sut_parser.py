@@ -10,7 +10,8 @@ import importlib
 import typing
 import copy
 from inspect import signature
-import instance_managment as im
+
+from instrumentation import instrument
 from helpers import do_add
 
 # from exceptions import MissingTypesError
@@ -60,7 +61,7 @@ def is_user_defined(typ):
     return typ.__module__ != "builtins"
 
 
-def map_all_classes(types_list) -> set:
+def map_all_classes(types_list) -> dict:
     classes = set()
     worklist = []
     class_map = {}
@@ -115,18 +116,14 @@ class SUT:
     Parses and stores the data objects of the sut.
 
     Attributes:
-        sclass (class): The class of the method under test.
-        function (function): Method Under Test.
-        types (list[type]): Ordered list of the types of the method Pprameters.
-        class_params_map (dict): Maps a class to a dict with it's parameters/type
-        init method parameter's types.
-        is_method (bool): Whether the sut is a method (True) or a Function (False).
 
     """
 
     def __init__(self, the_class, method):
         self.method_data = MethodData(method, the_class)
         self.class_map = map_all_classes(self.method_data.types_list)
+        for clss, class_data in self.class_map.items():
+            instrument(clss, class_data.instance_attr_types.keys())
 
     def get_method(self):
         return self.method_data.method

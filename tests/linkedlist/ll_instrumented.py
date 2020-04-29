@@ -5,9 +5,6 @@ def do_add(s, x):
 
 
 class Node:
-    # Class attribues
-    _engine = None
-
     # Instance attributes annotations (will be treated as symbolic)
     elem: int
     next: "Node"
@@ -16,25 +13,6 @@ class Node:
     def __init__(self, elem: int):
         self.elem = elem
         self.next = None
-
-    @property
-    def elem(self):
-        return self._engine.lazy_initialization(self, "elem")
-
-    @elem.setter
-    def elem(self, value):
-        return self._engine.lazy_set_attr(self, "elem", value)
-
-    @property
-    def next(self):
-        return self._engine.lazy_initialization(self, "next")
-
-    @next.setter
-    def next(self, value):
-        return self._engine.lazy_set_attr(self, "next", value)
-
-    def repok(self):
-        return True
 
     def to_str(self, visited=False):
         if visited:
@@ -72,23 +50,12 @@ class Node:
 
 
 class LinkedList:
-
-    _engine = None
-
     # Instance attributes annotations (will be treated as symbolic)
     head: "Node"
 
     # Init params should be annotated also
     def __init__(self):
         self.head = None
-
-    @property
-    def head(self):
-        return self._engine.lazy_initialization(self, "head")
-
-    @head.setter
-    def head(self, value):
-        return self._engine.lazy_set_attr(self, "head", value)
 
     def repok(self):
         return self.acyclic()
@@ -117,5 +84,5 @@ class LinkedList:
 
     def __repr__(self):
         if not self.head:
-            return "Empty"
+            return "EmptyList"
         return self.head.__repr__()

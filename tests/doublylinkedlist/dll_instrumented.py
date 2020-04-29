@@ -1,7 +1,4 @@
 class Node:
-
-    _engine = None
-
     # Instance attributes annotations (will be treated as symbolic)
     data: int
     next: "Node"
@@ -12,30 +9,6 @@ class Node:
         self.data = data
         self.next = None
         self.prev = None
-
-    @property
-    def data(self):
-        return self._engine.lazy_initialization(self, "data")
-
-    @data.setter
-    def data(self, value):
-        return self._engine.lazy_set_attr(self, "data", value)
-
-    @property
-    def next(self):
-        return self._engine.lazy_initialization(self, "next")
-
-    @next.setter
-    def next(self, value):
-        return self._engine.lazy_set_attr(self, "next", value)
-
-    @property
-    def prev(self):
-        return self._engine.lazy_initialization(self, "prev")
-
-    @prev.setter
-    def prev(self, value):
-        return self._engine.lazy_set_attr(self, "prev", value)
 
     def __repr__(self):
         ps = None
@@ -81,9 +54,6 @@ class Node:
 
 
 class DoublyLinkedList:
-
-    _engine = None
-
     # Instance attributes annotations (will be treated as symbolic)
     head: "Node"
     tail: "Node"
@@ -92,22 +62,6 @@ class DoublyLinkedList:
     def __init__(self):
         self.head = None
         self.tail = None
-
-    @property
-    def head(self):
-        return self._engine.lazy_initialization(self, "head")
-
-    @head.setter
-    def head(self, value):
-        return self._engine.lazy_set_attr(self, "head", value)
-
-    @property
-    def tail(self):
-        return self._engine.lazy_initialization(self, "tail")
-
-    @tail.setter
-    def tail(self, value):
-        return self._engine.lazy_set_attr(self, "tail", value)
 
     # Insert 'value' at the front of the list
     def insert_at_front(self, value):
