@@ -1,7 +1,4 @@
 class Node:
-
-    _engine = None
-
     # Instance attributes annotations (will be treated as symbolic)
     key: int
     next: "Node"
@@ -12,30 +9,6 @@ class Node:
         self.key = key
         self.next = None
         self.prev = None
-
-    @property
-    def key(self):
-        return self._engine.lazy_initialization(self, "key")
-
-    @key.setter
-    def key(self, value):
-        return self._engine.lazy_set_attr(self, "key", value)
-
-    @property
-    def next(self):
-        return self._engine.lazy_initialization(self, "next")
-
-    @next.setter
-    def next(self, value):
-        return self._engine.lazy_set_attr(self, "next", value)
-
-    @property
-    def prev(self):
-        return self._engine.lazy_initialization(self, "prev")
-
-    @prev.setter
-    def prev(self, value):
-        return self._engine.lazy_set_attr(self, "prev", value)
 
     def __str__(self):
         return self.__repr__()
@@ -87,23 +60,12 @@ class Node:
 
 
 class CDLinkedList:
-
-    _engine = None
-
     # Instance attributes annotations (will be treated as symbolic)
     head: "Node"
 
     # Init params should be annotated also
     def __init__(self):
         self.head = None
-
-    @property
-    def head(self):
-        return self._engine.lazy_initialization(self, "head")
-
-    @head.setter
-    def head(self, value):
-        return self._engine.lazy_set_attr(self, "head", value)
 
     def __repr__(self):
         if not self.head:

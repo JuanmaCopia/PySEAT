@@ -140,11 +140,11 @@ def swap_node_test4():
 def swap_node_test5():
     '''
     Self:
-        Empty
+        EmptyList
     Return:
         None
     End Self:
-        Empty
+        EmptyList
     '''
     # Self Generation
     linkedlist0 = LinkedList()
