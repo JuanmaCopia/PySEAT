@@ -8,64 +8,60 @@ def do_add(s, x):
     return len(s) != length
 
 
-class Node():
-    """A node in the AVL tree."""
+class Node:
+    # Instance attributes annotations (will be treated as symbolic)
+    data: int
+    right: "Node"
+    left: "Node"
+    parent: "Node"
 
-    def __init__(self, parent, k):
-        """Creates a node.
-
-        Args:
-            parent: The node's parent.
-            k: key of the node.
-        """
-        self.data = k
-        self.parent = parent
-        self.left = None
+    # Init params should be annotated also
+    def __init__(self, parent: "Node", data: int):
+        self.data = data
         self.right = None
+        self.left = None
+        self.parent = parent
         self.height = 0
 
-    def _str(self, visited):
-        """Internal method for ASCII art."""
-        label = str(self.data)
-        if self.left is None:
-            left_lines, left_pos, left_width = [], 0, 0
-        else:
-            if do_add(visited, self.left):
-                left_lines, left_pos, left_width = self.left._str(visited)
-            else:
-                left_lines, left_pos, left_width = [], 0, 0
-        if self.right is None:
-            right_lines, right_pos, right_width = [], 0, 0
-        else:
-            if do_add(visited, self.right):
-                right_lines, right_pos, right_width = self.right._str(visited)
-            else:
-                right_lines, right_pos, right_width = [], 0, 0
-        middle = max(right_pos + left_width - left_pos + 1, len(label), 2)
-        pos = left_pos + middle // 2
-        width = left_pos + middle + right_width - right_pos
-        while len(left_lines) < len(right_lines):
-            left_lines.append(' ' * left_width)
-        while len(right_lines) < len(left_lines):
-            right_lines.append(' ' * right_width)
-        if (middle - len(label)) % 2 == 1 and self.parent is not None and \
-           self is self.parent.left and len(label) < middle:
-            label += '.'
-        label = label.center(middle, '.')
-        if label[0] == '.':
-            label = ' ' + label[1:]
-        if label[-1] == '.':
-            label = label[:-1] + ' '
-        lines = [' ' * left_pos + label + ' ' * (right_width - right_pos),
-                 ' ' * left_pos + '/' + ' ' * (middle-2) +
-                 '\\' + ' ' * (right_width - right_pos)] + \
-                [left_line + ' ' * (width - left_width - right_width) + right_line for left_line, right_line in zip(left_lines, right_lines)]
-        return lines, pos, width
-
-    def __str__(self):
+    def repok(self):
         visited = set()
         visited.add(self)
-        return '\n'.join(self._str(visited)[0])
+
+        if self.left is not None:
+            if not do_add(visited, self.left):
+                return False
+
+        if self.right is not None:
+            if not do_add(visited, self.right):
+                return False
+
+        if self.parent is not None:
+            if not do_add(visited, self.parent):
+                return False
+
+        if self.left is not None:
+            if self.left.data > self.data:
+                return False
+            if self.left.parent is not self:
+                return False
+        if self.right is not None:
+            if self.right.data < self.data:
+                return False
+            if self.right.parent is not self:
+                return False
+
+        if self.parent is not None:
+            isleft = self is self.parent.left
+            isright = self is self.parent.right
+
+            if not isleft and not isright:
+                return False
+
+            if isleft and self.data > self.parent.data:
+                return False
+            if isright and self.data < self.parent.data:
+                return False
+        return True
 
     def find(self, k):
         """Finds and returns the node with key k from the subtree rooted at this
@@ -163,20 +159,79 @@ def update_height(node):
 
 
 class AVL():
-    """
-    AVL binary search tree implementation.
-    """
+    # Instance attributes annotations (will be treated as symbolic)
+    root: "Node"
 
-    def __init__(self, root=None):
-        """ empty tree """
-        self.root = root
+    # Init params should be annotated also
+    def __init__(self):
+        self.root = None
 
-    def __str__(self):
+    def to_str(self, node, visited):
+        """Returns list of strings, width, height, and horizontal coord of root."""
+        # No child.
+
+        if not do_add(visited, node):
+            line = "%s" % node.data + "*"
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        if node.right is None and node.left is None:
+            line = "%s" % node.data
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        # Only left child.
+        if node.right is None:
+            lines, n, p, x = self.to_str(node.left, visited)
+            s = "%s" % node.data
+            u = len(s)
+            first_line = (x + 1) * " " + (n - x - 1) * "_" + s
+            second_line = x * " " + "/" + (n - x - 1 + u) * " "
+            shifted_lines = [line + u * " " for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
+
+        # Only right child.
+        if node.left is None:
+            lines, n, p, x = self.to_str(node.right, visited)
+            s = "%s" % node.data
+            u = len(s)
+            first_line = s + x * "_" + (n - x) * " "
+            second_line = (u + x) * " " + "\\" + (n - x - 1) * " "
+            shifted_lines = [u * " " + line for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
+
+        # Two children.
+        left, n, p, x = self.to_str(node.left, visited)
+        right, m, q, y = self.to_str(node.right, visited)
+        s = "%s" % node.data
+        u = len(s)
+        first_line = (x + 1) * " " + (n - x - 1) * "_" + s + y * "_" + (m - y) * " "
+        second_line = (
+            x * " " + "/" + (n - x - 1 + u + y) * " " + "\\" + (m - y - 1) * " "
+        )
+        if p < q:
+            left += [n * " "] * (q - p)
+        elif q < p:
+            right += [m * " "] * (p - q)
+        zipped_lines = zip(left, right)
+        lines = [first_line, second_line] + [a + u * " " + b for a, b in zipped_lines]
+        return lines, n + m + u, max(p, q) + 2, n + u // 2
+
+    def __repr__(self):
         if self.root is None:
-            return '<empty tree>'
-        return str(self.root)
+            return "<empty tree>"
+        visited = set()
+        lines, _, _, _ = self.to_str(self.root, visited)
+        result = ""
+        for line in lines:
+            result += "        " + line + "\n"
+        return "\n" + result
 
-    def find(self, k):
+    def find(self, k: int):
         """Finds and returns the node with key k from the subtree rooted at this
         node.
 
@@ -259,7 +314,7 @@ class AVL():
                     self.left_rotate(node)
             node = node.parent
 
-    def insert(self, k):
+    def insert(self, k: int):
         """Inserts a node with key k into the subtree rooted at this node.
         This AVL version guarantees the balance property: h = O(lg n).
 
@@ -297,8 +352,6 @@ class AVL():
                 self.root.parent = None
         else:
             deleted = node.delete()
-        # node.parent is actually the old parent of the node,
-        # which is the first potentially out-of-balance node.
         self.rebalance(deleted.parent)
 
     def repok(self):
@@ -307,8 +360,11 @@ class AVL():
         if not (
             self.is_acyclic() and
             self.is_ordered() and
-            self.is_balanced(self.root)
+            self.is_balanced() and
+            self.parents_ok(self.root)
         ):
+            return False
+        if self.root.parent is not None:
             return False
         return True
 
@@ -343,41 +399,32 @@ class AVL():
                 return False
         return True
 
-    def is_balanced(self, node):
+    def parents_ok(self, node):
         if node is None:
             return True
-        left_height = self.get_height(node.left)
-        right_height = self.get_height(node.right)
-        return abs(left_height - right_height) <= 1
 
-    def get_height(self, node):
-        if node is None:
+        if node.left is not None:
+            if node.left.parent is not node:
+                return False
+
+        if node.right is not None:
+            if node.right.parent is not node:
+                return False
+
+        return self.parents_ok(node.left) and self.parents_ok(node.right)
+
+    def is_balanced_helper(self, root):
+        if root is None:
             return 0
-        return max(self.get_height(node.left), self.get_height(node.right)) + 1
+        left_height = self.is_balanced_helper(root.left)
+        if left_height == -1:
+            return -1
+        right_height = self.is_balanced_helper(root.right)
+        if right_height == -1:
+            return -1
+        if abs(left_height - right_height) > 1:
+            return -1
+        return max(left_height, right_height) + 1
 
-# def test(args=None):
-#     import random, sys
-#     if not args:
-#         args = sys.argv[1:]
-#     if not args:
-#         print('usage: %s <number-of-random-items | item item item ...>' % \
-#               sys.argv[0])
-#         sys.exit()
-#     elif len(args) == 1:
-#         items = (random.randrange(100) for i in range(int(args[0])))
-#     else:
-#         items = [int(i) for i in args]
-
-#     tree = AVL()
-#     print(tree)
-#     for item in items:
-#         tree.insert(item)
-#         print()
-#         print(tree)
-#         if tree.repok():
-#             print("ok")
-#         assert tree.repok()
-
-
-# if __name__ == '__main__':
-#     test()
+    def is_balanced(self):
+        return self.is_balanced_helper(self.root) > -1

@@ -1,7 +1,7 @@
-from avl import Node, AVL
+from avl import *
 
 
-def insert_test1():
+def test_insert1():
     '''
     Self:
         
@@ -51,10 +51,9 @@ def insert_test1():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test1: OK')
 
 
-def insert_test2():
+def test_insert2():
     '''
     Self:
         
@@ -104,10 +103,9 @@ def insert_test2():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test2: OK')
 
 
-def insert_test3():
+def test_insert3():
     '''
     Self:
         
@@ -157,10 +155,9 @@ def insert_test3():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test3: OK')
 
 
-def insert_test4():
+def test_insert4():
     '''
     Self:
         
@@ -210,10 +207,9 @@ def insert_test4():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test4: OK')
 
 
-def insert_test5():
+def test_insert5():
     '''
     Self:
         
@@ -263,10 +259,9 @@ def insert_test5():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test5: OK')
 
 
-def insert_test6():
+def test_insert6():
     '''
     Self:
         
@@ -305,10 +300,9 @@ def insert_test6():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test6: OK')
 
 
-def insert_test7():
+def test_insert7():
     '''
     Self:
         
@@ -358,10 +352,9 @@ def insert_test7():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test7: OK')
 
 
-def insert_test8():
+def test_insert8():
     '''
     Self:
         
@@ -411,10 +404,9 @@ def insert_test8():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test8: OK')
 
 
-def insert_test9():
+def test_insert9():
     '''
     Self:
         
@@ -464,10 +456,9 @@ def insert_test9():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test9: OK')
 
 
-def insert_test10():
+def test_insert10():
     '''
     Self:
         
@@ -517,10 +508,9 @@ def insert_test10():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test10: OK')
 
 
-def insert_test11():
+def test_insert11():
     '''
     Self:
         
@@ -570,10 +560,9 @@ def insert_test11():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test11: OK')
 
 
-def insert_test12():
+def test_insert12():
     '''
     Self:
         
@@ -612,10 +601,9 @@ def insert_test12():
     assert avl0.root.right.right is None
     assert avl0.root.right.left is None
     assert avl0.root.right.height == 0
-    print('Test12: OK')
 
 
-def insert_test13():
+def test_insert13():
     '''
     Self:
         <empty tree>
@@ -641,20 +629,5 @@ def insert_test13():
     assert avl0.root.left is None
     assert avl0.root.parent is None
     assert avl0.root.height == 0
-    print('Test13: OK')
 
 
-if __name__ == '__main__':
-    insert_test1()
-    insert_test2()
-    insert_test3()
-    insert_test4()
-    insert_test5()
-    insert_test6()
-    insert_test7()
-    insert_test8()
-    insert_test9()
-    insert_test10()
-    insert_test11()
-    insert_test12()
-    insert_test13()

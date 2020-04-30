@@ -51,12 +51,11 @@ max_nodes = options.max_nodes
 max_r_nodes = options.max_r_nodes
 
 sut = sut_parser.parse(module_name, class_name, method_name)
-filepath = testgen.create_testfile(module_name, class_name, method_name)
+folder_name, filepath = testgen.create_testfile(module_name, class_name, method_name)
 
 runs = []
 test_number = 1
 engine = SEEngine(sut, max_depth, max_nodes, max_r_nodes)
-tests_gen = []
 test_num = 0
 
 print("\n ========================  PyGSE  =====================\n")
@@ -71,16 +70,26 @@ for run in engine.explore():
         if run.status != data.PRUNED:
             test_num += 1
             test = testgen.TestCode(sut, run, test_num)
-            tests_gen.append(test)
             testgen.append_to_testfile(filepath, test.code + "\n\n")
 
 print("\nDONE! " + str(test_num) + " Tests were generated\n")
 print("Elapsed Time:   ---  %s seconds  ---" % (time.time() - start_time))
 report_statistics(engine.statistics())
 
-testgen.append_test_calls(filepath, tests_gen)
-
 print("Running generated tests...\n")
 # subprocess.call([sys.executable, filepath])
-subprocess.call(["coverage", "run", "--branch", filepath])
-subprocess.call(["coverage", "html"])
+print(filepath)
+subprocess.call(
+    [
+        "coverage",
+        "run",
+        "--source=" + folder_name,
+        "--omit=" + filepath,
+        "--branch",
+        "-m",
+        "pytest",
+        # "--disable-warnings",
+        filepath,
+    ]
+)
+subprocess.call(["coverage", "report"])

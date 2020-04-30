@@ -8,25 +8,13 @@ import os
 
 
 def create_testfile(module_name, class_name, method_name):
-    def remove_instrumented(module_name):
-        if module_name.endswith("_instrumented"):
-            return module_name[: -len("_instrumented")]
-        return module_name
-
     mod_basename = os.path.splitext(os.path.basename(module_name))[0]
-    mod_basename = remove_instrumented(mod_basename)
     foldername = os.path.dirname(module_name) + "/"
-    filename = mod_basename + "_" + method_name + "_tests.py"
+    filename = "test_" + mod_basename + ".py"
     filepath = foldername + filename
-    importstr = "from " + mod_basename + " import Node, " + class_name + "\n\n"
+    importstr = "from " + mod_basename + " import *" + "\n\n"
     create_file(filepath, importstr)
-    return filepath
-
-
-def append_test_calls(filepath, tests_gen):
-    append_to_testfile(filepath, "if __name__ == '__main__':")
-    for test in tests_gen:
-        append_to_testfile(filepath, "    " + test.name)
+    return foldername, filepath
 
 
 def create_file(filepath, str):
@@ -47,11 +35,7 @@ class TestCode:
         self.run_data = run_stats
         self.test_number = number
         self.code = ""
-        self.name = sut.get_method_name() + "_test" + str(number) + "()"
-
-        self.set_missing_ids(self.run_data.returnv)
-        self.set_missing_ids(self.run_data.self_end_state)
-
+        self.name = "test_" + sut.get_method_name() + str(number) + "()"
         self.generate_test_code()
 
     def _add_line(self, line):
@@ -67,7 +51,7 @@ class TestCode:
         return args_ids[:-2]
 
     def generate_test_code(self):
-        self.gen_test_header()
+        self.code += "def " + self.name + ":"
         self.gen_test_comment()
         self._add_line("# Self Generation")
         self_id = self.generate_structure_code(self.run_data.input_self)
@@ -82,7 +66,6 @@ class TestCode:
         self._add_line("# Repok check")
         self.add_repok_check(self.run_data.self_end_state)
         self.gen_structure_assertions(self.run_data.self_end_state)
-        self._add_line("print('Test" + str(self.test_number) + ": OK')")
 
     def gen_test_comment(self):
         self._add_line("'''")
@@ -92,18 +75,7 @@ class TestCode:
         self._add_line("    " + self.run_data.returnv.__repr__())
         self._add_line("End Self:")
         self._add_line("    " + self.run_data.self_end_state.__repr__())
-        # self._add_line("Path:")
-        # self._add_line("    " + self.run_data.path_repr)
         self._add_line("'''")
-
-    def gen_test_header(self):
-        self.code += (
-            "def "
-            + self._sut.get_method_name()
-            + "_test"
-            + str(self.test_number)
-            + "():"
-        )
 
     def add_repok_check(self, structure):
         self._add_line("assert " + var_name(structure) + ".repok()")
@@ -211,19 +183,3 @@ class TestCode:
             code_line = identifier + " = " + typ.__name__ + "()"
         self._add_line(code_line)
 
-    @staticmethod
-    def set_missing_ids(structure):
-        if not is_user_defined(structure):
-            return
-        visited = set()
-        visited.add(structure)
-        worklist = []
-        worklist.append(structure)
-        while worklist:
-            current = worklist.pop(0)
-            if not hasattr(current, "_objid"):
-                type(current)._id += 1
-                setattr(current, "_objid", type(current)._id)
-            for value in current.__dict__.values():
-                if is_user_defined(value) and do_add(visited, value):
-                    worklist.append(value)
