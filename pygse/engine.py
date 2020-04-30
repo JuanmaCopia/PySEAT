@@ -28,7 +28,7 @@ METHOD_EXPLORATION = 1
 REPOK_EXPLORATION = 2
 CONCRETE_EXECUTION = 3
 
-RECURSION_LIMIT = 20
+RECURSION_LIMIT = 30
 
 
 class SEEngine:
@@ -96,6 +96,7 @@ class SEEngine:
         self._max_time = timeout
         self._timeout = 0
         self._time = 0
+        self._rec_times = 0
 
         for k in self._sut.class_map.keys():
             setattr(k, "_engine", self)
@@ -134,6 +135,7 @@ class SEEngine:
         self._current_bp = 0
         self._current_nodes = 0
         self._current_depth = 0
+        self._rec_times = 0
         for k in self._sut.class_map.keys():
             k._vector = []
             k._id = 0
@@ -409,11 +411,12 @@ class SEEngine:
             raise excp.TimeOutException()
 
     def lazy_initialization(self, obj, attr_name):
-        attr = im.get_attr(obj, attr_name)
-        is_init = im.is_initialized(obj, attr_name)
-
+        pref_name = im.SYMBOLIC_PREFIX + attr_name
+        attr = getattr(obj, pref_name)
         if self.mode == CONCRETE_EXECUTION:
             return attr
+
+        is_init = im.is_initialized(obj, attr_name)
         if self.mode == CONSERVATIVE_EXECUTION:
             if not is_init:
                 raise excp.NoInitializedException()
@@ -427,31 +430,32 @@ class SEEngine:
                 self.check_recursion_limit(attr)
                 return attr
 
-            im.set_to_initialized(obj, attr_name)
+            setattr(obj, im.ISINIT_PREFIX + attr_name, True)
             if attr is None:
                 new_value = self.get_next_lazy_step(attr_type)
-                im.set_attr(obj, attr_name, new_value)
-                setattr(obj, "_recursion_depth", 0)
+                setattr(obj, pref_name, new_value)
+                self._rec_times = 0
 
                 if self.mode == METHOD_EXPLORATION:
                     if self._current_bp - 1 < len(self._branch_points):
                         self.check_conservative_repok(obj)
-                    self.mimic_change(obj, attr_name, new_value)
+                    self.mimic_change(obj, pref_name, new_value)
 
         else:
             assert sym.Symbolic.is_supported_builtin(attr_type)
             assert attr is not None
             if not is_init:
-                im.set_to_initialized(obj, attr_name)
+                setattr(obj, im.ISINIT_PREFIX + attr_name, True)
                 if not sym.is_symbolic(attr):
                     new_sym = sym.symbolic_factory(self, attr_type)
-                    im.set_attr(obj, attr_name, new_sym)
+                    setattr(obj, pref_name, new_sym)
 
-        return im.get_attr(obj, attr_name)
+        return getattr(obj, pref_name)
 
     def lazy_set_attr(self, obj, attr_name, value):
-        im.set_to_initialized(obj, attr_name)
-        im.set_attr(obj, attr_name, value)
+        pref_name = im.SYMBOLIC_PREFIX + attr_name
+        setattr(obj, im.ISINIT_PREFIX + attr_name, True)
+        setattr(obj, pref_name, value)
 
     def get_next_lazy_step(self, lazy_class):
         """Implements a lazy initialization step.
@@ -587,10 +591,10 @@ class SEEngine:
         return self.smt.check(self.smt.And(path_conditions, condition))
 
     def check_recursion_limit(self, obj):
-        if self.mode != REPOK_EXPLORATION and hasattr(obj, "_recursion_depth"):
-            obj._recursion_depth += 1
-            if obj._recursion_depth > RECURSION_LIMIT:
-                raise excp.MaxRecursionException(str(obj._recursion_depth))
+        if self.mode != REPOK_EXPLORATION:
+            self._rec_times += 1
+            if self._rec_times > RECURSION_LIMIT:
+                raise excp.MaxRecursionException(str(self._rec_times))
 
     def statistics(self):
         """Returns the collected statistics of all executions.
@@ -606,9 +610,9 @@ class SEEngine:
             new_val = self._backups.get_backup_of(new_value)
             if new_val is None:
                 assert False
-            im.set_attr(obj_backup, attr_name, new_val)
+            setattr(obj_backup, attr_name, new_val)
         else:
-            im.set_attr(obj_backup, attr_name, copy.deepcopy(new_value))
+            setattr(obj_backup, attr_name, copy.deepcopy(new_value))
 
 
 class LazyBackup:
