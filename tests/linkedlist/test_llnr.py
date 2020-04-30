@@ -12,16 +12,16 @@ def test_swap_node1():
     '''
     # Self Generation
     linkedlist0 = LinkedList()
-    node0 = Node(1)
-    node0.elem = 1
-    node1 = Node(0)
-    node1.elem = 0
+    node1 = Node(1)
+    node1.elem = 1
     node2 = Node(0)
     node2.elem = 0
-    node2.next = None
+    node3 = Node(0)
+    node3.elem = 0
+    node3.next = None
+    node2.next = node3
     node1.next = node2
-    node0.next = node1
-    linkedlist0.head = node0
+    linkedlist0.head = node1
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -50,13 +50,13 @@ def test_swap_node2():
     '''
     # Self Generation
     linkedlist0 = LinkedList()
-    node0 = Node(1)
-    node0.elem = 1
-    node1 = Node(0)
-    node1.elem = 0
-    node1.next = None
-    node0.next = node1
-    linkedlist0.head = node0
+    node1 = Node(1)
+    node1.elem = 1
+    node2 = Node(0)
+    node2.elem = 0
+    node2.next = None
+    node1.next = node2
+    linkedlist0.head = node1
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -83,13 +83,13 @@ def test_swap_node3():
     '''
     # Self Generation
     linkedlist0 = LinkedList()
-    node0 = Node(1)
-    node0.elem = 1
-    node1 = Node(0)
-    node1.elem = 0
-    node1.next = node0
-    node0.next = node1
-    linkedlist0.head = node0
+    node1 = Node(1)
+    node1.elem = 1
+    node2 = Node(0)
+    node2.elem = 0
+    node2.next = node1
+    node1.next = node2
+    linkedlist0.head = node1
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -114,13 +114,13 @@ def test_swap_node4():
     '''
     # Self Generation
     linkedlist0 = LinkedList()
-    node0 = Node(1)
-    node0.elem = 1
-    node1 = Node(0)
-    node1.elem = 0
-    node1.next = node1
-    node0.next = node1
-    linkedlist0.head = node0
+    node1 = Node(1)
+    node1.elem = 1
+    node2 = Node(0)
+    node2.elem = 0
+    node2.next = node2
+    node1.next = node2
+    linkedlist0.head = node1
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -145,13 +145,13 @@ def test_swap_node5():
     '''
     # Self Generation
     linkedlist0 = LinkedList()
-    node0 = Node(0)
-    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
-    node1.next = None
-    node0.next = node1
-    linkedlist0.head = node0
+    node2 = Node(0)
+    node2.elem = 0
+    node2.next = None
+    node1.next = node2
+    linkedlist0.head = node1
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -178,10 +178,10 @@ def test_swap_node6():
     '''
     # Self Generation
     linkedlist0 = LinkedList()
-    node0 = Node(0)
-    node0.elem = 0
-    node0.next = None
-    linkedlist0.head = node0
+    node1 = Node(0)
+    node1.elem = 0
+    node1.next = None
+    linkedlist0.head = node1
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -206,10 +206,10 @@ def test_swap_node7():
     '''
     # Self Generation
     linkedlist0 = LinkedList()
-    node0 = Node(0)
-    node0.elem = 0
-    node0.next = node0
-    linkedlist0.head = node0
+    node1 = Node(0)
+    node1.elem = 0
+    node1.next = node1
+    linkedlist0.head = node1
     # Repok check
     assert linkedlist0.repok()
     # Method call

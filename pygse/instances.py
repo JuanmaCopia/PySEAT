@@ -1,8 +1,7 @@
 from symbolics import is_symbolic
 from helpers import do_add
 
-from instance_managment import is_user_defined, get_dict_of_prefixed, is_same
-from instance_managment import set_to_initialized, get_initialized_name
+import instance_managment as im
 import symbolics as sym
 import copy
 
@@ -26,7 +25,7 @@ def symbolic_instantiation(engine, typ):
         return sym.symbolic_factory(engine, typ)
     elif isinstance(typ, type(None)):
         return None
-    elif is_user_defined(typ):
+    elif im.is_user_defined(typ):
         instance = symbolize_partially(engine, typ)
         typ._vector.append(instance)
         return instance
@@ -54,16 +53,19 @@ def symbolize_partially(engine, user_def_class):
     else:
         partial_ins = user_def_class()
     attr_names = engine._sut.get_instance_attr_dict(user_def_class).keys()
-    return instrument_instance(partial_ins, user_def_class, attr_names)
-
-
-def instrument_instance(instance, user_def_class, attr_names):
+    # Adding some instrumentation fields
     for attr_name in attr_names:
-        setattr(instance, get_initialized_name(attr_name), False)
+        setattr(partial_ins, im.ISINIT_PREFIX + attr_name, False)
+    setattr(partial_ins, "_objid", engine._ids)
+    engine._ids += 1
 
-    setattr(instance, "_objid", user_def_class._id)
-    user_def_class._id += 1
-    return instance
+    return partial_ins
+
+
+def instrument_instance(instance, user_def_class, attr_names, ins_id):
+    for attr_name in attr_names:
+        setattr(instance, im.ISINIT_PREFIX + attr_name, False)
+    setattr(instance, "_objid", ins_id)
 
 
 def make_symbolic(engine, typ):
@@ -82,7 +84,7 @@ def make_symbolic(engine, typ):
     """
     if sym.Symbolic.is_supported_builtin(typ):
         return sym.symbolic_factory(engine, typ)
-    elif isinstance(typ, type(None)) or is_user_defined(typ):
+    elif isinstance(typ, type(None)) or im.is_user_defined(typ):
         return None
     return typ()
 
@@ -90,7 +92,7 @@ def make_symbolic(engine, typ):
 def concretize(symbolic, model):
     visited = set()
     sym_copy = copy.deepcopy(symbolic)
-    if is_user_defined(sym_copy):
+    if im.is_user_defined(sym_copy):
         visited.add(sym_copy)
     return _concretize(sym_copy, model, visited)
 
@@ -119,9 +121,8 @@ def _concretize(symbolic, model, visited):
         for i, x in enumerate(symbolic):
             symbolic[i] = _concretize(x, model, visited)
         return symbolic
-    elif is_user_defined(symbolic):
-        for pref_name, value in get_dict_of_prefixed(symbolic).items():
-            set_to_initialized(symbolic, pref_name)
+    elif im.is_user_defined(symbolic):
+        for pref_name, value in im.get_dict_of_prefixed(symbolic).items():
             if not callable(value) and do_add(visited, value):
                 setattr(symbolic, pref_name, _concretize(value, model, visited))
         return symbolic
@@ -129,7 +130,7 @@ def _concretize(symbolic, model, visited):
 
 
 def fill_class_vectors(structure):
-    if not is_user_defined(structure):
+    if not im.is_user_defined(structure):
         return
     visited = set()
     visited.add(structure)
@@ -137,10 +138,9 @@ def fill_class_vectors(structure):
     worklist.append(structure)
     while worklist:
         current = worklist.pop(0)
-        setattr(current, "_recursion_depth", 0)
         current._vector.append(current)
-        for value in get_dict_of_prefixed(current).values():
-            if is_user_defined(value) and do_add(visited, value):
+        for value in im.get_dict_of_prefixed(current).values():
+            if im.is_user_defined(value) and do_add(visited, value):
                 worklist.append(value)
 
 
@@ -151,9 +151,9 @@ def search_obj(obj, structure):
     worklist.append(structure)
     while worklist:
         current = worklist.pop(0)
-        if is_same(obj, current):
+        if obj._objid == current._objid:
             return current
-        for value in get_dict_of_prefixed(current).values():
-            if is_user_defined(value) and do_add(visited, value):
+        for value in im.get_dict_of_prefixed(current).values():
+            if im.is_user_defined(value) and do_add(visited, value):
                 worklist.append(value)
     return None

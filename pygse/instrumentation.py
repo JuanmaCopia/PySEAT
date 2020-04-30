@@ -4,9 +4,6 @@ def instrument(clss, attr_names):
 
     setattr(clss, "_engine", None)
     setattr(clss, "_vector", [])
-    setattr(clss, "_id", 0)
-    # setattr(clss, "_objid", -1)
-    setattr(clss, "_recursion_depth", 0)
 
 
 def add_property(clss, prop_name):
