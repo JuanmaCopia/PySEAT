@@ -1,7 +1,7 @@
-from dll import Node, DoublyLinkedList
+from dll import *
 
 
-def insert_after_test1():
+def test_insert_after1():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
@@ -51,7 +51,7 @@ def insert_after_test1():
     print('Test1: OK')
 
 
-def insert_after_test2():
+def test_insert_after2():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
@@ -102,7 +102,7 @@ def insert_after_test2():
     print('Test2: OK')
 
 
-def insert_after_test3():
+def test_insert_after3():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
@@ -147,7 +147,7 @@ def insert_after_test3():
     print('Test3: OK')
 
 
-def insert_after_test4():
+def test_insert_after4():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
@@ -198,7 +198,7 @@ def insert_after_test4():
     print('Test4: OK')
 
 
-def insert_after_test5():
+def test_insert_after5():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
@@ -244,7 +244,7 @@ def insert_after_test5():
     print('Test5: OK')
 
 
-def insert_after_test6():
+def test_insert_after6():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 -> None
@@ -284,7 +284,7 @@ def insert_after_test6():
     print('Test6: OK')
 
 
-def insert_after_test7():
+def test_insert_after7():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
@@ -330,7 +330,7 @@ def insert_after_test7():
     print('Test7: OK')
 
 
-def insert_after_test8():
+def test_insert_after8():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 0 -> None
@@ -371,7 +371,7 @@ def insert_after_test8():
     print('Test8: OK')
 
 
-def insert_after_test9():
+def test_insert_after9():
     '''
     Self:
         None <- 1 ->  <- 1 -> None
@@ -406,7 +406,7 @@ def insert_after_test9():
     print('Test9: OK')
 
 
-def insert_after_test10():
+def test_insert_after10():
     '''
     Self:
         None <- 1 ->  <- 0 ->  <- 0 -> None
@@ -447,7 +447,7 @@ def insert_after_test10():
     print('Test10: OK')
 
 
-def insert_after_test11():
+def test_insert_after11():
     '''
     Self:
         None <- 1 ->  <- 0 -> None
@@ -483,7 +483,7 @@ def insert_after_test11():
     print('Test11: OK')
 
 
-def insert_after_test12():
+def test_insert_after12():
     '''
     Self:
         None <- 1 -> None
@@ -513,7 +513,7 @@ def insert_after_test12():
     print('Test12: OK')
 
 
-def insert_after_test13():
+def test_insert_after13():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -549,7 +549,7 @@ def insert_after_test13():
     print('Test13: OK')
 
 
-def insert_after_test14():
+def test_insert_after14():
     '''
     Self:
         None <- 0 -> None
@@ -580,7 +580,7 @@ def insert_after_test14():
     print('Test14: OK')
 
 
-def insert_after_test15():
+def test_insert_after15():
     '''
     Self:
         <Empty list>
@@ -605,19 +605,3 @@ def insert_after_test15():
     print('Test15: OK')
 
 
-if __name__ == '__main__':
-    insert_after_test1()
-    insert_after_test2()
-    insert_after_test3()
-    insert_after_test4()
-    insert_after_test5()
-    insert_after_test6()
-    insert_after_test7()
-    insert_after_test8()
-    insert_after_test9()
-    insert_after_test10()
-    insert_after_test11()
-    insert_after_test12()
-    insert_after_test13()
-    insert_after_test14()
-    insert_after_test15()

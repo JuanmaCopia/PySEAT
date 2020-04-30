@@ -42,25 +42,18 @@ def execute(filepath, cls, method, verb, max_nodes=5, max_r_nodes=2, max_depth=1
         )
 
 
-execute("tests/linkedlist/ll_instrumented.py", "LinkedList", "swap_node", verbose, 5, 0)
+execute("tests/linkedlist/ll.py", "LinkedList", "swap_node", verbose, 5, 0)
+execute("tests/linkedlist/llnr.py", "LinkedList", "swap_node", verbose, 5, 0)
 execute(
-    "tests/linkedlist/llnr_instrumented.py", "LinkedList", "swap_node", verbose, 5, 0
+    "tests/doublylinkedlist/dll.py", "DoublyLinkedList", "insert_after", verbose, 5, 0,
 )
 execute(
-    "tests/doublylinkedlist/dll_instrumented.py",
-    "DoublyLinkedList",
-    "insert_after",
-    verbose,
-    5,
-    0,
-)
-execute(
-    "tests/circulardoublylinkedlist/cdll_instrumented.py",
+    "tests/circulardoublylinkedlist/cdll.py",
     "CDLinkedList",
     "insert_after_node",
     verbose,
     5,
     0,
 )
-execute("tests/bst/bst_instrumented.py", "BST", "insert", verbose, 3, 0)
-execute("tests/avl/avl_instrumented.py", "AVL", "insert", verbose, 2, 0)
+execute("tests/bst/bst.py", "BST", "insert", verbose, 3, 0)
+execute("tests/avl/avl.py", "AVL", "insert", verbose, 2, 0)
