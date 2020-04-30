@@ -151,7 +151,7 @@ def search_obj(obj, structure):
     worklist.append(structure)
     while worklist:
         current = worklist.pop(0)
-        if im.is_same(obj, current):
+        if obj._objid == current._objid:
             return current
         for value in im.get_dict_of_prefixed(current).values():
             if im.is_user_defined(value) and do_add(visited, value):

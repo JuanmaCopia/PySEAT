@@ -15,6 +15,7 @@ import helpers
 import symbolics as sym
 import data
 
+from helpers import HiddenPrints
 from branching_steps import LazyBranchPoint, ConditionalBranchPoint
 
 from smt.smt import SMT
@@ -159,7 +160,6 @@ class SEEngine:
         """
         self._stats.total_paths += 1
         pathdata = data.PathExecutionData(self._stats.total_paths, data.PRUNED)
-        print("\n\nExecuting method:")
 
         returnv = None
         exception = None
@@ -172,10 +172,11 @@ class SEEngine:
         self._time = time.time()
         self.mode = METHOD_EXPLORATION
         try:
-            if args:
-                returnv = method(*args)
-            else:
-                returnv = method()
+            with HiddenPrints():
+                if args:
+                    returnv = method(*args)
+                else:
+                    returnv = method()
             if sym.is_symbolic_bool(returnv):
                 returnv = returnv.__bool__()
 
@@ -244,10 +245,11 @@ class SEEngine:
         self.mode = CONCRETE_EXECUTION
         try:
             method = getattr(obj, self._sut.get_method_name())
-            if args:
-                returnv = method(*args)
-            else:
-                returnv = method()
+            with HiddenPrints():
+                if args:
+                    returnv = method(*args)
+                else:
+                    returnv = method()
         except AttributeError as e:
             raise e
         except excp.TimeOutException as e:
@@ -295,7 +297,6 @@ class SEEngine:
             self._current_repok_max = 0
             build = None
             while not build and self._current_repok_max <= self._max_r_nodes:
-                print("Building for ", self._current_repok_max)
                 build = self.build_partial_struture(symbolic, model)
                 self._current_repok_max += 1
 
@@ -393,7 +394,7 @@ class SEEngine:
         try:
             if hasattr(obj, "repok") and not obj.repok():
                 raise excp.RepOkFailException()
-            if not im.is_same(obj, self._current_self):
+            if obj._objid != self._current_self._objid:
                 if not self._current_self.repok():
                     raise excp.RepOkFailException()
         except excp.NoInitializedException:

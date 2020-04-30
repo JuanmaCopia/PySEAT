@@ -22,6 +22,14 @@ parser.add_option(
     "-n", dest="max_nodes", type="int", default=5, help="maximum amount structures",
 )
 parser.add_option(
+    "-c",
+    "--coverage",
+    dest="coverage",
+    action="store_true",
+    default=False,
+    help="Measure code coverage of generated test",
+)
+parser.add_option(
     "-r",
     dest="max_r_nodes",
     type="int",
@@ -49,6 +57,7 @@ max_depth = options.max_depth
 verbose = options.verbose
 max_nodes = options.max_nodes
 max_r_nodes = options.max_r_nodes
+coverage = options.coverage
 
 sut = sut_parser.parse(module_name, class_name, method_name)
 folder_name, filepath = testgen.create_testfile(module_name, class_name, method_name)
@@ -65,12 +74,11 @@ start_time = time.time()
 
 print("\nPerforming Exploration...\n")
 for run in engine.explore():
-    if run:
+    if run.status != data.PRUNED:
         print_formatted_result(sut.get_method(), run, verbose)
-        if run.status != data.PRUNED:
-            test_num += 1
-            test = testgen.TestCode(sut, run, test_num)
-            testgen.append_to_testfile(filepath, test.code + "\n\n")
+        test_num += 1
+        test = testgen.TestCode(sut, run, test_num)
+        testgen.append_to_testfile(filepath, test.code + "\n\n")
 
 print("\nDONE! " + str(test_num) + " Tests were generated\n")
 print("Elapsed Time:   ---  %s seconds  ---" % (time.time() - start_time))
@@ -78,18 +86,20 @@ report_statistics(engine.statistics())
 
 print("Running generated tests...\n")
 # subprocess.call([sys.executable, filepath])
-print(filepath)
-subprocess.call(
-    [
-        "coverage",
-        "run",
-        "--source=" + folder_name,
-        "--omit=" + filepath,
-        "--branch",
-        "-m",
-        "pytest",
-        # "--disable-warnings",
-        filepath,
-    ]
-)
-subprocess.call(["coverage", "report"])
+if coverage:
+    subprocess.call(
+        [
+            "coverage",
+            "run",
+            "--source=" + folder_name,
+            "--omit=" + filepath,
+            "--branch",
+            "-m",
+            "pytest",
+            # "--disable-warnings",
+            filepath,
+        ]
+    )
+    subprocess.call(["coverage", "html"])
+else:
+    subprocess.call(["pytest", filepath])
