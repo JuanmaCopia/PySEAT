@@ -37,7 +37,6 @@ def test_swap_node1():
     assert linkedlist0.head.next.elem == 1
     assert linkedlist0.head.next.next.elem == 0
     assert linkedlist0.head.next.next.next is None
-    print('Test1: OK')
 
 
 def test_swap_node2():
@@ -71,7 +70,6 @@ def test_swap_node2():
     assert linkedlist0.head.elem == 0
     assert linkedlist0.head.next.elem == 1
     assert linkedlist0.head.next.next is None
-    print('Test2: OK')
 
 
 def test_swap_node3():
@@ -103,7 +101,6 @@ def test_swap_node3():
     assert linkedlist0.repok()
     assert linkedlist0.head.elem == 0
     assert linkedlist0.head.next.elem == 1
-    print('Test3: OK')
 
 
 def test_swap_node4():
@@ -135,7 +132,6 @@ def test_swap_node4():
     assert linkedlist0.repok()
     assert linkedlist0.head.elem == 0
     assert linkedlist0.head.next.elem == 1
-    print('Test4: OK')
 
 
 def test_swap_node5():
@@ -169,7 +165,6 @@ def test_swap_node5():
     assert linkedlist0.head.elem == 0
     assert linkedlist0.head.next.elem == 0
     assert linkedlist0.head.next.next is None
-    print('Test5: OK')
 
 
 def test_swap_node6():
@@ -198,7 +193,6 @@ def test_swap_node6():
     assert linkedlist0.repok()
     assert linkedlist0.head.elem == 0
     assert linkedlist0.head.next is None
-    print('Test6: OK')
 
 
 def test_swap_node7():
@@ -225,7 +219,6 @@ def test_swap_node7():
     # Repok check
     assert linkedlist0.repok()
     assert linkedlist0.head.elem == 0
-    print('Test7: OK')
 
 
 def test_swap_node8():
@@ -248,6 +241,5 @@ def test_swap_node8():
     # Repok check
     assert linkedlist0.repok()
     assert linkedlist0.head is None
-    print('Test8: OK')
 
 

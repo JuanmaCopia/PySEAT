@@ -48,7 +48,6 @@ def test_insert_after1():
     assert doublylinkedlist0.head.next.data == 1
     assert doublylinkedlist0.tail.prev.data == 1
     assert doublylinkedlist0.head.next.next.data == 1
-    print('Test1: OK')
 
 
 def test_insert_after2():
@@ -99,7 +98,6 @@ def test_insert_after2():
     assert doublylinkedlist0.tail.prev.data == 0
     assert doublylinkedlist0.head.next.next.data == 1
     assert doublylinkedlist0.tail.prev.prev.data == 1
-    print('Test2: OK')
 
 
 def test_insert_after3():
@@ -144,7 +142,6 @@ def test_insert_after3():
     assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
     assert doublylinkedlist0.tail.prev.data == 1
-    print('Test3: OK')
 
 
 def test_insert_after4():
@@ -195,7 +192,6 @@ def test_insert_after4():
     assert doublylinkedlist0.tail.prev.data == 0
     assert doublylinkedlist0.head.next.next.data == 1
     assert doublylinkedlist0.tail.prev.prev.data == 0
-    print('Test4: OK')
 
 
 def test_insert_after5():
@@ -241,7 +237,6 @@ def test_insert_after5():
     assert doublylinkedlist0.head.next.data == 1
     assert doublylinkedlist0.tail.prev.data == 0
     assert doublylinkedlist0.head.next.next.data == 1
-    print('Test5: OK')
 
 
 def test_insert_after6():
@@ -281,7 +276,6 @@ def test_insert_after6():
     assert doublylinkedlist0.tail.data == 1
     assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
-    print('Test6: OK')
 
 
 def test_insert_after7():
@@ -327,7 +321,6 @@ def test_insert_after7():
     assert doublylinkedlist0.head.next.data == 1
     assert doublylinkedlist0.tail.prev.data == 0
     assert doublylinkedlist0.head.next.next.data == 0
-    print('Test7: OK')
 
 
 def test_insert_after8():
@@ -368,7 +361,6 @@ def test_insert_after8():
     assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
     assert doublylinkedlist0.tail.prev.data == 0
-    print('Test8: OK')
 
 
 def test_insert_after9():
@@ -403,7 +395,6 @@ def test_insert_after9():
     assert doublylinkedlist0.head.prev is None
     assert doublylinkedlist0.tail.data == 1
     assert doublylinkedlist0.tail.next is None
-    print('Test9: OK')
 
 
 def test_insert_after10():
@@ -444,7 +435,6 @@ def test_insert_after10():
     assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 0
     assert doublylinkedlist0.tail.prev.data == 0
-    print('Test10: OK')
 
 
 def test_insert_after11():
@@ -480,7 +470,6 @@ def test_insert_after11():
     assert doublylinkedlist0.tail.data == 0
     assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 0
-    print('Test11: OK')
 
 
 def test_insert_after12():
@@ -510,7 +499,6 @@ def test_insert_after12():
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.next is None
     assert doublylinkedlist0.head.prev is None
-    print('Test12: OK')
 
 
 def test_insert_after13():
@@ -546,7 +534,6 @@ def test_insert_after13():
     assert doublylinkedlist0.tail.data == 0
     assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 0
-    print('Test13: OK')
 
 
 def test_insert_after14():
@@ -577,7 +564,6 @@ def test_insert_after14():
     assert doublylinkedlist0.head.prev is None
     assert doublylinkedlist0.tail.data == 0
     assert doublylinkedlist0.tail.next is None
-    print('Test14: OK')
 
 
 def test_insert_after15():
@@ -602,6 +588,5 @@ def test_insert_after15():
     assert doublylinkedlist0.repok()
     assert doublylinkedlist0.head is None
     assert doublylinkedlist0.tail is None
-    print('Test15: OK')
 
 

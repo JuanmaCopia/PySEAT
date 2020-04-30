@@ -55,7 +55,6 @@ def test_insert1():
     assert bst0.root.left.left.left.data == 0
     assert bst0.root.left.left.left.right is None
     assert bst0.root.left.left.left.left is None
-    print('Test1: OK')
 
 
 def test_insert2():
@@ -108,7 +107,6 @@ def test_insert2():
     assert bst0.root.left.left.data == -1
     assert bst0.root.left.left.right is None
     assert bst0.root.left.left.left is None
-    print('Test2: OK')
 
 
 def test_insert3():
@@ -161,7 +159,6 @@ def test_insert3():
     assert bst0.root.left.left.data == 0
     assert bst0.root.left.left.right is None
     assert bst0.root.left.left.left is None
-    print('Test3: OK')
 
 
 def test_insert4():
@@ -208,7 +205,6 @@ def test_insert4():
     assert bst0.root.left.left.data == 0
     assert bst0.root.left.left.right is None
     assert bst0.root.left.left.left is None
-    print('Test4: OK')
 
 
 def test_insert5():
@@ -265,7 +261,6 @@ def test_insert5():
     assert bst0.root.left.right.left.data == 0
     assert bst0.root.left.right.left.right is None
     assert bst0.root.left.right.left.left is None
-    print('Test5: OK')
 
 
 def test_insert6():
@@ -322,7 +317,6 @@ def test_insert6():
     assert bst0.root.left.right.right.data == 0
     assert bst0.root.left.right.right.right is None
     assert bst0.root.left.right.right.left is None
-    print('Test6: OK')
 
 
 def test_insert7():
@@ -375,7 +369,6 @@ def test_insert7():
     assert bst0.root.left.right.data == 0
     assert bst0.root.left.right.right is None
     assert bst0.root.left.right.left is None
-    print('Test7: OK')
 
 
 def test_insert8():
@@ -422,7 +415,6 @@ def test_insert8():
     assert bst0.root.left.right.data == 1
     assert bst0.root.left.right.right is None
     assert bst0.root.left.right.left is None
-    print('Test8: OK')
 
 
 def test_insert9():
@@ -465,7 +457,6 @@ def test_insert9():
     assert bst0.root.left.data == 0
     assert bst0.root.left.right is None
     assert bst0.root.left.left is None
-    print('Test9: OK')
 
 
 def test_insert10():
@@ -502,7 +493,6 @@ def test_insert10():
     assert bst0.root.left.data == 0
     assert bst0.root.left.right is None
     assert bst0.root.left.left is None
-    print('Test10: OK')
 
 
 def test_insert11():
@@ -555,7 +545,6 @@ def test_insert11():
     assert bst0.root.right.left.data == 1
     assert bst0.root.right.left.right is None
     assert bst0.root.right.left.left is None
-    print('Test11: OK')
 
 
 def test_insert12():
@@ -608,7 +597,6 @@ def test_insert12():
     assert bst0.root.right.left.data == 1
     assert bst0.root.right.left.right is None
     assert bst0.root.right.left.left is None
-    print('Test12: OK')
 
 
 def test_insert13():
@@ -661,7 +649,6 @@ def test_insert13():
     assert bst0.root.right.left.data == 0
     assert bst0.root.right.left.right is None
     assert bst0.root.right.left.left is None
-    print('Test13: OK')
 
 
 def test_insert14():
@@ -708,7 +695,6 @@ def test_insert14():
     assert bst0.root.right.left.data == 0
     assert bst0.root.right.left.right is None
     assert bst0.root.right.left.left is None
-    print('Test14: OK')
 
 
 def test_insert15():
@@ -765,7 +751,6 @@ def test_insert15():
     assert bst0.root.right.right.left.data == 0
     assert bst0.root.right.right.left.right is None
     assert bst0.root.right.right.left.left is None
-    print('Test15: OK')
 
 
 def test_insert16():
@@ -822,7 +807,6 @@ def test_insert16():
     assert bst0.root.right.right.right.data == 0
     assert bst0.root.right.right.right.right is None
     assert bst0.root.right.right.right.left is None
-    print('Test16: OK')
 
 
 def test_insert17():
@@ -875,7 +859,6 @@ def test_insert17():
     assert bst0.root.right.right.data == 0
     assert bst0.root.right.right.right is None
     assert bst0.root.right.right.left is None
-    print('Test17: OK')
 
 
 def test_insert18():
@@ -918,7 +901,6 @@ def test_insert18():
     assert bst0.root.right.data == 1
     assert bst0.root.right.right is None
     assert bst0.root.right.left is None
-    print('Test18: OK')
 
 
 def test_insert19():
@@ -961,7 +943,6 @@ def test_insert19():
     assert bst0.root.right.data == 0
     assert bst0.root.right.right is None
     assert bst0.root.right.left is None
-    print('Test19: OK')
 
 
 def test_insert20():
@@ -998,7 +979,6 @@ def test_insert20():
     assert bst0.root.right.data == 1
     assert bst0.root.right.right is None
     assert bst0.root.right.left is None
-    print('Test20: OK')
 
 
 def test_insert21():
@@ -1031,7 +1011,6 @@ def test_insert21():
     assert bst0.root.data == 0
     assert bst0.root.right is None
     assert bst0.root.left is None
-    print('Test21: OK')
 
 
 def test_insert22():
@@ -1058,6 +1037,5 @@ def test_insert22():
     assert bst0.root.data == 0
     assert bst0.root.right is None
     assert bst0.root.left is None
-    print('Test22: OK')
 
 

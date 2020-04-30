@@ -66,7 +66,6 @@ class TestCode:
         self._add_line("# Repok check")
         self.add_repok_check(self.run_data.self_end_state)
         self.gen_structure_assertions(self.run_data.self_end_state)
-        self._add_line("print('Test" + str(self.test_number) + ": OK')")
 
     def gen_test_comment(self):
         self._add_line("'''")
@@ -76,8 +75,6 @@ class TestCode:
         self._add_line("    " + self.run_data.returnv.__repr__())
         self._add_line("End Self:")
         self._add_line("    " + self.run_data.self_end_state.__repr__())
-        # self._add_line("Path:")
-        # self._add_line("    " + self.run_data.path_repr)
         self._add_line("'''")
 
     def add_repok_check(self, structure):

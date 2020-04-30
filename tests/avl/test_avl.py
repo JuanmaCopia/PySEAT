@@ -51,7 +51,6 @@ def test_insert1():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test1: OK')
 
 
 def test_insert2():
@@ -104,7 +103,6 @@ def test_insert2():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test2: OK')
 
 
 def test_insert3():
@@ -157,7 +155,6 @@ def test_insert3():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test3: OK')
 
 
 def test_insert4():
@@ -210,7 +207,6 @@ def test_insert4():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test4: OK')
 
 
 def test_insert5():
@@ -263,7 +259,6 @@ def test_insert5():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test5: OK')
 
 
 def test_insert6():
@@ -305,7 +300,6 @@ def test_insert6():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test6: OK')
 
 
 def test_insert7():
@@ -358,7 +352,6 @@ def test_insert7():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test7: OK')
 
 
 def test_insert8():
@@ -411,7 +404,6 @@ def test_insert8():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test8: OK')
 
 
 def test_insert9():
@@ -464,7 +456,6 @@ def test_insert9():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test9: OK')
 
 
 def test_insert10():
@@ -517,7 +508,6 @@ def test_insert10():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test10: OK')
 
 
 def test_insert11():
@@ -570,7 +560,6 @@ def test_insert11():
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
-    print('Test11: OK')
 
 
 def test_insert12():
@@ -612,7 +601,6 @@ def test_insert12():
     assert avl0.root.right.right is None
     assert avl0.root.right.left is None
     assert avl0.root.right.height == 0
-    print('Test12: OK')
 
 
 def test_insert13():
@@ -641,6 +629,5 @@ def test_insert13():
     assert avl0.root.left is None
     assert avl0.root.parent is None
     assert avl0.root.height == 0
-    print('Test13: OK')
 
 
