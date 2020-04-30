@@ -16,20 +16,11 @@ class Node:
 
     def to_str(self, visited=False):
         if visited:
-            return " **node" + str(self._objid) + "(" + str(self.elem) + ")"
+            return " **" + str(self.elem)
 
         if self.next is None:
-            if hasattr(self, "_next_is_initialized"):
-                if getattr(self, "_next_is_initialized"):
-                    return (
-                        " node" + str(self._objid) + "(" + str(self.elem) + ") -> None"
-                    )
-                else:
-                    return (
-                        " node" + str(self._objid) + "(" + str(self.elem) + ") -> CLOUD"
-                    )
-            return " node" + str(self._objid) + "(" + str(self.elem) + ") -> None"
-        return " node" + str(self._objid) + "(" + str(self.elem) + ") ->"
+            return str(self.elem) + " -> None"
+        return str(self.elem) + " -> "
 
     def __repr__(self):
         str_rep = ""

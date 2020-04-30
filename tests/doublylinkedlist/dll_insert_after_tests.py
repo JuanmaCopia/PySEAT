@@ -4,11 +4,11 @@ from dll import Node, DoublyLinkedList
 def insert_after_test1():
     '''
     Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 1 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
     Return:
         None
     End Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 1 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -54,11 +54,11 @@ def insert_after_test1():
 def insert_after_test2():
     '''
     Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 0 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
     Return:
         None
     End Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 0 -> node6) (node4 <- node6: 0 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -105,11 +105,11 @@ def insert_after_test2():
 def insert_after_test3():
     '''
     Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
     Return:
         None
     End Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -150,11 +150,11 @@ def insert_after_test3():
 def insert_after_test4():
     '''
     Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node4) (node3 <- node4: 0 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
     Return:
         None
     End Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node6) (node3 <- node6: 0 -> node4) (node6 <- node4: 0 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -201,11 +201,11 @@ def insert_after_test4():
 def insert_after_test5():
     '''
     Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
     Return:
         None
     End Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node5) (node3 <- node5: 0 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -247,11 +247,11 @@ def insert_after_test5():
 def insert_after_test6():
     '''
     Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 1 -> None
     Return:
         None
     End Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 1 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -287,11 +287,11 @@ def insert_after_test6():
 def insert_after_test7():
     '''
     Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 0 -> node3) (node2 <- node3: 0 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
     Return:
         None
     End Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 0 -> node5) (node2 <- node5: 0 -> node3) (node5 <- node3: 0 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -333,11 +333,11 @@ def insert_after_test7():
 def insert_after_test8():
     '''
     Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 0 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 0 -> None
     Return:
         None
     End Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 0 -> node4) (node2 <- node4: 0 -> None)  None
+        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -374,11 +374,11 @@ def insert_after_test8():
 def insert_after_test9():
     '''
     Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> None)  None
+        None <- 1 ->  <- 1 -> None
     Return:
         None
     End Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 1 -> None)  None
+        None <- 1 ->  <- 1 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -409,11 +409,11 @@ def insert_after_test9():
 def insert_after_test10():
     '''
     Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 0 -> node2) (node1 <- node2: 0 -> None)  None
+        None <- 1 ->  <- 0 ->  <- 0 -> None
     Return:
         None
     End Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 0 -> node4) (node1 <- node4: 0 -> node2) (node4 <- node2: 0 -> None)  None
+        None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -450,11 +450,11 @@ def insert_after_test10():
 def insert_after_test11():
     '''
     Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 0 -> None)  None
+        None <- 1 ->  <- 0 -> None
     Return:
         None
     End Self:
-        (None <- node0: 1 -> node1) (node0 <- node1: 0 -> node3) (node1 <- node3: 0 -> None)  None
+        None <- 1 ->  <- 0 ->  <- 0 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -486,11 +486,11 @@ def insert_after_test11():
 def insert_after_test12():
     '''
     Self:
-        (None <- node0: 1 -> None)  None
+        None <- 1 -> None
     Return:
         None
     End Self:
-        (None <- node0: 1 -> None)  None
+        None <- 1 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -516,11 +516,11 @@ def insert_after_test12():
 def insert_after_test13():
     '''
     Self:
-        (None <- node0: 0 -> node1) (node0 <- node1: 0 -> None)  None
+        None <- 0 ->  <- 0 -> None
     Return:
         None
     End Self:
-        (None <- node0: 0 -> node3) (node0 <- node3: 0 -> node1) (node3 <- node1: 0 -> None)  None
+        None <- 0 ->  <- 0 ->  <- 0 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -552,11 +552,11 @@ def insert_after_test13():
 def insert_after_test14():
     '''
     Self:
-        (None <- node0: 0 -> None)  None
+        None <- 0 -> None
     Return:
         None
     End Self:
-        (None <- node0: 0 -> node2) (node0 <- node2: 0 -> None)  None
+        None <- 0 ->  <- 0 -> None
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
@@ -583,11 +583,11 @@ def insert_after_test14():
 def insert_after_test15():
     '''
     Self:
-        Empty
+        <Empty list>
     Return:
         None
     End Self:
-        Empty
+        <Empty list>
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()

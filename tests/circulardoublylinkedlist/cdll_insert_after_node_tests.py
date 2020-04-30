@@ -4,11 +4,11 @@ from cdll import Node, CDLinkedList
 def insert_after_node_test1():
     '''
     Self:
-        (node1 <- node0: 0 -> node1) (node0 <- node1: 0 -> node0) **node0
+         <- 0 ->  <- 0 -> **
     Return:
         None
     End Self:
-        (node1 <- node0: 0 -> node3) (node0 <- node3: 0 -> node1) (node3 <- node1: 0 -> node0) **node0
+         <- 0 ->  <- 0 ->  <- 0 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -37,11 +37,11 @@ def insert_after_node_test1():
 def insert_after_node_test2():
     '''
     Self:
-        (node2 <- node0: 1 -> node1) (node0 <- node1: 0 -> node2) (node1 <- node2: 0 -> node0) **node0
+         <- 1 ->  <- 0 ->  <- 0 -> **
     Return:
         None
     End Self:
-        (node2 <- node0: 1 -> node1) (node0 <- node1: 0 -> node4) (node1 <- node4: 0 -> node2) (node4 <- node2: 0 -> node0) **node0
+         <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -75,11 +75,11 @@ def insert_after_node_test2():
 def insert_after_node_test3():
     '''
     Self:
-        (node3 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 0 -> node3) (node2 <- node3: 0 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> **
     Return:
         None
     End Self:
-        (node3 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 0 -> node5) (node2 <- node5: 0 -> node3) (node5 <- node3: 0 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -118,11 +118,11 @@ def insert_after_node_test3():
 def insert_after_node_test4():
     '''
     Self:
-        (node4 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node4) (node3 <- node4: 0 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> **
     Return:
         None
     End Self:
-        (node4 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node6) (node3 <- node6: 0 -> node4) (node6 <- node4: 0 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -166,11 +166,11 @@ def insert_after_node_test4():
 def insert_after_node_test5():
     '''
     Self:
-        (node4 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 1 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
     Return:
         None
     End Self:
-        (node4 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 1 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -213,11 +213,11 @@ def insert_after_node_test5():
 def insert_after_node_test6():
     '''
     Self:
-        (node4 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 0 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
     Return:
         None
     End Self:
-        (node6 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node4) (node3 <- node4: 0 -> node6) (node4 <- node6: 0 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -261,11 +261,11 @@ def insert_after_node_test6():
 def insert_after_node_test7():
     '''
     Self:
-        (node3 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
     Return:
         None
     End Self:
-        (node3 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -303,11 +303,11 @@ def insert_after_node_test7():
 def insert_after_node_test8():
     '''
     Self:
-        (node3 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
     Return:
         None
     End Self:
-        (node5 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 0 -> node5) (node3 <- node5: 0 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -346,11 +346,11 @@ def insert_after_node_test8():
 def insert_after_node_test9():
     '''
     Self:
-        (node3 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
     Return:
         None
     End Self:
-        (node3 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node3) (node2 <- node3: 1 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -388,11 +388,11 @@ def insert_after_node_test9():
 def insert_after_node_test10():
     '''
     Self:
-        (node2 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 -> **
     Return:
         None
     End Self:
-        (node2 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -425,11 +425,11 @@ def insert_after_node_test10():
 def insert_after_node_test11():
     '''
     Self:
-        (node2 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 0 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 0 -> **
     Return:
         None
     End Self:
-        (node4 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 0 -> node4) (node2 <- node4: 0 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -463,11 +463,11 @@ def insert_after_node_test11():
 def insert_after_node_test12():
     '''
     Self:
-        (node2 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 -> **
     Return:
         None
     End Self:
-        (node2 <- node0: 1 -> node1) (node0 <- node1: 1 -> node2) (node1 <- node2: 1 -> node0) **node0
+         <- 1 ->  <- 1 ->  <- 1 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -500,11 +500,11 @@ def insert_after_node_test12():
 def insert_after_node_test13():
     '''
     Self:
-        (node1 <- node0: 1 -> node1) (node0 <- node1: 1 -> node0) **node0
+         <- 1 ->  <- 1 -> **
     Return:
         None
     End Self:
-        (node1 <- node0: 1 -> node1) (node0 <- node1: 1 -> node0) **node0
+         <- 1 ->  <- 1 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -532,11 +532,11 @@ def insert_after_node_test13():
 def insert_after_node_test14():
     '''
     Self:
-        (node1 <- node0: 1 -> node1) (node0 <- node1: 0 -> node0) **node0
+         <- 1 ->  <- 0 -> **
     Return:
         None
     End Self:
-        (node3 <- node0: 1 -> node1) (node0 <- node1: 0 -> node3) (node1 <- node3: 0 -> node0) **node0
+         <- 1 ->  <- 0 ->  <- 0 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -565,11 +565,11 @@ def insert_after_node_test14():
 def insert_after_node_test15():
     '''
     Self:
-        (node1 <- node0: 1 -> node1) (node0 <- node1: 1 -> node0) **node0
+         <- 1 ->  <- 1 -> **
     Return:
         None
     End Self:
-        (node1 <- node0: 1 -> node1) (node0 <- node1: 1 -> node0) **node0
+         <- 1 ->  <- 1 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -597,11 +597,11 @@ def insert_after_node_test15():
 def insert_after_node_test16():
     '''
     Self:
-        (node0 <- node0: 1 -> node0) 
+         <- 1 -> **
     Return:
         None
     End Self:
-        (node0 <- node0: 1 -> node0) 
+         <- 1 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -624,11 +624,11 @@ def insert_after_node_test16():
 def insert_after_node_test17():
     '''
     Self:
-        (node0 <- node0: 0 -> node0) 
+         <- 0 -> **
     Return:
         None
     End Self:
-        (node2 <- node0: 0 -> node2) (node0 <- node2: 0 -> node0) **node0
+         <- 0 ->  <- 0 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -652,11 +652,11 @@ def insert_after_node_test17():
 def insert_after_node_test18():
     '''
     Self:
-        (node0 <- node0: 1 -> node0) 
+         <- 1 -> **
     Return:
         None
     End Self:
-        (node0 <- node0: 1 -> node0) 
+         <- 1 -> **
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()
@@ -679,11 +679,11 @@ def insert_after_node_test18():
 def insert_after_node_test19():
     '''
     Self:
-        Empty
+        <Empty list>
     Return:
         None
     End Self:
-        Empty
+        <Empty list>
     '''
     # Self Generation
     cdlinkedlist0 = CDLinkedList()

@@ -20,14 +20,8 @@ class Node:
         self.right = None
         self.left = None
 
-    def repok(self):
-        return True
-
-    def instrumented_repok(self):
-        return True
-
     def __repr__(self):
-        return "node" + str(self._objid) + ": " + str(self.data)
+        return "node" + str(getattr(self, "_objid")) + ": " + str(self.data)
 
 
 class BST:
@@ -109,6 +103,19 @@ class BST:
             return self._find(data, cur_node.left)
         elif data > cur_node.data and cur_node.right is not None:
             return self._find(data, cur_node.right)
+
+    def height(self):
+        if self.root is not None:
+            return self._height(self.root, 0)
+        else:
+            return 0
+
+    def _height(self, cur_node, cur_height):
+        if cur_node is None:
+            return cur_height
+        left_height = self._height(cur_node.left, cur_height + 1)
+        right_height = self._height(cur_node.right, cur_height + 1)
+        return max(left_height, right_height)
 
     def to_str(self, node, visited):
         """Returns list of strings, width, height, and horizontal coord of root."""

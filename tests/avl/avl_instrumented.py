@@ -63,25 +63,6 @@ class Node:
                 return False
         return True
 
-    def __repr__(self):
-        ident = "node" + str(self._objid)
-        if self.parent is not None:
-            return (
-                "("
-                + "node" + str(self.parent._objid)
-                + " <- "
-                + ident
-                + ": "
-                + str(self.data)
-                + ")"
-            )
-        if hasattr(self, "_parent_is_initialized"):
-            if getattr(self, "_parent_is_initialized"):
-                return "None" + "<- " + ident + ": " + str(self.data)
-            return "CLOUD" + "<- " + ident + ": " + str(self.data)
-        else:
-            return "None" + "<- " + ident + ": " + str(self.data)
-
     def find(self, k):
         """Finds and returns the node with key k from the subtree rooted at this
         node.
@@ -186,57 +167,67 @@ class AVL():
         self.root = None
 
     def to_str(self, node, visited):
-        """Internal method for ASCII art."""
-        label = node.__repr__()
-        if node.left is None:
-            if node._right_is_initialized:
-                left_lines, left_pos, left_width = ["None"], 0, 0
-            else:
-                left_lines, left_pos, left_width = [], 0, 0
-        else:
-            if do_add(visited, node.left):
-                left_lines, left_pos, left_width = self.to_str(node.left, visited)
-            else:
-                left_lines, left_pos, left_width = [str(node.left.data) + "*"], 0, 0
+        """Returns list of strings, width, height, and horizontal coord of root."""
+        # No child.
+
+        if not do_add(visited, node):
+            line = "%s" % node.data + "*"
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        if node.right is None and node.left is None:
+            line = "%s" % node.data
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        # Only left child.
         if node.right is None:
-            if node._right_is_initialized:
-                right_lines, right_pos, right_width = ["None"], 0, 0
-            else:
-                right_lines, right_pos, right_width = [], 0, 0
-        else:
-            if do_add(visited, node.right):
-                right_lines, right_pos, right_width = self.to_str(node.right, visited)
-            else:
-                right_lines, right_pos, right_width = [str(node.right.data) + "*"], 0, 0
-        middle = max(right_pos + left_width - left_pos + 1, len(label), 2)
-        pos = left_pos + middle // 2
-        width = left_pos + middle + right_width - right_pos
-        while len(left_lines) < len(right_lines):
-            left_lines.append(' ' * left_width)
-        while len(right_lines) < len(left_lines):
-            right_lines.append(' ' * right_width)
-        if (middle - len(label)) % 2 == 1 and node.parent is not None and \
-           node is node.parent.left and len(label) < middle:
-            label += '.'
-        label = label.center(middle, '.')
-        if label[0] == '.':
-            label = ' ' + label[1:]
-        if label[-1] == '.':
-            label = label[:-1] + ' '
-        lines = [' ' * left_pos + label + ' ' * (right_width - right_pos),
-                 ' ' * left_pos + '/' + ' ' * (middle-2) +
-                 '\\' + ' ' * (right_width - right_pos)] + \
-                [left_line + ' ' * (width - left_width - right_width) + right_line for left_line, right_line in zip(left_lines, right_lines)]
-        return lines, pos, width
+            lines, n, p, x = self.to_str(node.left, visited)
+            s = "%s" % node.data
+            u = len(s)
+            first_line = (x + 1) * " " + (n - x - 1) * "_" + s
+            second_line = x * " " + "/" + (n - x - 1 + u) * " "
+            shifted_lines = [line + u * " " for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
+
+        # Only right child.
+        if node.left is None:
+            lines, n, p, x = self.to_str(node.right, visited)
+            s = "%s" % node.data
+            u = len(s)
+            first_line = s + x * "_" + (n - x) * " "
+            second_line = (u + x) * " " + "\\" + (n - x - 1) * " "
+            shifted_lines = [u * " " + line for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
+
+        # Two children.
+        left, n, p, x = self.to_str(node.left, visited)
+        right, m, q, y = self.to_str(node.right, visited)
+        s = "%s" % node.data
+        u = len(s)
+        first_line = (x + 1) * " " + (n - x - 1) * "_" + s + y * "_" + (m - y) * " "
+        second_line = (
+            x * " " + "/" + (n - x - 1 + u + y) * " " + "\\" + (m - y - 1) * " "
+        )
+        if p < q:
+            left += [n * " "] * (q - p)
+        elif q < p:
+            right += [m * " "] * (p - q)
+        zipped_lines = zip(left, right)
+        lines = [first_line, second_line] + [a + u * " " + b for a, b in zipped_lines]
+        return lines, n + m + u, max(p, q) + 2, n + u // 2
 
     def __repr__(self):
         if self.root is None:
-            return '<empty tree>'
+            return "<empty tree>"
         visited = set()
-        visited.add(self.root)
-        s = '\n'.join(self.to_str(self.root, visited)[0])
+        lines, _, _, _ = self.to_str(self.root, visited)
         result = ""
-        for line in s.splitlines():
+        for line in lines:
             result += "        " + line + "\n"
         return "\n" + result
 
@@ -408,18 +399,6 @@ class AVL():
                 return False
         return True
 
-    # def is_balanced(self, node):
-    #     if node is None:
-    #         return True
-    #     left_height = self.get_height(node.left)
-    #     right_height = self.get_height(node.right)
-    #     return abs(left_height - right_height) <= 1
-
-    # def get_height(self, node):
-    #     if node is None:
-    #         return 0
-    #     return max(self.get_height(node.left), self.get_height(node.right)) + 1
-
     def parents_ok(self, node):
         if node is None:
             return True
@@ -435,60 +414,17 @@ class AVL():
         return self.parents_ok(node.left) and self.parents_ok(node.right)
 
     def is_balanced_helper(self, root):
-        # a None tree is balanced
         if root is None:
             return 0
         left_height = self.is_balanced_helper(root.left)
-        # if the left subtree is not balanced, then:
-        # this tree is also not balanced
         if left_height == -1:
             return -1
-        # if the right subtree is not balanced, then:
-        # this tree is also not balanced
         right_height = self.is_balanced_helper(root.right)
         if right_height == -1:
             return -1
-        # if the diffrence in heights is greater than 1, then:
-        # this tree is not balanced
         if abs(left_height - right_height) > 1:
             return -1
-        # this tree is balanced, return its height
         return max(left_height, right_height) + 1
 
     def is_balanced(self):
         return self.is_balanced_helper(self.root) > -1
-
-
-    # def repok(self):
-    #     if not self.root:
-    #         return True
-    #     visited = set()
-    #     visited.add(self.root)
-    #     if not (
-    #         self.is_BST(self.root, INT_MIN, INT_MAX, visited) and
-    #         self.is_balanced(self.root) and
-    #         self.parents_ok(self.root)
-    #     ):
-    #         return False
-    #     if self.root.parent is not None:
-    #         return False
-    #     return True
-
-    # def is_BST(self, node, min, max, visited):
-    #     if node is None:
-    #         return True
-
-    #     if node.left is not None:
-    #         if not do_add(visited, node.left) or node.left.parent is not node:
-    #             return False
-
-    #     if node.right is not None:
-    #         if not do_add(visited, node.right) or node.right.parent is not node:
-    #             return False
-
-    #     if node.data < min or node.data > max:
-    #         return False
-
-    #     return self.is_BST(node.left, min, node.data, visited) and self.is_BST(
-    #         node.right, node.data, max, visited
-    #     )

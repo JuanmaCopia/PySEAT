@@ -17,46 +17,17 @@ class Node:
         ps = None
 
         if self.prev:
-            ps = "node" + str(self.prev._objid)
+            ps = " <- "
         else:
-            if hasattr(self, "prev_is_initialized"):
-                if getattr(self, "prev_is_initialized"):
-                    ps = "None"
-                else:
-                    ps = "CLOUD"
-            else:
-                ps = "None"
+            ps = "None <- "
 
         ns = None
         if self.next:
-            ns = "node" + str(self.next._objid)
+            ns = " -> "
         else:
-            if hasattr(self, "next_is_initialized"):
-                if getattr(self, "next_is_initialized"):
-                    ns = "None"
-                else:
-                    ns = "CLOUD"
-            else:
-                ns = "None"
+            ns = " -> None"
 
-        return (
-            "("
-            + ps
-            + " <- "
-            + "node"
-            + str(self._objid)
-            + ": "
-            + self.key.__repr__()
-            + " -> "
-            + ns
-            + ") "
-        )
-
-    def repok(self):
-        return True
-
-    def instrumented_repok(self):
-        return True
+        return (ps + self.key.__repr__() + ns)
 
 
 class CDLinkedList:
@@ -69,9 +40,7 @@ class CDLinkedList:
 
     def __repr__(self):
         if not self.head:
-            return "Empty"
-        if self.head.next is self.head and self.head.prev is self.head:
-            return self.head.__repr__()
+            return "<Empty list>"
         str_rep = ""
         visited = set()
         visited.add(self.head)
@@ -81,18 +50,10 @@ class CDLinkedList:
             current = worklist.pop(0)
             str_rep += current.__repr__()
             if current.next:
-                if not CDLinkedList.do_add(visited, current.next):
-                    str_rep += "**node" + str(current.next._objid)
+                if not self.do_add(visited, current.next):
+                    str_rep += "**"
                 else:
                     worklist.append(current.next)
-            else:
-                if hasattr(current, "_next_is_initialized"):
-                    if getattr(current, "_next_is_initialized"):
-                        str_rep += " None"
-                    else:
-                        str_rep += " CLOUD"
-                else:
-                    str_rep += " None"
         return str_rep
 
     # Insert node at the end of the circular doubly linked list

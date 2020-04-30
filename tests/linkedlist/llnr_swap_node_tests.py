@@ -4,11 +4,11 @@ from llnr import Node, LinkedList
 def swap_node_test1():
     '''
     Self:
-         node0(1) -> node1(0) -> node2(0) -> None
+        1 -> 0 -> 0 -> None
     Return:
-         node1(0) -> node0(1) -> node2(0) -> None
+        0 -> 1 -> 0 -> None
     End Self:
-         node1(0) -> node0(1) -> node2(0) -> None
+        0 -> 1 -> 0 -> None
     '''
     # Self Generation
     linkedlist0 = LinkedList()
@@ -43,11 +43,11 @@ def swap_node_test1():
 def swap_node_test2():
     '''
     Self:
-         node0(1) -> node1(0) -> None
+        1 -> 0 -> None
     Return:
-         node1(0) -> node0(1) -> None
+        0 -> 1 -> None
     End Self:
-         node1(0) -> node0(1) -> None
+        0 -> 1 -> None
     '''
     # Self Generation
     linkedlist0 = LinkedList()
@@ -77,11 +77,11 @@ def swap_node_test2():
 def swap_node_test3():
     '''
     Self:
-         node0(1) -> node1(0) -> **node0(1)
+        1 -> 0 ->  **1
     Return:
-         node1(0) -> node0(1) -> **node0(1)
+        0 -> 1 ->  **1
     End Self:
-         node1(0) -> node0(1) -> **node0(1)
+        0 -> 1 ->  **1
     '''
     # Self Generation
     linkedlist0 = LinkedList()
@@ -109,11 +109,11 @@ def swap_node_test3():
 def swap_node_test4():
     '''
     Self:
-         node0(1) -> node1(0) -> **node1(0)
+        1 -> 0 ->  **0
     Return:
-         node1(0) -> node0(1) -> **node1(0)
+        0 -> 1 ->  **0
     End Self:
-         node1(0) -> node0(1) -> **node1(0)
+        0 -> 1 ->  **0
     '''
     # Self Generation
     linkedlist0 = LinkedList()
@@ -141,11 +141,11 @@ def swap_node_test4():
 def swap_node_test5():
     '''
     Self:
-         node0(0) -> node1(0) -> None
+        0 -> 0 -> None
     Return:
-         node0(0) -> node1(0) -> None
+        0 -> 0 -> None
     End Self:
-         node0(0) -> node1(0) -> None
+        0 -> 0 -> None
     '''
     # Self Generation
     linkedlist0 = LinkedList()
@@ -175,11 +175,11 @@ def swap_node_test5():
 def swap_node_test6():
     '''
     Self:
-         node0(0) -> None
+        0 -> None
     Return:
-         node0(0) -> None
+        0 -> None
     End Self:
-         node0(0) -> None
+        0 -> None
     '''
     # Self Generation
     linkedlist0 = LinkedList()
@@ -204,11 +204,11 @@ def swap_node_test6():
 def swap_node_test7():
     '''
     Self:
-         node0(0) -> **node0(0)
+        0 ->  **0
     Return:
-         node0(0) -> **node0(0)
+        0 ->  **0
     End Self:
-         node0(0) -> **node0(0)
+        0 ->  **0
     '''
     # Self Generation
     linkedlist0 = LinkedList()
