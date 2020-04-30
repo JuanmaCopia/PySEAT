@@ -12,28 +12,28 @@ def test_insert_after1():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(1)
-    node0.data = 1
-    node0.prev = None
     node1 = Node(1)
     node1.data = 1
+    node1.prev = None
     node2 = Node(1)
     node2.data = 1
     node3 = Node(1)
     node3.data = 1
     node4 = Node(1)
     node4.data = 1
-    node4.next = None
+    node5 = Node(1)
+    node5.data = 1
+    node5.next = None
+    node5.prev = node4
+    node4.next = node5
     node4.prev = node3
     node3.next = node4
     node3.prev = node2
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    node1.prev = node0
-    node0.next = node1
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node4
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node5
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -61,28 +61,28 @@ def test_insert_after2():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(1)
-    node0.data = 1
-    node0.prev = None
     node1 = Node(1)
     node1.data = 1
+    node1.prev = None
     node2 = Node(1)
     node2.data = 1
     node3 = Node(1)
     node3.data = 1
-    node4 = Node(0)
-    node4.data = 0
-    node4.next = None
+    node4 = Node(1)
+    node4.data = 1
+    node5 = Node(0)
+    node5.data = 0
+    node5.next = None
+    node5.prev = node4
+    node4.next = node5
     node4.prev = node3
     node3.next = node4
     node3.prev = node2
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    node1.prev = node0
-    node0.next = node1
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node4
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node5
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -111,24 +111,24 @@ def test_insert_after3():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(1)
-    node0.data = 1
-    node0.prev = None
     node1 = Node(1)
     node1.data = 1
+    node1.prev = None
     node2 = Node(1)
     node2.data = 1
     node3 = Node(1)
     node3.data = 1
-    node3.next = None
+    node4 = Node(1)
+    node4.data = 1
+    node4.next = None
+    node4.prev = node3
+    node3.next = node4
     node3.prev = node2
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    node1.prev = node0
-    node0.next = node1
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node4
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -155,28 +155,28 @@ def test_insert_after4():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(1)
-    node0.data = 1
-    node0.prev = None
     node1 = Node(1)
     node1.data = 1
+    node1.prev = None
     node2 = Node(1)
     node2.data = 1
-    node3 = Node(0)
-    node3.data = 0
+    node3 = Node(1)
+    node3.data = 1
     node4 = Node(0)
     node4.data = 0
-    node4.next = None
+    node5 = Node(0)
+    node5.data = 0
+    node5.next = None
+    node5.prev = node4
+    node4.next = node5
     node4.prev = node3
     node3.next = node4
     node3.prev = node2
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    node1.prev = node0
-    node0.next = node1
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node4
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node5
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -205,24 +205,24 @@ def test_insert_after5():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(1)
-    node0.data = 1
-    node0.prev = None
     node1 = Node(1)
     node1.data = 1
+    node1.prev = None
     node2 = Node(1)
     node2.data = 1
-    node3 = Node(0)
-    node3.data = 0
-    node3.next = None
+    node3 = Node(1)
+    node3.data = 1
+    node4 = Node(0)
+    node4.data = 0
+    node4.next = None
+    node4.prev = node3
+    node3.next = node4
     node3.prev = node2
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    node1.prev = node0
-    node0.next = node1
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node4
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -250,20 +250,20 @@ def test_insert_after6():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(1)
-    node0.data = 1
-    node0.prev = None
     node1 = Node(1)
     node1.data = 1
+    node1.prev = None
     node2 = Node(1)
     node2.data = 1
-    node2.next = None
+    node3 = Node(1)
+    node3.data = 1
+    node3.next = None
+    node3.prev = node2
+    node2.next = node3
     node2.prev = node1
     node1.next = node2
-    node1.prev = node0
-    node0.next = node1
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node2
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node3
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -289,24 +289,24 @@ def test_insert_after7():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(1)
-    node0.data = 1
-    node0.prev = None
     node1 = Node(1)
     node1.data = 1
-    node2 = Node(0)
-    node2.data = 0
+    node1.prev = None
+    node2 = Node(1)
+    node2.data = 1
     node3 = Node(0)
     node3.data = 0
-    node3.next = None
+    node4 = Node(0)
+    node4.data = 0
+    node4.next = None
+    node4.prev = node3
+    node3.next = node4
     node3.prev = node2
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    node1.prev = node0
-    node0.next = node1
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node4
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -334,20 +334,20 @@ def test_insert_after8():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(1)
-    node0.data = 1
-    node0.prev = None
     node1 = Node(1)
     node1.data = 1
-    node2 = Node(0)
-    node2.data = 0
-    node2.next = None
+    node1.prev = None
+    node2 = Node(1)
+    node2.data = 1
+    node3 = Node(0)
+    node3.data = 0
+    node3.next = None
+    node3.prev = node2
+    node2.next = node3
     node2.prev = node1
     node1.next = node2
-    node1.prev = node0
-    node0.next = node1
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node2
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node3
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -374,16 +374,16 @@ def test_insert_after9():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(1)
-    node0.data = 1
-    node0.prev = None
     node1 = Node(1)
     node1.data = 1
-    node1.next = None
-    node1.prev = node0
-    node0.next = node1
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node1
+    node1.prev = None
+    node2 = Node(1)
+    node2.data = 1
+    node2.next = None
+    node2.prev = node1
+    node1.next = node2
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -408,20 +408,20 @@ def test_insert_after10():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(1)
-    node0.data = 1
-    node0.prev = None
-    node1 = Node(0)
-    node1.data = 0
+    node1 = Node(1)
+    node1.data = 1
+    node1.prev = None
     node2 = Node(0)
     node2.data = 0
-    node2.next = None
+    node3 = Node(0)
+    node3.data = 0
+    node3.next = None
+    node3.prev = node2
+    node2.next = node3
     node2.prev = node1
     node1.next = node2
-    node1.prev = node0
-    node0.next = node1
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node2
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node3
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -448,16 +448,16 @@ def test_insert_after11():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(1)
-    node0.data = 1
-    node0.prev = None
-    node1 = Node(0)
-    node1.data = 0
-    node1.next = None
-    node1.prev = node0
-    node0.next = node1
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node1
+    node1 = Node(1)
+    node1.data = 1
+    node1.prev = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node1
+    node1.next = node2
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -483,12 +483,12 @@ def test_insert_after12():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(1)
-    node0.data = 1
-    node0.next = None
-    node0.prev = None
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node0
+    node1 = Node(1)
+    node1.data = 1
+    node1.next = None
+    node1.prev = None
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node1
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -512,16 +512,16 @@ def test_insert_after13():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(0)
-    node0.data = 0
-    node0.prev = None
     node1 = Node(0)
     node1.data = 0
-    node1.next = None
-    node1.prev = node0
-    node0.next = node1
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node1
+    node1.prev = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node1
+    node1.next = node2
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -547,12 +547,12 @@ def test_insert_after14():
     '''
     # Self Generation
     doublylinkedlist0 = DoublyLinkedList()
-    node0 = Node(0)
-    node0.data = 0
-    node0.next = None
-    node0.prev = None
-    doublylinkedlist0.head = node0
-    doublylinkedlist0.tail = node0
+    node1 = Node(0)
+    node1.data = 0
+    node1.next = None
+    node1.prev = None
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node1
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call

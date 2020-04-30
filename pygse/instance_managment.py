@@ -53,7 +53,7 @@ def var_name(obj):
 
 
 def is_same(obj1, obj2):
-    return obj1._objid == obj2._objid and isinstance(obj1, type(obj2))
+    return obj1._objid == obj2._objid
 
 
 def is_tracked(obj):

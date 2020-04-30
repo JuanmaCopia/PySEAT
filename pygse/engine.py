@@ -97,6 +97,7 @@ class SEEngine:
         self._timeout = 0
         self._time = 0
         self._rec_times = 0
+        self._ids = 0
 
         for k in self._sut.class_map.keys():
             setattr(k, "_engine", self)
@@ -136,9 +137,9 @@ class SEEngine:
         self._current_nodes = 0
         self._current_depth = 0
         self._rec_times = 0
+        self._ids = 0
         for k in self._sut.class_map.keys():
             k._vector = []
-            k._id = 0
 
     def _execute_method_exploration(self, args):
         """Executes the method and returns the result.

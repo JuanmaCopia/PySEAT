@@ -20,19 +20,19 @@ def test_insert1():
     '''
     # Self Generation
     avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.right = None
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, 0)
+    node1 = Node(None, 0)
     node1.data = 0
     node1.right = None
-    node1.left = None
+    node1.parent = None
     node1.height = 0
-    node1.parent = node0
-    node0.left = node1
-    avl0.root = node0
+    node2 = Node(node1, 0)
+    node2.data = 0
+    node2.right = None
+    node2.left = None
+    node2.height = 0
+    node2.parent = node1
+    node1.left = node2
+    avl0.root = node1
     # Repok check
     assert avl0.repok()
     # Method call
@@ -72,19 +72,19 @@ def test_insert2():
     '''
     # Self Generation
     avl0 = AVL()
-    node0 = Node(None, 1)
-    node0.data = 1
-    node0.right = None
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, 1)
+    node1 = Node(None, 1)
     node1.data = 1
     node1.right = None
-    node1.left = None
+    node1.parent = None
     node1.height = 0
-    node1.parent = node0
-    node0.left = node1
-    avl0.root = node0
+    node2 = Node(node1, 1)
+    node2.data = 1
+    node2.right = None
+    node2.left = None
+    node2.height = 0
+    node2.parent = node1
+    node1.left = node2
+    avl0.root = node1
     # Repok check
     assert avl0.repok()
     # Method call
@@ -109,34 +109,34 @@ def test_insert3():
     '''
     Self:
         
-          0
-         / 
-        -1 
+         1
+        / 
+        0 
 
     Return:
         None
     End Self:
         
-          0 
-         / \
-        -1 0
+         0 
+        / \
+        0 1
 
     '''
     # Self Generation
     avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.right = None
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, -1)
-    node1.data = -1
+    node1 = Node(None, 1)
+    node1.data = 1
     node1.right = None
-    node1.left = None
+    node1.parent = None
     node1.height = 0
-    node1.parent = node0
-    node0.left = node1
-    avl0.root = node0
+    node2 = Node(node1, 0)
+    node2.data = 0
+    node2.right = None
+    node2.left = None
+    node2.height = 0
+    node2.parent = node1
+    node1.left = node2
+    avl0.root = node1
     # Repok check
     assert avl0.repok()
     # Method call
@@ -147,11 +147,11 @@ def test_insert3():
     assert avl0.root.data == 0
     assert avl0.root.parent is None
     assert avl0.root.height == 1
-    assert avl0.root.right.data == 0
+    assert avl0.root.right.data == 1
     assert avl0.root.right.right is None
     assert avl0.root.right.left is None
     assert avl0.root.right.height == 0
-    assert avl0.root.left.data == -1
+    assert avl0.root.left.data == 0
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
@@ -176,19 +176,19 @@ def test_insert4():
     '''
     # Self Generation
     avl0 = AVL()
-    node0 = Node(None, 1)
-    node0.data = 1
-    node0.right = None
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, 0)
-    node1.data = 0
+    node1 = Node(None, 1)
+    node1.data = 1
     node1.right = None
-    node1.left = None
+    node1.parent = None
     node1.height = 0
-    node1.parent = node0
-    node0.left = node1
-    avl0.root = node0
+    node2 = Node(node1, 0)
+    node2.data = 0
+    node2.right = None
+    node2.left = None
+    node2.height = 0
+    node2.parent = node1
+    node1.left = node2
+    avl0.root = node1
     # Repok check
     assert avl0.repok()
     # Method call
@@ -228,19 +228,19 @@ def test_insert5():
     '''
     # Self Generation
     avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.left = None
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, 0)
+    node1 = Node(None, 0)
     node1.data = 0
-    node1.right = None
     node1.left = None
+    node1.parent = None
     node1.height = 0
-    node1.parent = node0
-    node0.right = node1
-    avl0.root = node0
+    node2 = Node(node1, 0)
+    node2.data = 0
+    node2.right = None
+    node2.left = None
+    node2.height = 0
+    node2.parent = node1
+    node1.right = node2
+    avl0.root = node1
     # Repok check
     assert avl0.repok()
     # Method call
@@ -278,13 +278,13 @@ def test_insert6():
     '''
     # Self Generation
     avl0 = AVL()
-    node0 = Node(None, 1)
-    node0.data = 1
-    node0.right = None
-    node0.left = None
-    node0.parent = None
-    node0.height = 0
-    avl0.root = node0
+    node1 = Node(None, 1)
+    node1.data = 1
+    node1.right = None
+    node1.left = None
+    node1.parent = None
+    node1.height = 0
+    avl0.root = node1
     # Repok check
     assert avl0.repok()
     # Method call
@@ -306,34 +306,34 @@ def test_insert7():
     '''
     Self:
         
-        0 
-         \
-         1
+        -1 
+          \
+          0
 
     Return:
         None
     End Self:
         
-         0 
-        / \
-        0 1
+          0 
+         / \
+        -1 0
 
     '''
     # Self Generation
     avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.left = None
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, 1)
-    node1.data = 1
-    node1.right = None
+    node1 = Node(None, -1)
+    node1.data = -1
     node1.left = None
+    node1.parent = None
     node1.height = 0
-    node1.parent = node0
-    node0.right = node1
-    avl0.root = node0
+    node2 = Node(node1, 0)
+    node2.data = 0
+    node2.right = None
+    node2.left = None
+    node2.height = 0
+    node2.parent = node1
+    node1.right = node2
+    avl0.root = node1
     # Repok check
     assert avl0.repok()
     # Method call
@@ -344,11 +344,11 @@ def test_insert7():
     assert avl0.root.data == 0
     assert avl0.root.parent is None
     assert avl0.root.height == 1
-    assert avl0.root.right.data == 1
+    assert avl0.root.right.data == 0
     assert avl0.root.right.right is None
     assert avl0.root.right.left is None
     assert avl0.root.right.height == 0
-    assert avl0.root.left.data == 0
+    assert avl0.root.left.data == -1
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
@@ -373,19 +373,19 @@ def test_insert8():
     '''
     # Self Generation
     avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.left = None
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, 1)
-    node1.data = 1
-    node1.right = None
+    node1 = Node(None, 0)
+    node1.data = 0
     node1.left = None
+    node1.parent = None
     node1.height = 0
-    node1.parent = node0
-    node0.right = node1
-    avl0.root = node0
+    node2 = Node(node1, 1)
+    node2.data = 1
+    node2.right = None
+    node2.left = None
+    node2.height = 0
+    node2.parent = node1
+    node1.right = node2
+    avl0.root = node1
     # Repok check
     assert avl0.repok()
     # Method call
@@ -425,19 +425,19 @@ def test_insert9():
     '''
     # Self Generation
     avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.left = None
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, 0)
+    node1 = Node(None, 0)
     node1.data = 0
-    node1.right = None
     node1.left = None
+    node1.parent = None
     node1.height = 0
-    node1.parent = node0
-    node0.right = node1
-    avl0.root = node0
+    node2 = Node(node1, 0)
+    node2.data = 0
+    node2.right = None
+    node2.left = None
+    node2.height = 0
+    node2.parent = node1
+    node1.right = node2
+    avl0.root = node1
     # Repok check
     assert avl0.repok()
     # Method call
@@ -477,19 +477,19 @@ def test_insert10():
     '''
     # Self Generation
     avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.left = None
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, 0)
+    node1 = Node(None, 0)
     node1.data = 0
-    node1.right = None
     node1.left = None
+    node1.parent = None
     node1.height = 0
-    node1.parent = node0
-    node0.right = node1
-    avl0.root = node0
+    node2 = Node(node1, 0)
+    node2.data = 0
+    node2.right = None
+    node2.left = None
+    node2.height = 0
+    node2.parent = node1
+    node1.right = node2
+    avl0.root = node1
     # Repok check
     assert avl0.repok()
     # Method call
@@ -529,19 +529,19 @@ def test_insert11():
     '''
     # Self Generation
     avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.right = None
-    node0.parent = None
-    node0.height = 0
-    node1 = Node(node0, 0)
+    node1 = Node(None, 0)
     node1.data = 0
     node1.right = None
-    node1.left = None
+    node1.parent = None
     node1.height = 0
-    node1.parent = node0
-    node0.left = node1
-    avl0.root = node0
+    node2 = Node(node1, 0)
+    node2.data = 0
+    node2.right = None
+    node2.left = None
+    node2.height = 0
+    node2.parent = node1
+    node1.left = node2
+    avl0.root = node1
     # Repok check
     assert avl0.repok()
     # Method call
@@ -579,13 +579,13 @@ def test_insert12():
     '''
     # Self Generation
     avl0 = AVL()
-    node0 = Node(None, 0)
-    node0.data = 0
-    node0.right = None
-    node0.left = None
-    node0.parent = None
-    node0.height = 0
-    avl0.root = node0
+    node1 = Node(None, 0)
+    node1.data = 0
+    node1.right = None
+    node1.left = None
+    node1.parent = None
+    node1.height = 0
+    avl0.root = node1
     # Repok check
     assert avl0.repok()
     # Method call

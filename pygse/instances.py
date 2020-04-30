@@ -53,16 +53,19 @@ def symbolize_partially(engine, user_def_class):
     else:
         partial_ins = user_def_class()
     attr_names = engine._sut.get_instance_attr_dict(user_def_class).keys()
-    return instrument_instance(partial_ins, user_def_class, attr_names)
+    # Adding some instrumentation fields
+    for attr_name in attr_names:
+        setattr(partial_ins, im.ISINIT_PREFIX + attr_name, False)
+    setattr(partial_ins, "_objid", engine._ids)
+    engine._ids += 1
+
+    return partial_ins
 
 
-def instrument_instance(instance, user_def_class, attr_names):
+def instrument_instance(instance, user_def_class, attr_names, ins_id):
     for attr_name in attr_names:
         setattr(instance, im.ISINIT_PREFIX + attr_name, False)
-
-    setattr(instance, "_objid", user_def_class._id)
-    user_def_class._id += 1
-    return instance
+    setattr(instance, "_objid", ins_id)
 
 
 def make_symbolic(engine, typ):

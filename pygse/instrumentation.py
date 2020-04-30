@@ -4,7 +4,6 @@ def instrument(clss, attr_names):
 
     setattr(clss, "_engine", None)
     setattr(clss, "_vector", [])
-    setattr(clss, "_id", 0)
 
 
 def add_property(clss, prop_name):
