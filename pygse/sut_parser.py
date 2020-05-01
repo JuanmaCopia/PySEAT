@@ -17,11 +17,11 @@ from helpers import do_add
 # from exceptions import MissingTypesError
 
 
-def parse(module_name, class_name, method_name):
+def parse(module_name, class_name, methods_names):
     module = get_module(module_name)
     self_class = getattr(module, class_name)
-    method = getattr(self_class, method_name)
-    return SUT(self_class, method)
+    methods = [getattr(self_class, method_name) for method_name in methods_names]
+    return SUT(self_class, methods)
 
 
 def get_module(module_name):
@@ -100,6 +100,7 @@ class MethodData:
     def __init__(self, method, belonging_cls):
         self.belonging_cls = belonging_cls
         self.method = method
+        self.name = method.__name__
         self.signature = signature(method)
         self.params = self.signature.parameters
         self.amount_params = len(self.params)
@@ -119,20 +120,24 @@ class SUT:
 
     """
 
-    def __init__(self, the_class, method):
-        self.method_data = MethodData(method, the_class)
-        self.class_map = map_all_classes(self.method_data.types_list)
+    def __init__(self, the_class, methods):
+        self.current_method = None
+        self.methods_map = {m.__name__: MethodData(m, the_class) for m in methods}
+        types_list = []
+        for md in self.methods_map.values():
+            types_list += md.types_list
+        self.class_map = map_all_classes(types_list)
         for clss, class_data in self.class_map.items():
             instrument(clss, class_data.instance_attr_types.keys())
 
     def get_method(self):
-        return self.method_data.method
+        return self.current_method.method
 
     def get_method_name(self):
-        return self.method_data.method.__name__
+        return self.current_method.name
 
     def get_method_param_types(self):
-        return copy.deepcopy(self.method_data.types_list)
+        return copy.deepcopy(self.current_method.types_list)
 
     def get_cls_init_types(self, clss):
         return copy.deepcopy(self.class_map[clss].init_data.types_list)

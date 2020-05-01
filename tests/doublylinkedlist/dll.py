@@ -41,7 +41,7 @@ class DoublyLinkedList:
         self.tail = None
 
     # Insert 'value' at the front of the list
-    def insert_at_front(self, value):
+    def insert_at_front(self, value: int):
         node = Node(value)
         if self.is_empty():
             self.head = node
@@ -52,7 +52,7 @@ class DoublyLinkedList:
             self.head = node
 
     #  insert value at the back of the linked list
-    def insert_at_back(self, value):
+    def insert_at_back(self, value: int):
         node = Node(value)
         if self.is_empty():
             self.head = node
@@ -136,7 +136,7 @@ class DoublyLinkedList:
         return item
 
     # removes an item with value 'key'
-    def remove(self, key):
+    def remove(self, key: int):
         if self.is_empty():
             print("List is empty")
             return
@@ -153,7 +153,11 @@ class DoublyLinkedList:
 
         # if curr is head, delete the head
         if curr.prev is None:
-            self.pop_front()
+            if curr.next is None:
+                self.head = None
+                self.tail = None
+            else:
+                self.pop_front()
         elif curr.next is None:  # if curr is last item
             self.pop_back()
         else:  # anywhere between first and last node
@@ -168,7 +172,7 @@ class DoublyLinkedList:
             curr = None
 
     # check if the key is in the list
-    def find(self, key):
+    def find(self, key: int):
         if self.is_empty():
             print("List is empty")
             return False

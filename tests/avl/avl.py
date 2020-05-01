@@ -63,7 +63,7 @@ class Node:
                 return False
         return True
 
-    def find(self, k):
+    def find(self, k: int):
         """Finds and returns the node with key k from the subtree rooted at this
         node.
 
@@ -108,7 +108,7 @@ class Node:
             current = current.parent
         return current.parent
 
-    def insert(self, node):
+    def insert(self, node: "Node"):
         """Inserts a node into the subtree rooted at this node.
 
         Args:
@@ -146,6 +146,9 @@ class Node:
             self.data, s.data = s.data, self.data
             return s.delete()
 
+    def __repr__(self):
+        return "node: " + str(self.data)
+
 
 def height(node):
     if node is None:
@@ -166,71 +169,6 @@ class AVL():
     def __init__(self):
         self.root = None
 
-    def to_str(self, node, visited):
-        """Returns list of strings, width, height, and horizontal coord of root."""
-        # No child.
-
-        if not do_add(visited, node):
-            line = "%s" % node.data + "*"
-            width = len(line)
-            height = 1
-            middle = width // 2
-            return [line], width, height, middle
-
-        if node.right is None and node.left is None:
-            line = "%s" % node.data
-            width = len(line)
-            height = 1
-            middle = width // 2
-            return [line], width, height, middle
-
-        # Only left child.
-        if node.right is None:
-            lines, n, p, x = self.to_str(node.left, visited)
-            s = "%s" % node.data
-            u = len(s)
-            first_line = (x + 1) * " " + (n - x - 1) * "_" + s
-            second_line = x * " " + "/" + (n - x - 1 + u) * " "
-            shifted_lines = [line + u * " " for line in lines]
-            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
-
-        # Only right child.
-        if node.left is None:
-            lines, n, p, x = self.to_str(node.right, visited)
-            s = "%s" % node.data
-            u = len(s)
-            first_line = s + x * "_" + (n - x) * " "
-            second_line = (u + x) * " " + "\\" + (n - x - 1) * " "
-            shifted_lines = [u * " " + line for line in lines]
-            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
-
-        # Two children.
-        left, n, p, x = self.to_str(node.left, visited)
-        right, m, q, y = self.to_str(node.right, visited)
-        s = "%s" % node.data
-        u = len(s)
-        first_line = (x + 1) * " " + (n - x - 1) * "_" + s + y * "_" + (m - y) * " "
-        second_line = (
-            x * " " + "/" + (n - x - 1 + u + y) * " " + "\\" + (m - y - 1) * " "
-        )
-        if p < q:
-            left += [n * " "] * (q - p)
-        elif q < p:
-            right += [m * " "] * (p - q)
-        zipped_lines = zip(left, right)
-        lines = [first_line, second_line] + [a + u * " " + b for a, b in zipped_lines]
-        return lines, n + m + u, max(p, q) + 2, n + u // 2
-
-    def __repr__(self):
-        if self.root is None:
-            return "<empty tree>"
-        visited = set()
-        lines, _, _, _ = self.to_str(self.root, visited)
-        result = ""
-        for line in lines:
-            result += "        " + line + "\n"
-        return "\n" + result
-
     def find(self, k: int):
         """Finds and returns the node with key k from the subtree rooted at this
         node.
@@ -248,7 +186,7 @@ class AVL():
 
         return self.root and self.root.find_min()
 
-    def next_larger(self, k):
+    def next_larger(self, k: int):
         """Returns the node that contains the next larger (the successor) key in
         the BST in relation to the node with key k.
 
@@ -261,7 +199,7 @@ class AVL():
         node = self.find(k)
         return node and node.next_larger()
 
-    def left_rotate(self, x):
+    def left_rotate(self, x: "Node"):
         y = x.right
         y.parent = x.parent
         if y.parent is None:
@@ -279,7 +217,7 @@ class AVL():
         update_height(x)
         update_height(y)
 
-    def right_rotate(self, x):
+    def right_rotate(self, x: "Node"):
         y = x.left
         y.parent = x.parent
         if y.parent is None:
@@ -297,7 +235,7 @@ class AVL():
         update_height(x)
         update_height(y)
 
-    def rebalance(self, node):
+    def rebalance(self, node: "Node"):
         while node is not None:
             update_height(node)
             if height(node.left) >= 2 + height(node.right):
@@ -329,7 +267,7 @@ class AVL():
             self.root.insert(node)
         self.rebalance(node)
 
-    def delete(self, k):
+    def delete(self, k: int):
         """Deletes and returns a node with key k if it exists from the BST.
         This AVL version guarantees the balance property: h = O(lg n).
 
@@ -428,3 +366,68 @@ class AVL():
 
     def is_balanced(self):
         return self.is_balanced_helper(self.root) > -1
+
+    def to_str(self, node, visited):
+        """Returns list of strings, width, height, and horizontal coord of root."""
+        # No child.
+
+        if not do_add(visited, node):
+            line = "%s" % node.data + "*"
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        if node.right is None and node.left is None:
+            line = "%s" % node.data
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        # Only left child.
+        if node.right is None:
+            lines, n, p, x = self.to_str(node.left, visited)
+            s = "%s" % node.data
+            u = len(s)
+            first_line = (x + 1) * " " + (n - x - 1) * "_" + s
+            second_line = x * " " + "/" + (n - x - 1 + u) * " "
+            shifted_lines = [line + u * " " for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
+
+        # Only right child.
+        if node.left is None:
+            lines, n, p, x = self.to_str(node.right, visited)
+            s = "%s" % node.data
+            u = len(s)
+            first_line = s + x * "_" + (n - x) * " "
+            second_line = (u + x) * " " + "\\" + (n - x - 1) * " "
+            shifted_lines = [u * " " + line for line in lines]
+            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
+
+        # Two children.
+        left, n, p, x = self.to_str(node.left, visited)
+        right, m, q, y = self.to_str(node.right, visited)
+        s = "%s" % node.data
+        u = len(s)
+        first_line = (x + 1) * " " + (n - x - 1) * "_" + s + y * "_" + (m - y) * " "
+        second_line = (
+            x * " " + "/" + (n - x - 1 + u + y) * " " + "\\" + (m - y - 1) * " "
+        )
+        if p < q:
+            left += [n * " "] * (q - p)
+        elif q < p:
+            right += [m * " "] * (p - q)
+        zipped_lines = zip(left, right)
+        lines = [first_line, second_line] + [a + u * " " + b for a, b in zipped_lines]
+        return lines, n + m + u, max(p, q) + 2, n + u // 2
+
+    def __repr__(self):
+        if self.root is None:
+            return "<empty tree>"
+        visited = set()
+        lines, _, _, _ = self.to_str(self.root, visited)
+        result = ""
+        for line in lines:
+            result += "        " + line + "\n"
+        return "\n" + result
