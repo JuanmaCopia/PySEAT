@@ -20,6 +20,9 @@ class Node:
         self.right = None
         self.left = None
 
+    def __repr__(self):
+        return "node: " + str(self.data)
+
 
 class BST:
     # Instance attributes annotations (will be treated as symbolic)
@@ -87,7 +90,7 @@ class BST:
         else:
             print("data already in tree!")
 
-    def find(self, data):
+    def find(self, data: int):
         if self.root is not None:
             return self._find(data, self.root)
         else:

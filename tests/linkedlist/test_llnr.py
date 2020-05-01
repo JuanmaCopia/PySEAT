@@ -236,8 +236,9 @@ def test_swap_node8():
     # Repok check
     assert linkedlist0.repok()
     # Method call
-    linkedlist0.swap_node()
+    returnv = linkedlist0.swap_node()
     # Assertions
+    assert returnv is None
     # Repok check
     assert linkedlist0.repok()
     assert linkedlist0.head is None

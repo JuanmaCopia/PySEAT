@@ -56,7 +56,6 @@ def report_statistics(stats):
     complete_exec = stats.successes + stats.failures
     pruned = stats.get_amount_pruned()
 
-    print("Exploration Statistiscs:")
     print(
         "\n  "
         + str(complete_exec)

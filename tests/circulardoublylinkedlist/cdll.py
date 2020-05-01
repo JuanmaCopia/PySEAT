@@ -105,7 +105,7 @@ class CDLinkedList:
             self.head = new_node
 
     # Insert after a specific node in the circular doubly linked list
-    def insert_after_node(self, afterkey: int, key: int):
+    def insert_after(self, afterkey: int, key: int):
         current_node = self.head
         while current_node:
 
@@ -134,7 +134,7 @@ class CDLinkedList:
             current_node = current_node.next
 
     # Insert before a specific node in the circular doubly linked list
-    def insert_before_node(self, beforekey, key):
+    def insert_before(self, beforekey: int, key: int):
         current_node = self.head
         while current_node:
 
@@ -160,7 +160,7 @@ class CDLinkedList:
                     break
             current_node = current_node.next
 
-    def delete(self, deletekey):
+    def delete(self, deletekey: int):
         current_node = self.head
         while current_node:
 

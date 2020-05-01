@@ -7,7 +7,7 @@ from instance_managment import get_dict, var_name, is_user_defined
 import os
 
 
-def create_testfile(module_name, class_name, method_name):
+def create_testfile(module_name, class_name):
     mod_basename = os.path.splitext(os.path.basename(module_name))[0]
     foldername = os.path.dirname(module_name) + "/"
     filename = "test_" + mod_basename + ".py"
@@ -81,7 +81,10 @@ class TestCode:
         self._add_line("assert " + var_name(structure) + ".repok()")
 
     def create_return_assert_code(self, value):
-        self._add_line("assert returnv == " + str(value))
+        if value is None:
+            self._add_line("assert returnv is None")
+        else:
+            self._add_line("assert returnv == " + str(value))
 
     def create_assert_code(self, identifier, field, value):
         if value is not None:
@@ -94,8 +97,7 @@ class TestCode:
         if is_user_defined(returnv):
             self.gen_structure_assertions(returnv, "returnv")
         else:
-            if returnv:
-                self.create_return_assert_code(returnv)
+            self.create_return_assert_code(returnv)
 
     def gen_structure_assertions(self, structure, identifier=None):
         if not is_user_defined(structure):
@@ -121,12 +123,9 @@ class TestCode:
 
     def generate_method_call(self, self_id, method_name, returnv=None):
         args_ids = self.generate_arguments_code(self.run_data.input_args)
-        if returnv:
-            self._add_line(
-                "returnv = " + self_id + "." + method_name + "(" + args_ids + ")"
-            )
-        else:
-            self._add_line(self_id + "." + method_name + "(" + args_ids + ")")
+        self._add_line(
+            "returnv = " + self_id + "." + method_name + "(" + args_ids + ")"
+        )
 
     def generate_structure_code(self, instance, visited=set()):
         if not instance:
