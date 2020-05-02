@@ -37,14 +37,6 @@ parser.add_option(
     "-n", dest="max_nodes", type="int", default=5, help="maximum amount structures",
 )
 parser.add_option(
-    "-c",
-    "--coverage",
-    dest="coverage",
-    action="store_true",
-    default=False,
-    help="Measure code coverage of generated test",
-)
-parser.add_option(
     "-r",
     dest="max_r_nodes",
     type="int",
@@ -52,45 +44,76 @@ parser.add_option(
     help="max nodes that repok can add",
 )
 parser.add_option(
+    "-t",
+    dest="timeout",
+    type="float",
+    default=5,
+    help="Max execution time for each exploration",
+)
+parser.add_option(
     "-v",
     "--verbose",
     dest="verbose",
     action="store_true",
     default=False,
-    help="show results of each execution",
+    help="show statsistics of executions",
 )
+parser.add_option(
+    "--cov",
+    dest="coverage",
+    action="store_true",
+    default=False,
+    help="Measure code coverage of generated test",
+)
+parser.add_option(
+    "--mut",
+    dest="mutation",
+    action="store_true",
+    default=False,
+    help="Measure mutation score",
+)
+parser.add_option(
+    "--complete",
+    dest="complete",
+    action="store_true",
+    default=False,
+    help="Measure branch coverage and mutation score",
+)
+
 (options, args) = parser.parse_args()
 
-if len(args) == 0 or not os.path.exists(args[0]):
+if len(args) == 0:
+    parser.error("Not Arguments Supplied")
+    sys.exit(1)
+if not os.path.exists(args[0]):
     parser.error("File Not Found")
     sys.exit(1)
-
+if not options.methods_names:
+    parser.error("Methods not given")
+    sys.exit(1)
 
 module_name = args[0]
 class_name = args[1]
 methods_names = options.methods_names
 
-
-if not methods_names:
-    parser.error("Methods not given")
-
 max_depth = options.max_depth
-verbose = options.verbose
 max_nodes = options.max_nodes
 max_r_nodes = options.max_r_nodes
+timeout = options.timeout
 coverage = options.coverage
+mutation = options.mutation
+complete = options.complete
+verbose = options.verbose
 
 sut = sut_parser.parse(module_name, class_name, methods_names)
 folder_name, filepath = testgen.create_testfile(module_name, class_name)
 
-print(
-    "\n ==================================  PySEAT  ==================================\n"
-)
+print("\n\n {}  PySEAT  {}\n".format("=" * 34, "=" * 34))
 print("Python Symbolic Execution and Automatic Tester")
 
 for method_data in sut.methods_map.values():
     sut.current_method = method_data
-    engine = SEEngine(sut, max_depth, max_nodes, max_r_nodes)
+    engine = SEEngine(sut, max_depth, max_nodes, max_r_nodes, timeout)
 
     test_num = 0
     start_time = time.time()
@@ -109,11 +132,12 @@ for method_data in sut.methods_map.values():
     print("\nDONE! " + str(test_num) + " Tests were generated")
     print("Elapsed Time:   ---  %s seconds  ---" % (time.time() - start_time))
     report_statistics(engine.statistics())
-    print(
-        "=============================================================================\n"
-    )
+    print("{}\n\n".format("- " * 39))
+
 print("Running generated tests...\n")
+
 # subprocess.call([sys.executable, filepath])
+coverage = True
 if coverage:
     subprocess.call(
         [
@@ -128,6 +152,8 @@ if coverage:
             filepath,
         ]
     )
-    subprocess.call(["coverage", "html"])
+    print("\n\n {} BRANCH COVERAGE RESULTS {} \n".format("=" * 20, "=" * 20))
+    subprocess.call(["coverage", "report"])
+    subprocess.call(["coverage", "html", "-d", folder_name + "htmlcov"])
 else:
     subprocess.call(["pytest", filepath])
