@@ -72,7 +72,7 @@ class SEEngine:
         _real_to_proxy (dict): Maps builtin supported types to Symbolic Ones.
     """
 
-    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, timeout=5.0):
+    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, timeout):
         """Setups the initial values of the engine.
 
         Args:

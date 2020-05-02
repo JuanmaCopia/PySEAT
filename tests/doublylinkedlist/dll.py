@@ -111,11 +111,15 @@ class DoublyLinkedList:
             print("List is empty")
             return
 
-        next_node = self.head.next
-        if next_node is not None:
-            next_node.prev = None
         item = self.head.data
-        self.head = next_node
+
+        if self.head.next is None:
+            self.tail = None
+            self.head = None
+        else:
+            self.head = self.head.next
+            self.head.prev = None
+
         return item
 
     # remove the item at the end of the list and return
@@ -125,13 +129,13 @@ class DoublyLinkedList:
             return
 
         item = self.tail.data
-        prev = self.tail.prev
 
-        if prev is not None:
-            prev.next = None
-
-        self.tail.prev = None
-        self.tail = prev
+        if self.tail.prev is None:
+            self.tail = None
+            self.head = None
+        else:
+            self.tail = self.tail.prev
+            self.tail.next = None
 
         return item
 

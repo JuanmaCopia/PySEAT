@@ -2,152 +2,108 @@ import subprocess
 import sys
 
 
-# verbose = False
-# if len(sys.argv) > 1:
-#     if sys.argv[1] == "-v":
-#         verbose = True
-#     else:
-#         print("usage1: run_tests.py")
-#         print("usage2: run_tests.py -v (Display execution information)")
-#         sys.exit(-1)
+verbose = False
+if len(sys.argv) > 1:
+    if sys.argv[1] == "-v":
+        verbose = True
+    else:
+        print("usage1: run_tests.py")
+        print("usage2: run_tests.py -v (Display execution information)")
+        sys.exit(-1)
 
 
-# def execute(filepath, cls, method, verb, max_nodes=5, max_r_nodes=2, max_depth=10):
-#     if verb:
-#         subprocess.call(
-#             [
-#                 sys.executable,
-#                 "pygse/__main__.py",
-#                 "-v",
-#                 "-d " + str(max_depth),
-#                 "-n " + str(max_nodes),
-#                 "-r " + str(max_r_nodes),
-#                 "-c",
-#                 filepath,
-#                 cls,
-#                 method,
-#             ]
-#         )
-#     else:
-#         subprocess.call(
-#             [
-#                 sys.executable,
-#                 "pygse/__main__.py",
-#                 "-d " + str(max_depth),
-#                 "-n " + str(max_nodes),
-#                 "-r " + str(max_r_nodes),
-#                 "-c",
-#                 filepath,
-#                 cls,
-#                 method,
-#             ]
-#         )
+def execute(
+    filepath,
+    class_name,
+    methods,
+    max_r_nodes=2,
+    max_nodes=5,
+    timeout=5,
+    max_depth=10,
+    verbose=False,
+):
+    if verbose:
+        subprocess.call(
+            [
+                sys.executable,
+                "pygse/__main__.py",
+                filepath,
+                class_name,
+                "-m",
+                methods,
+                "-r " + str(max_r_nodes),
+                "-n " + str(max_nodes),
+                "-t " + str(timeout),
+                "-d " + str(max_depth),
+                "--complete",
+                "-v",
+            ]
+        )
+    else:
+        subprocess.call(
+            [
+                sys.executable,
+                "pygse/__main__.py",
+                filepath,
+                class_name,
+                "-m",
+                methods,
+                "-r " + str(max_r_nodes),
+                "-n " + str(max_nodes),
+                "-t " + str(timeout),
+                "-d " + str(max_depth),
+                "--complete",
+            ]
+        )
 
-
-# execute("tests/linkedlist/ll.py", "LinkedList", "swap_node", verbose, 5, 0)
-# execute("tests/linkedlist/llnr.py", "LinkedList", "swap_node", verbose, 5, 0)
-# execute(
-#     "tests/doublylinkedlist/dll.py", "DoublyLinkedList", "insert_after", verbose, 5, 0,
-# )
-# execute(
-#     "tests/circulardoublylinkedlist/cdll.py",
-#     "CDLinkedList",
-#     "insert_after_node",
-#     verbose,
-#     5,
-#     0,
-# )
-# execute("tests/bst/bst.py", "BST", "insert", verbose, 3, 0)
-# execute("tests/avl/avl.py", "AVL", "insert", verbose, 2, 0)
 
 # Linked List
-subprocess.call(
-    [
-        sys.executable,
-        "pygse/__main__.py",
-        "-d 10",
-        "-n 5",
-        "-r 0",
-        "-c",
-        "tests/linkedlist/ll.py",
-        "LinkedList",
-        "-m",
-        "swap_node",
-    ]
+execute(
+    filepath="tests/linkedlist/ll.py",
+    class_name="LinkedList",
+    methods="swap_node",
+    max_r_nodes=0,
+    verbose=verbose,
 )
-
 # Linked List No Repok
-subprocess.call(
-    [
-        sys.executable,
-        "pygse/__main__.py",
-        "-d 10",
-        "-n 5",
-        "-r 0",
-        "-c",
-        "tests/linkedlist/llnr.py",
-        "LinkedList",
-        "-m",
-        "swap_node",
-    ]
+execute(
+    filepath="tests/linkedlist/llnr.py",
+    class_name="LinkedList",
+    methods="swap_node",
+    max_r_nodes=0,
+    verbose=verbose,
 )
 # Doubly Linked List
-subprocess.call(
-    [
-        sys.executable,
-        "pygse/__main__.py",
-        "-d 10",
-        "-n 5",
-        "-r 0",
-        "-c",
-        "tests/doublylinkedlist/dll.py",
-        "DoublyLinkedList",
-        "-m",
-        "insert_after,remove,find,insert_at_back,insert_at_front,top_front,top_back",
-    ]
+execute(
+    filepath="tests/doublylinkedlist/dll.py",
+    class_name="DoublyLinkedList",
+    methods="insert_after,remove,find,insert_at_back,insert_at_front,top_front,top_back,pop_front,pop_back",
+    max_r_nodes=0,
+    verbose=verbose,
 )
 # Circular Doubly Linked List
-subprocess.call(
-    [
-        sys.executable,
-        "pygse/__main__.py",
-        "-d 10",
-        "-n 5",
-        "-r 0",
-        "-c",
-        "tests/circulardoublylinkedlist/cdll.py",
-        "CDLinkedList",
-        "-m",
-        "insert_after,insert_before,delete",
-    ]
+execute(
+    filepath="tests/circulardoublylinkedlist/cdll.py",
+    class_name="CDLinkedList",
+    methods="insert_after,insert_before,delete,append,prepend",
+    max_r_nodes=0,
+    verbose=verbose,
 )
 # Binary Search Tree
-subprocess.call(
-    [
-        sys.executable,
-        "pygse/__main__.py",
-        "-d 10",
-        "-n 3",
-        "-r 0",
-        "-c",
-        "tests/bst/bst.py",
-        "BST",
-        "-m",
-        "insert,find",
-    ]
+execute(
+    filepath="tests/bst/bst.py",
+    class_name="BST",
+    methods="insert,find,height",
+    max_r_nodes=0,
+    max_nodes=3,
+    verbose=verbose,
 )
 # AVL
-subprocess.call(
-    [
-        sys.executable,
-        "pygse/__main__.py",
-        "-d 10",
-        "-n 2",
-        "-r 0",
-        "-c",
-        "tests/avl/avl.py",
-        "AVL",
-        "-m",
-        "insert,delete",
-    ]
+execute(
+    filepath="tests/avl/avl.py",
+    class_name="AVL",
+    methods="insert,delete,find_min,next_larger",
+    max_r_nodes=0,
+    max_nodes=2,
+    verbose=verbose,
 )

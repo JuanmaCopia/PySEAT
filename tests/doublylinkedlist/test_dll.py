@@ -2701,3 +2701,252 @@ def test_top_back6():
     assert doublylinkedlist0.tail is None
 
 
+def test_pop_front1():
+    '''
+    Self:
+        None <- 0 ->  <- 0 -> None
+    Return:
+        0
+    End Self:
+        None <- 0 -> None
+    '''
+    # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node1
+    node1.next = node2
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.pop_front()
+    # Assertions
+    assert returnv == 0
+    # Repok check
+    assert doublylinkedlist0.repok()
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.next is None
+    assert doublylinkedlist0.head.prev is None
+
+
+def test_pop_front2():
+    '''
+    Self:
+        None <- 0 -> None
+    Return:
+        0
+    End Self:
+        <Empty list>
+    '''
+    # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.next = None
+    node1.prev = None
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node1
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.pop_front()
+    # Assertions
+    assert returnv == 0
+    # Repok check
+    assert doublylinkedlist0.repok()
+    assert doublylinkedlist0.head is None
+    assert doublylinkedlist0.tail is None
+
+
+def test_pop_front3():
+    '''
+    Self:
+        <Empty list>
+    Return:
+        None
+    End Self:
+        <Empty list>
+    '''
+    # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
+    doublylinkedlist0.head = None
+    doublylinkedlist0.tail = None
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.pop_front()
+    # Assertions
+    assert returnv is None
+    # Repok check
+    assert doublylinkedlist0.repok()
+    assert doublylinkedlist0.head is None
+    assert doublylinkedlist0.tail is None
+
+
+def test_pop_back1():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        0
+    End Self:
+        None <- 0 ->  <- 0 -> None
+    '''
+    # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.pop_back()
+    # Assertions
+    assert returnv == 0
+    # Repok check
+    assert doublylinkedlist0.repok()
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+
+
+def test_pop_back2():
+    '''
+    Self:
+        None <- 0 ->  <- 0 -> None
+    Return:
+        0
+    End Self:
+        None <- 0 -> None
+    '''
+    # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node1
+    node1.next = node2
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.pop_back()
+    # Assertions
+    assert returnv == 0
+    # Repok check
+    assert doublylinkedlist0.repok()
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.next is None
+    assert doublylinkedlist0.head.prev is None
+
+
+def test_pop_back3():
+    '''
+    Self:
+        None <- 0 ->  <- 0 -> None
+    Return:
+        0
+    End Self:
+        None <- 0 -> None
+    '''
+    # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node1
+    node1.next = node2
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.pop_back()
+    # Assertions
+    assert returnv == 0
+    # Repok check
+    assert doublylinkedlist0.repok()
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.next is None
+    assert doublylinkedlist0.head.prev is None
+
+
+def test_pop_back4():
+    '''
+    Self:
+        None <- 0 -> None
+    Return:
+        0
+    End Self:
+        <Empty list>
+    '''
+    # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.next = None
+    node1.prev = None
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node1
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.pop_back()
+    # Assertions
+    assert returnv == 0
+    # Repok check
+    assert doublylinkedlist0.repok()
+    assert doublylinkedlist0.head is None
+    assert doublylinkedlist0.tail is None
+
+
+def test_pop_back5():
+    '''
+    Self:
+        <Empty list>
+    Return:
+        None
+    End Self:
+        <Empty list>
+    '''
+    # Self Generation
+    doublylinkedlist0 = DoublyLinkedList()
+    doublylinkedlist0.head = None
+    doublylinkedlist0.tail = None
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.pop_back()
+    # Assertions
+    assert returnv is None
+    # Repok check
+    assert doublylinkedlist0.repok()
+    assert doublylinkedlist0.head is None
+    assert doublylinkedlist0.tail is None
+
+
