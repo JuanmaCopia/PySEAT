@@ -35,7 +35,8 @@ def execute(
                 "-n " + str(max_nodes),
                 "-t " + str(timeout),
                 "-d " + str(max_depth),
-                "--complete",
+                "--coverage",
+                "--mutation",
                 "-v",
             ]
         )
@@ -52,7 +53,8 @@ def execute(
                 "-n " + str(max_nodes),
                 "-t " + str(timeout),
                 "-d " + str(max_depth),
-                "--complete",
+                "--coverage",
+                "--mutation",
             ]
         )
 

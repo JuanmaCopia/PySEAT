@@ -14,7 +14,7 @@ def create_testfile(module_name, class_name):
     filepath = foldername + filename
     importstr = "from " + mod_basename + " import *" + "\n\n"
     create_file(filepath, importstr)
-    return foldername, filepath
+    return "test_" + mod_basename, mod_basename, foldername, filepath
 
 
 def create_file(filepath, str):

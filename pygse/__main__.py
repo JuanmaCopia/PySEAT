@@ -59,25 +59,18 @@ parser.add_option(
     help="show statsistics of executions",
 )
 parser.add_option(
-    "--cov",
+    "--coverage",
     dest="coverage",
     action="store_true",
     default=False,
     help="Measure code coverage of generated test",
 )
 parser.add_option(
-    "--mut",
+    "--mutation",
     dest="mutation",
     action="store_true",
     default=False,
     help="Measure mutation score",
-)
-parser.add_option(
-    "--complete",
-    dest="complete",
-    action="store_true",
-    default=False,
-    help="Measure branch coverage and mutation score",
 )
 
 (options, args) = parser.parse_args()
@@ -102,11 +95,10 @@ max_r_nodes = options.max_r_nodes
 timeout = options.timeout
 coverage = options.coverage
 mutation = options.mutation
-complete = options.complete
 verbose = options.verbose
 
 sut = sut_parser.parse(module_name, class_name, methods_names)
-folder_name, filepath = testgen.create_testfile(module_name, class_name)
+testfile, mod, folder, filepath = testgen.create_testfile(module_name, class_name)
 
 print("\n\n {}  PySEAT  {}\n".format("=" * 34, "=" * 34))
 print("Python Symbolic Execution and Automatic Tester")
@@ -137,13 +129,13 @@ for method_data in sut.methods_map.values():
 print("Running generated tests...\n")
 
 # subprocess.call([sys.executable, filepath])
-coverage = True
+
 if coverage:
     subprocess.call(
         [
             "coverage",
             "run",
-            "--source=" + folder_name,
+            "--source=" + folder,
             "--omit=" + filepath,
             "--branch",
             "-m",
@@ -154,6 +146,27 @@ if coverage:
     )
     print("\n\n {} BRANCH COVERAGE RESULTS {} \n".format("=" * 20, "=" * 20))
     subprocess.call(["coverage", "report"])
-    subprocess.call(["coverage", "html", "-d", folder_name + "htmlcov"])
-else:
+    subprocess.call(["coverage", "html", "-d", folder + "htmlcov"])
+
+if mutation:
+    subprocess.call(
+        [
+            "mut.py",
+            "--target",
+            mod,
+            "--unit-test",
+            testfile,
+            "--report-html",
+            "mutscore",
+            "--runner",
+            "pytest",
+            "-c",
+            "--coverage",
+            "-p",
+            folder,
+            "-m",
+        ]
+    )
+
+if not coverage and not mutation:
     subprocess.call(["pytest", filepath])
