@@ -9,6 +9,8 @@ executions and for each execution in particular.
 OK = 0
 PRUNED = 1
 FAIL = 2
+EXCEPTION = 3
+TIMEOUT = 4
 
 
 class PathExecutionData:
@@ -33,7 +35,7 @@ class ExplorationStats:
     def __init__(self):
         self.total_paths = 0
         self.pruned_by_depth = 0
-        self.pruned_by_error = 0
+        self.pruned_by_unsat = 0
         self.pruned_by_repok = 0
         self.pruned_by_rec_limit = 0
         self.pruned_by_exception = 0
@@ -45,6 +47,8 @@ class ExplorationStats:
         self.not_builded_by_timeout = 0
         self.builded = 0
         self.builded_at = [0, 0, 0, 0, 0, 0]
+        self.builded_after_exception = 0
+        self.builded_after_rec_limit = 0
         self.paths_repr = []
         self.max_ok_time = 0
         self.max_pruned_time = 0
@@ -64,7 +68,7 @@ class ExplorationStats:
                 self.max_pruned_time = run.time
 
     def get_amount_pruned(self):
-        total = self.pruned_by_depth + self.pruned_by_error
+        total = self.pruned_by_depth + self.pruned_by_unsat
         total += self.pruned_by_repok
         total += self.pruned_by_rec_limit
         total += self.pruned_by_timeout

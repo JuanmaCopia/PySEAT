@@ -111,28 +111,28 @@ def test_insert3():
     '''
     Self:
         
-          0
-         / 
-        -1 
+         1
+        / 
+        0 
 
     Return:
         None
     End Self:
         
-          0 
-         / \
-        -1 0
+         0 
+        / \
+        0 1
 
     '''
     # Self Generation
     avl0 = AVL()
-    node1 = Node(None, 0)
-    node1.data = 0
+    node1 = Node(None, 1)
+    node1.data = 1
     node1.right = None
     node1.parent = None
     node1.height = 0
-    node2 = Node(node1, -1)
-    node2.data = -1
+    node2 = Node(node1, 0)
+    node2.data = 0
     node2.right = None
     node2.left = None
     node2.height = 0
@@ -150,11 +150,11 @@ def test_insert3():
     assert avl0.root.data == 0
     assert avl0.root.parent is None
     assert avl0.root.height == 1
-    assert avl0.root.right.data == 0
+    assert avl0.root.right.data == 1
     assert avl0.root.right.right is None
     assert avl0.root.right.left is None
     assert avl0.root.right.height == 0
-    assert avl0.root.left.data == -1
+    assert avl0.root.left.data == 0
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
@@ -312,28 +312,28 @@ def test_insert7():
     '''
     Self:
         
-        -1 
-          \
-          0
+        0 
+         \
+         1
 
     Return:
         None
     End Self:
         
-          0 
-         / \
-        -1 0
+         0 
+        / \
+        0 1
 
     '''
     # Self Generation
     avl0 = AVL()
-    node1 = Node(None, -1)
-    node1.data = -1
+    node1 = Node(None, 0)
+    node1.data = 0
     node1.left = None
     node1.parent = None
     node1.height = 0
-    node2 = Node(node1, 0)
-    node2.data = 0
+    node2 = Node(node1, 1)
+    node2.data = 1
     node2.right = None
     node2.left = None
     node2.height = 0
@@ -351,11 +351,11 @@ def test_insert7():
     assert avl0.root.data == 0
     assert avl0.root.parent is None
     assert avl0.root.height == 1
-    assert avl0.root.right.data == 0
+    assert avl0.root.right.data == 1
     assert avl0.root.right.right is None
     assert avl0.root.right.left is None
     assert avl0.root.right.height == 0
-    assert avl0.root.left.data == -1
+    assert avl0.root.left.data == 0
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
@@ -769,26 +769,26 @@ def test_delete4():
     '''
     Self:
         
-         1
-        / 
-        0 
+          0
+         / 
+        -1 
 
     Return:
         None
     End Self:
         
-        1
+        0
 
     '''
     # Self Generation
     avl0 = AVL()
-    node1 = Node(None, 1)
-    node1.data = 1
+    node1 = Node(None, 0)
+    node1.data = 0
     node1.right = None
     node1.parent = None
     node1.height = 0
-    node2 = Node(node1, 0)
-    node2.data = 0
+    node2 = Node(node1, -1)
+    node2.data = -1
     node2.right = None
     node2.left = None
     node2.height = 0
@@ -798,12 +798,12 @@ def test_delete4():
     # Repok check
     assert avl0.repok()
     # Method call
-    returnv = avl0.delete(0)
+    returnv = avl0.delete(-1)
     # Assertions
     assert returnv is None
     # Repok check
     assert avl0.repok()
-    assert avl0.root.data == 1
+    assert avl0.root.data == 0
     assert avl0.root.right is None
     assert avl0.root.left is None
     assert avl0.root.parent is None
@@ -811,6 +811,51 @@ def test_delete4():
 
 
 def test_delete5():
+    '''
+    Self:
+        
+          0
+         / 
+        -1 
+
+    Return:
+        None
+    End Self:
+        
+        0
+
+    '''
+    # Self Generation
+    avl0 = AVL()
+    node1 = Node(None, 0)
+    node1.data = 0
+    node1.right = None
+    node1.parent = None
+    node1.height = 0
+    node2 = Node(node1, -1)
+    node2.data = -1
+    node2.right = None
+    node2.left = None
+    node2.height = 0
+    node2.parent = node1
+    node1.left = node2
+    avl0.root = node1
+    # Repok check
+    assert avl0.repok()
+    # Method call
+    returnv = avl0.delete(-1)
+    # Assertions
+    assert returnv is None
+    # Repok check
+    assert avl0.repok()
+    assert avl0.root.data == 0
+    assert avl0.root.right is None
+    assert avl0.root.left is None
+    assert avl0.root.parent is None
+    assert avl0.root.height == 0
+
+
+def test_delete6():
     '''
     Self:
         
@@ -855,7 +900,7 @@ def test_delete5():
     assert avl0.root.height == 0
 
 
-def test_delete6():
+def test_delete7():
     '''
     Self:
         
@@ -900,7 +945,7 @@ def test_delete6():
     assert avl0.root.height == 0
 
 
-def test_delete7():
+def test_delete8():
     '''
     Self:
         
@@ -937,7 +982,52 @@ def test_delete7():
     assert avl0.root.height == 0
 
 
-def test_delete8():
+def test_delete9():
+    '''
+    Self:
+        
+        0 
+         \
+         1
+
+    Return:
+        None
+    End Self:
+        
+        0
+
+    '''
+    # Self Generation
+    avl0 = AVL()
+    node1 = Node(None, 0)
+    node1.data = 0
+    node1.left = None
+    node1.parent = None
+    node1.height = 0
+    node2 = Node(node1, 1)
+    node2.data = 1
+    node2.right = None
+    node2.left = None
+    node2.height = 0
+    node2.parent = node1
+    node1.right = node2
+    avl0.root = node1
+    # Repok check
+    assert avl0.repok()
+    # Method call
+    returnv = avl0.delete(1)
+    # Assertions
+    assert returnv is None
+    # Repok check
+    assert avl0.repok()
+    assert avl0.root.data == 0
+    assert avl0.root.right is None
+    assert avl0.root.left is None
+    assert avl0.root.parent is None
+    assert avl0.root.height == 0
+
+
+def test_delete10():
     '''
     Self:
         
@@ -982,7 +1072,7 @@ def test_delete8():
     assert avl0.root.height == 0
 
 
-def test_delete9():
+def test_delete11():
     '''
     Self:
         
@@ -1027,7 +1117,7 @@ def test_delete9():
     assert avl0.root.height == 0
 
 
-def test_delete10():
+def test_delete12():
     '''
     Self:
         
@@ -1072,7 +1162,7 @@ def test_delete10():
     assert avl0.root.height == 0
 
 
-def test_delete11():
+def test_delete13():
     '''
     Self:
         
@@ -1109,7 +1199,7 @@ def test_delete11():
     assert avl0.root.height == 0
 
 
-def test_delete12():
+def test_delete14():
     '''
     Self:
         <empty tree>
@@ -1351,63 +1441,6 @@ def test_next_larger3():
     '''
     Self:
         
-          0
-         / 
-        -1 
-
-    Return:
-        node: 0
-    End Self:
-        
-          0
-         / 
-        -1 
-
-    '''
-    # Self Generation
-    avl0 = AVL()
-    node1 = Node(None, 0)
-    node1.data = 0
-    node1.right = None
-    node1.parent = None
-    node1.height = 0
-    node2 = Node(node1, -1)
-    node2.data = -1
-    node2.right = None
-    node2.left = None
-    node2.height = 0
-    node2.parent = node1
-    node1.left = node2
-    avl0.root = node1
-    # Repok check
-    assert avl0.repok()
-    # Method call
-    returnv = avl0.next_larger(-1)
-    # Assertions
-    assert returnv.data == 0
-    assert returnv.right is None
-    assert returnv.parent is None
-    assert returnv.height == 0
-    assert returnv.left.data == -1
-    assert returnv.left.right is None
-    assert returnv.left.left is None
-    assert returnv.left.height == 0
-    # Repok check
-    assert avl0.repok()
-    assert avl0.root.data == 0
-    assert avl0.root.right is None
-    assert avl0.root.parent is None
-    assert avl0.root.height == 0
-    assert avl0.root.left.data == -1
-    assert avl0.root.left.right is None
-    assert avl0.root.left.left is None
-    assert avl0.root.left.height == 0
-
-
-def test_next_larger4():
-    '''
-    Self:
-        
          1
         / 
         0 
@@ -1456,6 +1489,63 @@ def test_next_larger4():
     assert avl0.root.parent is None
     assert avl0.root.height == 0
     assert avl0.root.left.data == 0
+    assert avl0.root.left.right is None
+    assert avl0.root.left.left is None
+    assert avl0.root.left.height == 0
+
+
+def test_next_larger4():
+    '''
+    Self:
+        
+          0
+         / 
+        -1 
+
+    Return:
+        node: 0
+    End Self:
+        
+          0
+         / 
+        -1 
+
+    '''
+    # Self Generation
+    avl0 = AVL()
+    node1 = Node(None, 0)
+    node1.data = 0
+    node1.right = None
+    node1.parent = None
+    node1.height = 0
+    node2 = Node(node1, -1)
+    node2.data = -1
+    node2.right = None
+    node2.left = None
+    node2.height = 0
+    node2.parent = node1
+    node1.left = node2
+    avl0.root = node1
+    # Repok check
+    assert avl0.repok()
+    # Method call
+    returnv = avl0.next_larger(-1)
+    # Assertions
+    assert returnv.data == 0
+    assert returnv.right is None
+    assert returnv.parent is None
+    assert returnv.height == 0
+    assert returnv.left.data == -1
+    assert returnv.left.right is None
+    assert returnv.left.left is None
+    assert returnv.left.height == 0
+    # Repok check
+    assert avl0.repok()
+    assert avl0.root.data == 0
+    assert avl0.root.right is None
+    assert avl0.root.parent is None
+    assert avl0.root.height == 0
+    assert avl0.root.left.data == -1
     assert avl0.root.left.right is None
     assert avl0.root.left.left is None
     assert avl0.root.left.height == 0
@@ -1816,19 +1906,19 @@ def test_next_larger12():
     '''
     Self:
         
-        -1
+        0
 
     Return:
         None
     End Self:
         
-        -1
+        0
 
     '''
     # Self Generation
     avl0 = AVL()
-    node1 = Node(None, -1)
-    node1.data = -1
+    node1 = Node(None, 0)
+    node1.data = 0
     node1.right = None
     node1.left = None
     node1.parent = None
@@ -1837,12 +1927,12 @@ def test_next_larger12():
     # Repok check
     assert avl0.repok()
     # Method call
-    returnv = avl0.next_larger(0)
+    returnv = avl0.next_larger(1)
     # Assertions
     assert returnv is None
     # Repok check
     assert avl0.repok()
-    assert avl0.root.data == -1
+    assert avl0.root.data == 0
     assert avl0.root.right is None
     assert avl0.root.left is None
     assert avl0.root.parent is None

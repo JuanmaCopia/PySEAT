@@ -15,7 +15,7 @@ import helpers
 import symbolics as sym
 import data
 
-from helpers import HiddenPrints
+from helpers import HiddenPrints, timeout
 from branching_steps import LazyBranchPoint, ConditionalBranchPoint
 
 from smt.smt import SMT
@@ -72,7 +72,7 @@ class SEEngine:
         _real_to_proxy (dict): Maps builtin supported types to Symbolic Ones.
     """
 
-    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, timeout):
+    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, time_out):
         """Setups the initial values of the engine.
 
         Args:
@@ -94,7 +94,7 @@ class SEEngine:
         self._current_nodes = 0
         self._max_r_nodes = max_r_nodes
         self._current_repok_max = 0
-        self._max_time = timeout
+        self._max_time = time_out
         self._timeout = 0
         self._time = 0
         self._rec_times = 0
@@ -180,36 +180,37 @@ class SEEngine:
             if sym.is_symbolic_bool(returnv):
                 returnv = returnv.__bool__()
 
-            self.build_stats(pathdata, args, returnv)
-
         except excp.UnsatBranchError:
-            self._stats.pruned_by_error += 1
+            self._stats.pruned_by_unsat += 1
         except excp.MaxDepthException:
             self._stats.pruned_by_depth += 1
         except excp.RepOkFailException:
             self._stats.pruned_by_repok += 1
         except excp.MaxRecursionException:
-            self._stats.pruned_by_rec_limit += 1
+            if not self.build_stats(pathdata):
+                self._stats.pruned_by_rec_limit += 1
+            else:
+                self._stats.builded_after_rec_limit += 1
         except excp.TimeOutException:
-            self._stats.pruned_by_timeout += 1
-        except excp.CouldNotBuildError:
-            pass
-        except excp.BuildTimeOutException:
-            self._stats.not_builded_by_timeout += 1
+            if not self.build_stats(pathdata):
+                self._stats.pruned_by_timeout += 1
         except Exception as e:
-            self._stats.pruned_by_exception += 1
-            exception = e
+            if not self.build_stats(pathdata):
+                self._stats.pruned_by_exception += 1
+                exception = e
+            else:
+                self._stats.builded_after_exception += 1
+        else:
+            self.build_stats(pathdata)
         finally:
             self.mode = CONCRETE_EXECUTION
             # if exception:
             #     raise exception
-            pathdata.exception = exception
             pathdata.time = time.time() - self._time
             self._stats.status_count(pathdata.status)
             return pathdata
 
-    def build_stats(self, pathdata, args, returnv):
-        # Path condition and model
+    def build_stats(self, pathdata):
         path = self._path_condition
         model = self.smt.get_model(path)
 
@@ -217,29 +218,44 @@ class SEEngine:
         symbolic_inself = self._backups.get_self()
         symbolic_args = self._backups.get_args()
 
-        input_self = self.build(symbolic_inself, model)
-        input_args = self.build(symbolic_args, model)
-
-        # Execution of method with concrete input
-        self_end_state = copy.deepcopy(input_self)
-        args = copy.deepcopy(input_args)
-
-        returnv = self.execute_method_concretely(self_end_state, args)
-
-        if self.execute_repok_concretely(self_end_state):
-            status = data.OK
+        try:
+            input_self = self.build(symbolic_inself, model)
+            input_args = self.build(symbolic_args, model)
+        except excp.BuildTimeOutException:
+            builded = False
+        except excp.CouldNotBuildError:
+            builded = False
+        except Exception:
+            assert False
         else:
-            status = data.FAIL
+            builded = True
+        finally:
+            if builded:
+                pathdata.input_args = input_args
+                pathdata.input_self = input_self
+                pathdata.pathcondition = path
+                pathdata.model = model
 
-        pathdata.status = status
-        pathdata.path_repr = helpers.path_to_str(self._branch_points)
-        pathdata.input_args = input_args
-        pathdata.pathcondition = path
-        pathdata.model = model
-        pathdata.self_end_state = self_end_state
-        pathdata.input_self = input_self
-        pathdata.symbolic_inself = symbolic_inself
-        pathdata.returnv = returnv
+                self_end_state = copy.deepcopy(input_self)
+                args = copy.deepcopy(input_args)
+                returnv = self.execute_method_concretely(self_end_state, args)
+
+                if isinstance(returnv, Exception):
+                    if isinstance(returnv, excp.TimeOutException):
+                        pathdata.status = data.TIMEOUT
+                    else:
+                        pathdata.status = data.EXCEPTION
+                        pathdata.exception = returnv
+                else:
+                    if self.execute_repok_concretely(self_end_state):
+                        pathdata.status = data.OK
+                    else:
+                        pathdata.status = data.FAIL
+
+                    pathdata.self_end_state = self_end_state
+                    pathdata.returnv = returnv
+                return True
+            return False
 
     def execute_method_concretely(self, obj, args):
         self.mode = CONCRETE_EXECUTION
@@ -250,10 +266,8 @@ class SEEngine:
                     returnv = method(*args)
                 else:
                     returnv = method()
-        except AttributeError as e:
-            raise e
-        except excp.TimeOutException as e:
-            raise e
+        except Exception as e:
+            returnv = e
         finally:
             return returnv
 

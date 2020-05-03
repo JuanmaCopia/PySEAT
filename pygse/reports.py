@@ -16,7 +16,9 @@ INDENT8 = "        "
 def print_formatted_result(function, run_data, verbose):
     if verbose:
         if run_data.status != data.PRUNED:
-            print("\n#" + str(run_data.number) + " " + run_data.status.name + ":\n")
+            print(
+                "\n#" + str(run_data.number) + " " + status_str(run_data.status) + ":\n"
+            )
             print(" Path Condition:")
             helpers.print_list(run_data.pathcondition, INDENT8)
             print(
@@ -41,14 +43,18 @@ def print_formatted_result(function, run_data, verbose):
                 print("  Exception: " + str(run_data.exception))
             print("")
     else:
-        print("#" + str(run_data.number) + ": " + get_status_string(run_data.status))
+        print("#" + str(run_data.number) + ": " + status_str(run_data.status))
 
 
-def get_status_string(status_num):
-    if status_num == 0:
+def status_str(status_num):
+    if status_num == data.OK:
         return "OK"
-    elif status_num == 1:
+    elif status_num == data.PRUNED:
         return "PRUNED"
+    elif status_num == data.EXCEPTION:
+        return "EXCEPTION"
+    elif status_num == data.TIMEOUT:
+        return "TIMEOUT"
     return "FAIL"
 
 
@@ -71,10 +77,11 @@ def report_statistics(stats):
     for i, num in enumerate(stats.builded_at):
         if num != 0:
             print(INDENT4 + str(num) + " builded by adding " + str(i) + " nodes")
-
+    print(INDENT4 + str(stats.builded_after_exception) + " builded after exception")
+    print(INDENT4 + str(stats.builded_after_rec_limit) + " builded after rec_limit")
     print(INDENT2 + str(pruned) + " pruned: ")
     print(INDENT4 + str(stats.pruned_by_depth) + " by depth")
-    print(INDENT4 + str(stats.pruned_by_error) + " by error")
+    print(INDENT4 + str(stats.pruned_by_unsat) + " by unsat")
     print(INDENT4 + str(stats.pruned_by_rec_limit) + " by rec limit")
     print(INDENT4 + str(stats.pruned_by_repok) + " by repok")
     print(INDENT4 + str(stats.pruned_by_exception) + " by exception")
