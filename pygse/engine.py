@@ -195,6 +195,8 @@ class SEEngine:
         except excp.TimeOutException:
             if not self.build_stats(pathdata):
                 self._stats.pruned_by_timeout += 1
+            else:
+                self._stats.builded_after_timeout += 1
         except Exception as e:
             if not self.build_stats(pathdata):
                 self._stats.pruned_by_exception += 1
@@ -223,8 +225,11 @@ class SEEngine:
             input_self = self.build(symbolic_inself, model)
             input_args = self.build(symbolic_args, model)
         except excp.BuildTimeOutException:
+            self._stats.not_builded_by_timeout += 1
+            self._stats.not_builded += 1
             builded = False
         except excp.CouldNotBuildError:
+            self._stats.not_builded += 1
             builded = False
         except Exception:
             assert False
@@ -316,7 +321,6 @@ class SEEngine:
                 self._current_repok_max += 1
 
             if build is None:
-                self._stats.not_builded += 1
                 raise excp.CouldNotBuildError()
             self._stats.builded_at[self._current_repok_max - 1] += 1
             return build

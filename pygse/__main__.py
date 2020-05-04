@@ -8,7 +8,8 @@ import time
 from optparse import OptionParser
 
 import sut_parser
-from reports import report_statistics, print_formatted_result
+from cli_print import welcome, print_formatted_result, report_statistics
+from cli_print import print_method_data
 from engine import SEEngine
 import test_generator as testgen
 import data
@@ -118,31 +119,29 @@ comments = options.comments
 sut = sut_parser.parse(module_name, class_name, methods_names)
 testfile, mod, folder, filepath = testgen.create_testfile(module_name, class_name)
 
-print("\n\n {}  PySEAT  {}\n".format("=" * 34, "=" * 34))
-print("Python Symbolic Execution and Automatic Tester")
+welcome()
 
 for method_data in sut.methods_map.values():
     sut.current_method = method_data
-    engine = SEEngine(sut, max_depth, max_nodes, max_r_nodes, method_timeout, build_timeout)
+    engine = SEEngine(
+        sut, max_depth, max_nodes, max_r_nodes, method_timeout, build_timeout
+    )
 
     test_num = 0
     start_time = time.time()
 
-    print("Performing Exploration...")
-    print("Method: ", sut.current_method.name)
-    print("Class: {}\n".format(class_name))
+    print_method_data(sut.current_method.name, class_name)
 
     for run in engine.explore():
+        engine._stats.sum_times(run)
         if run.status != data.PRUNED:
-            print_formatted_result(sut.get_method(), run, verbose)
+            print_formatted_result(sut.get_method(), run)
             test_num += 1
             test = testgen.TestCode(sut, run, test_num, method_timeout, comments)
             testgen.append_to_testfile(filepath, test.code + "\n\n")
 
-    print("\nDONE! " + str(test_num) + " Tests were generated")
-    print("Elapsed Time:   ---  %s seconds  ---" % (time.time() - start_time))
-    report_statistics(engine.statistics())
-    print("{}\n\n".format("- " * 39))
+    report_statistics(engine.statistics(), test_num, time.time() - start_time, verbose)
+
 
 print("Running generated tests...\n")
 
