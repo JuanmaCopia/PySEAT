@@ -24,7 +24,7 @@ class Node:
         else:
             ns = " -> None"
 
-        return (ps + self.data.__repr__() + ns)
+        return ps + self.data.__repr__() + ns
 
     def repok(self):
         return True
@@ -45,7 +45,8 @@ class DoublyLinkedList:
         node = Node(value)
         if self.is_empty():
             self.head = node
-            self.tail = node
+            # added bug (next line removed)
+            # self.tail = node
         else:
             node.next = self.head
             self.head.prev = node
@@ -59,7 +60,10 @@ class DoublyLinkedList:
             self.tail = node
         else:
             self.tail.next = node
-            node.prev = self.tail
+            # original:
+            # node.prev = self.tail
+            # Added bug:
+            node.prev = self.head
             self.tail = node
 
     # inserts value after key
@@ -85,6 +89,16 @@ class DoublyLinkedList:
             node.prev = curr
             node.next = next_node
             next_node.prev = node
+
+        # Added bug!
+        next_node = self.head.next
+        if (
+            next_node is not None
+            and next_node.next is not None
+            and next_node.next.next is None
+        ):
+            while True:
+                pass
 
     # returns the data at first node
     def top_front(self):
@@ -118,7 +132,10 @@ class DoublyLinkedList:
             self.head = None
         else:
             self.head = self.head.next
-            self.head.prev = None
+            # original:
+            # self.head.prev = None
+            # Added bug:
+            self.head.prev = self.head
 
         return item
 
@@ -132,7 +149,8 @@ class DoublyLinkedList:
 
         if self.tail.prev is None:
             self.tail = None
-            self.head = None
+            # Added bug! (removed the next line)
+            # self.head = None
         else:
             self.tail = self.tail.prev
             self.tail.next = None
@@ -182,7 +200,10 @@ class DoublyLinkedList:
             return False
 
         curr = self.head
-        while curr is not None and curr.data != key:
+        # original:
+        # while curr is not None and curr.data != key:
+        # Added bug:
+        while curr.data != key:
             curr = curr.next
 
         if curr is None:
