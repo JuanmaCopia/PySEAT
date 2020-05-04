@@ -1,37 +1,26 @@
 import os
 import sys
 import signal
-from contextlib import contextmanager
 from exceptions import TimeOutException
-
-
-@contextmanager
-def timeout(time):
-    # Register a function to raise a TimeoutError on the signal.
-    signal.signal(signal.SIGALRM, raise_timeout)
-    # Schedule the signal to be sent after ``time``.
-    signal.alarm(time)
-
-    try:
-        yield
-    except TimeOutException:
-        pass
-    finally:
-        # Unregister the signal so it won't be triggered
-        # if the timeout is not reached.
-        signal.signal(signal.SIGALRM, signal.SIG_IGN)
 
 
 def raise_timeout(signum, frame):
     raise TimeOutException()
 
 
-class HiddenPrints:
+class MethodRun:
+    def __init__(self, time):
+        self.time = time
+
     def __enter__(self):
         self._original_stdout = sys.stdout
         sys.stdout = open(os.devnull, "w")
 
+        signal.signal(signal.SIGALRM, raise_timeout)
+        signal.alarm(self.time)
+
     def __exit__(self, exc_type, exc_val, exc_tb):
+        signal.signal(signal.SIGALRM, signal.SIG_IGN)
         sys.stdout.close()
         sys.stdout = self._original_stdout
 

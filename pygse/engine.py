@@ -15,7 +15,7 @@ import helpers
 import symbolics as sym
 import data
 
-from helpers import HiddenPrints, timeout
+from helpers import MethodRun
 from branching_steps import LazyBranchPoint, ConditionalBranchPoint
 
 from smt.smt import SMT
@@ -72,7 +72,7 @@ class SEEngine:
         _real_to_proxy (dict): Maps builtin supported types to Symbolic Ones.
     """
 
-    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, time_out):
+    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, m_timeout, b_timeout):
         """Setups the initial values of the engine.
 
         Args:
@@ -94,7 +94,8 @@ class SEEngine:
         self._current_nodes = 0
         self._max_r_nodes = max_r_nodes
         self._current_repok_max = 0
-        self._max_time = time_out
+        self.build_timeout = b_timeout
+        self.method_timeout = m_timeout
         self._timeout = 0
         self._time = 0
         self._rec_times = 0
@@ -168,11 +169,11 @@ class SEEngine:
         args = args[1:]
         method = getattr(self._current_self, self._sut.get_method_name())
 
-        self._timeout = time.time() + self._max_time
+        self._timeout = time.time() + self.build_timeout
         self._time = time.time()
         self.mode = METHOD_EXPLORATION
         try:
-            with HiddenPrints():
+            with MethodRun(self.method_timeout):
                 if args:
                     returnv = method(*args)
                 else:
@@ -194,6 +195,8 @@ class SEEngine:
         except excp.TimeOutException:
             if not self.build_stats(pathdata):
                 self._stats.pruned_by_timeout += 1
+            else:
+                self._stats.builded_after_timeout += 1
         except Exception as e:
             if not self.build_stats(pathdata):
                 self._stats.pruned_by_exception += 1
@@ -222,8 +225,11 @@ class SEEngine:
             input_self = self.build(symbolic_inself, model)
             input_args = self.build(symbolic_args, model)
         except excp.BuildTimeOutException:
+            self._stats.not_builded_by_timeout += 1
+            self._stats.not_builded += 1
             builded = False
         except excp.CouldNotBuildError:
+            self._stats.not_builded += 1
             builded = False
         except Exception:
             assert False
@@ -261,7 +267,7 @@ class SEEngine:
         self.mode = CONCRETE_EXECUTION
         try:
             method = getattr(obj, self._sut.get_method_name())
-            with HiddenPrints():
+            with MethodRun(self.method_timeout):
                 if args:
                     returnv = method(*args)
                 else:
@@ -315,7 +321,6 @@ class SEEngine:
                 self._current_repok_max += 1
 
             if build is None:
-                self._stats.not_builded += 1
                 raise excp.CouldNotBuildError()
             self._stats.builded_at[self._current_repok_max - 1] += 1
             return build

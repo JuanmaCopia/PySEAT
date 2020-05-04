@@ -4,6 +4,7 @@
 
 from helpers import do_add
 from instance_managment import get_dict, var_name, is_user_defined
+import data
 import os
 
 
@@ -12,7 +13,8 @@ def create_testfile(module_name, class_name):
     foldername = os.path.dirname(module_name) + "/"
     filename = "test_" + mod_basename + ".py"
     filepath = foldername + filename
-    importstr = "from " + mod_basename + " import *" + "\n\n"
+    importstr = "from " + mod_basename + " import *"
+    importstr += "\nimport pytest\n\n"
     create_file(filepath, importstr)
     return "test_" + mod_basename, mod_basename, foldername, filepath
 
@@ -30,12 +32,15 @@ def append_to_testfile(filepath, str):
 
 
 class TestCode:
-    def __init__(self, sut, run_stats, number):
+    def __init__(self, sut, run_stats, number, timeout, comments):
         self._sut = sut
         self.run_data = run_stats
+        self.status = run_stats.status
         self.test_number = number
         self.code = ""
         self.name = "test_" + sut.get_method_name() + str(number) + "()"
+        self.timeout = timeout
+        self.comments = comments
         self.generate_test_code()
 
     def _add_line(self, line):
@@ -51,9 +56,12 @@ class TestCode:
         return args_ids[:-2]
 
     def generate_test_code(self):
+        if self.status == data.TIMEOUT:
+            self.code += "@pytest.mark.timeout({})\n".format(self.timeout)
         self.code += "def " + self.name + ":"
-        self.gen_test_comment()
-        self._add_line("# Self Generation")
+        if self.comments:
+            self.gen_test_comment()
+        self._add_line("# Input Creation")
         self_id = self.generate_structure_code(self.run_data.input_self)
         self._add_line("# Repok check")
         self.add_repok_check(self.run_data.input_self)
@@ -61,20 +69,22 @@ class TestCode:
         self.generate_method_call(
             self_id, self._sut.get_method_name(), self.run_data.returnv
         )
-        self._add_line("# Assertions")
-        self.gen_returnv_assert(self.run_data.returnv)
         self._add_line("# Repok check")
-        self.add_repok_check(self.run_data.self_end_state)
-        self.gen_structure_assertions(self.run_data.self_end_state)
+        self.add_repok_check(self.run_data.input_self)
+        if self.status == data.OK or self.status == data.FAIL:
+            self._add_line("# Assertions")
+            self.gen_returnv_assert(self.run_data.returnv)
+            self.gen_structure_assertions(self.run_data.self_end_state)
 
     def gen_test_comment(self):
         self._add_line("'''")
         self._add_line("Self:")
         self._add_line("    " + self.run_data.input_self.__repr__())
-        self._add_line("Return:")
-        self._add_line("    " + self.run_data.returnv.__repr__())
-        self._add_line("End Self:")
-        self._add_line("    " + self.run_data.self_end_state.__repr__())
+        if self.status != data.TIMEOUT and self.status != data.EXCEPTION:
+            self._add_line("Return:")
+            self._add_line("    " + self.run_data.returnv.__repr__())
+            self._add_line("End Self:")
+            self._add_line("    " + self.run_data.self_end_state.__repr__())
         self._add_line("'''")
 
     def add_repok_check(self, structure):
