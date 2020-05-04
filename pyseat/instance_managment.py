@@ -1,5 +1,5 @@
-SYMBOLIC_PREFIX = "_pygse_"
-ISINIT_PREFIX = "_pygse_is_init"
+SYMBOLIC_PREFIX = "_pyseat_"
+ISINIT_PREFIX = "_pyseat_is_init"
 SYM_PREFIX_LEN = len(SYMBOLIC_PREFIX)
 
 

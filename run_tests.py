@@ -54,7 +54,7 @@ def execute(
 ):
     params = [
         sys.executable,
-        "pygse/__main__.py",
+        "pyseat/__main__.py",
         filepath,
         class_name,
         "-m",

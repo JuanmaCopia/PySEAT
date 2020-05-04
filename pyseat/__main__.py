@@ -1,4 +1,4 @@
-"""PyGSE Command Line Interface
+"""PySEAT Command Line Interface
 
 """
 import os

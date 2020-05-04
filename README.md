@@ -1,6 +1,6 @@
-# PyGSE
+# PySEAT
 
-Python Generalized Symbolic Execution and Test Generator. PyGSE is a python module that
+Python Generalized Symbolic Execution and Test Generator. PySEAT is a python module that
 simbolically executes methods of classes and creates it's tests.
 
 ## Getting Started
@@ -13,7 +13,7 @@ Tested for python 3.8.1
 
 Clone this repository to your local machine:
 ```
-git clone https://github.com/JuanmaCopia/PyGSE
+git clone https://github.com/JuanmaCopia/PySEAT
 ```
 
 ### Installing on Linux using python venv
@@ -21,7 +21,7 @@ git clone https://github.com/JuanmaCopia/PyGSE
 Create virtual enviroment on the project folder:
 
 ```
-cd PyGSE
+cd PySEAT/
 python3 -m venv env
 ```
 
@@ -57,7 +57,7 @@ python run_tests.py -v
 All tests should pass and no exceptions should be raised. Generated test are saved
 in each structure folder under the tests/ directory.
 For example you can finde the swap_node method tests of class LinkedList on:
-```PyGSE/tests/linkedlist/ll_swap_node_test.py ``` The tests are generated from the file ```ll_instrumented.py``` but when you run them they will test the original file: ```ll.py```
+```PySEAT/tests/linkedlist/ll_swap_node_test.py ``` The tests are generated from the file ```ll_instrumented.py``` but when you run them they will test the original file: ```ll.py```
 The other test behave in the same way.
 
 
@@ -66,7 +66,7 @@ The other test behave in the same way.
 Let's take the swap_node example of above, a successful execution looks like this:
 
 ```
- ========================  PyGSE  =====================
+ ========================  PySEAT  =====================
 
 Method swap_node of class LinkedList
 
@@ -203,13 +203,13 @@ To run the program for other files you can:
 Execute it as a module:
 
 ```
-python -m pygse <path-to-instrumented-module.py> <class-name> <method-name>
+python -m pyseat <path-to-instrumented-module.py> <class-name> <method-name>
 ```
 
 Or execute the main file:
 
 ```
-python pygse/__main__.py <path-to-instrumented-module.py> <class-name> <method-name>
+python pyseat/__main__.py <path-to-instrumented-module.py> <class-name> <method-name>
 ```
 
 Test generated would be on the same folder of the file.py ins a file callled:
@@ -221,7 +221,7 @@ Test generated would be on the same folder of the file.py ins a file callled:
 For example to run the program on the swap_node method of LinkedList:
 
 ```
-python -m pygse tests/linkedlist/ll_instrumented.py LinkedList swap_node
+python -m pyseat tests/linkedlist/ll_instrumented.py LinkedList swap_node
 ```
 
 Test generated at:
