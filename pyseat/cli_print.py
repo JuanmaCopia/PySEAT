@@ -121,11 +121,6 @@ def welcome():
             "\n\n {}  PySEAT  {}\n".format("=" * 34, "=" * 34), "cyan", attrs=["bold"]
         )
     )
-    print(
-        colored(
-            " Python Symbolic Execution and Automatic Tester\n", "cyan", attrs=["bold"]
-        )
-    )
 
 
 def print_method_data(method_name, class_name):

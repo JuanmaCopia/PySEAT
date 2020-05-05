@@ -24,7 +24,7 @@ class Node:
         else:
             ns = " -> None"
 
-        return (ps + self.data.__repr__() + ns)
+        return ps + self.data.__repr__() + ns
 
     def repok(self):
         return True

@@ -13,14 +13,30 @@ from inspect import signature
 
 from instrumentation import instrument
 from helpers import do_add
-
-# from exceptions import MissingTypesError
+from symbolics import Symbolic
 
 
 def parse(module_name, class_name, methods_names):
     module = get_module(module_name)
+    if not module:
+        print("\nsut_parser.py: Error importing module: {}".format(module_name))
+        sys.exit(1)
+    if not hasattr(module, class_name):
+        print(
+            "\nsut_parser.py: Class '{}' not found in {}".format(
+                class_name, module_name
+            )
+        )
+        sys.exit(1)
     self_class = getattr(module, class_name)
-    methods = [getattr(self_class, method_name) for method_name in methods_names]
+    methods = []
+    for name in methods_names:
+        if not hasattr(self_class, name):
+            print(
+                "\nsut_parser.py: Method '{}' not found in {}".format(name, class_name)
+            )
+            sys.exit(1)
+        methods.append(getattr(self_class, name))
     return SUT(self_class, methods)
 
 
@@ -33,7 +49,7 @@ def get_module(module_name):
 
 
 def get_types_dict(method, belonging_cls) -> dict:
-    pt_dict = typing.get_type_hints(method)
+    pt_dict = get_annotations_types(method, belonging_cls)
 
     defaults = typing._get_defaults(method)
     for name in defaults:
@@ -61,6 +77,10 @@ def is_user_defined(typ):
     return typ.__module__ != "builtins"
 
 
+def is_supported_builtin(typ):
+    return typ in Symbolic._supported_types
+
+
 def map_all_classes(types_list) -> dict:
     classes = set()
     worklist = []
@@ -82,10 +102,39 @@ def map_all_classes(types_list) -> dict:
     return class_map
 
 
+def type_error(msg):
+    print("\nsut_parser.py: In Annotations of: {}".format(msg))
+    sys.exit(1)
+
+
+def get_annotations_types(obj, cls_name=None):
+    try:
+        types = typing.get_type_hints(obj)
+    except NameError as e:
+        if cls_name:
+            type_error("'{}' of {}, {}".format(obj.__name__, cls_name, e))
+        else:
+            type_error("'{}', {}".format(obj.__name__, e))
+    else:
+        for typ in types.values():
+            if not is_user_defined(typ) and not is_supported_builtin(typ):
+                type_error("'{}', '{}' is not supported yet".format(obj.__name__, typ))
+        return types
+
+
+def check_method_annotations(method_data):
+    if len(method_data.types_dict) != method_data.amount_params:
+        type_error(
+            "'{}' of {} There are missing annotations".format(
+                method_data.name, method_data.belonging_cls
+            )
+        )
+
+
 class ClassData:
     def __init__(self, this_class):
         self.this_class = this_class
-        self.instance_attr_types = typing.get_type_hints(this_class)
+        self.instance_attr_types = get_annotations_types(this_class)
         self.instance_attr_list = list(self.instance_attr_types.values())
         self.repok_method = self.get_repok()
         self.init_data = MethodData(this_class.__init__, this_class)
@@ -104,11 +153,10 @@ class MethodData:
         self.signature = signature(method)
         self.params = self.signature.parameters
         self.amount_params = len(self.params)
-
         self.types_dict = get_types_dict(method, belonging_cls)
         self.return_type = self.types_dict.pop("return", None)
+        check_method_annotations(self)
         self.types_list = get_types_list(self.params, self.types_dict)
-        assert len(self.types_list) == self.amount_params
 
 
 class SUT:
