@@ -123,12 +123,20 @@ def get_annotations_types(obj, cls_name=None):
 
 
 def check_method_annotations(method_data):
+    method_name = method_data.name
     if len(method_data.types_dict) != method_data.amount_params:
         type_error(
             "'{}' of {} There are missing annotations".format(
-                method_data.name, method_data.belonging_cls
+                method_name, method_data.belonging_cls
             )
         )
+    for name, typ in method_data.types_dict.items():
+        if name != "self" and is_user_defined(typ) and method_name != "__init__":
+            type_error(
+                "'{}' of {}, structure args only supported in __init__ methods".format(
+                    method_name, method_data.belonging_cls
+                )
+            )
 
 
 class ClassData:

@@ -108,7 +108,7 @@ class Node:
             current = current.parent
         return current.parent
 
-    def insert(self, node: "Node"):
+    def insert(self, node):
         """Inserts a node into the subtree rooted at this node.
 
         Args:
@@ -199,7 +199,7 @@ class AVL():
         node = self.find(k)
         return node and node.next_larger()
 
-    def left_rotate(self, x: "Node"):
+    def left_rotate(self, x):
         y = x.right
         y.parent = x.parent
         if y.parent is None:
@@ -217,7 +217,7 @@ class AVL():
         update_height(x)
         update_height(y)
 
-    def right_rotate(self, x: "Node"):
+    def right_rotate(self, x):
         y = x.left
         y.parent = x.parent
         if y.parent is None:
@@ -235,7 +235,7 @@ class AVL():
         update_height(x)
         update_height(y)
 
-    def rebalance(self, node: "Node"):
+    def rebalance(self, node):
         while node is not None:
             update_height(node)
             if height(node.left) >= 2 + height(node.right):
