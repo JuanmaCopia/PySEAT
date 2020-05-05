@@ -27,13 +27,13 @@ def test_insert1():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(3)
+    node1 = Node(0)
     node1.data = 3
     node1.right = None
-    node2 = Node(2)
+    node2 = Node(0)
     node2.data = 2
     node2.right = None
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node3.right = None
     node3.left = None
@@ -82,13 +82,13 @@ def test_insert2():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(2)
+    node1 = Node(0)
     node1.data = 2
     node1.right = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.right = None
-    node3 = Node(-1)
+    node3 = Node(0)
     node3.data = -1
     node3.right = None
     node3.left = None
@@ -135,10 +135,10 @@ def test_insert3():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(2)
+    node1 = Node(0)
     node1.data = 2
     node1.right = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.right = None
     node3 = Node(0)
@@ -186,10 +186,10 @@ def test_insert4():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(2)
+    node1 = Node(0)
     node1.data = 2
     node1.right = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.right = None
     node2.left = None
@@ -235,13 +235,13 @@ def test_insert5():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(2)
+    node1 = Node(0)
     node1.data = 2
     node1.right = None
-    node2 = Node(-1)
+    node2 = Node(0)
     node2.data = -1
     node2.left = None
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node3.right = None
     node3.left = None
@@ -290,13 +290,13 @@ def test_insert6():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.right = None
-    node2 = Node(-2)
+    node2 = Node(0)
     node2.data = -2
     node2.left = None
-    node3 = Node(-1)
+    node3 = Node(0)
     node3.data = -1
     node3.right = None
     node3.left = None
@@ -345,10 +345,10 @@ def test_insert7():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.right = None
-    node2 = Node(-1)
+    node2 = Node(0)
     node2.data = -1
     node2.left = None
     node3 = Node(0)
@@ -396,10 +396,10 @@ def test_insert8():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.right = None
-    node2 = Node(-1)
+    node2 = Node(0)
     node2.data = -1
     node2.right = None
     node2.left = None
@@ -441,7 +441,7 @@ def test_insert9():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.right = None
     node2 = Node(0)
@@ -482,7 +482,7 @@ def test_insert10():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.right = None
     node1.left = None
@@ -525,13 +525,13 @@ def test_insert11():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-1)
+    node1 = Node(0)
     node1.data = -1
     node1.left = None
-    node2 = Node(2)
+    node2 = Node(0)
     node2.data = 2
     node2.right = None
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node3.right = None
     node3.left = None
@@ -580,13 +580,13 @@ def test_insert12():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-2)
+    node1 = Node(0)
     node1.data = -2
     node1.left = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.right = None
-    node3 = Node(-1)
+    node3 = Node(0)
     node3.data = -1
     node3.right = None
     node3.left = None
@@ -635,10 +635,10 @@ def test_insert13():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-1)
+    node1 = Node(0)
     node1.data = -1
     node1.left = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.right = None
     node3 = Node(0)
@@ -689,7 +689,7 @@ def test_insert14():
     node1 = Node(0)
     node1.data = 0
     node1.left = None
-    node2 = Node(2)
+    node2 = Node(0)
     node2.data = 2
     node2.right = None
     node2.left = None
@@ -737,13 +737,13 @@ def test_insert15():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-2)
+    node1 = Node(0)
     node1.data = -2
     node1.left = None
-    node2 = Node(-1)
+    node2 = Node(0)
     node2.data = -1
     node2.left = None
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node3.right = None
     node3.left = None
@@ -794,13 +794,13 @@ def test_insert16():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-3)
+    node1 = Node(0)
     node1.data = -3
     node1.left = None
-    node2 = Node(-2)
+    node2 = Node(0)
     node2.data = -2
     node2.left = None
-    node3 = Node(-1)
+    node3 = Node(0)
     node3.data = -1
     node3.right = None
     node3.left = None
@@ -849,10 +849,10 @@ def test_insert17():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-2)
+    node1 = Node(0)
     node1.data = -2
     node1.left = None
-    node2 = Node(-1)
+    node2 = Node(0)
     node2.data = -1
     node2.left = None
     node3 = Node(0)
@@ -900,10 +900,10 @@ def test_insert18():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-2)
+    node1 = Node(0)
     node1.data = -2
     node1.left = None
-    node2 = Node(-1)
+    node2 = Node(0)
     node2.data = -1
     node2.right = None
     node2.left = None
@@ -945,7 +945,7 @@ def test_insert19():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-1)
+    node1 = Node(0)
     node1.data = -1
     node1.left = None
     node2 = Node(0)
@@ -1123,7 +1123,7 @@ def test_find2():
     node1 = Node(0)
     node1.data = 0
     node1.right = None
-    node2 = Node(-1)
+    node2 = Node(0)
     node2.data = -1
     node2.right = None
     node2.left = None
@@ -1169,10 +1169,10 @@ def test_find3():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(2)
+    node1 = Node(0)
     node1.data = 2
     node1.right = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.right = None
     node3 = Node(0)
@@ -1224,13 +1224,13 @@ def test_find4():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(3)
+    node1 = Node(0)
     node1.data = 3
     node1.right = None
-    node2 = Node(2)
+    node2 = Node(0)
     node2.data = 2
     node2.right = None
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node3.right = None
     node3.left = None
@@ -1277,13 +1277,13 @@ def test_find5():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(2)
+    node1 = Node(0)
     node1.data = 2
     node1.right = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.right = None
-    node3 = Node(-1)
+    node3 = Node(0)
     node3.data = -1
     node3.right = None
     node3.left = None
@@ -1329,7 +1329,7 @@ def test_find6():
     node1 = Node(0)
     node1.data = 0
     node1.right = None
-    node2 = Node(-1)
+    node2 = Node(0)
     node2.data = -1
     node2.right = None
     node2.left = None
@@ -1377,10 +1377,10 @@ def test_find7():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.right = None
-    node2 = Node(-1)
+    node2 = Node(0)
     node2.data = -1
     node2.left = None
     node3 = Node(0)
@@ -1435,10 +1435,10 @@ def test_find8():
     node1 = Node(0)
     node1.data = 0
     node1.right = None
-    node2 = Node(-3)
+    node2 = Node(0)
     node2.data = -3
     node2.left = None
-    node3 = Node(-2)
+    node3 = Node(0)
     node3.data = -2
     node3.right = None
     node3.left = None
@@ -1487,10 +1487,10 @@ def test_find9():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.right = None
-    node2 = Node(-1)
+    node2 = Node(0)
     node2.data = -1
     node2.right = None
     node2.left = None
@@ -1563,7 +1563,7 @@ def test_find11():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-1)
+    node1 = Node(0)
     node1.data = -1
     node1.left = None
     node2 = Node(0)
@@ -1612,10 +1612,10 @@ def test_find12():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-1)
+    node1 = Node(0)
     node1.data = -1
     node1.left = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.right = None
     node3 = Node(0)
@@ -1670,10 +1670,10 @@ def test_find13():
     node1 = Node(0)
     node1.data = 0
     node1.left = None
-    node2 = Node(3)
+    node2 = Node(0)
     node2.data = 3
     node2.right = None
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node3.right = None
     node3.left = None
@@ -1722,10 +1722,10 @@ def test_find14():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-1)
+    node1 = Node(0)
     node1.data = -1
     node1.left = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.right = None
     node2.left = None
@@ -1772,10 +1772,10 @@ def test_find15():
     node1 = Node(0)
     node1.data = 0
     node1.left = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.left = None
-    node3 = Node(2)
+    node3 = Node(0)
     node3.data = 2
     node3.right = None
     node3.left = None
@@ -1827,7 +1827,7 @@ def test_find16():
     node1 = Node(0)
     node1.data = 0
     node1.left = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.right = None
     node2.left = None
@@ -1931,13 +1931,13 @@ def test_height1():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.right = None
     node2 = Node(0)
     node2.data = 0
     node2.right = None
-    node3 = Node(-1)
+    node3 = Node(0)
     node3.data = -1
     node3.right = None
     node3.left = None
@@ -1984,13 +1984,13 @@ def test_height2():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(2)
+    node1 = Node(0)
     node1.data = 2
     node1.right = None
     node2 = Node(0)
     node2.data = 0
     node2.left = None
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node3.right = None
     node3.left = None
@@ -2035,12 +2035,12 @@ def test_height3():
     bst0 = BST()
     node1 = Node(0)
     node1.data = 0
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node3.right = None
     node3.left = None
     node1.right = node3
-    node2 = Node(-1)
+    node2 = Node(0)
     node2.data = -1
     node2.right = None
     node2.left = None
@@ -2082,7 +2082,7 @@ def test_height4():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.right = None
     node2 = Node(0)
@@ -2129,13 +2129,13 @@ def test_height5():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-2)
+    node1 = Node(0)
     node1.data = -2
     node1.left = None
     node2 = Node(0)
     node2.data = 0
     node2.right = None
-    node3 = Node(-1)
+    node3 = Node(0)
     node3.data = -1
     node3.right = None
     node3.left = None
@@ -2182,13 +2182,13 @@ def test_height6():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-1)
+    node1 = Node(0)
     node1.data = -1
     node1.left = None
     node2 = Node(0)
     node2.data = 0
     node2.left = None
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node3.right = None
     node3.left = None
@@ -2231,7 +2231,7 @@ def test_height7():
     '''
     # Input Creation
     bst0 = BST()
-    node1 = Node(-1)
+    node1 = Node(0)
     node1.data = -1
     node1.left = None
     node2 = Node(0)

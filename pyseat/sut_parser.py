@@ -16,26 +16,32 @@ from helpers import do_add
 from symbolics import Symbolic
 
 
+def type_error(msg):
+    print("\nsut_parser.py: In Annotations of: {}".format(msg))
+    sys.exit(1)
+
+
+def parse_error(msg):
+    print("\nsut_parser.py: {}".format(msg))
+    sys.exit(1)
+
+
 def parse(module_name, class_name, methods_names):
     module = get_module(module_name)
     if not module:
-        print("\nsut_parser.py: Error importing module: {}".format(module_name))
-        sys.exit(1)
+        parse_error("Error importing module: {}".format(module_name))
     if not hasattr(module, class_name):
-        print(
-            "\nsut_parser.py: Class '{}' not found in {}".format(
+        parse_error("Class '{}' not found in {}".format(
                 class_name, module_name
             )
         )
-        sys.exit(1)
     self_class = getattr(module, class_name)
+    if not hasattr(self_class, "repok"):
+        parse_error("repok method not found in {}".format(self_class.__name__))
     methods = []
     for name in methods_names:
         if not hasattr(self_class, name):
-            print(
-                "\nsut_parser.py: Method '{}' not found in {}".format(name, class_name)
-            )
-            sys.exit(1)
+            parse_error("Method '{}' not found in {}".format(name, class_name))
         methods.append(getattr(self_class, name))
     return SUT(self_class, methods)
 
@@ -100,11 +106,6 @@ def map_all_classes(types_list) -> dict:
             if is_user_defined(typ) and do_add(classes, typ):
                 worklist.append(typ)
     return class_map
-
-
-def type_error(msg):
-    print("\nsut_parser.py: In Annotations of: {}".format(msg))
-    sys.exit(1)
 
 
 def get_annotations_types(obj, cls_name=None):

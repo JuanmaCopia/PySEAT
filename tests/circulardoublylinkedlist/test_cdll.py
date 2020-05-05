@@ -46,7 +46,7 @@ def test_insert_after2():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node2 = Node(0)
     node2.key = 0
@@ -84,9 +84,9 @@ def test_insert_after3():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node3 = Node(0)
     node3.key = 0
@@ -127,11 +127,11 @@ def test_insert_after4():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
     node4.key = 0
@@ -175,13 +175,13 @@ def test_insert_after5():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.key = 1
     node5 = Node(0)
     node5.key = 0
@@ -223,15 +223,15 @@ def test_insert_after6():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.key = 1
-    node5 = Node(1)
+    node5 = Node(0)
     node5.key = 1
     node5.next = node1
     node5.prev = node4
@@ -270,13 +270,13 @@ def test_insert_after7():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.key = 1
     node5 = Node(0)
     node5.key = 0
@@ -318,11 +318,11 @@ def test_insert_after8():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
     node4.key = 0
@@ -361,13 +361,13 @@ def test_insert_after9():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.key = 1
     node4.next = node1
     node4.prev = node3
@@ -403,11 +403,11 @@ def test_insert_after10():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
     node4.key = 0
@@ -446,13 +446,13 @@ def test_insert_after11():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.key = 1
     node4.next = node1
     node4.prev = node3
@@ -488,9 +488,9 @@ def test_insert_after12():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node3 = Node(0)
     node3.key = 0
@@ -526,11 +526,11 @@ def test_insert_after13():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
     node3.next = node1
     node3.prev = node2
@@ -563,9 +563,9 @@ def test_insert_after14():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node3 = Node(0)
     node3.key = 0
@@ -601,11 +601,11 @@ def test_insert_after15():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
     node3.next = node1
     node3.prev = node2
@@ -638,7 +638,7 @@ def test_insert_after16():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node2 = Node(0)
     node2.key = 0
@@ -671,9 +671,9 @@ def test_insert_after17():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node2.next = node1
     node2.prev = node1
@@ -703,7 +703,7 @@ def test_insert_after18():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node2 = Node(0)
     node2.key = 0
@@ -736,9 +736,9 @@ def test_insert_after19():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node2.next = node1
     node2.prev = node1
@@ -796,7 +796,7 @@ def test_insert_after21():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node1.next = node1
     node1.prev = node1
@@ -851,7 +851,7 @@ def test_insert_after23():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node1.next = node1
     node1.prev = node1
@@ -962,7 +962,7 @@ def test_insert_before3():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node2 = Node(0)
     node2.key = 0
@@ -995,7 +995,7 @@ def test_insert_before4():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node2 = Node(0)
     node2.key = 0
@@ -1028,9 +1028,9 @@ def test_insert_before5():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node3 = Node(0)
     node3.key = 0
@@ -1066,9 +1066,9 @@ def test_insert_before6():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node3 = Node(0)
     node3.key = 0
@@ -1104,11 +1104,11 @@ def test_insert_before7():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
     node4.key = 0
@@ -1147,11 +1147,11 @@ def test_insert_before8():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
     node4.key = 0
@@ -1190,13 +1190,13 @@ def test_insert_before9():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.key = 1
     node5 = Node(0)
     node5.key = 0
@@ -1238,13 +1238,13 @@ def test_insert_before10():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.key = 1
     node5 = Node(0)
     node5.key = 0
@@ -1286,15 +1286,15 @@ def test_insert_before11():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.key = 1
-    node5 = Node(1)
+    node5 = Node(0)
     node5.key = 1
     node5.next = node1
     node5.prev = node4
@@ -1333,15 +1333,15 @@ def test_insert_before12():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.key = 1
-    node5 = Node(1)
+    node5 = Node(0)
     node5.key = 1
     node5.next = node1
     node5.prev = node4
@@ -1380,13 +1380,13 @@ def test_insert_before13():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.key = 1
     node4.next = node1
     node4.prev = node3
@@ -1422,13 +1422,13 @@ def test_insert_before14():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.key = 1
     node4.next = node1
     node4.prev = node3
@@ -1464,11 +1464,11 @@ def test_insert_before15():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
     node3.next = node1
     node3.prev = node2
@@ -1501,11 +1501,11 @@ def test_insert_before16():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
     node3.next = node1
     node3.prev = node2
@@ -1538,9 +1538,9 @@ def test_insert_before17():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node2.next = node1
     node2.prev = node1
@@ -1570,9 +1570,9 @@ def test_insert_before18():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node2.next = node1
     node2.prev = node1
@@ -1602,7 +1602,7 @@ def test_insert_before19():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node1.next = node1
     node1.prev = node1
@@ -1629,7 +1629,7 @@ def test_insert_before20():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node1.next = node1
     node1.prev = node1
@@ -1773,7 +1773,7 @@ def test_delete4():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node2 = Node(0)
     node2.key = 0
@@ -1809,7 +1809,7 @@ def test_delete5():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node2 = Node(0)
     node2.key = 0
@@ -1840,7 +1840,7 @@ def test_delete6():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node2 = Node(0)
     node2.key = 0
@@ -1871,7 +1871,7 @@ def test_delete7():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node2 = Node(0)
     node2.key = 0
@@ -1907,7 +1907,7 @@ def test_delete8():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node2 = Node(0)
     node2.key = 0
@@ -1938,7 +1938,7 @@ def test_delete9():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node2 = Node(0)
     node2.key = 0
@@ -1969,9 +1969,9 @@ def test_delete10():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node3 = Node(0)
     node3.key = 0
@@ -2010,9 +2010,9 @@ def test_delete11():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node3 = Node(0)
     node3.key = 0
@@ -2046,9 +2046,9 @@ def test_delete12():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node3 = Node(0)
     node3.key = 0
@@ -2082,9 +2082,9 @@ def test_delete13():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node3 = Node(0)
     node3.key = 0
@@ -2123,9 +2123,9 @@ def test_delete14():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node3 = Node(0)
     node3.key = 0
@@ -2159,9 +2159,9 @@ def test_delete15():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node3 = Node(0)
     node3.key = 0
@@ -2195,11 +2195,11 @@ def test_delete16():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
     node3.next = node1
     node3.prev = node2
@@ -2232,11 +2232,11 @@ def test_delete17():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.key = 1
     node3.next = node1
     node3.prev = node2
@@ -2269,9 +2269,9 @@ def test_delete18():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node2.next = node1
     node2.prev = node1
@@ -2301,9 +2301,9 @@ def test_delete19():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
-    node2 = Node(1)
+    node2 = Node(0)
     node2.key = 1
     node2.next = node1
     node2.prev = node1
@@ -2333,7 +2333,7 @@ def test_delete20():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node1.next = node1
     node1.prev = node1
@@ -2360,7 +2360,7 @@ def test_delete21():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.key = 1
     node1.next = node1
     node1.prev = node1

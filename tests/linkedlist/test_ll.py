@@ -13,7 +13,7 @@ def test_swap_node1():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.elem = 1
     node2 = Node(0)
     node2.elem = 0
@@ -51,7 +51,7 @@ def test_swap_node2():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.elem = 1
     node2 = Node(0)
     node2.elem = 0

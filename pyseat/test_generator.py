@@ -144,15 +144,14 @@ class TestCode:
             return var_name(instance)
 
         identifier = var_name(instance)
-        attr = get_dict(instance)
+
         self.create_constructor_call(
             identifier,
             type(instance),
-            attr,
             self._sut.get_params_type_dict(type(instance)),
         )
         userdef = []
-        for field, value in attr.items():
+        for field, value in get_dict(instance).items():
             if not is_user_defined(value):
                 self.create_assign_code(identifier, field, value)
             else:
@@ -166,15 +165,15 @@ class TestCode:
     def create_assign_code(self, identifier, field, value):
         self._add_line(identifier + "." + field + " = " + str(value) + "")
 
-    def create_constructor_call(self, identifier, typ, ins_dict, params_dict):
+    def create_constructor_call(self, identifier, typ, params_dict):
         if "self" in params_dict:
             del params_dict["self"]
         ctor_params = {}
-        for name in params_dict:
-            if name in ins_dict:
-                ctor_params[name] = ins_dict[name]
+        for name, t in params_dict.items():
+            if is_user_defined(t):
+                ctor_params[name] = None
             else:
-                assert False
+                ctor_params[name] = t()
 
         if ctor_params:
             code_line = identifier + " = " + typ.__name__ + "("
@@ -182,7 +181,7 @@ class TestCode:
             for name, value in ctor_params.items():
                 obj_name = ""
                 if is_user_defined(value):
-                    obj_name = self.generate_structure_code(value)
+                    obj_name = "None"
                     code_line += obj_name + ", "
                 else:
                     code_line += str(ctor_params[name]) + ", "

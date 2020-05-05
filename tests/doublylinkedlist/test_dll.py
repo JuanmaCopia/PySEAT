@@ -13,16 +13,16 @@ def test_insert_after1():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.data = 1
-    node5 = Node(1)
+    node5 = Node(0)
     node5.data = 1
     node5.next = None
     node5.prev = node4
@@ -63,14 +63,14 @@ def test_insert_after2():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.data = 1
     node5 = Node(0)
     node5.data = 0
@@ -114,14 +114,14 @@ def test_insert_after3():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.data = 1
     node4.next = None
     node4.prev = node3
@@ -159,12 +159,12 @@ def test_insert_after4():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 0
@@ -210,12 +210,12 @@ def test_insert_after5():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 0
@@ -256,12 +256,12 @@ def test_insert_after6():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node3.next = None
     node3.prev = node2
@@ -296,10 +296,10 @@ def test_insert_after7():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node3 = Node(0)
     node3.data = 0
@@ -342,10 +342,10 @@ def test_insert_after8():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node3 = Node(0)
     node3.data = 0
@@ -383,10 +383,10 @@ def test_insert_after9():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.next = None
     node2.prev = node1
@@ -418,7 +418,7 @@ def test_insert_after10():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
     node2 = Node(0)
@@ -459,7 +459,7 @@ def test_insert_after11():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
     node2 = Node(0)
@@ -495,7 +495,7 @@ def test_insert_after12():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.next = None
     node1.prev = None
@@ -617,16 +617,16 @@ def test_remove1():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.data = 1
-    node5 = Node(1)
+    node5 = Node(0)
     node5.data = 1
     node5.next = None
     node5.prev = node4
@@ -667,14 +667,14 @@ def test_remove2():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.data = 1
     node5 = Node(0)
     node5.data = 0
@@ -716,14 +716,14 @@ def test_remove3():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.data = 1
     node5 = Node(0)
     node5.data = 0
@@ -765,14 +765,14 @@ def test_remove4():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.data = 1
     node4.next = None
     node4.prev = node3
@@ -810,12 +810,12 @@ def test_remove5():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 0
@@ -859,12 +859,12 @@ def test_remove6():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 0
@@ -903,12 +903,12 @@ def test_remove7():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 0
@@ -952,12 +952,12 @@ def test_remove8():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 0
@@ -1001,12 +1001,12 @@ def test_remove9():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 0
@@ -1050,12 +1050,12 @@ def test_remove10():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 0
@@ -1094,12 +1094,12 @@ def test_remove11():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node3.next = None
     node3.prev = node2
@@ -1134,10 +1134,10 @@ def test_remove12():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node3 = Node(0)
     node3.data = 0
@@ -1178,10 +1178,10 @@ def test_remove13():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node3 = Node(0)
     node3.data = 0
@@ -1217,10 +1217,10 @@ def test_remove14():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node3 = Node(0)
     node3.data = 0
@@ -1261,10 +1261,10 @@ def test_remove15():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node3 = Node(0)
     node3.data = 0
@@ -1310,10 +1310,10 @@ def test_remove16():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node3 = Node(0)
     node3.data = 0
@@ -1354,10 +1354,10 @@ def test_remove17():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node3 = Node(0)
     node3.data = 0
@@ -1398,10 +1398,10 @@ def test_remove18():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node3 = Node(0)
     node3.data = 0
@@ -1437,10 +1437,10 @@ def test_remove19():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.next = None
     node2.prev = node1
@@ -1472,7 +1472,7 @@ def test_remove20():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
     node2 = Node(0)
@@ -1511,7 +1511,7 @@ def test_remove21():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
     node2 = Node(0)
@@ -1545,7 +1545,7 @@ def test_remove22():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
     node2 = Node(0)
@@ -1584,7 +1584,7 @@ def test_remove23():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
     node2 = Node(0)
@@ -1628,7 +1628,7 @@ def test_remove24():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
     node2 = Node(0)
@@ -1667,7 +1667,7 @@ def test_remove25():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
     node2 = Node(0)
@@ -1706,7 +1706,7 @@ def test_remove26():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
     node2 = Node(0)
@@ -1740,7 +1740,7 @@ def test_remove27():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.next = None
     node1.prev = None
@@ -1858,16 +1858,16 @@ def test_find1():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.data = 1
-    node5 = Node(1)
+    node5 = Node(0)
     node5.data = 1
     node5.next = None
     node5.prev = node4
@@ -1908,14 +1908,14 @@ def test_find2():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.data = 1
     node5 = Node(0)
     node5.data = 0
@@ -1958,14 +1958,14 @@ def test_find3():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
-    node4 = Node(1)
+    node4 = Node(0)
     node4.data = 1
     node4.next = None
     node4.prev = node3
@@ -2003,12 +2003,12 @@ def test_find4():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 0
@@ -2048,12 +2048,12 @@ def test_find5():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
-    node3 = Node(1)
+    node3 = Node(0)
     node3.data = 1
     node3.next = None
     node3.prev = node2
@@ -2088,10 +2088,10 @@ def test_find6():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node3 = Node(0)
     node3.data = 0
@@ -2128,10 +2128,10 @@ def test_find7():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(1)
+    node2 = Node(0)
     node2.data = 1
     node2.next = None
     node2.prev = node1
@@ -2163,7 +2163,7 @@ def test_find8():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.prev = None
     node2 = Node(0)
@@ -2198,7 +2198,7 @@ def test_find9():
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(1)
+    node1 = Node(0)
     node1.data = 1
     node1.next = None
     node1.prev = None
