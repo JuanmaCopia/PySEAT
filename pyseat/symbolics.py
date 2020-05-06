@@ -274,24 +274,16 @@ class SymBool(Symbolic):
         return SymBool(self.engine, self.smt.Not(self.formula))
 
     def __bool__(self):
-        if isinstance(self.formula, bool):
-            return self.formula
-        return self.engine.evaluate(self.formula)
+        formula = self.formula
+        if isinstance(formula, bool):
+            return formula
+        return self.engine.evaluate(formula)
 
     def __nonzero__(self):
         return self.__bool__()
 
-    def conditioned_value(self):
-        """
-        :returns: None if constrains haven't define a concrete value yet,
-                  else returns that concrete value (True or False).
-        It tries to obtain a bool value if possible. Without branching.
-        """
-        return self.engine.conditioned_value(self)
-
     def __repr__(self):
-        ps = self.conditioned_value()
-        return "%s" % (ps if ps is not None else str(self.formula))
+        return str(self.formula)
 
     def __deepcopy__(self, memo):
         return self

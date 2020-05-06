@@ -46,7 +46,9 @@ def print_formatted_result(function, run_data, debug=False):
             print("")
     else:
         exec_num = run_data.number
-        if run_data.status == data.OK:
+        if run_data.status == data.PRUNED:
+            print(colored("   #{} PRUNED".format(exec_num), "white", attrs=["bold"]))
+        elif run_data.status == data.OK:
             print(colored("   #{} OK".format(exec_num), "green", attrs=["bold"]))
         elif run_data.status == data.FAIL:
             print(colored("   #{} FAIL".format(exec_num), "red", attrs=["bold"]))
@@ -72,6 +74,7 @@ def status_str(status_num):
 
 def report_statistics(stats, test_num, duration, verbose=False):
     completed = stats.amount_complete_exec()
+    pruned = stats.get_amount_pruned()
     print("\n Done! {} Tests were generated".format(test_num))
     print(
         colored(
@@ -86,17 +89,17 @@ def report_statistics(stats, test_num, duration, verbose=False):
         colored("   {} exceptions".format(stats.exceptions), "magenta", attrs=["bold"])
     )
     print(colored("   {} timeouts".format(stats.timeouts), "yellow", attrs=["bold"]))
+    print(colored("   {} pruned".format(pruned), "white", attrs=["bold"]))
 
     if verbose:
         print("\n   {} were imposible to build".format(stats.not_builded))
-        print("     {} by tymeout".format(stats.not_builded_by_timeout))
+        print("     {} by timeout".format(stats.not_builded_by_timeout))
         for i, num in enumerate(stats.builded_at):
             if num != 0:
                 print("   {} builded by adding {} nodes".format(num, i))
         print("     {} builded after exception".format(stats.builded_after_exception))
         print("     {} builded after rec_limit".format(stats.builded_after_rec_limit))
         print("     {} builded after timeout".format(stats.builded_after_timeout))
-        pruned = stats.get_amount_pruned()
         print("   {} pruned:".format(pruned))
         print("     {} by repok".format(stats.pruned_by_repok))
         print("     {} by unsat path".format(stats.pruned_by_unsat))

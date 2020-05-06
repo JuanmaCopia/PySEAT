@@ -7,6 +7,9 @@ dynammically allocated structures with the use of lazy initialization.
 
 import copy
 import time
+import sys
+import os
+import signal
 
 import exceptions as excp
 import instances as inst
@@ -15,7 +18,6 @@ import helpers
 import symbolics as sym
 import data
 
-from helpers import MethodRun
 from branching_steps import LazyBranchPoint, ConditionalBranchPoint
 
 from smt.smt import SMT
@@ -96,7 +98,6 @@ class SEEngine:
         self._current_repok_max = 0
         self.build_timeout = b_timeout
         self.method_timeout = m_timeout
-        self._timeout = 0
         self._time = 0
         self._rec_times = 0
         self._ids = 0
@@ -169,11 +170,10 @@ class SEEngine:
         args = args[1:]
         method = getattr(self._current_self, self._sut.get_method_name())
 
-        self._timeout = time.time() + self.build_timeout
         self._time = time.time()
         self.mode = METHOD_EXPLORATION
         try:
-            with MethodRun(self.method_timeout):
+            with MethodTimeout(self.method_timeout), HiddenPrints():
                 if args:
                     returnv = method(*args)
                 else:
@@ -181,8 +181,6 @@ class SEEngine:
             if sym.is_symbolic_bool(returnv):
                 returnv = returnv.__bool__()
 
-        except excp.UnsatBranchError:
-            self._stats.pruned_by_unsat += 1
         except excp.MaxDepthException:
             self._stats.pruned_by_depth += 1
         except excp.RepOkFailException:
@@ -221,16 +219,14 @@ class SEEngine:
         symbolic_inself = self._backups.get_self()
         symbolic_args = self._backups.get_args()
 
+        builded = False
         try:
             input_self = self.build(symbolic_inself, model)
             input_args = self.build(symbolic_args, model)
         except excp.BuildTimeOutException:
             self._stats.not_builded_by_timeout += 1
-            self._stats.not_builded += 1
-            builded = False
         except excp.CouldNotBuildError:
-            self._stats.not_builded += 1
-            builded = False
+            pass
         except Exception:
             assert False
         else:
@@ -261,13 +257,15 @@ class SEEngine:
                     pathdata.self_end_state = self_end_state
                     pathdata.returnv = returnv
                 return True
+            self._stats.not_builded += 1
+            builded = False
             return False
 
     def execute_method_concretely(self, obj, args):
         self.mode = CONCRETE_EXECUTION
         try:
             method = getattr(obj, self._sut.get_method_name())
-            with MethodRun(self.method_timeout):
+            with MethodTimeout(self.method_timeout), HiddenPrints():
                 if args:
                     returnv = method(*args)
                 else:
@@ -316,9 +314,11 @@ class SEEngine:
             self.mode = REPOK_EXPLORATION
             self._current_repok_max = 0
             build = None
-            while not build and self._current_repok_max <= self._max_r_nodes:
-                build = self.build_partial_struture(symbolic, model)
-                self._current_repok_max += 1
+            with BuildTimeout(self.build_timeout):
+                while not build and self._current_repok_max <= self._max_r_nodes:
+                    with HiddenPrints(), BuildStructure(self):
+                        build = self.build_partial_struture(symbolic, model)
+                    self._current_repok_max += 1
 
             if build is None:
                 raise excp.CouldNotBuildError()
@@ -337,42 +337,27 @@ class SEEngine:
             assert False
 
     def build_partial_struture(self, input_self, model):
-        backup_bp = copy.deepcopy(self._branch_points)
-        self._branch_points = []
         pc_len = len(self._path_condition)
 
         unexplored_paths = True
-
         while unexplored_paths:
-
-            if time.time() > self._timeout:
-                self._path_condition = helpers.keep_first_n(self._path_condition, pc_len)
-                self._branch_points = backup_bp
-                raise excp.BuildTimeOutException()
-
             iself = copy.deepcopy(input_self)
             self._reset_for_repok(iself, pc_len)
 
             result = self._execute_repok_exploration(iself)
 
             if result is not None:
-                self._path_condition = helpers.keep_first_n(self._path_condition, pc_len)
-                self._branch_points = backup_bp
                 return result
 
             self._remove_explored_branch()
             if not self._branch_points:
                 unexplored_paths = False
 
-        self._branch_points = backup_bp
-
     def _execute_repok_exploration(self, instance):
         try:
             result = instance.repok()
             if sym.is_symbolic_bool(result):
                 result = result.__bool__()
-        except excp.UnsatBranchError:
-            pass
         except excp.MaxDepthException:
             pass
         except excp.TimeOutException as e:
@@ -426,10 +411,6 @@ class SEEngine:
             raise e
         finally:
             self.mode = METHOD_EXPLORATION
-
-    def check_timeout(self):
-        if time.time() > self._timeout:
-            raise excp.TimeOutException()
 
     def lazy_initialization(self, obj, attr_name):
         pref_name = im.SYMBOLIC_PREFIX + attr_name
@@ -529,7 +510,7 @@ class SEEngine:
         lazy_class._vector.append(n)
         return n
 
-    def evaluate(self, condition):
+    def evaluate(self, expression):
         """Evaluates a condition represented by a symbolic bool.
 
         If the value of the symbol represented constraint is conditioned
@@ -545,45 +526,32 @@ class SEEngine:
             True or False, depending on the evaluation.
         """
         assert self.mode != CONCRETE_EXECUTION
-
-        path_conditions = True
-        for c in self._path_condition:
-            path_conditions = self.smt.And(path_conditions, c)
+        bool_value = self.conditioned_value(expression)
+        if bool_value is not None:
+            return bool_value
 
         if self.mode == CONSERVATIVE_EXECUTION:
-            value = self.conditioned_value(path_conditions, condition)
-            if value is None:
-                raise excp.CantMakeDecisionException()
-            return value
+            raise excp.NoInitializedException()
 
-        bp_len = len(self._branch_points)
-        bp_index = self._current_bp
+        if self._max_depth < self._current_depth:
+            raise excp.MaxDepthException
+        self._current_depth += 1
 
-        if bp_index < bp_len:
-            value = self._branch_points[bp_index].get_branch()
+        if self._current_bp < len(self._branch_points):
+            condition_value = self._branch_points[self._current_bp].get_branch()
         else:
-            if self._max_depth < bp_len:
-                raise excp.MaxDepthException
             self._branch_points.append(ConditionalBranchPoint())
-            value = True
+            condition_value = True
+
         self._current_bp += 1
 
-        if value is True:
-            if self.is_sat(path_conditions, condition):
-                self._path_condition.append(condition)
-                return True
+        if condition_value:
+            self._path_condition.append(expression)
+        else:
+            self._path_condition.append(self.smt.Not(expression))
+        return condition_value
 
-            self._branch_points[bp_index].bool_value = False
-            self._path_condition.append(self.smt.Not(condition))
-            return False
-
-        condition = self.smt.Not(condition)
-        if self.is_sat(path_conditions, condition):
-            self._path_condition.append(condition)
-            return False
-        raise excp.UnsatBranchError()
-
-    def conditioned_value(self, path_conditions, condition):
+    def conditioned_value(self, expression):
         """Checks if a constraint's value is conditioned by the path.
 
         Checks whether the constraint represented by sym_bool has a
@@ -595,21 +563,19 @@ class SEEngine:
         Returns:
             True or False if the value it's conditioned by the path_condition,
             None otherwise.
-
-        Raises:
-            UnstatBranchError: Unsat constraint Error.
         """
-        true_cond = self.smt.check(self.smt.And(path_conditions, condition))
+        conditions = True
+        for c in self._path_condition:
+            conditions = self.smt.And(conditions, c)
+        true_cond = self.smt.check(self.smt.And(conditions, expression))
         false_cond = self.smt.check(
-            self.smt.And(path_conditions, self.smt.Not(condition))
+            self.smt.And(conditions, self.smt.Not(expression))
         )
         if true_cond and not false_cond:
             return True
         if false_cond and not true_cond:
             return False
-
-    def is_sat(self, path_conditions, condition):
-        return self.smt.check(self.smt.And(path_conditions, condition))
+        return None
 
     def check_recursion_limit(self, obj):
         if self.mode != REPOK_EXPLORATION:
@@ -634,6 +600,97 @@ class SEEngine:
             setattr(obj_backup, attr_name, new_val)
         else:
             setattr(obj_backup, attr_name, copy.deepcopy(new_value))
+
+
+def raise_timeout(signum, frame):
+    raise excp.TimeOutException()
+
+
+def raise_build_timeout(signum, frame):
+    raise excp.BuildTimeOutException()
+
+
+class MethodTimeout:
+    def __init__(self, time):
+        self.time = time
+
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, raise_timeout)
+        signal.alarm(self.time)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        signal.signal(signal.SIGALRM, signal.SIG_IGN)
+
+
+class BuildTimeout:
+    def __init__(self, time):
+        self.time = time
+
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, raise_timeout)
+        signal.alarm(self.time)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        signal.signal(signal.SIGALRM, signal.SIG_IGN)
+
+
+class BuildStructure:
+    def __init__(self, engine):
+        self.pc_len = 0
+        self.orig_bp = []
+        self.engine = engine
+
+    def __enter__(self):
+        self.pc_len = len(self.engine._path_condition)
+        self.orig_bp = copy.deepcopy(self.engine._branch_points)
+        self.engine._branch_points = []
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.engine._branch_points = self.orig_bp
+        self.engine._path_condition = helpers.keep_first_n(self.engine._path_condition, self.pc_len)
+
+
+class HiddenPrints:
+    def __enter__(self):
+        self._original_stdout = sys.stdout
+        sys.stdout = open(os.devnull, "w")
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        sys.stdout.close()
+        sys.stdout = self._original_stdout
+
+
+class RepokExplorationMode:
+    def __init__(self, engine):
+        self.engine = engine
+
+    def __enter__(self):
+        self.engine.mode = REPOK_EXPLORATION
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.engine.mode = CONCRETE_EXECUTION
+
+
+class MethodExplorationMode:
+    def __init__(self, engine):
+        self.engine = engine
+
+    def __enter__(self):
+        self.engine.mode = METHOD_EXPLORATION
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.engine.mode = CONCRETE_EXECUTION
+
+
+class ConservativeRepokMode:
+    def __init__(self, engine):
+        self.engine = engine
+
+    def __enter__(self):
+        self.engine.mode = CONSERVATIVE_EXECUTION
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.engine.mode = METHOD_EXPLORATION
 
 
 class LazyBackup:

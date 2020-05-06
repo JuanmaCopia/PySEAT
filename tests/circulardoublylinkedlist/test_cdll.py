@@ -310,11 +310,11 @@ def test_insert_after7():
 def test_insert_after8():
     '''
     Self:
-         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
     Return:
         None
     End Self:
-         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> **
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
@@ -325,15 +325,19 @@ def test_insert_after8():
     node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
-    node4.key = 0
-    node4.next = node1
+    node4.key = 1
+    node5 = Node(0)
+    node5.key = 1
+    node5.next = node1
+    node5.prev = node4
+    node4.next = node5
     node4.prev = node3
     node3.next = node4
     node3.prev = node2
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    node1.prev = node4
+    node1.prev = node5
     cdlinkedlist0.head = node1
     # Repok check
     assert cdlinkedlist0.repok()
@@ -345,14 +349,57 @@ def test_insert_after8():
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
-    assert cdlinkedlist0.head.prev.key == 0
+    assert cdlinkedlist0.head.prev.key == 1
     assert cdlinkedlist0.head.next.next.key == 1
-    assert cdlinkedlist0.head.prev.prev.key == 0
+    assert cdlinkedlist0.head.prev.prev.key == 1
 
 
 def test_insert_after9():
     '''
     Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node4 = Node(0)
+    node4.key = 0
+    node4.next = node1
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node4
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.insert_after(0, 0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 0
+    assert cdlinkedlist0.head.next.next.key == 1
+    assert cdlinkedlist0.head.prev.prev.key == 0
+
+
+def test_insert_after10():
+    '''
+    Self:
          <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
     Return:
         None
@@ -392,7 +439,7 @@ def test_insert_after9():
     assert cdlinkedlist0.head.next.next.key == 1
 
 
-def test_insert_after10():
+def test_insert_after11():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
@@ -435,7 +482,7 @@ def test_insert_after10():
     assert cdlinkedlist0.head.prev.prev.key == 0
 
 
-def test_insert_after11():
+def test_insert_after12():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
@@ -477,7 +524,7 @@ def test_insert_after11():
     assert cdlinkedlist0.head.next.next.key == 1
 
 
-def test_insert_after12():
+def test_insert_after13():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 0 -> **
@@ -513,48 +560,48 @@ def test_insert_after12():
     assert cdlinkedlist0.head.next.key == 1
     assert cdlinkedlist0.head.prev.key == 0
     assert cdlinkedlist0.head.next.next.key == 0
-
-
-def test_insert_after13():
-    '''
-    Self:
-         <- 1 ->  <- 1 ->  <- 1 -> **
-    Return:
-        None
-    End Self:
-         <- 1 ->  <- 1 ->  <- 1 -> **
-    '''
-    # Input Creation
-    cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node2 = Node(0)
-    node2.key = 1
-    node3 = Node(0)
-    node3.key = 1
-    node3.next = node1
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    node1.prev = node3
-    cdlinkedlist0.head = node1
-    # Repok check
-    assert cdlinkedlist0.repok()
-    # Method call
-    returnv = cdlinkedlist0.insert_after(0, 0)
-    # Repok check
-    assert cdlinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert cdlinkedlist0.head.key == 1
-    assert cdlinkedlist0.head.next.key == 1
-    assert cdlinkedlist0.head.prev.key == 1
 
 
 def test_insert_after14():
     '''
     Self:
+         <- 1 ->  <- 1 ->  <- 1 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node3
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.insert_after(0, 0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
+
+
+def test_insert_after15():
+    '''
+    Self:
          <- 1 ->  <- 1 ->  <- 0 -> **
     Return:
         None
@@ -590,7 +637,7 @@ def test_insert_after14():
     assert cdlinkedlist0.head.next.next.key == 0
 
 
-def test_insert_after15():
+def test_insert_after16():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 -> **
@@ -627,7 +674,7 @@ def test_insert_after15():
     assert cdlinkedlist0.head.prev.key == 1
 
 
-def test_insert_after16():
+def test_insert_after17():
     '''
     Self:
          <- 1 ->  <- 0 -> **
@@ -658,43 +705,43 @@ def test_insert_after16():
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 0
     assert cdlinkedlist0.head.prev.key == 0
-
-
-def test_insert_after17():
-    '''
-    Self:
-         <- 1 ->  <- 1 -> **
-    Return:
-        None
-    End Self:
-         <- 1 ->  <- 1 -> **
-    '''
-    # Input Creation
-    cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node2 = Node(0)
-    node2.key = 1
-    node2.next = node1
-    node2.prev = node1
-    node1.next = node2
-    node1.prev = node2
-    cdlinkedlist0.head = node1
-    # Repok check
-    assert cdlinkedlist0.repok()
-    # Method call
-    returnv = cdlinkedlist0.insert_after(0, 0)
-    # Repok check
-    assert cdlinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert cdlinkedlist0.head.key == 1
-    assert cdlinkedlist0.head.next.key == 1
 
 
 def test_insert_after18():
     '''
     Self:
+         <- 1 ->  <- 1 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node2.next = node1
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node2
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.insert_after(0, 0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+
+
+def test_insert_after19():
+    '''
+    Self:
          <- 1 ->  <- 0 -> **
     Return:
         None
@@ -725,7 +772,7 @@ def test_insert_after18():
     assert cdlinkedlist0.head.prev.key == 0
 
 
-def test_insert_after19():
+def test_insert_after20():
     '''
     Self:
          <- 1 ->  <- 1 -> **
@@ -757,7 +804,7 @@ def test_insert_after19():
     assert cdlinkedlist0.head.next.key == 1
 
 
-def test_insert_after20():
+def test_insert_after21():
     '''
     Self:
          <- 0 -> **
@@ -783,38 +830,38 @@ def test_insert_after20():
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
-
-
-def test_insert_after21():
-    '''
-    Self:
-         <- 1 -> **
-    Return:
-        None
-    End Self:
-         <- 1 -> **
-    '''
-    # Input Creation
-    cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node1.next = node1
-    node1.prev = node1
-    cdlinkedlist0.head = node1
-    # Repok check
-    assert cdlinkedlist0.repok()
-    # Method call
-    returnv = cdlinkedlist0.insert_after(0, 0)
-    # Repok check
-    assert cdlinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert cdlinkedlist0.head.key == 1
 
 
 def test_insert_after22():
     '''
     Self:
+         <- 1 -> **
+    Return:
+        None
+    End Self:
+         <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node1.next = node1
+    node1.prev = node1
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.insert_after(0, 0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+
+
+def test_insert_after23():
+    '''
+    Self:
          <- 0 -> **
     Return:
         None
@@ -840,7 +887,7 @@ def test_insert_after22():
     assert cdlinkedlist0.head.next.key == 0
 
 
-def test_insert_after23():
+def test_insert_after24():
     '''
     Self:
          <- 1 -> **
@@ -867,7 +914,7 @@ def test_insert_after23():
     assert cdlinkedlist0.head.key == 1
 
 
-def test_insert_after24():
+def test_insert_after25():
     '''
     Self:
         <Empty list>
@@ -2187,11 +2234,11 @@ def test_delete15():
 def test_delete16():
     '''
     Self:
-         <- 1 ->  <- 1 ->  <- 1 -> **
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> **
     Return:
         None
     End Self:
-         <- 1 ->  <- 1 ->  <- 1 -> **
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
@@ -2201,12 +2248,20 @@ def test_delete16():
     node2.key = 1
     node3 = Node(0)
     node3.key = 1
-    node3.next = node1
+    node4 = Node(0)
+    node4.key = 0
+    node5 = Node(0)
+    node5.key = 0
+    node5.next = node1
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
     node3.prev = node2
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    node1.prev = node3
+    node1.prev = node5
     cdlinkedlist0.head = node1
     # Repok check
     assert cdlinkedlist0.repok()
@@ -2218,13 +2273,14 @@ def test_delete16():
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
-    assert cdlinkedlist0.head.prev.key == 1
+    assert cdlinkedlist0.head.prev.key == 0
+    assert cdlinkedlist0.head.next.next.key == 1
 
 
 def test_delete17():
     '''
     Self:
-         <- 1 ->  <- 1 ->  <- 1 -> **
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
     Return:
         None
     End Self:
@@ -2238,12 +2294,16 @@ def test_delete17():
     node2.key = 1
     node3 = Node(0)
     node3.key = 1
-    node3.next = node1
+    node4 = Node(0)
+    node4.key = 0
+    node4.next = node1
+    node4.prev = node3
+    node3.next = node4
     node3.prev = node2
     node2.next = node3
     node2.prev = node1
     node1.next = node2
-    node1.prev = node3
+    node1.prev = node4
     cdlinkedlist0.head = node1
     # Repok check
     assert cdlinkedlist0.repok()
@@ -2261,11 +2321,11 @@ def test_delete17():
 def test_delete18():
     '''
     Self:
-         <- 1 ->  <- 1 -> **
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
     Return:
         None
     End Self:
-         <- 1 ->  <- 1 -> **
+         <- 1 ->  <- 1 ->  <- 1 -> **
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
@@ -2273,10 +2333,18 @@ def test_delete18():
     node1.key = 1
     node2 = Node(0)
     node2.key = 1
-    node2.next = node1
+    node3 = Node(0)
+    node3.key = 1
+    node4 = Node(0)
+    node4.key = 0
+    node4.next = node1
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node2
+    node2.next = node3
     node2.prev = node1
     node1.next = node2
-    node1.prev = node2
+    node1.prev = node4
     cdlinkedlist0.head = node1
     # Repok check
     assert cdlinkedlist0.repok()
@@ -2288,11 +2356,576 @@ def test_delete18():
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
 
 
 def test_delete19():
     '''
     Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node4 = Node(0)
+    node4.key = 0
+    node5 = Node(0)
+    node5.key = 0
+    node5.next = node1
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node5
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 0
+    assert cdlinkedlist0.head.next.next.key == 1
+
+
+def test_delete20():
+    '''
+    Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node4 = Node(0)
+    node4.key = 0
+    node4.next = node1
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node4
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
+
+
+def test_delete21():
+    '''
+    Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node4 = Node(0)
+    node4.key = 0
+    node4.next = node1
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node4
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
+
+
+def test_delete22():
+    '''
+    Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node4 = Node(0)
+    node4.key = 1
+    node5 = Node(0)
+    node5.key = 0
+    node5.next = node1
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node5
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
+    assert cdlinkedlist0.head.next.next.key == 1
+
+
+def test_delete23():
+    '''
+    Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node4 = Node(0)
+    node4.key = 1
+    node5 = Node(0)
+    node5.key = 0
+    node5.next = node1
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node5
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
+    assert cdlinkedlist0.head.next.next.key == 1
+
+
+def test_delete24():
+    '''
+    Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node4 = Node(0)
+    node4.key = 1
+    node5 = Node(0)
+    node5.key = 0
+    node5.next = node1
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node5
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
+    assert cdlinkedlist0.head.next.next.key == 1
+
+
+def test_delete25():
+    '''
+    Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node4 = Node(0)
+    node4.key = 1
+    node5 = Node(0)
+    node5.key = 0
+    node5.next = node1
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node5
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
+    assert cdlinkedlist0.head.next.next.key == 1
+
+
+def test_delete26():
+    '''
+    Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node4 = Node(0)
+    node4.key = 1
+    node5 = Node(0)
+    node5.key = 1
+    node5.next = node1
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node5
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
+    assert cdlinkedlist0.head.next.next.key == 1
+    assert cdlinkedlist0.head.prev.prev.key == 1
+
+
+def test_delete27():
+    '''
+    Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node4 = Node(0)
+    node4.key = 1
+    node5 = Node(0)
+    node5.key = 1
+    node5.next = node1
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node5
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
+    assert cdlinkedlist0.head.next.next.key == 1
+    assert cdlinkedlist0.head.prev.prev.key == 1
+
+
+def test_delete28():
+    '''
+    Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node4 = Node(0)
+    node4.key = 1
+    node4.next = node1
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node4
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
+    assert cdlinkedlist0.head.next.next.key == 1
+
+
+def test_delete29():
+    '''
+    Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node4 = Node(0)
+    node4.key = 1
+    node4.next = node1
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node4
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
+    assert cdlinkedlist0.head.next.next.key == 1
+
+
+def test_delete30():
+    '''
+    Self:
+         <- 1 ->  <- 1 ->  <- 1 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node3
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
+
+
+def test_delete31():
+    '''
+    Self:
+         <- 1 ->  <- 1 ->  <- 1 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 1
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node3
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+    assert cdlinkedlist0.head.prev.key == 1
+
+
+def test_delete32():
+    '''
+    Self:
          <- 1 ->  <- 1 -> **
     Return:
         None
@@ -2322,7 +2955,39 @@ def test_delete19():
     assert cdlinkedlist0.head.next.key == 1
 
 
-def test_delete20():
+def test_delete33():
+    '''
+    Self:
+         <- 1 ->  <- 1 -> **
+    Return:
+        None
+    End Self:
+         <- 1 ->  <- 1 -> **
+    '''
+    # Input Creation
+    cdlinkedlist0 = CDLinkedList()
+    node1 = Node(0)
+    node1.key = 1
+    node2 = Node(0)
+    node2.key = 1
+    node2.next = node1
+    node2.prev = node1
+    node1.next = node2
+    node1.prev = node2
+    cdlinkedlist0.head = node1
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Method call
+    returnv = cdlinkedlist0.delete(0)
+    # Repok check
+    assert cdlinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert cdlinkedlist0.head.key == 1
+    assert cdlinkedlist0.head.next.key == 1
+
+
+def test_delete34():
     '''
     Self:
          <- 1 -> **
@@ -2349,7 +3014,7 @@ def test_delete20():
     assert cdlinkedlist0.head.key == 1
 
 
-def test_delete21():
+def test_delete35():
     '''
     Self:
          <- 1 -> **
@@ -2376,7 +3041,7 @@ def test_delete21():
     assert cdlinkedlist0.head.key == 1
 
 
-def test_delete22():
+def test_delete36():
     '''
     Self:
         <Empty list>

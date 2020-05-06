@@ -1,30 +1,3 @@
-import os
-import sys
-import signal
-from exceptions import TimeOutException
-
-
-def raise_timeout(signum, frame):
-    raise TimeOutException()
-
-
-class MethodRun:
-    def __init__(self, time):
-        self.time = time
-
-    def __enter__(self):
-        self._original_stdout = sys.stdout
-        sys.stdout = open(os.devnull, "w")
-
-        signal.signal(signal.SIGALRM, raise_timeout)
-        signal.alarm(self.time)
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        signal.signal(signal.SIGALRM, signal.SIG_IGN)
-        sys.stdout.close()
-        sys.stdout = self._original_stdout
-
-
 def path_to_str(branch_points):
     strrepr = ""
     for x in branch_points:

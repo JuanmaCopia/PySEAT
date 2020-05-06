@@ -134,8 +134,8 @@ for method_data in sut.methods_map.values():
 
     for run in engine.explore():
         engine._stats.sum_times(run)
+        print_formatted_result(sut.get_method(), run)
         if run.status != data.PRUNED:
-            print_formatted_result(sut.get_method(), run)
             test_num += 1
             test = testgen.TestCode(sut, run, test_num, method_timeout, comments)
             testgen.append_to_testfile(filepath, test.code + "\n\n")
