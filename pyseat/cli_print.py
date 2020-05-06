@@ -92,21 +92,20 @@ def report_statistics(stats, test_num, duration, verbose=False):
     print(colored("   {} pruned".format(pruned), "white", attrs=["bold"]))
 
     if verbose:
-        print("\n   {} were imposible to build".format(stats.not_builded))
-        print("     {} by timeout".format(stats.not_builded_by_timeout))
+        print("\n   {} pruned:".format(pruned))
+        print("     {} by repok".format(stats.pruned_by_repok))
+        print("     {} by rec_limit".format(stats.pruned_by_rec_limit))
+        print("     {} by depth".format(stats.pruned_by_depth))
+        print("     {} by exception".format(stats.pruned_by_exception))
+        print("     {} by timeout".format(stats.pruned_by_timeout))
+        print("     {} impossible to build".format(stats.pruned_by_not_builded))
+        print("       {} of those by timeout during the build".format(stats.not_builded_by_timeout))
         for i, num in enumerate(stats.builded_at):
             if num != 0:
                 print("   {} builded by adding {} nodes".format(num, i))
         print("     {} builded after exception".format(stats.builded_after_exception))
         print("     {} builded after rec_limit".format(stats.builded_after_rec_limit))
         print("     {} builded after timeout".format(stats.builded_after_timeout))
-        print("   {} pruned:".format(pruned))
-        print("     {} by repok".format(stats.pruned_by_repok))
-        print("     {} by unsat path".format(stats.pruned_by_unsat))
-        print("     {} by rec_limit".format(stats.pruned_by_rec_limit))
-        print("     {} by depth".format(stats.pruned_by_depth))
-        print("     {} by exception".format(stats.pruned_by_exception))
-        print("     {} by timeout".format(stats.pruned_by_timeout))
         print("   Max valid execution time: {:.2f}".format(stats.max_ok_time))
 
     print(

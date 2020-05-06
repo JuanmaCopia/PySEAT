@@ -196,13 +196,15 @@ class SEEngine:
             else:
                 self._stats.builded_after_timeout += 1
         except Exception as e:
+            exception = e
             if not self.build_stats(pathdata):
                 self._stats.pruned_by_exception += 1
-                exception = e
             else:
                 self._stats.builded_after_exception += 1
         else:
             self.build_stats(pathdata)
+            if pathdata.status == data.PRUNED:
+                self._stats.pruned_by_not_builded += 1
         finally:
             self.mode = CONCRETE_EXECUTION
             # if exception:
@@ -257,8 +259,6 @@ class SEEngine:
                     pathdata.self_end_state = self_end_state
                     pathdata.returnv = returnv
                 return True
-            self._stats.not_builded += 1
-            builded = False
             return False
 
     def execute_method_concretely(self, obj, args):
@@ -526,22 +526,24 @@ class SEEngine:
             True or False, depending on the evaluation.
         """
         assert self.mode != CONCRETE_EXECUTION
-        bool_value = self.conditioned_value(expression)
-        if bool_value is not None:
-            return bool_value
 
         if self.mode == CONSERVATIVE_EXECUTION:
             raise excp.NoInitializedException()
 
-        if self._max_depth < self._current_depth:
-            raise excp.MaxDepthException
-        self._current_depth += 1
-
         if self._current_bp < len(self._branch_points):
+            assert isinstance(self._branch_points[self._current_bp], ConditionalBranchPoint)
             condition_value = self._branch_points[self._current_bp].get_branch()
         else:
-            self._branch_points.append(ConditionalBranchPoint())
-            condition_value = True
+            if self._max_depth < self._current_depth:
+                raise excp.MaxDepthException
+            self._current_depth += 1
+
+            condition_value = self.conditioned_value(expression)
+            if condition_value is not None:
+                self._branch_points.append(ConditionalBranchPoint(condition_value))
+            else:
+                self._branch_points.append(ConditionalBranchPoint())
+                condition_value = True
 
         self._current_bp += 1
 

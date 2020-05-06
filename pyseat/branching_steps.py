@@ -20,8 +20,13 @@ class ConditionalBranchPoint:
 
     """
 
-    def __init__(self):
-        self.bool_value = True
+    def __init__(self, value=None):
+        if value is not None:
+            self.unique = True
+            self.bool_value = value
+        else:
+            self.unique = False
+            self.bool_value = True
         self.fully_covered = False
 
     def get_branch(self):
@@ -46,10 +51,13 @@ class ConditionalBranchPoint:
             - False -> Fully Covered.
 
         """
-        if self.bool_value:
-            self.bool_value = False
-        else:
+        if self.unique:
             self.fully_covered = True
+        else:
+            if self.bool_value:
+                self.bool_value = False
+            else:
+                self.fully_covered = True
 
     def is_lazy_step(self):
         """ Tells whether is a lazy step or not.

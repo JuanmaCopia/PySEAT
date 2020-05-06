@@ -39,15 +39,13 @@ class ExplorationStats:
         self.exceptions = 0
         self.timeouts = 0
         self.pruned_by_depth = 0
-        self.pruned_by_unsat = 0
+        self.pruned_by_not_builded = 0
         self.pruned_by_repok = 0
         self.pruned_by_rec_limit = 0
         self.pruned_by_exception = 0
         self.pruned_by_timeout = 0
 
-        self.not_builded = 0
         self.not_builded_by_timeout = 0
-
         self.builded_at = [0, 0, 0, 0, 0, 0]
         self.builded_after_exception = 0
         self.builded_after_rec_limit = 0
@@ -77,9 +75,10 @@ class ExplorationStats:
         return total
 
     def get_amount_pruned(self):
-        total = self.pruned_by_depth + self.pruned_by_unsat
+        total = self.pruned_by_depth
         total += self.pruned_by_repok
         total += self.pruned_by_rec_limit
         total += self.pruned_by_timeout
         total += self.pruned_by_exception
+        total += self.pruned_by_not_builded
         return total
