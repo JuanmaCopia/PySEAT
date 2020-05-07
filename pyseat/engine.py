@@ -91,7 +91,7 @@ class SEEngine:
         self._current_bp = 0
         self._branch_points = []
         self._path_condition = []
-        self._current_self = None
+        self.curr_self = None
         self._max_nodes = max_nodes
         self._current_nodes = 0
         self._max_r_nodes = max_r_nodes
@@ -115,7 +115,6 @@ class SEEngine:
 
         while unexplored_paths:
             self._reset_exploration()
-
             args = self.instantiate_input()
             self._backups = LazyBackup(args)
 
@@ -123,14 +122,12 @@ class SEEngine:
             yield (result)
 
             self._remove_explored_branch()
-
             if not self._branch_points:
                 unexplored_paths = False
 
     def instantiate_input(self):
         types = self._sut.get_method_param_types()
-        args = [inst.symbolic_instantiation(self, typ) for typ in types]
-        return args
+        return [inst.symbolic_instantiation(self, typ) for typ in types]
 
     def _reset_exploration(self):
         """Resets the exploration variables to it's initial values.
@@ -166,20 +163,20 @@ class SEEngine:
         returnv = None
         exception = None
 
-        self._current_self = args[0]
+        self.curr_self = args[0]
         args = args[1:]
-        method = getattr(self._current_self, self._sut.get_method_name())
+        method = getattr(self.curr_self, self._sut.get_method_name())
 
         self._time = time.time()
-        self.mode = METHOD_EXPLORATION
         try:
             with MethodTimeout(self.method_timeout), HiddenPrints():
-                if args:
-                    returnv = method(*args)
-                else:
-                    returnv = method()
-            if sym.is_symbolic_bool(returnv):
-                returnv = returnv.__bool__()
+                with MethodExplorationMode(self):
+                    if args:
+                        returnv = method(*args)
+                    else:
+                        returnv = method()
+                    if sym.is_symbolic_bool(returnv):
+                        returnv = returnv.__bool__()
 
         except excp.MaxDepthException:
             self._stats.pruned_by_depth += 1
@@ -206,7 +203,6 @@ class SEEngine:
             if pathdata.status == data.PRUNED:
                 self._stats.pruned_by_not_builded += 1
         finally:
-            self.mode = CONCRETE_EXECUTION
             # if exception:
             #     raise exception
             pathdata.time = time.time() - self._time
@@ -217,7 +213,6 @@ class SEEngine:
         path = self._path_condition
         model = self.smt.get_model(path)
 
-        # Input Self
         symbolic_inself = self._backups.get_self()
         symbolic_args = self._backups.get_args()
 
@@ -262,7 +257,7 @@ class SEEngine:
             return False
 
     def execute_method_concretely(self, obj, args):
-        self.mode = CONCRETE_EXECUTION
+        assert self.mode == CONCRETE_EXECUTION
         try:
             method = getattr(obj, self._sut.get_method_name())
             with MethodTimeout(self.method_timeout), HiddenPrints():
@@ -276,7 +271,7 @@ class SEEngine:
             return returnv
 
     def execute_repok_concretely(self, obj):
-        self.mode = CONCRETE_EXECUTION
+        assert self.mode == CONCRETE_EXECUTION
         try:
             result = obj.repok()
         except AttributeError as e:
@@ -311,8 +306,6 @@ class SEEngine:
                 self._stats.builded_at[self._current_repok_max] += 1
                 return concretei
 
-            self.mode = REPOK_EXPLORATION
-            self._current_repok_max = 0
             build = None
             with BuildTimeout(self.build_timeout):
                 while not build and self._current_repok_max <= self._max_r_nodes:
@@ -328,11 +321,9 @@ class SEEngine:
 
     def node_limit(self):
         if self.mode == METHOD_EXPLORATION:
-            if self._current_nodes >= self._max_nodes:
-                return True
+            return self._current_nodes >= self._max_nodes
         elif self.mode == REPOK_EXPLORATION:
-            if self._current_nodes >= self._current_repok_max:
-                return True
+            return self._current_nodes >= self._current_repok_max
         else:
             assert False
 
@@ -345,7 +336,6 @@ class SEEngine:
             self._reset_for_repok(iself, pc_len)
 
             result = self._execute_repok_exploration(iself)
-
             if result is not None:
                 return result
 
@@ -355,9 +345,10 @@ class SEEngine:
 
     def _execute_repok_exploration(self, instance):
         try:
-            result = instance.repok()
-            if sym.is_symbolic_bool(result):
-                result = result.__bool__()
+            with RepokExplorationMode(self):
+                result = instance.repok()
+                if sym.is_symbolic_bool(result):
+                    result = result.__bool__()
         except excp.MaxDepthException:
             pass
         except excp.TimeOutException as e:
@@ -394,13 +385,13 @@ class SEEngine:
                 last_bp.advance_branch()
 
     def check_conservative_repok(self, obj):
-        self.mode = CONSERVATIVE_EXECUTION
         try:
-            if hasattr(obj, "repok") and not obj.repok():
-                raise excp.RepOkFailException()
-            if obj._objid != self._current_self._objid:
-                if not self._current_self.repok():
+            with ConservativeRepokMode(self):
+                if hasattr(obj, "repok") and not obj.repok():
                     raise excp.RepOkFailException()
+                if obj._objid != self.curr_self._objid:
+                    if hasattr(self.curr_self, "repok") and not self.curr_self.repok():
+                        raise excp.RepOkFailException()
         except excp.NoInitializedException:
             pass
         except excp.CantMakeDecisionException:
@@ -409,8 +400,6 @@ class SEEngine:
             raise e
         except AttributeError as e:
             raise e
-        finally:
-            self.mode = METHOD_EXPLORATION
 
     def lazy_initialization(self, obj, attr_name):
         pref_name = im.SYMBOLIC_PREFIX + attr_name
@@ -424,9 +413,7 @@ class SEEngine:
                 raise excp.NoInitializedException()
             return attr
 
-        # Mode is METHOD_EXPLORATION OR REPOK_EXPLORATION
         attr_type = self._sut.get_attr_type(type(obj), attr_name)
-
         if im.is_user_defined(attr_type):
             if is_init or not im.is_tracked(obj):
                 self.check_recursion_limit(attr)
@@ -439,7 +426,7 @@ class SEEngine:
                 self._rec_times = 0
 
                 if self.mode == METHOD_EXPLORATION:
-                    if self._current_bp - 1 < len(self._branch_points):
+                    if self._current_bp >= len(self._branch_points):
                         self.check_conservative_repok(obj)
                     self.mimic_change(obj, pref_name, new_value)
 
@@ -478,9 +465,6 @@ class SEEngine:
         Returns:
             An instance of lazy_class or None.
         """
-        assert self.mode != CONSERVATIVE_EXECUTION
-        assert self.mode != CONCRETE_EXECUTION
-
         if self._current_bp < len(self._branch_points):
             branch_point = self._branch_points[self._current_bp]
             assert isinstance(branch_point, LazyBranchPoint)
