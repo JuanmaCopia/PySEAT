@@ -146,14 +146,13 @@ class TestCode:
         identifier = var_name(instance)
 
         self.create_constructor_call(
-            identifier,
-            type(instance),
-            self._sut.get_params_type_dict(type(instance)),
+            identifier, type(instance), self._sut.get_params_type_dict(type(instance)),
         )
         userdef = []
         for field, value in get_dict(instance).items():
             if not is_user_defined(value):
-                self.create_assign_code(identifier, field, value)
+                if value is None or isinstance(value, (bool, int, float, str)):
+                    self.create_assign_code(identifier, field, value)
             else:
                 userdef.append((field, value))
         field_id = ""

@@ -169,7 +169,7 @@ class SEEngine:
 
         self._time = time.time()
         try:
-            with MethodTimeout(self.method_timeout), HiddenPrints():
+            with Timeout(self.method_timeout), HiddenPrints():
                 with MethodExplorationMode(self):
                     if args:
                         returnv = method(*args)
@@ -260,7 +260,7 @@ class SEEngine:
         assert self.mode == CONCRETE_EXECUTION
         try:
             method = getattr(obj, self._sut.get_method_name())
-            with MethodTimeout(self.method_timeout), HiddenPrints():
+            with Timeout(self.method_timeout), HiddenPrints():
                 if args:
                     returnv = method(*args)
                 else:
@@ -273,7 +273,8 @@ class SEEngine:
     def execute_repok_concretely(self, obj):
         assert self.mode == CONCRETE_EXECUTION
         try:
-            result = obj.repok()
+            with Timeout(self.build_timeout):
+                result = obj.repok()
         except AttributeError as e:
             raise e
         except excp.TimeOutException as e:
@@ -307,7 +308,7 @@ class SEEngine:
                 return concretei
 
             build = None
-            with BuildTimeout(self.build_timeout):
+            with Timeout(self.build_timeout):
                 while not build and self._current_repok_max <= self._max_r_nodes:
                     with HiddenPrints(), BuildStructure(self):
                         build = self.build_partial_struture(symbolic, model)
@@ -596,19 +597,7 @@ def raise_build_timeout(signum, frame):
     raise excp.BuildTimeOutException()
 
 
-class MethodTimeout:
-    def __init__(self, time):
-        self.time = time
-
-    def __enter__(self):
-        signal.signal(signal.SIGALRM, raise_timeout)
-        signal.alarm(self.time)
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        signal.signal(signal.SIGALRM, signal.SIG_IGN)
-
-
-class BuildTimeout:
+class Timeout:
     def __init__(self, time):
         self.time = time
 
