@@ -206,7 +206,7 @@ class SEEngine:
             # if exception:
             #     raise exception
             pathdata.time = time.time() - self._time
-            self._stats.status_count(pathdata.status)
+            self._stats.status_count(pathdata.status, pathdata.time)
             return pathdata
 
     def build_stats(self, pathdata):

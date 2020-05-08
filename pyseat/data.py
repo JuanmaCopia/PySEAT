@@ -53,20 +53,18 @@ class ExplorationStats:
 
         self.max_ok_time = 0
 
-    def status_count(self, status):
-        if status == OK:
-            self.successes += 1
-        elif status == FAIL:
-            self.failures += 1
-        elif status == EXCEPTION:
-            self.exceptions += 1
-        elif status == TIMEOUT:
-            self.timeouts += 1
-
-    def sum_times(self, run):
-        if run.status != PRUNED:
-            if run.time > self.max_ok_time:
-                self.max_ok_time = run.time
+    def status_count(self, status, time):
+        if status != PRUNED:
+            if time > self.max_ok_time:
+                self.max_ok_time = time
+            if status == OK:
+                self.successes += 1
+            elif status == FAIL:
+                self.failures += 1
+            elif status == EXCEPTION:
+                self.exceptions += 1
+            elif status == TIMEOUT:
+                self.timeouts += 1
 
     def amount_complete_exec(self):
         total = self.successes + self.failures

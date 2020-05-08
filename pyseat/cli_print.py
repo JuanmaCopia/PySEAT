@@ -1,75 +1,26 @@
-"""Report Module
+"""clu_print Module
 
-Contains the methods to print a formatted console output of the statistics
-of executions.
+Contains the methods to print a formatted console output.
 
 """
 
 import data
-import helpers
 from termcolor import colored
 
 
-INDENT4 = "    "
-INDENT2 = "  "
-INDENT8 = "        "
-
-
-def print_formatted_result(function, run_data, debug=False):
-    if debug:
-        if run_data.status != data.PRUNED:
-            print(
-                "\n#" + str(run_data.number) + " " + status_str(run_data.status) + ":\n"
-            )
-            print(" Path Condition:")
-            helpers.print_list(run_data.pathcondition, INDENT8)
-            print(
-                " \nSymbolic input self:\n"
-                + INDENT8
-                + run_data.symbolic_inself.__repr__()
-            )
-            print(" Input self:\n" + INDENT8 + run_data.input_self.__repr__())
-            print(" Self end states:\n" + INDENT8 + run_data.self_end_state.__repr__())
-            print("")
-        else:
-            print("\n#" + str(run_data.number) + " " + run_data.status.name + ":\n")
-            print(" Path Condition:")
-            helpers.print_list(run_data.pathcondition, INDENT8)
-            print(
-                " \nSymbolic input self:\n"
-                + INDENT8
-                + run_data.symbolic_inself.__repr__()
-            )
-            print(" Pruned self:\n" + INDENT8 + run_data.pruned_structure.__repr__())
-            if run_data.exception:
-                print("  Exception: " + str(run_data.exception))
-            print("")
-    else:
-        exec_num = run_data.number
-        if run_data.status == data.PRUNED:
+def print_formatted_result(function, run_data, quiet):
+    exec_num = run_data.number
+    if run_data.status == data.PRUNED:
+        if not quiet:
             print(colored("   #{} PRUNED".format(exec_num), "white", attrs=["bold"]))
-        elif run_data.status == data.OK:
-            print(colored("   #{} OK".format(exec_num), "green", attrs=["bold"]))
-        elif run_data.status == data.FAIL:
-            print(colored("   #{} FAIL".format(exec_num), "red", attrs=["bold"]))
-        elif run_data.status == data.EXCEPTION:
-            print(
-                colored("   #{} EXCEPTION".format(exec_num), "magenta", attrs=["bold"])
-            )
-        elif run_data.status == data.TIMEOUT:
-            print(colored("   #{} TIMEOUT".format(exec_num), "yellow", attrs=["bold"]))
-
-
-def status_str(status_num):
-    if status_num == data.OK:
-        return "OK"
-    elif status_num == data.PRUNED:
-        return "PRUNED"
-    elif status_num == data.EXCEPTION:
-        return "EXCEPTION"
-    elif status_num == data.TIMEOUT:
-        return "TIMEOUT"
-    return "FAIL"
+    elif run_data.status == data.OK:
+        print(colored("   #{} OK".format(exec_num), "green", attrs=["bold"]))
+    elif run_data.status == data.FAIL:
+        print(colored("   #{} FAIL".format(exec_num), "red", attrs=["bold"]))
+    elif run_data.status == data.EXCEPTION:
+        print(colored("   #{} EXCEPTION".format(exec_num), "magenta", attrs=["bold"]))
+    elif run_data.status == data.TIMEOUT:
+        print(colored("   #{} TIMEOUT".format(exec_num), "yellow", attrs=["bold"]))
 
 
 def report_statistics(stats, test_num, duration, verbose=False):
@@ -99,7 +50,11 @@ def report_statistics(stats, test_num, duration, verbose=False):
         print("     {} by exception".format(stats.pruned_by_exception))
         print("     {} by timeout".format(stats.pruned_by_timeout))
         print("     {} impossible to build".format(stats.pruned_by_not_builded))
-        print("       {} of those by timeout during the build".format(stats.not_builded_by_timeout))
+        print(
+            "       {} of those by timeout during the build".format(
+                stats.not_builded_by_timeout
+            )
+        )
         for i, num in enumerate(stats.builded_at):
             if num != 0:
                 print("   {} builded by adding {} nodes".format(num, i))
@@ -120,7 +75,7 @@ def report_statistics(stats, test_num, duration, verbose=False):
 def welcome():
     print(
         colored(
-            "\n\n {}  PySEAT  {}\n".format("=" * 34, "=" * 34), "cyan", attrs=["bold"]
+            "\n\n {}  PySEAT  {}\n".format("=" * 32, "=" * 32), "cyan", attrs=["bold"]
         )
     )
 

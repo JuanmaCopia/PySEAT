@@ -9,7 +9,7 @@ parser.add_option(
     dest="verbose",
     action="store_true",
     default=False,
-    help="show statsistics of executions",
+    help="Show statsistics of executions",
 )
 parser.add_option(
     "-f",
@@ -33,12 +33,21 @@ parser.add_option(
     default=False,
     help="Measure mutation score",
 )
+parser.add_option(
+    "-q",
+    "--quiet",
+    dest="quiet",
+    action="store_true",
+    default=False,
+    help="Measure mutation score",
+)
 
 (options, args) = parser.parse_args()
 
 coverage = options.coverage
 mutation = options.mutation
 verbose = options.verbose
+quiet = options.quiet
 run_fail_tests = options.fail
 
 
@@ -72,6 +81,8 @@ def execute(
         params.append("--mutation")
     if coverage:
         params.append("--coverage")
+    if quiet:
+        params.append("-q")
     subprocess.call(params)
 
 

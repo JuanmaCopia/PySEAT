@@ -11,7 +11,7 @@ import sut_parser
 from cli_print import welcome, print_formatted_result, report_statistics
 from cli_print import print_method_data
 from engine import SEEngine
-import test_generator as testgen
+from test_generator import TestCode, append_to_testfile, create_testfile
 import data
 
 
@@ -30,19 +30,28 @@ parser.add_option(
     action="callback",
     callback=get_comma_separated_methods,
     dest="methods_names",
+    help="Methods to explore and generate tests"
 )
 parser.add_option(
-    "-d", dest="max_depth", type="int", default=10, help="maximum exploration depth",
+    "-d",
+    "--max-depth",
+    dest="max_depth",
+    type="int", default=10,
+    help="Maximum exploration tree depth",
 )
 parser.add_option(
-    "-n", dest="max_nodes", type="int", default=5, help="maximum amount structures",
+    "-n",
+    "--max-nodes",
+    dest="max_nodes",
+    type="int", default=5,
+    help="Maximum amount of nodes per structure",
 )
 parser.add_option(
     "-r",
     dest="max_r_nodes",
     type="int",
     default=2,
-    help="max nodes that repok can add",
+    help="Max nodes that repok can add",
 )
 parser.add_option(
     "-b",
@@ -66,14 +75,14 @@ parser.add_option(
     dest="verbose",
     action="store_true",
     default=False,
-    help="show statsistics of executions",
+    help="Show statsistics of executions",
 )
 parser.add_option(
     "--test-comments",
     dest="comments",
     action="store_true",
     default=True,
-    help="show statsistics of executions",
+    help="Generate comments on test with the structure representation",
 )
 parser.add_option(
     "--coverage",
@@ -88,6 +97,21 @@ parser.add_option(
     action="store_true",
     default=False,
     help="Measure mutation score",
+)
+parser.add_option(
+    "-q",
+    "--quiet",
+    dest="quiet",
+    action="store_true",
+    default=False,
+    help="Measure mutation score",
+)
+parser.add_option(
+    "--no-test-run",
+    dest="no_test_run",
+    action="store_true",
+    default=False,
+    help="Run generated test after the exploration",
 )
 
 (options, args) = parser.parse_args()
@@ -115,9 +139,11 @@ coverage = options.coverage
 mutation = options.mutation
 verbose = options.verbose
 comments = options.comments
+quiet = options.quiet
+no_test_run = options.no_test_run
 
 sut = sut_parser.parse(module_name, class_name, methods_names)
-testfile, mod, folder, filepath = testgen.create_testfile(module_name, class_name)
+testfile, mod, folder, filepath = create_testfile(module_name, class_name)
 
 welcome()
 
@@ -133,57 +159,54 @@ for method_data in sut.methods_map.values():
     print_method_data(sut.current_method.name, class_name)
 
     for run in engine.explore():
-        engine._stats.sum_times(run)
-        print_formatted_result(sut.get_method(), run)
+        print_formatted_result(sut.get_method(), run, quiet)
         if run.status != data.PRUNED:
             test_num += 1
-            test = testgen.TestCode(sut, run, test_num, method_timeout, comments)
-            testgen.append_to_testfile(filepath, test.code + "\n\n")
+            test = TestCode(sut, run, test_num, method_timeout, comments)
+            append_to_testfile(filepath, test.code + "\n\n")
 
     report_statistics(engine.statistics(), test_num, time.time() - start_time, verbose)
 
+if not no_test_run:
+    print("Running generated tests...")
+    if not coverage and not mutation:
+        subprocess.call(["pytest", "--disable-warnings", "-q", filepath])
 
-print("Running generated tests...\n")
+    if coverage:
+        subprocess.call(
+            [
+                "coverage",
+                "run",
+                "--source=" + folder,
+                "--omit=" + filepath,
+                "--branch",
+                "-m",
+                "pytest",
+                "-q",
+                "--disable-warnings",
+                filepath,
+            ]
+        )
+        print("\n\n {} BRANCH COVERAGE RESULTS {} \n".format("=" * 20, "=" * 20))
+        subprocess.call(["coverage", "report"])
+        subprocess.call(["coverage", "html", "-d", folder + "htmlcov"])
 
-# subprocess.call([sys.executable, filepath])
-
-if coverage:
-    subprocess.call(
-        [
-            "coverage",
-            "run",
-            "--source=" + folder,
-            "--omit=" + filepath,
-            "--branch",
-            "-m",
-            "pytest",
-            # "--disable-warnings",
-            filepath,
-        ]
-    )
-    print("\n\n {} BRANCH COVERAGE RESULTS {} \n".format("=" * 20, "=" * 20))
-    subprocess.call(["coverage", "report"])
-    subprocess.call(["coverage", "html", "-d", folder + "htmlcov"])
-
-if mutation:
-    subprocess.call(
-        [
-            "mut.py",
-            "--target",
-            mod,
-            "--unit-test",
-            testfile,
-            "--report-html",
-            "mutscore",
-            "--runner",
-            "pytest",
-            "-c",
-            "--coverage",
-            "-p",
-            folder,
-            "-m",
-        ]
-    )
-
-if not coverage and not mutation:
-    subprocess.call(["pytest", filepath])
+    if mutation:
+        subprocess.call(
+            [
+                "mut.py",
+                "--target",
+                mod,
+                "--unit-test",
+                testfile,
+                "--report-html",
+                "mutscore",
+                "--runner",
+                "pytest",
+                "-c",
+                "--coverage",
+                "-p",
+                folder,
+                "-m",
+            ]
+        )
