@@ -1,11 +1,20 @@
 # PySEAT
 
-Python Generalized Symbolic Execution and Test Generator. PySEAT is a python module that
-simbolically executes methods of classes and creates it's tests.
+Python Symbolic Execution and Automatic Tester. PySEAT is a python module which automates
+test case generation of complex structures (e.g., Binary Search Trees or AVLs) using symbolic execution with lazy initialization.
+
+This project reuse part of the smt interface with the Z3 therome prover of an existing python symbolic execution engine called [PEF: Python Error Finder](https://reader.elsevier.com/reader/sd/pii/S1571066118300471?token=FB4433EA85BB1AA956108AB28C94F659FFB4CED02141D87A019D533BEDCF7538C0C78574841E5B3BB27323DBE11E6B9B)
+
+Based on the papers:
+
+[Generalized Symbolic Execution for Model Checking and Testing](http://users.ece.utexas.edu/~khurshid/testera/GSE.pdf)
+[Test Input Generation with Java PathFinder](http://users.ece.utexas.edu/~khurshid/papers/JPF-issta04.pdf)
+[A Peer Architecture for Lightweight Symbolic Execution](http://hoheinzollern.files.wordpress.com/2008/04/seer1.pdf)
+
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 
@@ -287,6 +296,22 @@ Options:
 ```
 
 ## Instrumentation
+
+In order to perform symbolic execution, the target method should have the types annotated with python annotations. Also, all the classes involved in that method execution should have
+it's __init__ method arguments and instance attributes annotated.
+
+### Instrumentation example
+
+Let's take for example a Binary Search Tree and its insert method.
+
+
+## Currently supported symbolic types:
+  * int
+  * bool
+
+Currently, PySEAT is supporting test generation only for bound methods of clases
+that takes as argument structures of the type of the "self" (i.e. the user defined structure) and also the types in and bool. Other complex structures apart from self
+and other builtin data types are not supported yet.
 
 ## License
 
