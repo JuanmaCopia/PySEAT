@@ -17,21 +17,21 @@ parser.add_option(
     dest="fail",
     action="store_true",
     default=False,
-    help="Run fail tests",
+    help="Run tests over structures that contains bugs",
 )
 parser.add_option(
     "--coverage",
     dest="coverage",
     action="store_true",
     default=False,
-    help="Measure code coverage of generated test",
+    help="Measure code coverage of the generated test suite",
 )
 parser.add_option(
     "--mutation",
     dest="mutation",
     action="store_true",
     default=False,
-    help="Measure mutation score",
+    help="Measure mutation score of the generated test suite",
 )
 parser.add_option(
     "-q",
@@ -39,7 +39,7 @@ parser.add_option(
     dest="quiet",
     action="store_true",
     default=False,
-    help="Measure mutation score",
+    help="Run test in quiet mode (less console output)",
 )
 
 (options, args) = parser.parse_args()
@@ -73,7 +73,6 @@ def execute(
         "-b " + str(b_timeout),
         "-t " + str(m_timeout),
         "-d " + str(max_depth),
-        "--test-comments",
     ]
     if verbose:
         params.append("-v")

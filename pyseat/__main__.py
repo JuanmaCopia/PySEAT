@@ -20,7 +20,7 @@ def get_comma_separated_methods(option, opt, value, parser):
 
 
 usage = (
-    "usage: %prog [options] <path to *.py file> <class-name> -m <method1> [,<method2>]"
+    "usage: %prog <path to *.py file> <class-name> -m <method1> [,<method2>] [options]"
 )
 parser = OptionParser(usage=usage)
 parser.add_option(
@@ -30,20 +30,22 @@ parser.add_option(
     action="callback",
     callback=get_comma_separated_methods,
     dest="methods_names",
-    help="Methods to explore and generate tests"
+    help="Methods to explore and generate tests",
 )
 parser.add_option(
     "-d",
     "--max-depth",
     dest="max_depth",
-    type="int", default=10,
+    type="int",
+    default=10,
     help="Maximum exploration tree depth",
 )
 parser.add_option(
     "-n",
     "--max-nodes",
     dest="max_nodes",
-    type="int", default=5,
+    type="int",
+    default=5,
     help="Maximum amount of nodes per structure",
 )
 parser.add_option(
@@ -78,10 +80,10 @@ parser.add_option(
     help="Show statsistics of executions",
 )
 parser.add_option(
-    "--test-comments",
-    dest="comments",
+    "--no-comments",
+    dest="no_comments",
     action="store_true",
-    default=True,
+    default=False,
     help="Generate comments on test with the structure representation",
 )
 parser.add_option(
@@ -117,10 +119,10 @@ parser.add_option(
 (options, args) = parser.parse_args()
 
 if len(args) == 0:
-    parser.error("Not Arguments Supplied")
+    parser.error("No Arguments Supplied")
     sys.exit(1)
 if not os.path.exists(args[0]):
-    parser.error("File Not Found")
+    parser.error("File '{}' Not Found".format(args[0]))
     sys.exit(1)
 if not options.methods_names:
     parser.error("Methods not given")
@@ -138,7 +140,7 @@ method_timeout = options.method_timeout
 coverage = options.coverage
 mutation = options.mutation
 verbose = options.verbose
-comments = options.comments
+no_comments = options.no_comments
 quiet = options.quiet
 no_test_run = options.no_test_run
 
@@ -162,7 +164,7 @@ for method_data in sut.methods_map.values():
         print_formatted_result(sut.get_method(), run, quiet)
         if run.status != data.PRUNED:
             test_num += 1
-            test = TestCode(sut, run, test_num, method_timeout, comments)
+            test = TestCode(sut, run, test_num, method_timeout, no_comments)
             append_to_testfile(filepath, test.code + "\n\n")
 
     report_statistics(engine.statistics(), test_num, time.time() - start_time, verbose)
@@ -200,7 +202,7 @@ if not no_test_run:
                 "--unit-test",
                 testfile,
                 "--report-html",
-                "mutscore",
+                folder + "mutscore",
                 "--runner",
                 "pytest",
                 "-c",
