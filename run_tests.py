@@ -127,11 +127,9 @@ if not run_fail_tests:
     execute(
         filepath="tests/avl/avl.py",
         class_name="AVL",
-        methods="insert",
-        max_r_nodes=1,
-        max_nodes=3,
-        m_timeout=1,
-        b_timeout=1,
+        methods="insert,delete,find_min,next_larger",
+        max_r_nodes=0,
+        max_nodes=2,
     )
 else:
     # Bugged Doubly Linked List
