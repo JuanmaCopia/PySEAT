@@ -267,6 +267,31 @@ class AVL():
             self.root.insert(node)
         self.rebalance(node)
 
+    def delete(self, k: int):
+        """Deletes and returns a node with key k if it exists from the BST.
+        This AVL version guarantees the balance property: h = O(lg n).
+
+        Args:
+            k: The key of the node that we want to delete.
+
+        Returns:
+            The deleted node with key k.
+        """
+        node = self.find(k)
+        if node is None:
+            return None
+        if node is self.root:
+            pseudoroot = Node(None, 0)
+            pseudoroot.left = self.root
+            self.root.parent = pseudoroot
+            deleted = self.root.delete()
+            self.root = pseudoroot.left
+            if self.root is not None:
+                self.root.parent = None
+        else:
+            deleted = node.delete()
+        self.rebalance(deleted.parent)
+
     def repok(self):
         if not self.root:
             return True
