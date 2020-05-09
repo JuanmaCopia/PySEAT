@@ -1,7 +1,7 @@
 from symbolics import is_symbolic
 from helpers import do_add
 
-import instance_managment as im
+import instance_management as im
 import symbolics as sym
 import copy
 

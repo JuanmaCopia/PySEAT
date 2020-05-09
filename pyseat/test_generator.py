@@ -3,7 +3,7 @@
 """
 
 from helpers import do_add
-from instance_managment import get_dict, var_name, is_user_defined
+from instance_management import get_dict, var_name, is_user_defined
 import data
 import os
 

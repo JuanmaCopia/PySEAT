@@ -68,7 +68,6 @@ def get_types_dict(method, belonging_cls) -> dict:
 
 def get_default_type(generic_alias):
     args = typing.get_args(generic_alias)
-    assert is_user_defined(args[0])
     return args[0]
 
 
