@@ -32,7 +32,7 @@ def append_to_testfile(filepath, str):
 
 
 class TestCode:
-    def __init__(self, sut, run_stats, number, timeout, no_comments):
+    def __init__(self, sut, run_stats, number, timeout, comments):
         self._sut = sut
         self.run_data = run_stats
         self.status = run_stats.status
@@ -40,7 +40,7 @@ class TestCode:
         self.code = ""
         self.name = "test_" + sut.get_method_name() + str(number) + "()"
         self.timeout = timeout
-        self.no_comments = no_comments
+        self.comments = comments
         self.generate_test_code()
 
     def _add_line(self, line):
@@ -59,7 +59,7 @@ class TestCode:
         if self.status == data.TIMEOUT:
             self.code += "@pytest.mark.timeout({})\n".format(self.timeout)
         self.code += "def " + self.name + ":"
-        if not self.no_comments:
+        if self.comments:
             self.gen_test_comment()
         self._add_line("# Input Creation")
         self_id = self.generate_structure_code(self.run_data.input_self)

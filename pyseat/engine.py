@@ -72,28 +72,29 @@ class SEEngine:
 
     """
 
-    def __init__(self, sut_data, max_depth, max_nodes, max_r_nodes, m_timeout, b_timeout):
+    def __init__(self, sut_data, cfg_args: dict):
         self._sut = sut_data
-        self._max_depth = max_depth
+        self._max_depth = cfg_args["max_depth"]
+        self._max_nodes = cfg_args["max_nodes"]
+        self._max_r_nodes = cfg_args["max_repok_nodes"]
+        self.build_timeout = cfg_args["build_timeout"]
+        self.method_timeout = cfg_args["method_timeout"]
+        self.max_get = cfg_args["max_get"]
+
+        self.smt = SMT((SMTInt, SMTBool), SMTSolver)
         self._stats = data.ExplorationStats()
-        self._backups = None
-        self._current_depth = 0
-        self._current_bp = 0
         self._branch_points = []
         self._path_condition = []
+        self._backups = None
         self.curr_self = None
-        self._max_nodes = max_nodes
+        self._current_depth = 0
+        self._current_bp = 0
         self._current_nodes = 0
-        self._max_r_nodes = max_r_nodes
         self._current_repok_max = 0
+        self.time = 0
+        self.get_count = 0
         self._ids = 0
         self.mode = CONCRETE_EXECUTION
-        self.smt = SMT((SMTInt, SMTBool), SMTSolver)
-        self.build_timeout = b_timeout
-        self.method_timeout = m_timeout
-        self.time = 0
-        self.get_times = 0
-        self.get_limit = 30
 
         for k in self._sut.class_map.keys():
             setattr(k, "_engine", self)
@@ -125,7 +126,7 @@ class SEEngine:
         self._current_bp = 0
         self._current_nodes = 0
         self._current_depth = 0
-        self.get_times = 0
+        self.get_count = 0
         self._ids = 0
         for k in self._sut.class_map.keys():
             k._vector = []
@@ -407,7 +408,7 @@ class SEEngine:
             if attr is None:
                 new_value = self.get_next_lazy_step(attr_type)
                 setattr(owner, pref_name, new_value)
-                self.get_times = 0
+                self.get_count = 0
 
                 if self.mode == METHOD_EXPLORATION:
                     if self._current_bp >= len(self._branch_points):
@@ -481,9 +482,9 @@ class SEEngine:
 
     def check_get_limit(self, obj):
         if self.mode != REPOK_EXPLORATION:
-            self.get_times += 1
-            if self.get_times > self.get_limit:
-                raise excp.MaxRecursionException(str(self.get_times))
+            self.get_count += 1
+            if self.get_count > self.max_get:
+                raise excp.MaxRecursionException(str(self.get_count))
 
     def check_conservative_repok(self, obj):
         try:
