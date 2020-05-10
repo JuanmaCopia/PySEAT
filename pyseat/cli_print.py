@@ -8,7 +8,7 @@ import data
 from termcolor import colored
 
 
-def print_formatted_result(function, run_data, quiet):
+def print_result(function, run_data, quiet):
     exec_num = run_data.number
     if run_data.status == data.PRUNED:
         if not quiet:
@@ -23,7 +23,7 @@ def print_formatted_result(function, run_data, quiet):
         print(colored("   #{} TIMEOUT".format(exec_num), "yellow", attrs=["bold"]))
 
 
-def report_statistics(stats, test_num, duration, verbose=False):
+def print_statistics(stats, test_num, duration, verbose=False):
     completed = stats.amount_complete_exec()
     pruned = stats.get_amount_pruned()
     print("\n Done! {} Tests were generated".format(test_num))
@@ -65,14 +65,14 @@ def report_statistics(stats, test_num, duration, verbose=False):
 
     print(
         colored(
-            "\n {} {:.2f} seconds {}\n\n".format("-" * 30, duration, "-" * 30),
+            "\n{} {:.2f} seconds {}\n\n".format("-" * 30, duration, "-" * 30),
             "cyan",
             attrs=["bold"],
         )
     )
 
 
-def welcome():
+def print_welcome():
     print(
         colored(
             "\n\n {}  PySEAT  {}\n".format("=" * 32, "=" * 32), "cyan", attrs=["bold"]
@@ -84,3 +84,19 @@ def print_method_data(method_name, class_name):
     print(colored(" Method: {}".format(method_name), "white", attrs=["bold"]))
     print(colored(" Class:  {}\n".format(class_name), "white", attrs=["bold"]))
     print(" Performing Exploration...")
+
+
+def print_running_tests():
+    print_white("Running generated tests...")
+
+
+def print_coverage_title():
+    print("\n\n{} BRANCH COVERAGE RESULTS {} \n".format("=" * 20, "=" * 20))
+
+
+def print_bottom():
+    print(colored("\n{}\n\n\n".format("=" * 75), "cyan", attrs=["bold"],))
+
+
+def print_white(msg):
+    print(colored(msg, "white", attrs=["bold"],))

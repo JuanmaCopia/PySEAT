@@ -5,8 +5,7 @@ import subprocess
 import time
 
 import sut_parser
-from cli_print import welcome, print_formatted_result, report_statistics
-from cli_print import print_method_data
+import cli_print as cli
 from engine import SEEngine
 from test_generator import TestCode, append_to_testfile, create_testfile
 import data
@@ -15,7 +14,7 @@ import arg_parsing
 
 runs = arg_parsing.parse_command_line()
 
-welcome()
+cli.print_welcome()
 
 for args in runs:
 
@@ -33,10 +32,10 @@ for args in runs:
         test_num = 0
         start_time = time.time()
 
-        print_method_data(sut.current_method.name, class_name)
+        cli.print_method_data(sut.current_method.name, class_name)
 
         for run in engine.explore():
-            print_formatted_result(sut.get_method(), run, args["quiet"])
+            cli.print_result(sut.get_method(), run, args["quiet"])
             if run.status != data.PRUNED:
                 test_num += 1
                 test = TestCode(
@@ -44,7 +43,7 @@ for args in runs:
                 )
                 append_to_testfile(filepath, test.code + "\n\n")
 
-        report_statistics(
+        cli.print_statistics(
             engine.statistics(), test_num, time.time() - start_time, args["verbose"]
         )
 
@@ -52,7 +51,7 @@ for args in runs:
         coverage = args["coverage"]
         mutation = args["mutation"]
 
-        print("Running generated tests...")
+        cli.print_running_tests()
         if not coverage and not mutation:
             subprocess.call(["pytest", "--disable-warnings", "-q", filepath])
 
@@ -71,7 +70,7 @@ for args in runs:
                     filepath,
                 ]
             )
-            print("\n\n {} BRANCH COVERAGE RESULTS {} \n".format("=" * 20, "=" * 20))
+            cli.print_coverage_title()
             subprocess.call(["coverage", "report"])
             subprocess.call(["coverage", "html", "-d", folder + "htmlcov"])
 
@@ -94,3 +93,5 @@ for args in runs:
                     "-m",
                 ]
             )
+
+    cli.print_bottom()
