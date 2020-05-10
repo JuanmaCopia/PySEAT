@@ -12,35 +12,27 @@ def print_result(function, run_data, quiet):
     exec_num = run_data.number
     if run_data.status == data.PRUNED:
         if not quiet:
-            print(colored("   #{} PRUNED".format(exec_num), "white", attrs=["bold"]))
+            print_white("   #{} PRUNED".format(exec_num))
     elif run_data.status == data.OK:
-        print(colored("   #{} OK".format(exec_num), "green", attrs=["bold"]))
+        print_green("   #{} OK".format(exec_num))
     elif run_data.status == data.FAIL:
-        print(colored("   #{} FAIL".format(exec_num), "red", attrs=["bold"]))
+        print_red("   #{} FAIL".format(exec_num))
     elif run_data.status == data.EXCEPTION:
-        print(colored("   #{} EXCEPTION".format(exec_num), "magenta", attrs=["bold"]))
+        print_magenta("   #{} EXCEPTION".format(exec_num))
     elif run_data.status == data.TIMEOUT:
-        print(colored("   #{} TIMEOUT".format(exec_num), "yellow", attrs=["bold"]))
+        print_yellow("   #{} TIMEOUT".format(exec_num))
 
 
 def print_statistics(stats, test_num, duration, verbose=False):
     completed = stats.amount_complete_exec()
     pruned = stats.get_amount_pruned()
     print("\n Done! {} Tests were generated".format(test_num))
-    print(
-        colored(
-            "\n Valid executions: {} of {}".format(completed, stats.total_paths),
-            "white",
-            attrs=["bold"],
-        )
-    )
-    print(colored("   {} passed".format(stats.successes), "green", attrs=["bold"]))
-    print(colored("   {} failed".format(stats.failures), "red", attrs=["bold"]))
-    print(
-        colored("   {} exceptions".format(stats.exceptions), "magenta", attrs=["bold"])
-    )
-    print(colored("   {} timeouts".format(stats.timeouts), "yellow", attrs=["bold"]))
-    print(colored("   {} pruned".format(pruned), "white", attrs=["bold"]))
+    print_white("\n Valid executions: {} of {}".format(completed, stats.total_paths))
+    print_green("   {} passed".format(stats.successes))
+    print_red("   {} failed".format(stats.failures))
+    print_magenta("   {} exceptions".format(stats.exceptions))
+    print_yellow("   {} timeouts".format(stats.timeouts))
+    print_white("   {} pruned".format(pruned))
 
     if verbose:
         print("\n   {} pruned:".format(pruned))
@@ -63,26 +55,16 @@ def print_statistics(stats, test_num, duration, verbose=False):
         print("     {} builded after timeout".format(stats.builded_after_timeout))
         print("   Max valid execution time: {:.2f}".format(stats.max_ok_time))
 
-    print(
-        colored(
-            "\n{} {:.2f} seconds {}\n\n".format("-" * 30, duration, "-" * 30),
-            "cyan",
-            attrs=["bold"],
-        )
-    )
+    print_cyan("\n{} {:.2f} seconds {}\n\n".format("-" * 30, duration, "-" * 30))
 
 
 def print_welcome():
-    print(
-        colored(
-            "\n\n {}  PySEAT  {}\n".format("=" * 32, "=" * 32), "cyan", attrs=["bold"]
-        )
-    )
+    print_cyan("\n\n {}  PySEAT  {}\n".format("=" * 32, "=" * 32))
 
 
 def print_method_data(method_name, class_name):
-    print(colored(" Method: {}".format(method_name), "white", attrs=["bold"]))
-    print(colored(" Class:  {}\n".format(class_name), "white", attrs=["bold"]))
+    print_white(" Method: {}".format(method_name))
+    print_white(" Class:  {}\n".format(class_name))
     print(" Performing Exploration...")
 
 
@@ -95,8 +77,28 @@ def print_coverage_title():
 
 
 def print_bottom():
-    print(colored("\n{}\n\n\n".format("=" * 75), "cyan", attrs=["bold"],))
+    print_cyan("\n{}\n\n\n".format("=" * 75))
 
 
 def print_white(msg):
-    print(colored(msg, "white", attrs=["bold"],))
+    print(colored(msg, "white", attrs=["bold"]))
+
+
+def print_cyan(msg):
+    print(colored(msg, "cyan", attrs=["bold"]))
+
+
+def print_green(msg):
+    print(colored(msg, "green", attrs=["bold"]))
+
+
+def print_red(msg):
+    print(colored(msg, "red", attrs=["bold"]))
+
+
+def print_magenta(msg):
+    print(colored(msg, "magenta", attrs=["bold"],))
+
+
+def print_yellow(msg):
+    print(colored(msg, "yellow", attrs=["bold"],))
