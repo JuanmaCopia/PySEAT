@@ -57,7 +57,8 @@ For example you can find the LinkedList test on: ```PySEAT/tests/doublylinkedlis
 ### Test Example
 
 Now we are going to run the example of a Double Linked List with bugs that resides on ```test/should_fail/```.
-We can run it through run_test.py script by adding ```-f``` option
+
+We can run it through run_test.py script by adding ```-f``` option:
 ```
 python run_tests.py -f
 ```
@@ -150,7 +151,7 @@ a repok method is later).
 
 As we can see, there are five possibles states of an execution:
 
-* PRUNED or invalid executions. No were generated for this executions.
+* PRUNED or invalid executions. No test are generated for this executions.
 * OK: No errors were found. The test is generated.
 * FAIL: An error was found. The test that produces the error is generated
 * EXCEPTION: An exception was raised. the test that produces the exception is generated.
@@ -206,7 +207,7 @@ The test comment is created calling to the ```__repr__``` method of the class
 and helps to see what the input, the return value, and the final state of
 the self are. We can avoid the generation of this comment through the arguments
 when running the module or by setting the argument in the config file as false (later
-we will se how the config file works).
+we will see how the config file works).
 
 After the exploration, te program will call pytest to run the generated test suit
 and the test report will be shown:
@@ -229,6 +230,7 @@ the two possibilities, True and False, if possible).
 
 Every execution of the program starts with an input with uninitialized fields, whenever
 a field is accessed it is initialized as follows:
+
 If it is a reference field (e.g. user-defined class) the possibilities to initialize are:
 
 * A new instance.
@@ -241,6 +243,8 @@ So lazy initialization would explore all structural possibilities but also creat
 structures (e.g if we are executing over SinglyLinkedList it might create cyclic lists).
 That is why we need a repok method that allows us to get rid of those and avoid useless
 programs executions.
+
+If the field is a supported builtin field it will be initialized to its corresponding Symbolic type instance.
 
 ### Repok method:
 
@@ -264,8 +268,7 @@ the repok method for the self class and for the initialized class.
 
 ### Instrumentation example
 
-Let's an example of instrumentation of a DoublyLinkedList and its "insert_after" method that
-inserts a new node with a certain key after another certain key on the doubly
+Let's see an instrumentation example of a DoublyLinkedList and its "insert_after" method that inserts a new node with a certain key after another certain key on the doubly
 linked list.
 
 ```
@@ -371,7 +374,7 @@ and other builtin data types are not supported yet.
 ### The configuration file:
 
 The easiest way to run the program is modifying the default configuration file on
-```PySEAT/config.ini``` or creating a new configuration file and pass its pass
+```PySEAT/config.ini``` or creating a new configuration file and pass its path
 as argument to the program.
 
 The configuration file looks like this:
@@ -397,7 +400,7 @@ To add a program run you have to add a new section, and provide the next argumen
 * methods: The methods of the class to explore
 
 You can add as many runs as you want. For example, with the next config file, the program
-will run for DoublyLinkedList and CDLinkedList , the are inside the ```/tests``` folder:
+will run for DoublyLinkedList and CDLinkedList. They are inside the ```/tests``` folder:
 ```
 [DEFAULT]
 max_repok_nodes = 0
