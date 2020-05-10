@@ -51,20 +51,8 @@ To run the tests examples (all tests should pass):
 python run_tests.py
 ```
 
-Another useful arguments for ```run_test.py```:
-```
-Options:
-  -h, --help     show this help message and exit
-  -v, --verbose  Show statistics of executions
-  -f, --fail     Run fail tests
-  --coverage     Measure code coverage of the generated test suite
-  --mutation     Measure mutation score of the generated test suite
-  -q, --quiet    Run test in quiet mode (less console output)
-```
-
 Generated test are saved in each structure folder under the ```tests/``` directory.
 For example you can find the LinkedList test on: ```PySEAT/tests/doublylinkedlist/test_dll.py ```This tests are generated from the file ```dll.py```
-
 
 ### Test Example
 
@@ -72,16 +60,6 @@ Now we are going to run the example of a Double Linked List with bugs that resid
 We can run it through run_test.py script by adding ```-f``` option
 ```
 python run_tests.py -f
-```
-
-Or inside the PySEAT folder, directly calling the module:
-```
-python -m pyseat test/should_fail/dll_bugged.py DoublyLinkedList -m "insert_after,find,insert_at_front,insert_at_back,pop_front,pop_back"
-```
-
-So let's run the next command adding also a ```-q``` option to run it in quiet mode:
-```
-python run_tests.py -f -q
 ```
 
 The program output for the first three method looks like this:
@@ -226,8 +204,9 @@ In this case: ```/tests/should_fail/test_dll_bugged.py ```
 
 The test comment is created calling to the ```__repr__``` method of the class
 and helps to see what the input, the return value, and the final state of
-the self are. We can avoid the generation of this comment by adding ```--no-comments```
-when running the module but for the run_test.py they are always generated.
+the self are. We can avoid the generation of this comment through the arguments
+when running the module or by setting the argument in the config file as false (later
+we will se how the config file works).
 
 After the exploration, te program will call pytest to run the generated test suit
 and the test report will be shown:
@@ -389,7 +368,112 @@ and other builtin data types are not supported yet.
 
 ## Running the program
 
-To run the program for other files you can:
+### The configuration file:
+
+The easiest way to run the program is modifying the default configuration file on
+```PySEAT/config.ini``` or creating a new configuration file and pass its pass
+as argument to the program.
+
+The configuration file looks like this:
+```
+[DEFAULT]
+max_repok_nodes = 0
+max_nodes = 5
+max_depth = 10
+max_get = 30
+method_timeout = 2
+build_timeout = 5
+coverage = false
+mutation = false
+verbose = false
+quiet = true
+run_tests = true
+test_comments = false
+```
+
+To add a program run you have to add a new section, and provide the next arguments:
+* filepath: The path to the module to test.
+* class_name: The name of the class to test.
+* methods: The methods of the class to explore
+
+You can add as many runs as you want. For example, with the next config file, the program
+will run for DoublyLinkedList and CDLinkedList , the are inside the ```/tests``` folder:
+```
+[DEFAULT]
+max_repok_nodes = 0
+max_nodes = 5
+max_depth = 10
+max_get = 30
+method_timeout = 2
+build_timeout = 5
+coverage = false
+mutation = false
+verbose = false
+quiet = true
+run_tests = true
+test_comments = false
+
+[Doubly Linked List]
+filepath = tests/doublylinkedlist/dll.py
+class_name = DoublyLinkedList
+methods = insert_after,remove,find,insert_at_back,insert_at_front,top_front,top_back,pop_front,pop_back
+
+[Circular Doubly LinkedList]
+filepath = tests/circulardoublylinkedlist/cdll.py
+class_name = CDLinkedList
+methods = insert_after,insert_before,delete,append,prepend
+```
+
+You can also override any of the defaults on each run:
+```
+[Circular Doubly LinkedList]
+filepath = tests/circulardoublylinkedlist/cdll.py
+class_name = CDLinkedList
+methods = insert_after,insert_before,delete,append,prepend
+max_nodes = 4
+max_repok_nodes = 1
+```
+
+### Arguments:
+```
+; Required Arguments:
+; filepath:       Path to module .py under test.
+; class_name:     Name of the class that contains the methods to test.
+; methods         Methods to test.
+
+; Optional (has default values):
+; max_repok_nodes: Max amount of nodes that repok can add while building a structure.
+; max_nodes:       Max amount of nodes that can create the method exploration.
+; max_depth:       Max depth of the exploration tree made by conditions evalutation.
+; max_get:         Helps to avoid wasting on time of infinite loops caused by cyclic structures
+; method_timeout:  Max time to execute method exloration.
+; build_timeout:   Max time to build the structure.
+; coverage:        Measure coverage of generated test suite.
+; mutation:        Measure mutation score of generated test suite.
+; verbose:         Show statistics of explorations.
+; quiet:           Quiet mode, less output
+; run_tests:       Run test with pytest after generation.
+; test_comments:   Make a comment with the structure representation on each test.
+```
+
+### How to run:
+
+To tell the PySEAT to run and read the configuration file add -c option:
+```
+python <path-to pyseat/__main__.py> -c
+```
+
+Or provide your own config.ini file:
+```
+python <path-to pyseat/__main__.py> -c <path-to .ini file>
+```
+
+you can also execute it as a module:
+```
+python -m pyseat -c
+```
+
+To run the program with the command line arguments:
 ```
 python <path-to pyseat/__main__.py> <path-module-to-test.py> <class-name> -m <methods-names>
 ```
@@ -399,38 +483,9 @@ Test generated would be on the same folder of the module under test, on a file c
 test_<module-to.test_name>.py
 ```
 
-We can measure the branch coverage of our test suite by adding ```--coverage```
-parameter. An HTML report will be generated on the same folder as the code in
-```htmlcov/index.html``` and a report will be shown on console.
-
-We can also measure the mutation score of our test suite using ```mutpy``` by adding ```--mutation```
-parameter. An HTML report will be generated on the same folder as the code in
-```mutscore/index.html``` and a report will be shown on console.
-
-Another useful parameters:
+All Arguments in config file can also be supplied through command line:
 ```
-Usage: __main__.py <path to *.py file> <class-name> -m <method1> [,<method2>] [options]
-
-Options:
-  -h, --help            show this help message and exit
-  -m METHODS_NAMES, --methods=METHODS_NAMES
-                        Methods to explore and generate tests
-  -d MAX_DEPTH, --max-depth=MAX_DEPTH
-                        Maximum exploration tree depth
-  -n MAX_NODES, --max-nodes=MAX_NODES
-                        Maximum amount of nodes per structure
-  -r MAX_R_NODES        Max nodes that repok can add
-  -b BUILD_TIMEOUT, --build-timeout=BUILD_TIMEOUT
-                        Max time to build a structure
-  -t METHOD_TIMEOUT, --method-timeout=METHOD_TIMEOUT
-                        Max execution time for each exploration
-  -v, --verbose         Show statistics of executions
-  --no-comments         Generate comments on test with the structure
-                        representation
-  --coverage            Measure code coverage of generated test
-  --mutation            Measure mutation score
-  -q, --quiet           Measure mutation score
-  --no-test-run         Run generated test after the exploration
+python <path-to pyseat/__main__.py> -h
 ```
 
 ## License
