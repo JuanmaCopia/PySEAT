@@ -13,6 +13,31 @@ class NoInitializedException(Error):
         self.message = "Attr not initialized"
 
 
+class MaxNodesException(Error):
+    def __init__(self):
+        self.message = "Max nodes"
+
+
+class MaxRepokNodesException(Error):
+    def __init__(self):
+        self.message = "Max nodes"
+
+
+class TimeOutException(Error):
+    def __init__(self):
+        self.message = "Timeout"
+
+
+class BuildTimeOutException(Error):
+    def __init__(self):
+        self.message = "Timeout"
+
+
+class CantMakeDecisionException(Error):
+    def __init__(self):
+        self.message = "The condition value is not defined"
+
+
 class MaxDepthException(Error):
     """Exception raised when the maximum exploration depth
     is reached.

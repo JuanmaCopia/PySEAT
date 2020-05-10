@@ -9,21 +9,28 @@ def do_add(s, x):
 
 
 class Node:
+    # Instance attributes annotations (will be treated as symbolic)
+    data: int
+    right: "Node"
+    left: "Node"
+
+    # Init params should be annotated also
     def __init__(self, data: int):
         self.data = data
         self.right = None
         self.left = None
 
-    def repok(self):
-        return True
-
     def __repr__(self):
-        return str(self.data)
+        return "node: " + str(self.data)
 
 
 class BST:
-    def __init__(self, root: "Node" = None):
-        self.root = root
+    # Instance attributes annotations (will be treated as symbolic)
+    root: "Node"
+
+    # Init params should be annotated also
+    def __init__(self):
+        self.root = None
 
     def repok(self):
         if not self.root:
@@ -63,7 +70,7 @@ class BST:
                 return False
         return True
 
-    def insert(self, data):
+    def insert(self, data: int):
         if self.root is None:
             self.root = Node(data)
         else:
@@ -83,7 +90,7 @@ class BST:
         else:
             print("data already in tree!")
 
-    def find(self, data):
+    def find(self, data: int):
         if self.root is not None:
             return self._find(data, self.root)
         else:
@@ -97,21 +104,22 @@ class BST:
         elif data > cur_node.data and cur_node.right is not None:
             return self._find(data, cur_node.right)
 
-    # def display(self):
-    #     lines, _, _, _ = self.to_str(self.root)
-    #     for line in lines:
-    #         print(line)
+    def height(self):
+        if self.root is not None:
+            return self._height(self.root, 0)
+        else:
+            return 0
+
+    def _height(self, cur_node, cur_height):
+        if cur_node is None:
+            return cur_height
+        left_height = self._height(cur_node.left, cur_height + 1)
+        right_height = self._height(cur_node.right, cur_height + 1)
+        return max(left_height, right_height)
 
     def to_str(self, node, visited):
-        """Returns list of strings, width, height, and horizontal coord. of root."""
+        """Returns list of strings, width, height, and horizontal coord of root."""
         # No child.
-
-        if node is None:
-            line = "%s" % node.data + "N"
-            width = len(line)
-            height = 1
-            middle = width // 2
-            return [line], width, height, middle
 
         if not do_add(visited, node):
             line = "%s" % node.data + "*"
@@ -173,28 +181,3 @@ class BST:
         for line in lines:
             result += "        " + line + "\n"
         return "\n" + result
-
-
-# import random
-# if __name__ == "__main__":
-#     bst0 = BST()
-#     for _ in range(50):
-#         bst0.insert(random.randint(0, 100))
-#     print(bst0.__repr__())
-# if __name__ == "__main__":
-#     node0 = Node(0)
-#     node0.data = 0
-#     node0.right = None
-#     node1 = Node(0)
-#     node1.data = 0
-#     node1.right = None
-#     node2 = Node(-1)
-#     node2.data = -1
-#     node2.right = None
-#     node2.left = None
-#     node1.left = node2
-#     node0.left = node1
-#     bst0 = BST(node0)
-#     bst0.root = node0
-#     # Repok check
-#     assert bst0.repok()

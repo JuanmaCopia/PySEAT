@@ -1,8 +1,6 @@
 from sym_decorators import forward_to_rfun, check_comparable_types
 from sym_decorators import check_equality, check_self_and_other_have_same_type
-
 from smt.sort_z3 import SMTInt, SMTBool
-import copy
 
 
 def is_symbolic(obj):
@@ -13,26 +11,20 @@ def is_symbolic_bool(obj):
     return isinstance(obj, SymBool)
 
 
+def symbolic_factory(engine, typ, value=None):
+    if typ is int:
+        return SymInt(engine, value)
+    elif typ is bool:
+        return SymBool(engine, value)
+
+
 class Symbolic:
 
-    _real_to_sym = {}
-
-    @classmethod
-    def get_supported_builtins(cls):
-        if not cls._real_to_sym:
-            cls._real_to_sym = {x.emulated_class: x for x in Symbolic.__subclasses__()}
-        return cls._real_to_sym.keys()
+    _supported_types = [int, bool]
 
     @classmethod
     def is_supported_builtin(cls, obj):
-        supported_types = cls.get_supported_builtins()
-        return obj in supported_types or type(obj) in supported_types
-
-    @classmethod
-    def get_symtypes_mapping(cls):
-        if not cls._real_to_sym:
-            cls._real_to_sym = {x.emulated_class: x for x in Symbolic.__subclasses__()}
-        return copy.deepcopy(cls._real_to_sym)
+        return obj in cls._supported_types or type(obj) in cls._supported_types
 
 
 class SymInt(Symbolic):
@@ -281,24 +273,16 @@ class SymBool(Symbolic):
         return SymBool(self.engine, self.smt.Not(self.formula))
 
     def __bool__(self):
-        if isinstance(self.formula, bool):
-            return self.formula
-        return self.engine.evaluate(self)
+        formula = self.formula
+        if isinstance(formula, bool):
+            return formula
+        return self.engine.evaluate(formula)
 
     def __nonzero__(self):
         return self.__bool__()
 
-    def conditioned_value(self):
-        """
-        :returns: None if constrains haven't define a concrete value yet,
-                  else returns that concrete value (True or False).
-        It tries to obtain a bool value if possible. Without branching.
-        """
-        return self.engine.conditioned_value(self)
-
     def __repr__(self):
-        ps = self.conditioned_value()
-        return "%s" % (ps if ps is not None else str(self.formula))
+        return str(self.formula)
 
     def __deepcopy__(self, memo):
         return self

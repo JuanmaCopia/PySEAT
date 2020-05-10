@@ -60,3 +60,4 @@ generated_tests/*_tests.py
 .idea/
 .vscode/
 venv/
+mutscore/
