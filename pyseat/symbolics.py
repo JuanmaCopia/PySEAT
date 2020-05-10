@@ -16,7 +16,6 @@ def symbolic_factory(engine, typ, value=None):
         return SymInt(engine, value)
     elif typ is bool:
         return SymBool(engine, value)
-    assert False
 
 
 class Symbolic:

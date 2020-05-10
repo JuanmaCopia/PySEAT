@@ -32,7 +32,6 @@ class ConditionalBranchPoint:
     def get_branch(self):
         """Returns the current value (or the "taken" value).
         """
-        assert not self.all_branches_covered()
         return self.bool_value
 
     def all_branches_covered(self):
@@ -87,7 +86,6 @@ class LazyBranchPoint:
     def get_branch(self):
         """Returns the current value (or the "taken" value).
         """
-        assert not self.all_branches_covered()
         return self.current_branch
 
     def all_branches_covered(self):

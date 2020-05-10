@@ -240,8 +240,8 @@ class SEEngine:
             self._stats.not_builded_by_timeout += 1
         except excp.CouldNotBuildError:
             pass
-        except Exception:
-            assert False
+        except Exception as e:
+            raise e
         else:
             builded = True
         finally:
@@ -299,7 +299,6 @@ class SEEngine:
                 raise excp.CouldNotBuildError()
             self._stats.builded_at[self._current_repok_max - 1] += 1
             return build
-        assert False
 
     def build_partial_structure(self, input_self, model):
         pc_len = len(self._path_condition)
@@ -348,7 +347,6 @@ class SEEngine:
             return None
 
     def execute_method_concretely(self, obj, args):
-        assert self.mode == CONCRETE_EXECUTION
         try:
             method = getattr(obj, self._sut.get_method_name())
             with Timeout(self.method_timeout), HiddenPrints():
@@ -362,7 +360,6 @@ class SEEngine:
             return returnv
 
     def execute_repok_concretely(self, obj):
-        assert self.mode == CONCRETE_EXECUTION
         try:
             with Timeout(self.build_timeout):
                 result = obj.repok()
@@ -416,8 +413,6 @@ class SEEngine:
                     self.mimic_change(owner, pref_name, new_value)
 
         else:
-            assert sym.Symbolic.is_supported_builtin(attr_type)
-            assert attr is not None
             if not is_init:
                 setattr(owner, im.ISINIT_PREFIX + attr_name, True)
                 if not sym.is_symbolic(attr):
@@ -445,7 +440,6 @@ class SEEngine:
         """
         if self._current_bp < len(self._branch_points):
             branch_point = self._branch_points[self._current_bp]
-            assert isinstance(branch_point, LazyBranchPoint)
             index = branch_point.get_branch()
             self._current_bp += 1
 
@@ -457,8 +451,6 @@ class SEEngine:
             elif index == 1:
                 return None
             else:
-                assert index - 2 >= 0
-                assert index - 2 < len(lazy_class._vector)
                 return lazy_class._vector[index - 2]
 
         new_bp = LazyBranchPoint(len(lazy_class._vector) + 1)
@@ -475,10 +467,7 @@ class SEEngine:
     def node_limit(self):
         if self.mode == METHOD_EXPLORATION:
             return self._current_nodes >= self._max_nodes
-        elif self.mode == REPOK_EXPLORATION:
-            return self._current_nodes >= self._current_repok_max
-        else:
-            assert False
+        return self._current_nodes >= self._current_repok_max
 
     def check_get_limit(self, obj):
         if self.mode != REPOK_EXPLORATION:
@@ -505,13 +494,9 @@ class SEEngine:
 
     def mimic_change(self, obj, attr_name, new_value):
         obj_backup = self._backups.get_backup_of(obj)
-        if obj_backup is None:
-            assert False
 
         if self._branch_points[self._current_bp - 1].get_branch() > 1:
             new_val = self._backups.get_backup_of(new_value)
-            if new_val is None:
-                assert False
             setattr(obj_backup, attr_name, new_val)
         else:
             setattr(obj_backup, attr_name, copy.deepcopy(new_value))
@@ -549,13 +534,10 @@ class SEEngine:
         Returns:
             True or False, depending on the evaluation.
         """
-        assert self.mode != CONCRETE_EXECUTION
-
         if self.mode == CONSERVATIVE_EXECUTION:
             raise excp.NoInitializedException()
 
         if self._current_bp < len(self._branch_points):
-            assert isinstance(self._branch_points[self._current_bp], ConditionalBranchPoint)
             condition_value = self._branch_points[self._current_bp].get_branch()
         else:
             if self._max_depth < self._current_depth:
