@@ -491,6 +491,12 @@ All Arguments in config file can also be supplied through command line:
 python <path-to pyseat/__main__.py> -h
 ```
 
+## Measure coverage and mutation score
+
+You can measure the coverage and the mutation score of the generated test suite by the arguments coverage and mutation respectively.
+A command line report will be shown and a html-report will be be created on the same
+folder as the source file. For coverage ```source-folder/htmlcov/index.html```. For mutation ```source-folder/mutscore/index.html```.
+
 ## License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE.md](LICENSE.md) file for details
