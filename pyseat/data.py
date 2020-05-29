@@ -13,24 +13,6 @@ EXCEPTION = 3
 TIMEOUT = 4
 
 
-class PathExecutionData:
-    def __init__(self, exec_number: int, status=None, exception=None, pruned_s=None):
-        self.symbolic_inself = None
-        self.self_end_state = None
-        self.input_self = None
-        self.input_args = []
-        self.returnv = None
-        self.exception = exception
-        self.model = None
-        self.pathcondition = []
-        self.errors = []
-        self.number = exec_number
-        self.status = status
-        self.pruned_structure = pruned_s
-        self.path_repr = ""
-        self.time = 0
-
-
 class ExplorationStats:
     def __init__(self):
         self.total_paths = 0

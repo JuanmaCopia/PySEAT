@@ -64,6 +64,9 @@ class ConditionalBranchPoint:
         """
         return False
 
+    def __repr__(self):
+        return str(self.bool_value)
+
 
 class LazyBranchPoint:
     """Lazy Initialization branching step.
@@ -112,3 +115,5 @@ class LazyBranchPoint:
         """
         return True
 
+    def __repr__(self):
+        return str(self.number_of_branches)

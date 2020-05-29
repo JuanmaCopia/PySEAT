@@ -31,10 +31,7 @@ def parse(module_name, class_name, methods_names):
     if not module:
         parse_error("Error importing module: {}".format(module_name))
     if not hasattr(module, class_name):
-        parse_error("Class '{}' not found in {}".format(
-                class_name, module_name
-            )
-        )
+        parse_error("Class '{}' not found in {}".format(class_name, module_name))
     self_class = getattr(module, class_name)
     if not hasattr(self_class, "repok"):
         parse_error("repok method not found in {}".format(self_class.__name__))
@@ -178,6 +175,7 @@ class SUT:
 
     def __init__(self, the_class, methods):
         self.current_method = None
+        self.sclass = the_class
         self.methods_map = {m.__name__: MethodData(m, the_class) for m in methods}
         types_list = []
         for md in self.methods_map.values():

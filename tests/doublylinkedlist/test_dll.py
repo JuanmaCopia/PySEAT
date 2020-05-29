@@ -16,25 +16,25 @@ def test_insert_after1():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
     node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 1
     node5 = Node(0)
     node5.data = 1
-    node5.next = None
+    node2 = Node(0)
+    node2.data = 1
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
     node5.prev = node4
     node4.next = node5
     node4.prev = node3
     node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node5
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -66,25 +66,25 @@ def test_insert_after2():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
     node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 1
     node5 = Node(0)
-    node5.data = 0
-    node5.next = None
+    node5.data = 1
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
     node5.prev = node4
     node4.next = node5
     node4.prev = node3
     node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node5
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -106,51 +106,6 @@ def test_insert_after2():
 def test_insert_after3():
     '''
     Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 1
-    node4 = Node(0)
-    node4.data = 1
-    node4.next = None
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.insert_after(0, 0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 1
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.tail.prev.data == 1
-
-
-def test_insert_after4():
-    '''
-    Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
     Return:
         None
@@ -162,25 +117,25 @@ def test_insert_after4():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
     node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
-    node4.data = 0
+    node4.data = 1
     node5 = Node(0)
     node5.data = 0
-    node5.next = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
     node5.prev = node4
     node4.next = node5
     node4.prev = node3
     node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node5
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -199,35 +154,39 @@ def test_insert_after4():
     assert doublylinkedlist0.tail.prev.prev.data == 0
 
 
-def test_insert_after5():
+def test_insert_after4():
     '''
     Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
+        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
     Return:
         None
     End Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
+        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
     node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 0
-    node4.next = None
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
     node4.prev = node3
     node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -242,34 +201,94 @@ def test_insert_after5():
     assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
     assert doublylinkedlist0.tail.prev.data == 0
-    assert doublylinkedlist0.head.next.next.data == 1
+    assert doublylinkedlist0.head.next.next.data == 0
+    assert doublylinkedlist0.tail.prev.prev.data == 0
+
+
+def test_insert_after5():
+    '''
+    Self:
+        None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_after(0, 0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 0
+    assert doublylinkedlist0.tail.prev.prev.data == 0
 
 
 def test_insert_after6():
     '''
     Self:
-        None <- 1 ->  <- 1 ->  <- 1 -> None
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
     Return:
         None
     End Self:
-        None <- 1 ->  <- 1 ->  <- 1 -> None
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(0)
-    node1.data = 1
+    node1.data = 0
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
     node3 = Node(0)
-    node3.data = 1
-    node3.next = None
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -278,42 +297,45 @@ def test_insert_after6():
     assert doublylinkedlist0.repok()
     # Assertions
     assert returnv is None
-    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 1
+    assert doublylinkedlist0.tail.data == 0
     assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 0
+    assert doublylinkedlist0.tail.prev.prev.data == 0
 
 
 def test_insert_after7():
     '''
     Self:
-        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
     Return:
         None
     End Self:
-        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
+    node3 = Node(0)
+    node3.data = 1
+    node4 = Node(0)
+    node4.data = 1
     node2 = Node(0)
     node2.data = 1
-    node3 = Node(0)
-    node3.data = 0
-    node4 = Node(0)
-    node4.data = 0
-    node4.next = None
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
     node4.prev = node3
     node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -324,16 +346,239 @@ def test_insert_after7():
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.data == 1
     assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.tail.prev.data == 0
-    assert doublylinkedlist0.head.next.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 1
 
 
 def test_insert_after8():
     '''
     Self:
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 1
+    node4 = Node(0)
+    node4.data = 1
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_after(0, 0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 1
+
+
+def test_insert_after9():
+    '''
+    Self:
+        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 1
+    node4 = Node(0)
+    node4.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_after(0, 0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 0
+
+
+def test_insert_after10():
+    '''
+    Self:
+        None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_after(0, 0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 0
+
+
+def test_insert_after11():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_after(0, 0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 0
+
+
+def test_insert_after12():
+    '''
+    Self:
+        None <- 1 ->  <- 1 ->  <- 1 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 ->  <- 1 ->  <- 1 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 1
+    node2 = Node(0)
+    node2.data = 1
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_after(0, 0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 1
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 1
+
+
+def test_insert_after13():
+    '''
+    Self:
         None <- 1 ->  <- 1 ->  <- 0 -> None
     Return:
         None
@@ -345,17 +590,17 @@ def test_insert_after8():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
     node3 = Node(0)
-    node3.data = 0
-    node3.next = None
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.data = 1
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -372,7 +617,89 @@ def test_insert_after8():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_insert_after9():
+def test_insert_after14():
+    '''
+    Self:
+        None <- 1 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_after(0, 0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+
+
+def test_insert_after15():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_after(0, 0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+
+
+def test_insert_after16():
     '''
     Self:
         None <- 1 ->  <- 1 -> None
@@ -407,48 +734,7 @@ def test_insert_after9():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_insert_after10():
-    '''
-    Self:
-        None <- 1 ->  <- 0 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 0
-    node3 = Node(0)
-    node3.data = 0
-    node3.next = None
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.insert_after(0, 0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 0
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 0
-    assert doublylinkedlist0.tail.prev.data == 0
-
-
-def test_insert_after11():
+def test_insert_after17():
     '''
     Self:
         None <- 1 ->  <- 0 -> None
@@ -484,37 +770,7 @@ def test_insert_after11():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_insert_after12():
-    '''
-    Self:
-        None <- 1 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.next = None
-    node1.prev = None
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node1
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.insert_after(0, 0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.next is None
-    assert doublylinkedlist0.head.prev is None
-
-
-def test_insert_after13():
+def test_insert_after18():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -550,7 +806,37 @@ def test_insert_after13():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_insert_after14():
+def test_insert_after19():
+    '''
+    Self:
+        None <- 1 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.next = None
+    node1.prev = None
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node1
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_after(0, 0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.next is None
+    assert doublylinkedlist0.head.prev is None
+
+
+def test_insert_after20():
     '''
     Self:
         None <- 0 -> None
@@ -581,7 +867,7 @@ def test_insert_after14():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_insert_after15():
+def test_insert_after21():
     '''
     Self:
         <Empty list>
@@ -606,7 +892,7 @@ def test_insert_after15():
     assert doublylinkedlist0.tail is None
 
 
-def test_remove1():
+def test_remove22():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
@@ -620,25 +906,25 @@ def test_remove1():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
     node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 1
     node5 = Node(0)
     node5.data = 1
-    node5.next = None
+    node2 = Node(0)
+    node2.data = 1
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
     node5.prev = node4
     node4.next = node5
     node4.prev = node3
     node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node5
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -656,7 +942,7 @@ def test_remove1():
     assert doublylinkedlist0.head.next.next.data == 1
 
 
-def test_remove2():
+def test_remove23():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
@@ -670,168 +956,74 @@ def test_remove2():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
+    node3 = Node(0)
+    node3.data = 1
+    node4 = Node(0)
+    node4.data = 1
+    node5 = Node(0)
+    node5.data = 1
     node2 = Node(0)
-    node2.data = 1
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.remove(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 1
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 1
+
+
+def test_remove24():
+    '''
+    Self:
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
     node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 1
     node5 = Node(0)
     node5.data = 0
-    node5.next = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
     node5.prev = node4
     node4.next = node5
     node4.prev = node3
     node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node5
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 1
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.tail.prev.data == 1
-
-
-def test_remove3():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 1
-    node4 = Node(0)
-    node4.data = 1
-    node5 = Node(0)
-    node5.data = 0
-    node5.next = None
-    node5.prev = node4
-    node4.next = node5
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node5
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 1
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.tail.prev.data == 1
-
-
-def test_remove4():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 1
-    node4 = Node(0)
-    node4.data = 1
-    node4.next = None
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 1
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.tail.prev.data == 1
-
-
-def test_remove5():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 1
-    node4 = Node(0)
-    node4.data = 0
-    node5 = Node(0)
-    node5.data = 0
-    node5.next = None
-    node5.prev = node4
-    node4.next = node5
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node5
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -848,409 +1040,7 @@ def test_remove5():
     assert doublylinkedlist0.tail.prev.data == 1
 
 
-def test_remove6():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 1 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 1
-    node4 = Node(0)
-    node4.data = 0
-    node4.next = None
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 1
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-
-
-def test_remove7():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 1
-    node4 = Node(0)
-    node4.data = 0
-    node5 = Node(0)
-    node5.data = 0
-    node5.next = None
-    node5.prev = node4
-    node4.next = node5
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node5
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 0
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.tail.prev.data == 1
-
-
-def test_remove8():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 1
-    node4 = Node(0)
-    node4.data = 0
-    node5 = Node(0)
-    node5.data = 0
-    node5.next = None
-    node5.prev = node4
-    node4.next = node5
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node5
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 0
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.tail.prev.data == 1
-
-
-def test_remove9():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 1
-    node4 = Node(0)
-    node4.data = 0
-    node5 = Node(0)
-    node5.data = 0
-    node5.next = None
-    node5.prev = node4
-    node4.next = node5
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node5
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 0
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.tail.prev.data == 1
-
-
-def test_remove10():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 1 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 1
-    node4 = Node(0)
-    node4.data = 0
-    node4.next = None
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 1
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-
-
-def test_remove11():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 1 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 1 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 1
-    node3.next = None
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 1
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-
-
-def test_remove12():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 0 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 0
-    node4 = Node(0)
-    node4.data = 0
-    node4.next = None
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 0
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-
-
-def test_remove13():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 0
-    node3.next = None
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 1
-    assert doublylinkedlist0.tail.next is None
-
-
-def test_remove14():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 0 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 0
-    node4 = Node(0)
-    node4.data = 0
-    node4.next = None
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 0
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-
-
-def test_remove15():
+def test_remove25():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -1264,25 +1054,25 @@ def test_remove15():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
     node3 = Node(0)
-    node3.data = 0
-    node5 = Node(0)
-    node5.data = 0
+    node3.data = 1
     node4 = Node(0)
     node4.data = 0
-    node4.next = None
-    node4.prev = node5
-    node5.next = node4
-    node5.prev = node3
-    node3.next = node5
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -1299,7 +1089,194 @@ def test_remove15():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_remove16():
+def test_remove26():
+    '''
+    Self:
+        None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.remove(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+
+
+def test_remove27():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.remove(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+
+
+def test_remove28():
+    '''
+    Self:
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 1
+    node4 = Node(0)
+    node4.data = 1
+    node2 = Node(0)
+    node2.data = 1
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.remove(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 1
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 1
+
+
+def test_remove29():
+    '''
+    Self:
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 ->  <- 1 ->  <- 1 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 1
+    node4 = Node(0)
+    node4.data = 1
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.remove(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 1
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 1
+
+
+def test_remove30():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
@@ -1313,21 +1290,21 @@ def test_remove16():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
     node3 = Node(0)
-    node3.data = 0
+    node3.data = 1
     node4 = Node(0)
     node4.data = 0
-    node4.next = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
     node4.prev = node3
     node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -1343,237 +1320,7 @@ def test_remove16():
     assert doublylinkedlist0.head.next.data == 1
 
 
-def test_remove17():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 0 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 0
-    node4 = Node(0)
-    node4.data = 0
-    node4.next = None
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 0
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-
-
-def test_remove18():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 0
-    node3.next = None
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 1
-    assert doublylinkedlist0.tail.next is None
-
-
-def test_remove19():
-    '''
-    Self:
-        None <- 1 ->  <- 1 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 1 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node2.next = None
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node2
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 1
-    assert doublylinkedlist0.tail.next is None
-
-
-def test_remove20():
-    '''
-    Self:
-        None <- 1 ->  <- 0 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 0 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 0
-    node3 = Node(0)
-    node3.data = 0
-    node3.next = None
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 0
-    assert doublylinkedlist0.tail.next is None
-
-
-def test_remove21():
-    '''
-    Self:
-        None <- 1 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 0
-    node2.next = None
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node2
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.next is None
-    assert doublylinkedlist0.head.prev is None
-
-
-def test_remove22():
-    '''
-    Self:
-        None <- 1 ->  <- 0 ->  <- 0 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 ->  <- 0 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 0
-    node3 = Node(0)
-    node3.data = 0
-    node3.next = None
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 0
-    assert doublylinkedlist0.tail.next is None
-
-
-def test_remove23():
+def test_remove31():
     '''
     Self:
         None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -1587,21 +1334,21 @@ def test_remove23():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 0
-    node4 = Node(0)
-    node4.data = 0
     node3 = Node(0)
     node3.data = 0
-    node3.next = None
-    node3.prev = node4
-    node4.next = node3
-    node4.prev = node2
-    node2.next = node4
-    node2.prev = node1
-    node1.next = node2
+    node4 = Node(0)
+    node4.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -1617,7 +1364,130 @@ def test_remove23():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_remove24():
+def test_remove32():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.remove(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+
+
+def test_remove33():
+    '''
+    Self:
+        None <- 1 ->  <- 1 ->  <- 1 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 ->  <- 1 ->  <- 1 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 1
+    node2 = Node(0)
+    node2.data = 1
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.remove(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 1
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 1
+
+
+def test_remove34():
+    '''
+    Self:
+        None <- 1 ->  <- 1 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 ->  <- 1 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 1
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.remove(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 1
+    assert doublylinkedlist0.tail.next is None
+
+
+def test_remove35():
     '''
     Self:
         None <- 1 ->  <- 0 ->  <- 0 -> None
@@ -1631,17 +1501,17 @@ def test_remove24():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 0
     node3 = Node(0)
     node3.data = 0
-    node3.next = None
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -1656,14 +1526,53 @@ def test_remove24():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_remove25():
+def test_remove36():
     '''
     Self:
-        None <- 1 ->  <- 0 ->  <- 0 -> None
+        None <- 0 ->  <- 0 ->  <- 0 -> None
     Return:
         None
     End Self:
-        None <- 1 ->  <- 0 -> None
+        None <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.remove(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+
+
+def test_remove37():
+    '''
+    Self:
+        None <- 1 ->  <- 1 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 ->  <- 1 -> None
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
@@ -1671,16 +1580,12 @@ def test_remove25():
     node1.data = 1
     node1.prev = None
     node2 = Node(0)
-    node2.data = 0
-    node3 = Node(0)
-    node3.data = 0
-    node3.next = None
-    node3.prev = node2
-    node2.next = node3
+    node2.data = 1
+    node2.next = None
     node2.prev = node1
     node1.next = node2
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -1691,11 +1596,11 @@ def test_remove25():
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.data == 1
     assert doublylinkedlist0.tail.next is None
 
 
-def test_remove26():
+def test_remove38():
     '''
     Self:
         None <- 1 ->  <- 0 -> None
@@ -1729,37 +1634,7 @@ def test_remove26():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_remove27():
-    '''
-    Self:
-        None <- 1 -> None
-    Return:
-        None
-    End Self:
-        None <- 1 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.next = None
-    node1.prev = None
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node1
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.remove(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv is None
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.next is None
-    assert doublylinkedlist0.head.prev is None
-
-
-def test_remove28():
+def test_remove39():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -1793,7 +1668,37 @@ def test_remove28():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_remove29():
+def test_remove40():
+    '''
+    Self:
+        None <- 1 -> None
+    Return:
+        None
+    End Self:
+        None <- 1 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.next = None
+    node1.prev = None
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node1
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.remove(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.next is None
+    assert doublylinkedlist0.head.prev is None
+
+
+def test_remove41():
     '''
     Self:
         None <- 0 -> None
@@ -1822,7 +1727,7 @@ def test_remove29():
     assert doublylinkedlist0.tail is None
 
 
-def test_remove30():
+def test_remove42():
     '''
     Self:
         <Empty list>
@@ -1847,7 +1752,7 @@ def test_remove30():
     assert doublylinkedlist0.tail is None
 
 
-def test_find1():
+def test_find43():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
@@ -1861,25 +1766,25 @@ def test_find1():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
     node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 1
     node5 = Node(0)
     node5.data = 1
-    node5.next = None
+    node2 = Node(0)
+    node2.data = 1
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
     node5.prev = node4
     node4.next = node5
     node4.prev = node3
     node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node5
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -1897,7 +1802,7 @@ def test_find1():
     assert doublylinkedlist0.head.next.next.data == 1
 
 
-def test_find2():
+def test_find44():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
@@ -1911,25 +1816,75 @@ def test_find2():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
+    node3 = Node(0)
+    node3.data = 1
+    node4 = Node(0)
+    node4.data = 1
+    node5 = Node(0)
+    node5.data = 1
     node2 = Node(0)
-    node2.data = 1
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.find(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == True
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 1
+    assert doublylinkedlist0.head.next.next.data == 1
+
+
+def test_find45():
+    '''
+    Self:
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
+    Return:
+        True
+    End Self:
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
     node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 1
     node5 = Node(0)
     node5.data = 0
-    node5.next = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
     node5.prev = node4
     node4.next = node5
     node4.prev = node3
     node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node5
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -1943,84 +1898,234 @@ def test_find2():
     assert doublylinkedlist0.tail.data == 0
     assert doublylinkedlist0.tail.next is None
     assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.tail.prev.data == 1
+    assert doublylinkedlist0.tail.prev.data == 0
     assert doublylinkedlist0.head.next.next.data == 1
 
 
-def test_find3():
+def test_find46():
     '''
     Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
-    Return:
-        False
-    End Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 1
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
-    node3 = Node(0)
-    node3.data = 1
-    node4 = Node(0)
-    node4.data = 1
-    node4.next = None
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.find(0)
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv == False
-    assert doublylinkedlist0.head.data == 1
-    assert doublylinkedlist0.head.prev is None
-    assert doublylinkedlist0.tail.data == 1
-    assert doublylinkedlist0.tail.next is None
-    assert doublylinkedlist0.head.next.data == 1
-    assert doublylinkedlist0.tail.prev.data == 1
-
-
-def test_find4():
-    '''
-    Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
+        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
     Return:
         True
     End Self:
-        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
+        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
     '''
     # Input Creation
     doublylinkedlist0 = DoublyLinkedList()
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
     node3 = Node(0)
     node3.data = 1
     node4 = Node(0)
     node4.data = 0
-    node4.next = None
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
     node4.prev = node3
     node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.find(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == True
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 0
+
+
+def test_find47():
+    '''
+    Self:
+        None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        True
+    End Self:
+        None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.find(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == True
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 0
+
+
+def test_find48():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        True
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.find(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == True
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 0
+
+
+def test_find49():
+    '''
+    Self:
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
+    Return:
+        False
+    End Self:
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 1
+    node4 = Node(0)
+    node4.data = 1
+    node2 = Node(0)
+    node2.data = 1
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.find(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == False
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 1
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 1
+
+
+def test_find50():
+    '''
+    Self:
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
+    Return:
+        True
+    End Self:
+        None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 1
+    node4 = Node(0)
+    node4.data = 1
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -2037,7 +2142,142 @@ def test_find4():
     assert doublylinkedlist0.tail.prev.data == 1
 
 
-def test_find5():
+def test_find51():
+    '''
+    Self:
+        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
+    Return:
+        True
+    End Self:
+        None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 1
+    node4 = Node(0)
+    node4.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.find(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == True
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 1
+    assert doublylinkedlist0.tail.prev.data == 0
+
+
+def test_find52():
+    '''
+    Self:
+        None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        True
+    End Self:
+        None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.find(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == True
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+
+
+def test_find53():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        True
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.find(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == True
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+
+
+def test_find54():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 -> None
@@ -2051,17 +2291,17 @@ def test_find5():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
     node3 = Node(0)
     node3.data = 1
-    node3.next = None
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node2 = Node(0)
+    node2.data = 1
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -2077,7 +2317,7 @@ def test_find5():
     assert doublylinkedlist0.head.next.data == 1
 
 
-def test_find6():
+def test_find55():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 0 -> None
@@ -2091,17 +2331,17 @@ def test_find6():
     node1 = Node(0)
     node1.data = 1
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 1
     node3 = Node(0)
-    node3.data = 0
-    node3.next = None
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.data = 1
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -2117,7 +2357,87 @@ def test_find6():
     assert doublylinkedlist0.head.next.data == 1
 
 
-def test_find7():
+def test_find56():
+    '''
+    Self:
+        None <- 1 ->  <- 0 ->  <- 0 -> None
+    Return:
+        True
+    End Self:
+        None <- 1 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 1
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.find(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == True
+    assert doublylinkedlist0.head.data == 1
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+
+
+def test_find57():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        True
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.find(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == True
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+
+
+def test_find58():
     '''
     Self:
         None <- 1 ->  <- 1 -> None
@@ -2152,7 +2472,7 @@ def test_find7():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_find8():
+def test_find59():
     '''
     Self:
         None <- 1 ->  <- 0 -> None
@@ -2187,7 +2507,42 @@ def test_find8():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_find9():
+def test_find60():
+    '''
+    Self:
+        None <- 0 ->  <- 0 -> None
+    Return:
+        True
+    End Self:
+        None <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node1
+    node1.next = node2
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.find(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == True
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+
+
+def test_find61():
     '''
     Self:
         None <- 1 -> None
@@ -2217,7 +2572,7 @@ def test_find9():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_find10():
+def test_find62():
     '''
     Self:
         None <- 0 -> None
@@ -2247,7 +2602,7 @@ def test_find10():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_find11():
+def test_find63():
     '''
     Self:
         <Empty list>
@@ -2272,7 +2627,145 @@ def test_find11():
     assert doublylinkedlist0.tail is None
 
 
-def test_insert_at_back1():
+def test_insert_at_back64():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_at_back(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 0
+    assert doublylinkedlist0.tail.prev.prev.data == 0
+
+
+def test_insert_at_back65():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_at_back(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 0
+
+
+def test_insert_at_back66():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_at_back(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+
+
+def test_insert_at_back67():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -2308,7 +2801,7 @@ def test_insert_at_back1():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_insert_at_back2():
+def test_insert_at_back68():
     '''
     Self:
         None <- 0 -> None
@@ -2339,7 +2832,7 @@ def test_insert_at_back2():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_insert_at_back3():
+def test_insert_at_back69():
     '''
     Self:
         <Empty list>
@@ -2365,7 +2858,181 @@ def test_insert_at_back3():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_insert_at_front1():
+def test_insert_at_front70():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_at_front(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 0
+    assert doublylinkedlist0.tail.prev.prev.data == 0
+
+
+def test_insert_at_front71():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_at_front(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 0
+
+
+def test_insert_at_front72():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_at_front(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+
+
+def test_insert_at_front73():
+    '''
+    Self:
+        None <- 0 ->  <- 0 -> None
+    Return:
+        None
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node1
+    node1.next = node2
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.insert_at_front(0)
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv is None
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+
+
+def test_insert_at_front74():
     '''
     Self:
         None <- 0 -> None
@@ -2396,7 +3063,7 @@ def test_insert_at_front1():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_insert_at_front2():
+def test_insert_at_front75():
     '''
     Self:
         <Empty list>
@@ -2422,7 +3089,177 @@ def test_insert_at_front2():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_top_front1():
+def test_top_front76():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        0
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.top_front()
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == 0
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+    assert doublylinkedlist0.head.next.next.data == 0
+
+
+def test_top_front77():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        0
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.top_front()
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == 0
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+
+
+def test_top_front78():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        0
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.top_front()
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == 0
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+
+
+def test_top_front79():
+    '''
+    Self:
+        None <- 0 ->  <- 0 -> None
+    Return:
+        0
+    End Self:
+        None <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node1
+    node1.next = node2
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.top_front()
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == 0
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+
+
+def test_top_front80():
     '''
     Self:
         None <- 0 -> None
@@ -2452,7 +3289,7 @@ def test_top_front1():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_top_front2():
+def test_top_front81():
     '''
     Self:
         <Empty list>
@@ -2477,7 +3314,7 @@ def test_top_front2():
     assert doublylinkedlist0.tail is None
 
 
-def test_top_back1():
+def test_top_back82():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2491,25 +3328,25 @@ def test_top_back1():
     node1 = Node(0)
     node1.data = 0
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 0
     node3 = Node(0)
     node3.data = 0
     node4 = Node(0)
     node4.data = 0
     node5 = Node(0)
     node5.data = 0
-    node5.next = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
     node5.prev = node4
     node4.next = node5
     node4.prev = node3
     node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node5
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -2527,7 +3364,7 @@ def test_top_back1():
     assert doublylinkedlist0.head.next.next.data == 0
 
 
-def test_top_back2():
+def test_top_back83():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2541,21 +3378,21 @@ def test_top_back2():
     node1 = Node(0)
     node1.data = 0
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 0
     node3 = Node(0)
     node3.data = 0
     node4 = Node(0)
     node4.data = 0
-    node4.next = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
     node4.prev = node3
     node3.next = node4
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node4
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -2572,7 +3409,7 @@ def test_top_back2():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_top_back3():
+def test_top_back84():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2586,17 +3423,17 @@ def test_top_back3():
     node1 = Node(0)
     node1.data = 0
     node1.prev = None
-    node2 = Node(0)
-    node2.data = 0
     node3 = Node(0)
     node3.data = 0
-    node3.next = None
-    node3.prev = node2
-    node2.next = node3
-    node2.prev = node1
-    node1.next = node2
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
     doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node3
+    doublylinkedlist0.tail = node2
     # Repok check
     assert doublylinkedlist0.repok()
     # Method call
@@ -2612,7 +3449,7 @@ def test_top_back3():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_top_back4():
+def test_top_back85():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -2647,7 +3484,7 @@ def test_top_back4():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_top_back5():
+def test_top_back86():
     '''
     Self:
         None <- 0 -> None
@@ -2677,7 +3514,7 @@ def test_top_back5():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_top_back6():
+def test_top_back87():
     '''
     Self:
         <Empty list>
@@ -2702,7 +3539,139 @@ def test_top_back6():
     assert doublylinkedlist0.tail is None
 
 
-def test_pop_front1():
+def test_pop_front88():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        0
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.pop_front()
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == 0
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+
+
+def test_pop_front89():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        0
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.pop_front()
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == 0
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+
+
+def test_pop_front90():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        0
+    End Self:
+        None <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node3
+    node3.next = node2
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.pop_front()
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == 0
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+
+
+def test_pop_front91():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -2736,7 +3705,7 @@ def test_pop_front1():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_pop_front2():
+def test_pop_front92():
     '''
     Self:
         None <- 0 -> None
@@ -2765,7 +3734,7 @@ def test_pop_front2():
     assert doublylinkedlist0.tail is None
 
 
-def test_pop_front3():
+def test_pop_front93():
     '''
     Self:
         <Empty list>
@@ -2790,7 +3759,100 @@ def test_pop_front3():
     assert doublylinkedlist0.tail is None
 
 
-def test_pop_back1():
+def test_pop_back94():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        0
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node5 = Node(0)
+    node5.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node5
+    node5.next = node2
+    node5.prev = node4
+    node4.next = node5
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.pop_back()
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == 0
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+    assert doublylinkedlist0.tail.prev.data == 0
+
+
+def test_pop_back95():
+    '''
+    Self:
+        None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
+    Return:
+        0
+    End Self:
+        None <- 0 ->  <- 0 ->  <- 0 -> None
+    '''
+    # Input Creation
+    doublylinkedlist0 = DoublyLinkedList()
+    node1 = Node(0)
+    node1.data = 0
+    node1.prev = None
+    node3 = Node(0)
+    node3.data = 0
+    node4 = Node(0)
+    node4.data = 0
+    node2 = Node(0)
+    node2.data = 0
+    node2.next = None
+    node2.prev = node4
+    node4.next = node2
+    node4.prev = node3
+    node3.next = node4
+    node3.prev = node1
+    node1.next = node3
+    doublylinkedlist0.head = node1
+    doublylinkedlist0.tail = node2
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Method call
+    returnv = doublylinkedlist0.pop_back()
+    # Repok check
+    assert doublylinkedlist0.repok()
+    # Assertions
+    assert returnv == 0
+    assert doublylinkedlist0.head.data == 0
+    assert doublylinkedlist0.head.prev is None
+    assert doublylinkedlist0.tail.data == 0
+    assert doublylinkedlist0.tail.next is None
+    assert doublylinkedlist0.head.next.data == 0
+
+
+def test_pop_back96():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2829,7 +3891,7 @@ def test_pop_back1():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_pop_back2():
+def test_pop_back97():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -2863,41 +3925,7 @@ def test_pop_back2():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_pop_back3():
-    '''
-    Self:
-        None <- 0 ->  <- 0 -> None
-    Return:
-        0
-    End Self:
-        None <- 0 -> None
-    '''
-    # Input Creation
-    doublylinkedlist0 = DoublyLinkedList()
-    node1 = Node(0)
-    node1.data = 0
-    node1.prev = None
-    node2 = Node(0)
-    node2.data = 0
-    node2.next = None
-    node2.prev = node1
-    node1.next = node2
-    doublylinkedlist0.head = node1
-    doublylinkedlist0.tail = node2
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Method call
-    returnv = doublylinkedlist0.pop_back()
-    # Repok check
-    assert doublylinkedlist0.repok()
-    # Assertions
-    assert returnv == 0
-    assert doublylinkedlist0.head.data == 0
-    assert doublylinkedlist0.head.next is None
-    assert doublylinkedlist0.head.prev is None
-
-
-def test_pop_back4():
+def test_pop_back98():
     '''
     Self:
         None <- 0 -> None
@@ -2926,7 +3954,7 @@ def test_pop_back4():
     assert doublylinkedlist0.tail is None
 
 
-def test_pop_back5():
+def test_pop_back99():
     '''
     Self:
         <Empty list>

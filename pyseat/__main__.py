@@ -8,7 +8,6 @@ import sut_parser
 import cli_print as cli
 from engine import SEEngine
 from test_generator import TestCode, append_to_testfile, create_testfile
-import data
 import arg_parsing
 
 
@@ -25,27 +24,44 @@ for args in runs:
     sut = sut_parser.parse(module_name, class_name, methods_names)
     testfile, mod, folder, filepath = create_testfile(module_name, class_name)
 
-    for method_data in sut.methods_map.values():
-        sut.current_method = method_data
-        engine = SEEngine(sut, args)
-
-        test_num = 0
-        start_time = time.time()
-
-        cli.print_method_data(sut.current_method.name, class_name)
-
-        for run in engine.explore():
-            cli.print_result(sut.get_method(), run, args["quiet"])
-            if run.status != data.PRUNED:
+    engine = SEEngine(sut, args)
+    test_num = 0
+    input_structures = engine.generate_inputs()
+    for method in methods_names:
+        sut.current_method = sut.methods_map[method]
+        cli.print_method_data(method, class_name)
+        for i, conditions in input_structures:
+            for run in engine.explore(method, i, conditions):
+                cli.print_result(run, args["quiet"])
                 test_num += 1
                 test = TestCode(
                     sut, run, test_num, args["method_timeout"], args["test_comments"],
                 )
                 append_to_testfile(filepath, test.code + "\n\n")
 
-        cli.print_statistics(
-            engine.statistics(), test_num, time.time() - start_time, args["verbose"]
-        )
+    # cli.print_statistics(engine.statistics(), test_num, 0, args["verbose"])
+
+    # for method_data in sut.methods_map.values():
+    #     sut.current_method = method_data
+    #     engine = SEEngine(sut, args)
+
+    #     test_num = 0
+    #     start_time = time.time()
+
+    #     cli.print_method_data(sut.current_method.name, class_name)
+
+    #     for run in engine.explore():
+    #         cli.print_result(sut.get_method(), run, args["quiet"])
+    #         if run.status != data.PRUNED:
+    #             test_num += 1
+    #             test = TestCode(
+    #                 sut, run, test_num, args["method_timeout"], args["test_comments"],
+    #             )
+    #             append_to_testfile(filepath, test.code + "\n\n")
+
+    #     cli.print_statistics(
+    #         engine.statistics(), test_num, time.time() - start_time, args["verbose"]
+    #     )
 
     if args["run_tests"]:
         coverage = args["coverage"]
