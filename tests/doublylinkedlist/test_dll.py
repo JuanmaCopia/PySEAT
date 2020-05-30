@@ -892,7 +892,7 @@ def test_insert_after21():
     assert doublylinkedlist0.tail is None
 
 
-def test_remove22():
+def test_remove1():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
@@ -942,7 +942,7 @@ def test_remove22():
     assert doublylinkedlist0.head.next.next.data == 1
 
 
-def test_remove23():
+def test_remove2():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
@@ -991,7 +991,7 @@ def test_remove23():
     assert doublylinkedlist0.tail.prev.data == 1
 
 
-def test_remove24():
+def test_remove3():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
@@ -1040,7 +1040,7 @@ def test_remove24():
     assert doublylinkedlist0.tail.prev.data == 1
 
 
-def test_remove25():
+def test_remove4():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -1089,7 +1089,7 @@ def test_remove25():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_remove26():
+def test_remove5():
     '''
     Self:
         None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -1138,7 +1138,7 @@ def test_remove26():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_remove27():
+def test_remove6():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -1187,7 +1187,7 @@ def test_remove27():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_remove28():
+def test_remove7():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
@@ -1232,7 +1232,7 @@ def test_remove28():
     assert doublylinkedlist0.tail.prev.data == 1
 
 
-def test_remove29():
+def test_remove8():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
@@ -1276,7 +1276,7 @@ def test_remove29():
     assert doublylinkedlist0.head.next.data == 1
 
 
-def test_remove30():
+def test_remove9():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
@@ -1320,7 +1320,7 @@ def test_remove30():
     assert doublylinkedlist0.head.next.data == 1
 
 
-def test_remove31():
+def test_remove10():
     '''
     Self:
         None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -1364,7 +1364,7 @@ def test_remove31():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_remove32():
+def test_remove11():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -1408,7 +1408,7 @@ def test_remove32():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_remove33():
+def test_remove12():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 -> None
@@ -1448,7 +1448,7 @@ def test_remove33():
     assert doublylinkedlist0.head.next.data == 1
 
 
-def test_remove34():
+def test_remove13():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 0 -> None
@@ -1487,7 +1487,7 @@ def test_remove34():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_remove35():
+def test_remove14():
     '''
     Self:
         None <- 1 ->  <- 0 ->  <- 0 -> None
@@ -1526,7 +1526,7 @@ def test_remove35():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_remove36():
+def test_remove15():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 -> None
@@ -1565,7 +1565,7 @@ def test_remove36():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_remove37():
+def test_remove16():
     '''
     Self:
         None <- 1 ->  <- 1 -> None
@@ -1600,7 +1600,7 @@ def test_remove37():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_remove38():
+def test_remove17():
     '''
     Self:
         None <- 1 ->  <- 0 -> None
@@ -1634,7 +1634,7 @@ def test_remove38():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_remove39():
+def test_remove18():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -1668,7 +1668,7 @@ def test_remove39():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_remove40():
+def test_remove19():
     '''
     Self:
         None <- 1 -> None
@@ -1698,7 +1698,7 @@ def test_remove40():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_remove41():
+def test_remove20():
     '''
     Self:
         None <- 0 -> None
@@ -1727,7 +1727,7 @@ def test_remove41():
     assert doublylinkedlist0.tail is None
 
 
-def test_remove42():
+def test_remove21():
     '''
     Self:
         <Empty list>
@@ -1752,7 +1752,7 @@ def test_remove42():
     assert doublylinkedlist0.tail is None
 
 
-def test_find43():
+def test_find1():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
@@ -1802,7 +1802,7 @@ def test_find43():
     assert doublylinkedlist0.head.next.next.data == 1
 
 
-def test_find44():
+def test_find2():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
@@ -1852,7 +1852,7 @@ def test_find44():
     assert doublylinkedlist0.head.next.next.data == 1
 
 
-def test_find45():
+def test_find3():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
@@ -1902,7 +1902,7 @@ def test_find45():
     assert doublylinkedlist0.head.next.next.data == 1
 
 
-def test_find46():
+def test_find4():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -1952,7 +1952,7 @@ def test_find46():
     assert doublylinkedlist0.head.next.next.data == 0
 
 
-def test_find47():
+def test_find5():
     '''
     Self:
         None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2002,7 +2002,7 @@ def test_find47():
     assert doublylinkedlist0.head.next.next.data == 0
 
 
-def test_find48():
+def test_find6():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2052,7 +2052,7 @@ def test_find48():
     assert doublylinkedlist0.head.next.next.data == 0
 
 
-def test_find49():
+def test_find7():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> None
@@ -2097,7 +2097,7 @@ def test_find49():
     assert doublylinkedlist0.tail.prev.data == 1
 
 
-def test_find50():
+def test_find8():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> None
@@ -2142,7 +2142,7 @@ def test_find50():
     assert doublylinkedlist0.tail.prev.data == 1
 
 
-def test_find51():
+def test_find9():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> None
@@ -2187,7 +2187,7 @@ def test_find51():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_find52():
+def test_find10():
     '''
     Self:
         None <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2232,7 +2232,7 @@ def test_find52():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_find53():
+def test_find11():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2277,7 +2277,7 @@ def test_find53():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_find54():
+def test_find12():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 1 -> None
@@ -2317,7 +2317,7 @@ def test_find54():
     assert doublylinkedlist0.head.next.data == 1
 
 
-def test_find55():
+def test_find13():
     '''
     Self:
         None <- 1 ->  <- 1 ->  <- 0 -> None
@@ -2357,7 +2357,7 @@ def test_find55():
     assert doublylinkedlist0.head.next.data == 1
 
 
-def test_find56():
+def test_find14():
     '''
     Self:
         None <- 1 ->  <- 0 ->  <- 0 -> None
@@ -2397,7 +2397,7 @@ def test_find56():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_find57():
+def test_find15():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2437,7 +2437,7 @@ def test_find57():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_find58():
+def test_find16():
     '''
     Self:
         None <- 1 ->  <- 1 -> None
@@ -2472,7 +2472,7 @@ def test_find58():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_find59():
+def test_find17():
     '''
     Self:
         None <- 1 ->  <- 0 -> None
@@ -2507,7 +2507,7 @@ def test_find59():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_find60():
+def test_find18():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -2542,7 +2542,7 @@ def test_find60():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_find61():
+def test_find19():
     '''
     Self:
         None <- 1 -> None
@@ -2572,7 +2572,7 @@ def test_find61():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_find62():
+def test_find20():
     '''
     Self:
         None <- 0 -> None
@@ -2602,7 +2602,7 @@ def test_find62():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_find63():
+def test_find21():
     '''
     Self:
         <Empty list>
@@ -2627,7 +2627,7 @@ def test_find63():
     assert doublylinkedlist0.tail is None
 
 
-def test_insert_at_back64():
+def test_insert_at_back1():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2678,7 +2678,7 @@ def test_insert_at_back64():
     assert doublylinkedlist0.tail.prev.prev.data == 0
 
 
-def test_insert_at_back65():
+def test_insert_at_back2():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2724,7 +2724,7 @@ def test_insert_at_back65():
     assert doublylinkedlist0.head.next.next.data == 0
 
 
-def test_insert_at_back66():
+def test_insert_at_back3():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2765,7 +2765,7 @@ def test_insert_at_back66():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_insert_at_back67():
+def test_insert_at_back4():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -2801,7 +2801,7 @@ def test_insert_at_back67():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_insert_at_back68():
+def test_insert_at_back5():
     '''
     Self:
         None <- 0 -> None
@@ -2832,7 +2832,7 @@ def test_insert_at_back68():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_insert_at_back69():
+def test_insert_at_back6():
     '''
     Self:
         <Empty list>
@@ -2858,7 +2858,7 @@ def test_insert_at_back69():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_insert_at_front70():
+def test_insert_at_front1():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2909,7 +2909,7 @@ def test_insert_at_front70():
     assert doublylinkedlist0.tail.prev.prev.data == 0
 
 
-def test_insert_at_front71():
+def test_insert_at_front2():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2955,7 +2955,7 @@ def test_insert_at_front71():
     assert doublylinkedlist0.head.next.next.data == 0
 
 
-def test_insert_at_front72():
+def test_insert_at_front3():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 -> None
@@ -2996,7 +2996,7 @@ def test_insert_at_front72():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_insert_at_front73():
+def test_insert_at_front4():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -3032,7 +3032,7 @@ def test_insert_at_front73():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_insert_at_front74():
+def test_insert_at_front5():
     '''
     Self:
         None <- 0 -> None
@@ -3063,7 +3063,7 @@ def test_insert_at_front74():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_insert_at_front75():
+def test_insert_at_front6():
     '''
     Self:
         <Empty list>
@@ -3089,7 +3089,7 @@ def test_insert_at_front75():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_top_front76():
+def test_top_front1():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -3139,7 +3139,7 @@ def test_top_front76():
     assert doublylinkedlist0.head.next.next.data == 0
 
 
-def test_top_front77():
+def test_top_front2():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -3184,7 +3184,7 @@ def test_top_front77():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_top_front78():
+def test_top_front3():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 -> None
@@ -3224,7 +3224,7 @@ def test_top_front78():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_top_front79():
+def test_top_front4():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -3259,7 +3259,7 @@ def test_top_front79():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_top_front80():
+def test_top_front5():
     '''
     Self:
         None <- 0 -> None
@@ -3289,7 +3289,7 @@ def test_top_front80():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_top_front81():
+def test_top_front6():
     '''
     Self:
         <Empty list>
@@ -3314,7 +3314,7 @@ def test_top_front81():
     assert doublylinkedlist0.tail is None
 
 
-def test_top_back82():
+def test_top_back1():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -3364,7 +3364,7 @@ def test_top_back82():
     assert doublylinkedlist0.head.next.next.data == 0
 
 
-def test_top_back83():
+def test_top_back2():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -3409,7 +3409,7 @@ def test_top_back83():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_top_back84():
+def test_top_back3():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 -> None
@@ -3449,7 +3449,7 @@ def test_top_back84():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_top_back85():
+def test_top_back4():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -3484,7 +3484,7 @@ def test_top_back85():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_top_back86():
+def test_top_back5():
     '''
     Self:
         None <- 0 -> None
@@ -3514,7 +3514,7 @@ def test_top_back86():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_top_back87():
+def test_top_back6():
     '''
     Self:
         <Empty list>
@@ -3539,7 +3539,7 @@ def test_top_back87():
     assert doublylinkedlist0.tail is None
 
 
-def test_pop_front88():
+def test_pop_front1():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -3588,7 +3588,7 @@ def test_pop_front88():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_pop_front89():
+def test_pop_front2():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -3632,7 +3632,7 @@ def test_pop_front89():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_pop_front90():
+def test_pop_front3():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 -> None
@@ -3671,7 +3671,7 @@ def test_pop_front90():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_pop_front91():
+def test_pop_front4():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -3705,7 +3705,7 @@ def test_pop_front91():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_pop_front92():
+def test_pop_front5():
     '''
     Self:
         None <- 0 -> None
@@ -3734,7 +3734,7 @@ def test_pop_front92():
     assert doublylinkedlist0.tail is None
 
 
-def test_pop_front93():
+def test_pop_front6():
     '''
     Self:
         <Empty list>
@@ -3759,7 +3759,7 @@ def test_pop_front93():
     assert doublylinkedlist0.tail is None
 
 
-def test_pop_back94():
+def test_pop_back1():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -3808,7 +3808,7 @@ def test_pop_back94():
     assert doublylinkedlist0.tail.prev.data == 0
 
 
-def test_pop_back95():
+def test_pop_back2():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> None
@@ -3852,7 +3852,7 @@ def test_pop_back95():
     assert doublylinkedlist0.head.next.data == 0
 
 
-def test_pop_back96():
+def test_pop_back3():
     '''
     Self:
         None <- 0 ->  <- 0 ->  <- 0 -> None
@@ -3891,7 +3891,7 @@ def test_pop_back96():
     assert doublylinkedlist0.tail.next is None
 
 
-def test_pop_back97():
+def test_pop_back4():
     '''
     Self:
         None <- 0 ->  <- 0 -> None
@@ -3925,7 +3925,7 @@ def test_pop_back97():
     assert doublylinkedlist0.head.prev is None
 
 
-def test_pop_back98():
+def test_pop_back5():
     '''
     Self:
         None <- 0 -> None
@@ -3954,7 +3954,7 @@ def test_pop_back98():
     assert doublylinkedlist0.tail is None
 
 
-def test_pop_back99():
+def test_pop_back6():
     '''
     Self:
         <Empty list>

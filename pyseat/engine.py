@@ -251,10 +251,10 @@ class SEEngine:
 
             return pathdata
 
-    def execute_method_concretely(self, obj, args):
+    def execute_method_concretely(self, obj, args, method_name):
         assert self.mode == CONCRETE_EXECUTION
         try:
-            method = getattr(obj, self._sut.get_method_name())
+            method = getattr(obj, method_name)
             with Timeout(self.method_timeout), HiddenPrints():
                 if args:
                     returnv = method(*args)

@@ -830,7 +830,7 @@ def test_insert_after21():
     assert cdlinkedlist0.head is None
 
 
-def test_insert_before22():
+def test_insert_before1():
     '''
     Self:
          <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -878,7 +878,7 @@ def test_insert_before22():
     assert cdlinkedlist0.head.next.next.next.key == 0
 
 
-def test_insert_before23():
+def test_insert_before2():
     '''
     Self:
          <- 1 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -926,7 +926,7 @@ def test_insert_before23():
     assert cdlinkedlist0.head.next.next.next.key == 0
 
 
-def test_insert_before24():
+def test_insert_before3():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -974,7 +974,7 @@ def test_insert_before24():
     assert cdlinkedlist0.head.next.next.next.key == 0
 
 
-def test_insert_before25():
+def test_insert_before4():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> **
@@ -1022,7 +1022,7 @@ def test_insert_before25():
     assert cdlinkedlist0.head.next.next.next.key == 0
 
 
-def test_insert_before26():
+def test_insert_before5():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
@@ -1070,7 +1070,7 @@ def test_insert_before26():
     assert cdlinkedlist0.head.next.next.next.key == 1
 
 
-def test_insert_before27():
+def test_insert_before6():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
@@ -1117,7 +1117,7 @@ def test_insert_before27():
     assert cdlinkedlist0.head.prev.prev.key == 1
 
 
-def test_insert_before28():
+def test_insert_before7():
     '''
     Self:
          <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -1160,7 +1160,7 @@ def test_insert_before28():
     assert cdlinkedlist0.head.prev.prev.key == 0
 
 
-def test_insert_before29():
+def test_insert_before8():
     '''
     Self:
          <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -1203,7 +1203,7 @@ def test_insert_before29():
     assert cdlinkedlist0.head.prev.prev.key == 0
 
 
-def test_insert_before30():
+def test_insert_before9():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> **
@@ -1246,7 +1246,7 @@ def test_insert_before30():
     assert cdlinkedlist0.head.prev.prev.key == 0
 
 
-def test_insert_before31():
+def test_insert_before10():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
@@ -1289,7 +1289,7 @@ def test_insert_before31():
     assert cdlinkedlist0.head.prev.prev.key == 0
 
 
-def test_insert_before32():
+def test_insert_before11():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
@@ -1331,7 +1331,7 @@ def test_insert_before32():
     assert cdlinkedlist0.head.next.next.key == 1
 
 
-def test_insert_before33():
+def test_insert_before12():
     '''
     Self:
          <- 0 ->  <- 0 ->  <- 0 -> **
@@ -1369,7 +1369,7 @@ def test_insert_before33():
     assert cdlinkedlist0.head.next.next.key == 0
 
 
-def test_insert_before34():
+def test_insert_before13():
     '''
     Self:
          <- 1 ->  <- 0 ->  <- 0 -> **
@@ -1407,7 +1407,7 @@ def test_insert_before34():
     assert cdlinkedlist0.head.next.next.key == 0
 
 
-def test_insert_before35():
+def test_insert_before14():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 0 -> **
@@ -1445,7 +1445,7 @@ def test_insert_before35():
     assert cdlinkedlist0.head.next.next.key == 0
 
 
-def test_insert_before36():
+def test_insert_before15():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 -> **
@@ -1482,7 +1482,7 @@ def test_insert_before36():
     assert cdlinkedlist0.head.prev.key == 1
 
 
-def test_insert_before37():
+def test_insert_before16():
     '''
     Self:
          <- 0 ->  <- 0 -> **
@@ -1515,7 +1515,7 @@ def test_insert_before37():
     assert cdlinkedlist0.head.prev.key == 0
 
 
-def test_insert_before38():
+def test_insert_before17():
     '''
     Self:
          <- 1 ->  <- 0 -> **
@@ -1548,7 +1548,7 @@ def test_insert_before38():
     assert cdlinkedlist0.head.prev.key == 0
 
 
-def test_insert_before39():
+def test_insert_before18():
     '''
     Self:
          <- 1 ->  <- 1 -> **
@@ -1580,7 +1580,7 @@ def test_insert_before39():
     assert cdlinkedlist0.head.next.key == 1
 
 
-def test_insert_before40():
+def test_insert_before19():
     '''
     Self:
          <- 0 -> **
@@ -1608,7 +1608,7 @@ def test_insert_before40():
     assert cdlinkedlist0.head.next.key == 0
 
 
-def test_insert_before41():
+def test_insert_before20():
     '''
     Self:
          <- 1 -> **
@@ -1635,7 +1635,7 @@ def test_insert_before41():
     assert cdlinkedlist0.head.key == 1
 
 
-def test_insert_before42():
+def test_insert_before21():
     '''
     Self:
         <Empty list>
@@ -1658,7 +1658,7 @@ def test_insert_before42():
     assert cdlinkedlist0.head is None
 
 
-def test_delete43():
+def test_delete1():
     '''
     Self:
          <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -1704,7 +1704,7 @@ def test_delete43():
     assert cdlinkedlist0.head.next.next.key == 0
 
 
-def test_delete44():
+def test_delete2():
     '''
     Self:
          <- 1 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -1750,7 +1750,7 @@ def test_delete44():
     assert cdlinkedlist0.head.next.next.key == 0
 
 
-def test_delete45():
+def test_delete3():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -1796,7 +1796,7 @@ def test_delete45():
     assert cdlinkedlist0.head.next.next.key == 0
 
 
-def test_delete46():
+def test_delete4():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> **
@@ -1842,7 +1842,7 @@ def test_delete46():
     assert cdlinkedlist0.head.next.next.key == 1
 
 
-def test_delete47():
+def test_delete5():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
@@ -1888,7 +1888,7 @@ def test_delete47():
     assert cdlinkedlist0.head.next.next.key == 1
 
 
-def test_delete48():
+def test_delete6():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
@@ -1935,7 +1935,7 @@ def test_delete48():
     assert cdlinkedlist0.head.prev.prev.key == 1
 
 
-def test_delete49():
+def test_delete7():
     '''
     Self:
          <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -1976,7 +1976,7 @@ def test_delete49():
     assert cdlinkedlist0.head.prev.key == 0
 
 
-def test_delete50():
+def test_delete8():
     '''
     Self:
          <- 1 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -2017,7 +2017,7 @@ def test_delete50():
     assert cdlinkedlist0.head.prev.key == 0
 
 
-def test_delete51():
+def test_delete9():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 0 ->  <- 0 -> **
@@ -2058,7 +2058,7 @@ def test_delete51():
     assert cdlinkedlist0.head.prev.key == 0
 
 
-def test_delete52():
+def test_delete10():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 ->  <- 0 -> **
@@ -2099,7 +2099,7 @@ def test_delete52():
     assert cdlinkedlist0.head.prev.key == 1
 
 
-def test_delete53():
+def test_delete11():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 ->  <- 1 -> **
@@ -2141,7 +2141,7 @@ def test_delete53():
     assert cdlinkedlist0.head.next.next.key == 1
 
 
-def test_delete54():
+def test_delete12():
     '''
     Self:
          <- 0 ->  <- 0 ->  <- 0 -> **
@@ -2177,7 +2177,7 @@ def test_delete54():
     assert cdlinkedlist0.head.next.key == 0
 
 
-def test_delete55():
+def test_delete13():
     '''
     Self:
          <- 1 ->  <- 0 ->  <- 0 -> **
@@ -2213,7 +2213,7 @@ def test_delete55():
     assert cdlinkedlist0.head.next.key == 0
 
 
-def test_delete56():
+def test_delete14():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 0 -> **
@@ -2249,7 +2249,7 @@ def test_delete56():
     assert cdlinkedlist0.head.next.key == 1
 
 
-def test_delete57():
+def test_delete15():
     '''
     Self:
          <- 1 ->  <- 1 ->  <- 1 -> **
@@ -2286,7 +2286,7 @@ def test_delete57():
     assert cdlinkedlist0.head.prev.key == 1
 
 
-def test_delete58():
+def test_delete16():
     '''
     Self:
          <- 0 ->  <- 0 -> **
@@ -2317,7 +2317,7 @@ def test_delete58():
     assert cdlinkedlist0.head.key == 0
 
 
-def test_delete59():
+def test_delete17():
     '''
     Self:
          <- 1 ->  <- 0 -> **
@@ -2348,7 +2348,7 @@ def test_delete59():
     assert cdlinkedlist0.head.key == 1
 
 
-def test_delete60():
+def test_delete18():
     '''
     Self:
          <- 1 ->  <- 1 -> **
@@ -2380,7 +2380,7 @@ def test_delete60():
     assert cdlinkedlist0.head.next.key == 1
 
 
-def test_delete61():
+def test_delete19():
     '''
     Self:
          <- 0 -> **
@@ -2407,7 +2407,7 @@ def test_delete61():
     assert cdlinkedlist0.head is None
 
 
-def test_delete62():
+def test_delete20():
     '''
     Self:
          <- 1 -> **
@@ -2434,7 +2434,7 @@ def test_delete62():
     assert cdlinkedlist0.head.key == 1
 
 
-def test_delete63():
+def test_delete21():
     '''
     Self:
         <Empty list>
@@ -2457,7 +2457,7 @@ def test_delete63():
     assert cdlinkedlist0.head is None
 
 
-def test_append64():
+def test_append1():
     '''
     Self:
          <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -2505,7 +2505,7 @@ def test_append64():
     assert cdlinkedlist0.head.next.next.next.key == 0
 
 
-def test_append65():
+def test_append2():
     '''
     Self:
          <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -2548,7 +2548,7 @@ def test_append65():
     assert cdlinkedlist0.head.prev.prev.key == 0
 
 
-def test_append66():
+def test_append3():
     '''
     Self:
          <- 0 ->  <- 0 ->  <- 0 -> **
@@ -2586,7 +2586,7 @@ def test_append66():
     assert cdlinkedlist0.head.next.next.key == 0
 
 
-def test_append67():
+def test_append4():
     '''
     Self:
          <- 0 ->  <- 0 -> **
@@ -2619,7 +2619,7 @@ def test_append67():
     assert cdlinkedlist0.head.prev.key == 0
 
 
-def test_append68():
+def test_append5():
     '''
     Self:
          <- 0 -> **
@@ -2647,7 +2647,7 @@ def test_append68():
     assert cdlinkedlist0.head.next.key == 0
 
 
-def test_append69():
+def test_append6():
     '''
     Self:
         <Empty list>
@@ -2670,7 +2670,7 @@ def test_append69():
     assert cdlinkedlist0.head.key == 0
 
 
-def test_prepend70():
+def test_prepend1():
     '''
     Self:
          <- 0 ->  <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -2718,7 +2718,7 @@ def test_prepend70():
     assert cdlinkedlist0.head.next.next.next.key == 0
 
 
-def test_prepend71():
+def test_prepend2():
     '''
     Self:
          <- 0 ->  <- 0 ->  <- 0 ->  <- 0 -> **
@@ -2761,7 +2761,7 @@ def test_prepend71():
     assert cdlinkedlist0.head.prev.prev.key == 0
 
 
-def test_prepend72():
+def test_prepend3():
     '''
     Self:
          <- 0 ->  <- 0 ->  <- 0 -> **
@@ -2799,7 +2799,7 @@ def test_prepend72():
     assert cdlinkedlist0.head.next.next.key == 0
 
 
-def test_prepend73():
+def test_prepend4():
     '''
     Self:
          <- 0 ->  <- 0 -> **
@@ -2832,7 +2832,7 @@ def test_prepend73():
     assert cdlinkedlist0.head.prev.key == 0
 
 
-def test_prepend74():
+def test_prepend5():
     '''
     Self:
          <- 0 -> **
@@ -2860,7 +2860,7 @@ def test_prepend74():
     assert cdlinkedlist0.head.next.key == 0
 
 
-def test_prepend75():
+def test_prepend6():
     '''
     Self:
         <Empty list>

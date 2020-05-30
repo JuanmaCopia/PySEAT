@@ -25,11 +25,15 @@ for args in runs:
     testfile, mod, folder, filepath = create_testfile(module_name, class_name)
 
     engine = SEEngine(sut, args)
-    test_num = 0
+
+    cli.print_blue(" Generating {}...".format(class_name))
     input_structures = engine.generate_structures()
+    cli.print_white(" Done!")
+
     for method in methods_names:
+        test_num = 0
         sut.current_method = sut.methods_map[method]
-        cli.print_method_data(method, class_name)
+        cli.print_method_data(method)
         for i, conditions in input_structures:
             for run in engine.explore(method, i, conditions):
                 cli.print_result(run, args["quiet"])

@@ -62,14 +62,12 @@ def print_welcome():
     print_cyan("\n\n {}  PySEAT  {}\n".format("=" * 32, "=" * 32))
 
 
-def print_method_data(method_name, class_name):
-    print_white(" Method: {}".format(method_name))
-    print_white(" Class:  {}\n".format(class_name))
-    print(" Performing Exploration...")
+def print_method_data(method_name):
+    print_white("\n Performing Exploration of {}... \n".format(method_name))
 
 
 def print_running_tests():
-    print_white("Running generated tests...")
+    print_white("\nRunning generated tests...")
 
 
 def print_coverage_title():
@@ -97,8 +95,12 @@ def print_red(msg):
 
 
 def print_magenta(msg):
-    print(colored(msg, "magenta", attrs=["bold"],))
+    print(colored(msg, "magenta", attrs=["bold"]))
 
 
 def print_yellow(msg):
-    print(colored(msg, "yellow", attrs=["bold"],))
+    print(colored(msg, "yellow", attrs=["bold"]))
+
+
+def print_blue(msg):
+    print(colored(msg, "blue", attrs=["bold"]))

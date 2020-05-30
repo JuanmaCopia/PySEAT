@@ -2122,6 +2122,98 @@ def test_insert41():
     '''
     Self:
         
+        0 
+         \
+         1
+
+    Return:
+        None
+    End Self:
+        
+          0 
+         / \
+        -1 1
+
+    '''
+    # Input Creation
+    bst0 = BST()
+    node1 = Node(0)
+    node1.data = 0
+    node1.left = None
+    node2 = Node(0)
+    node2.data = 1
+    node2.right = None
+    node2.left = None
+    node1.right = node2
+    bst0.root = node1
+    # Repok check
+    assert bst0.repok()
+    # Method call
+    returnv = bst0.insert(-1)
+    # Repok check
+    assert bst0.repok()
+    # Assertions
+    assert returnv is None
+    assert bst0.root.data == 0
+    assert bst0.root.right.data == 1
+    assert bst0.root.right.right is None
+    assert bst0.root.right.left is None
+    assert bst0.root.left.data == -1
+    assert bst0.root.left.right is None
+    assert bst0.root.left.left is None
+
+
+def test_insert42():
+    '''
+    Self:
+        
+        -2 
+          \
+          0
+
+    Return:
+        None
+    End Self:
+        
+        -2__ 
+            \
+            0
+           / 
+          -1 
+
+    '''
+    # Input Creation
+    bst0 = BST()
+    node1 = Node(0)
+    node1.data = -2
+    node1.left = None
+    node2 = Node(0)
+    node2.data = 0
+    node2.right = None
+    node2.left = None
+    node1.right = node2
+    bst0.root = node1
+    # Repok check
+    assert bst0.repok()
+    # Method call
+    returnv = bst0.insert(-1)
+    # Repok check
+    assert bst0.repok()
+    # Assertions
+    assert returnv is None
+    assert bst0.root.data == -2
+    assert bst0.root.left is None
+    assert bst0.root.right.data == 0
+    assert bst0.root.right.right is None
+    assert bst0.root.right.left.data == -1
+    assert bst0.root.right.left.right is None
+    assert bst0.root.right.left.left is None
+
+
+def test_insert43():
+    '''
+    Self:
+        
         -1 
           \
           0
@@ -2130,9 +2222,11 @@ def test_insert41():
         None
     End Self:
         
-          -1 
-         /  \
-        -2  0
+        -1  
+          \ 
+          0 
+           \
+           1
 
     '''
     # Input Creation
@@ -2149,110 +2243,16 @@ def test_insert41():
     # Repok check
     assert bst0.repok()
     # Method call
-    returnv = bst0.insert(-2)
-    # Repok check
-    assert bst0.repok()
-    # Assertions
-    assert returnv is None
-    assert bst0.root.data == -1
-    assert bst0.root.right.data == 0
-    assert bst0.root.right.right is None
-    assert bst0.root.right.left is None
-    assert bst0.root.left.data == -2
-    assert bst0.root.left.right is None
-    assert bst0.root.left.left is None
-
-
-def test_insert42():
-    '''
-    Self:
-        
-        0 
-         \
-         2
-
-    Return:
-        None
-    End Self:
-        
-        0_ 
-          \
-          2
-         / 
-         1 
-
-    '''
-    # Input Creation
-    bst0 = BST()
-    node1 = Node(0)
-    node1.data = 0
-    node1.left = None
-    node2 = Node(0)
-    node2.data = 2
-    node2.right = None
-    node2.left = None
-    node1.right = node2
-    bst0.root = node1
-    # Repok check
-    assert bst0.repok()
-    # Method call
     returnv = bst0.insert(1)
     # Repok check
     assert bst0.repok()
     # Assertions
     assert returnv is None
-    assert bst0.root.data == 0
+    assert bst0.root.data == -1
     assert bst0.root.left is None
-    assert bst0.root.right.data == 2
-    assert bst0.root.right.right is None
-    assert bst0.root.right.left.data == 1
-    assert bst0.root.right.left.right is None
-    assert bst0.root.right.left.left is None
-
-
-def test_insert43():
-    '''
-    Self:
-        
-        0 
-         \
-         1
-
-    Return:
-        None
-    End Self:
-        
-        0  
-         \ 
-         1 
-          \
-          2
-
-    '''
-    # Input Creation
-    bst0 = BST()
-    node1 = Node(0)
-    node1.data = 0
-    node1.left = None
-    node2 = Node(0)
-    node2.data = 1
-    node2.right = None
-    node2.left = None
-    node1.right = node2
-    bst0.root = node1
-    # Repok check
-    assert bst0.repok()
-    # Method call
-    returnv = bst0.insert(2)
-    # Repok check
-    assert bst0.repok()
-    # Assertions
-    assert returnv is None
-    assert bst0.root.data == 0
-    assert bst0.root.left is None
-    assert bst0.root.right.data == 1
+    assert bst0.root.right.data == 0
     assert bst0.root.right.left is None
-    assert bst0.root.right.right.data == 2
+    assert bst0.root.right.right.data == 1
     assert bst0.root.right.right.right is None
     assert bst0.root.right.right.left is None
 
@@ -2261,26 +2261,26 @@ def test_insert44():
     '''
     Self:
         
-        0 
-         \
-         1
+        -1 
+          \
+          0
 
     Return:
         None
     End Self:
         
-        0 
-         \
-         1
+        -1 
+          \
+          0
 
     '''
     # Input Creation
     bst0 = BST()
     node1 = Node(0)
-    node1.data = 0
+    node1.data = -1
     node1.left = None
     node2 = Node(0)
-    node2.data = 1
+    node2.data = 0
     node2.right = None
     node2.left = None
     node1.right = node2
@@ -2288,14 +2288,14 @@ def test_insert44():
     # Repok check
     assert bst0.repok()
     # Method call
-    returnv = bst0.insert(1)
+    returnv = bst0.insert(0)
     # Repok check
     assert bst0.repok()
     # Assertions
     assert returnv is None
-    assert bst0.root.data == 0
+    assert bst0.root.data == -1
     assert bst0.root.left is None
-    assert bst0.root.right.data == 1
+    assert bst0.root.right.data == 0
     assert bst0.root.right.right is None
     assert bst0.root.right.left is None
 
@@ -2384,35 +2384,35 @@ def test_insert47():
     '''
     Self:
         
-        0
+        -1
 
     Return:
         None
     End Self:
         
-        0 
-         \
-         1
+        -1 
+          \
+          0
 
     '''
     # Input Creation
     bst0 = BST()
     node1 = Node(0)
-    node1.data = 0
+    node1.data = -1
     node1.right = None
     node1.left = None
     bst0.root = node1
     # Repok check
     assert bst0.repok()
     # Method call
-    returnv = bst0.insert(1)
+    returnv = bst0.insert(0)
     # Repok check
     assert bst0.repok()
     # Assertions
     assert returnv is None
-    assert bst0.root.data == 0
+    assert bst0.root.data == -1
     assert bst0.root.left is None
-    assert bst0.root.right.data == 1
+    assert bst0.root.right.data == 0
     assert bst0.root.right.right is None
     assert bst0.root.right.left is None
 
@@ -2477,7 +2477,7 @@ def test_insert49():
     assert bst0.root.left is None
 
 
-def test_find50():
+def test_find1():
     '''
     Self:
         
@@ -2532,7 +2532,7 @@ def test_find50():
     assert bst0.root.left.left is None
 
 
-def test_find51():
+def test_find2():
     '''
     Self:
         
@@ -2583,7 +2583,7 @@ def test_find51():
     assert bst0.root.left.left is None
 
 
-def test_find52():
+def test_find3():
     '''
     Self:
         
@@ -2632,7 +2632,7 @@ def test_find52():
     assert bst0.root.left.left is None
 
 
-def test_find53():
+def test_find4():
     '''
     Self:
         
@@ -2681,7 +2681,7 @@ def test_find53():
     assert bst0.root.left.left is None
 
 
-def test_find54():
+def test_find5():
     '''
     Self:
         
@@ -2732,7 +2732,7 @@ def test_find54():
     assert bst0.root.left.left is None
 
 
-def test_find55():
+def test_find6():
     '''
     Self:
         
@@ -2781,7 +2781,7 @@ def test_find55():
     assert bst0.root.left.left is None
 
 
-def test_find56():
+def test_find7():
     '''
     Self:
         
@@ -2830,7 +2830,7 @@ def test_find56():
     assert bst0.root.left.left is None
 
 
-def test_find57():
+def test_find8():
     '''
     Self:
         
@@ -2889,7 +2889,7 @@ def test_find57():
     assert bst0.root.left.left.left is None
 
 
-def test_find58():
+def test_find9():
     '''
     Self:
         
@@ -2946,7 +2946,7 @@ def test_find58():
     assert bst0.root.left.left.left is None
 
 
-def test_find59():
+def test_find10():
     '''
     Self:
         
@@ -3001,7 +3001,7 @@ def test_find59():
     assert bst0.root.left.left.left is None
 
 
-def test_find60():
+def test_find11():
     '''
     Self:
         
@@ -3054,7 +3054,7 @@ def test_find60():
     assert bst0.root.left.left.left is None
 
 
-def test_find61():
+def test_find12():
     '''
     Self:
         
@@ -3107,7 +3107,7 @@ def test_find61():
     assert bst0.root.left.left.left is None
 
 
-def test_find62():
+def test_find13():
     '''
     Self:
         
@@ -3160,7 +3160,7 @@ def test_find62():
     assert bst0.root.left.left.left is None
 
 
-def test_find63():
+def test_find14():
     '''
     Self:
         
@@ -3213,7 +3213,7 @@ def test_find63():
     assert bst0.root.left.left.left is None
 
 
-def test_find64():
+def test_find15():
     '''
     Self:
         
@@ -3272,7 +3272,7 @@ def test_find64():
     assert bst0.root.left.right.left is None
 
 
-def test_find65():
+def test_find16():
     '''
     Self:
         
@@ -3329,7 +3329,7 @@ def test_find65():
     assert bst0.root.left.right.left is None
 
 
-def test_find66():
+def test_find17():
     '''
     Self:
         
@@ -3382,7 +3382,7 @@ def test_find66():
     assert bst0.root.left.right.left is None
 
 
-def test_find67():
+def test_find18():
     '''
     Self:
         
@@ -3437,7 +3437,7 @@ def test_find67():
     assert bst0.root.left.right.left is None
 
 
-def test_find68():
+def test_find19():
     '''
     Self:
         
@@ -3490,7 +3490,7 @@ def test_find68():
     assert bst0.root.left.right.left is None
 
 
-def test_find69():
+def test_find20():
     '''
     Self:
         
@@ -3543,7 +3543,7 @@ def test_find69():
     assert bst0.root.left.right.left is None
 
 
-def test_find70():
+def test_find21():
     '''
     Self:
         
@@ -3596,7 +3596,7 @@ def test_find70():
     assert bst0.root.left.right.left is None
 
 
-def test_find71():
+def test_find22():
     '''
     Self:
         
@@ -3643,7 +3643,7 @@ def test_find71():
     assert bst0.root.left.left is None
 
 
-def test_find72():
+def test_find23():
     '''
     Self:
         
@@ -3688,7 +3688,7 @@ def test_find72():
     assert bst0.root.left.left is None
 
 
-def test_find73():
+def test_find24():
     '''
     Self:
         
@@ -3731,7 +3731,7 @@ def test_find73():
     assert bst0.root.left.left is None
 
 
-def test_find74():
+def test_find25():
     '''
     Self:
         
@@ -3774,7 +3774,7 @@ def test_find74():
     assert bst0.root.left.left is None
 
 
-def test_find75():
+def test_find26():
     '''
     Self:
         
@@ -3817,7 +3817,7 @@ def test_find75():
     assert bst0.root.left.left is None
 
 
-def test_find76():
+def test_find27():
     '''
     Self:
         
@@ -3876,7 +3876,7 @@ def test_find76():
     assert bst0.root.right.left.left is None
 
 
-def test_find77():
+def test_find28():
     '''
     Self:
         
@@ -3929,7 +3929,7 @@ def test_find77():
     assert bst0.root.right.left.left is None
 
 
-def test_find78():
+def test_find29():
     '''
     Self:
         
@@ -3986,7 +3986,7 @@ def test_find78():
     assert bst0.root.right.left.left is None
 
 
-def test_find79():
+def test_find30():
     '''
     Self:
         
@@ -4041,7 +4041,7 @@ def test_find79():
     assert bst0.root.right.left.left is None
 
 
-def test_find80():
+def test_find31():
     '''
     Self:
         
@@ -4094,7 +4094,7 @@ def test_find80():
     assert bst0.root.right.left.left is None
 
 
-def test_find81():
+def test_find32():
     '''
     Self:
         
@@ -4147,7 +4147,7 @@ def test_find81():
     assert bst0.root.right.left.left is None
 
 
-def test_find82():
+def test_find33():
     '''
     Self:
         
@@ -4200,7 +4200,7 @@ def test_find82():
     assert bst0.root.right.left.left is None
 
 
-def test_find83():
+def test_find34():
     '''
     Self:
         
@@ -4259,7 +4259,7 @@ def test_find83():
     assert bst0.root.right.right.left is None
 
 
-def test_find84():
+def test_find35():
     '''
     Self:
         
@@ -4312,7 +4312,7 @@ def test_find84():
     assert bst0.root.right.right.left is None
 
 
-def test_find85():
+def test_find36():
     '''
     Self:
         
@@ -4369,7 +4369,7 @@ def test_find85():
     assert bst0.root.right.right.left is None
 
 
-def test_find86():
+def test_find37():
     '''
     Self:
         
@@ -4422,7 +4422,7 @@ def test_find86():
     assert bst0.root.right.right.left is None
 
 
-def test_find87():
+def test_find38():
     '''
     Self:
         
@@ -4477,7 +4477,7 @@ def test_find87():
     assert bst0.root.right.right.left is None
 
 
-def test_find88():
+def test_find39():
     '''
     Self:
         
@@ -4530,7 +4530,7 @@ def test_find88():
     assert bst0.root.right.right.left is None
 
 
-def test_find89():
+def test_find40():
     '''
     Self:
         
@@ -4583,97 +4583,7 @@ def test_find89():
     assert bst0.root.right.right.left is None
 
 
-def test_find90():
-    '''
-    Self:
-        
-        0 
-         \
-         1
-
-    Return:
-        node: 0
-    End Self:
-        
-        0 
-         \
-         1
-
-    '''
-    # Input Creation
-    bst0 = BST()
-    node1 = Node(0)
-    node1.data = 0
-    node1.left = None
-    node2 = Node(0)
-    node2.data = 1
-    node2.right = None
-    node2.left = None
-    node1.right = node2
-    bst0.root = node1
-    # Repok check
-    assert bst0.repok()
-    # Method call
-    returnv = bst0.find(0)
-    # Repok check
-    assert bst0.repok()
-    # Assertions
-    assert returnv.data == 0
-    assert returnv.left is None
-    assert returnv.right.data == 1
-    assert returnv.right.right is None
-    assert returnv.right.left is None
-    assert bst0.root.data == 0
-    assert bst0.root.left is None
-    assert bst0.root.right.data == 1
-    assert bst0.root.right.right is None
-    assert bst0.root.right.left is None
-
-
-def test_find91():
-    '''
-    Self:
-        
-        0 
-         \
-         1
-
-    Return:
-        None
-    End Self:
-        
-        0 
-         \
-         1
-
-    '''
-    # Input Creation
-    bst0 = BST()
-    node1 = Node(0)
-    node1.data = 0
-    node1.left = None
-    node2 = Node(0)
-    node2.data = 1
-    node2.right = None
-    node2.left = None
-    node1.right = node2
-    bst0.root = node1
-    # Repok check
-    assert bst0.repok()
-    # Method call
-    returnv = bst0.find(-1)
-    # Repok check
-    assert bst0.repok()
-    # Assertions
-    assert returnv is None
-    assert bst0.root.data == 0
-    assert bst0.root.left is None
-    assert bst0.root.right.data == 1
-    assert bst0.root.right.right is None
-    assert bst0.root.right.left is None
-
-
-def test_find92():
+def test_find41():
     '''
     Self:
         
@@ -4682,7 +4592,7 @@ def test_find92():
           0
 
     Return:
-        node: 0
+        node: -1
     End Self:
         
         -1 
@@ -4704,13 +4614,15 @@ def test_find92():
     # Repok check
     assert bst0.repok()
     # Method call
-    returnv = bst0.find(0)
+    returnv = bst0.find(-1)
     # Repok check
     assert bst0.repok()
     # Assertions
-    assert returnv.data == 0
-    assert returnv.right is None
+    assert returnv.data == -1
     assert returnv.left is None
+    assert returnv.right.data == 0
+    assert returnv.right.right is None
+    assert returnv.right.left is None
     assert bst0.root.data == -1
     assert bst0.root.left is None
     assert bst0.root.right.data == 0
@@ -4718,30 +4630,30 @@ def test_find92():
     assert bst0.root.right.left is None
 
 
-def test_find93():
+def test_find42():
     '''
     Self:
         
-        -2 
-          \
-          0
+        0 
+         \
+         1
 
     Return:
         None
     End Self:
         
-        -2 
-          \
-          0
+        0 
+         \
+         1
 
     '''
     # Input Creation
     bst0 = BST()
     node1 = Node(0)
-    node1.data = -2
+    node1.data = 0
     node1.left = None
     node2 = Node(0)
-    node2.data = 0
+    node2.data = 1
     node2.right = None
     node2.left = None
     node1.right = node2
@@ -4754,37 +4666,82 @@ def test_find93():
     assert bst0.repok()
     # Assertions
     assert returnv is None
-    assert bst0.root.data == -2
+    assert bst0.root.data == 0
     assert bst0.root.left is None
-    assert bst0.root.right.data == 0
+    assert bst0.root.right.data == 1
     assert bst0.root.right.right is None
     assert bst0.root.right.left is None
 
 
-def test_find94():
+def test_find43():
     '''
     Self:
         
-        -1 
-          \
-          0
+        0 
+         \
+         1
 
     Return:
-        None
+        node: 1
     End Self:
         
-        -1 
-          \
-          0
+        0 
+         \
+         1
 
     '''
     # Input Creation
     bst0 = BST()
     node1 = Node(0)
-    node1.data = -1
+    node1.data = 0
     node1.left = None
     node2 = Node(0)
-    node2.data = 0
+    node2.data = 1
+    node2.right = None
+    node2.left = None
+    node1.right = node2
+    bst0.root = node1
+    # Repok check
+    assert bst0.repok()
+    # Method call
+    returnv = bst0.find(1)
+    # Repok check
+    assert bst0.repok()
+    # Assertions
+    assert returnv.data == 1
+    assert returnv.right is None
+    assert returnv.left is None
+    assert bst0.root.data == 0
+    assert bst0.root.left is None
+    assert bst0.root.right.data == 1
+    assert bst0.root.right.right is None
+    assert bst0.root.right.left is None
+
+
+def test_find44():
+    '''
+    Self:
+        
+        0 
+         \
+         2
+
+    Return:
+        None
+    End Self:
+        
+        0 
+         \
+         2
+
+    '''
+    # Input Creation
+    bst0 = BST()
+    node1 = Node(0)
+    node1.data = 0
+    node1.left = None
+    node2 = Node(0)
+    node2.data = 2
     node2.right = None
     node2.left = None
     node1.right = node2
@@ -4797,14 +4754,57 @@ def test_find94():
     assert bst0.repok()
     # Assertions
     assert returnv is None
-    assert bst0.root.data == -1
+    assert bst0.root.data == 0
     assert bst0.root.left is None
-    assert bst0.root.right.data == 0
+    assert bst0.root.right.data == 2
     assert bst0.root.right.right is None
     assert bst0.root.right.left is None
 
 
-def test_find95():
+def test_find45():
+    '''
+    Self:
+        
+        0 
+         \
+         1
+
+    Return:
+        None
+    End Self:
+        
+        0 
+         \
+         1
+
+    '''
+    # Input Creation
+    bst0 = BST()
+    node1 = Node(0)
+    node1.data = 0
+    node1.left = None
+    node2 = Node(0)
+    node2.data = 1
+    node2.right = None
+    node2.left = None
+    node1.right = node2
+    bst0.root = node1
+    # Repok check
+    assert bst0.repok()
+    # Method call
+    returnv = bst0.find(2)
+    # Repok check
+    assert bst0.repok()
+    # Assertions
+    assert returnv is None
+    assert bst0.root.data == 0
+    assert bst0.root.left is None
+    assert bst0.root.right.data == 1
+    assert bst0.root.right.right is None
+    assert bst0.root.right.left is None
+
+
+def test_find46():
     '''
     Self:
         
@@ -4839,7 +4839,7 @@ def test_find95():
     assert bst0.root.left is None
 
 
-def test_find96():
+def test_find47():
     '''
     Self:
         
@@ -4872,7 +4872,7 @@ def test_find96():
     assert bst0.root.left is None
 
 
-def test_find97():
+def test_find48():
     '''
     Self:
         
@@ -4905,7 +4905,7 @@ def test_find97():
     assert bst0.root.left is None
 
 
-def test_find98():
+def test_find49():
     '''
     Self:
         <empty tree>
@@ -4928,7 +4928,7 @@ def test_find98():
     assert bst0.root is None
 
 
-def test_height99():
+def test_height1():
     '''
     Self:
         
@@ -4977,7 +4977,7 @@ def test_height99():
     assert bst0.root.left.left is None
 
 
-def test_height100():
+def test_height2():
     '''
     Self:
         
@@ -5030,7 +5030,7 @@ def test_height100():
     assert bst0.root.left.left.left is None
 
 
-def test_height101():
+def test_height3():
     '''
     Self:
         
@@ -5083,7 +5083,7 @@ def test_height101():
     assert bst0.root.left.right.left is None
 
 
-def test_height102():
+def test_height4():
     '''
     Self:
         
@@ -5126,7 +5126,7 @@ def test_height102():
     assert bst0.root.left.left is None
 
 
-def test_height103():
+def test_height5():
     '''
     Self:
         
@@ -5179,7 +5179,7 @@ def test_height103():
     assert bst0.root.right.left.left is None
 
 
-def test_height104():
+def test_height6():
     '''
     Self:
         
@@ -5232,30 +5232,30 @@ def test_height104():
     assert bst0.root.right.right.left is None
 
 
-def test_height105():
+def test_height7():
     '''
     Self:
         
-        0 
-         \
-         1
+        -1 
+          \
+          0
 
     Return:
         2
     End Self:
         
-        0 
-         \
-         1
+        -1 
+          \
+          0
 
     '''
     # Input Creation
     bst0 = BST()
     node1 = Node(0)
-    node1.data = 0
+    node1.data = -1
     node1.left = None
     node2 = Node(0)
-    node2.data = 1
+    node2.data = 0
     node2.right = None
     node2.left = None
     node1.right = node2
@@ -5268,14 +5268,14 @@ def test_height105():
     assert bst0.repok()
     # Assertions
     assert returnv == 2
-    assert bst0.root.data == 0
+    assert bst0.root.data == -1
     assert bst0.root.left is None
-    assert bst0.root.right.data == 1
+    assert bst0.root.right.data == 0
     assert bst0.root.right.right is None
     assert bst0.root.right.left is None
 
 
-def test_height106():
+def test_height8():
     '''
     Self:
         
@@ -5308,7 +5308,7 @@ def test_height106():
     assert bst0.root.left is None
 
 
-def test_height107():
+def test_height9():
     '''
     Self:
         <empty tree>
