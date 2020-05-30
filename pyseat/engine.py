@@ -61,9 +61,6 @@ class SEEngine:
         _max_depth (int): Max depth search, any execution that exceeds this value
         is pruned.
 
-        _stats (ExplorationStats): Contains the overall statistics of all executed
-        program paths.
-
         _sut (SUT): Data of the program under test, contains the method or function,
         parameter types, etc.
 
@@ -77,7 +74,6 @@ class SEEngine:
         self.method_timeout = cfg_args["method_timeout"]
 
         self.smt = SMT((SMTInt, SMTBool), SMTSolver)
-        self._stats = data.ExplorationStats()
         self._branch_points = []
         self._path_condition = []
 
@@ -104,7 +100,8 @@ class SEEngine:
             args = self._instantiate_args(method_name)
 
             result = self._execute_method_exploration(method_name, input_self, args)
-            yield (result)
+            if result is not None:
+                yield (result)
 
             self._remove_explored_branch()
             if not self._branch_points:
@@ -138,9 +135,9 @@ class SEEngine:
                 if sym.is_symbolic_bool(result):
                     result = result.__bool__()
         except excp.MaxDepthException:
-            self._stats.builds_pruned += 1
+            pass
         except excp.TimeOutException:
-            self._stats.builds_pruned += 1
+            pass
         except Exception as e:
             raise e
         else:
@@ -221,7 +218,6 @@ class SEEngine:
 
         except excp.MaxDepthException:
             pruned = True
-            self._stats.pruned_by_depth += 1
         except excp.TimeOutException:
             timeout = True
         except Exception as e:
@@ -229,17 +225,15 @@ class SEEngine:
         finally:
             # if exception:
             #     raise exception
-            pathdata = PathExecutionData()
-
             if pruned:
-                pathdata.status = data.PRUNED
-                return pathdata
+                return None
 
             model = self.smt.get_model(self._path_condition)
             conc_args = inst.concretize(args, model)
             conc_end_self = inst.concretize(end_self, model)
             conc_input_self = inst.concretize(input_self, model)
 
+            pathdata = PathExecutionData()
             pathdata.self_end_state = conc_end_self
             pathdata.input_self = conc_input_self
             pathdata.input_args = conc_args
@@ -448,11 +442,6 @@ class SEEngine:
         if false_cond and not true_cond:
             return False
         return None
-
-    def statistics(self):
-        """Returns the collected statistics of all executions.
-        """
-        return self._stats
 
 
 def raise_timeout(signum, frame):

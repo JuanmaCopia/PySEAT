@@ -6,6 +6,7 @@ import time
 
 import sut_parser
 import cli_print as cli
+from data import Statistics
 from engine import SEEngine
 from test_generator import TestCode, append_to_testfile, create_testfile
 import arg_parsing
@@ -26,47 +27,35 @@ for args in runs:
 
     engine = SEEngine(sut, args)
 
+    start_time = time.time()
+
     cli.print_blue(" Generating {}...".format(class_name))
     input_structures = engine.generate_structures()
     cli.print_white(" Done!")
 
+    build_time = time.time() - start_time
+
+    stats = Statistics(build_time)
+    amount_tests = 0
+
     for method in methods_names:
-        run_number = 0
+        test_num = 0
         sut.current_method = sut.methods_map[method]
         cli.print_method_data(method)
         for i, conditions in input_structures:
             for run in engine.explore(method, i, conditions):
-                run_number += 1
-                run.number = run_number
+                amount_tests += 1
+                stats.status_count(run)
+                test_num += 1
+                run.number = test_num
                 cli.print_result(run, args["quiet"])
                 test = TestCode(
-                    sut, run, run_number, args["method_timeout"], args["test_comments"],
+                    sut, run, test_num, args["method_timeout"], args["test_comments"],
                 )
                 append_to_testfile(filepath, test.code + "\n\n")
 
-    # cli.print_statistics(engine.statistics(), test_num, 0, args["verbose"])
-
-    # for method_data in sut.methods_map.values():
-    #     sut.current_method = method_data
-    #     engine = SEEngine(sut, args)
-
-    #     test_num = 0
-    #     start_time = time.time()
-
-    #     cli.print_method_data(sut.current_method.name, class_name)
-
-    #     for run in engine.explore():
-    #         cli.print_result(sut.get_method(), run, args["quiet"])
-    #         if run.status != data.PRUNED:
-    #             test_num += 1
-    #             test = TestCode(
-    #                 sut, run, test_num, args["method_timeout"], args["test_comments"],
-    #             )
-    #             append_to_testfile(filepath, test.code + "\n\n")
-
-    #     cli.print_statistics(
-    #         engine.statistics(), test_num, time.time() - start_time, args["verbose"]
-    #     )
+    stats.total_time = time.time() - start_time
+    cli.print_statistics(stats, amount_tests)
 
     if args["run_tests"]:
         coverage = args["coverage"]
