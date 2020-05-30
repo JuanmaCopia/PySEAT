@@ -31,15 +31,16 @@ for args in runs:
     cli.print_white(" Done!")
 
     for method in methods_names:
-        test_num = 0
+        run_number = 0
         sut.current_method = sut.methods_map[method]
         cli.print_method_data(method)
         for i, conditions in input_structures:
             for run in engine.explore(method, i, conditions):
+                run_number += 1
+                run.number = run_number
                 cli.print_result(run, args["quiet"])
-                test_num += 1
                 test = TestCode(
-                    sut, run, test_num, args["method_timeout"], args["test_comments"],
+                    sut, run, run_number, args["method_timeout"], args["test_comments"],
                 )
                 append_to_testfile(filepath, test.code + "\n\n")
 

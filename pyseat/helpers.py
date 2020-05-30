@@ -1,19 +1,3 @@
-def path_to_str(branch_points):
-    strrepr = ""
-    for x in branch_points:
-        strrepr += str(x.get_branch())
-    return strrepr
-
-
-def keep_first_n(l, n):
-    new_list = []
-    i = 0
-    while i < n:
-        new_list.insert(i, l[i])
-        i += 1
-    return new_list
-
-
 def do_add(s, x):
     length = len(s)
     s.add(x)

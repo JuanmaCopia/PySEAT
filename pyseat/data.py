@@ -21,6 +21,7 @@ class ExplorationStats:
         self.exceptions = 0
         self.timeouts = 0
 
+        self.builds_pruned = 0
         self.pruned_by_depth = 0
         self.pruned_by_timeout = 0
 

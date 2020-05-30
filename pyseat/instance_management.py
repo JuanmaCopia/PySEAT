@@ -52,9 +52,5 @@ def var_name(obj):
     assert False
 
 
-def is_same(obj1, obj2):
-    return obj1._objid == obj2._objid
-
-
 def is_tracked(obj):
     return hasattr(obj, "_objid")

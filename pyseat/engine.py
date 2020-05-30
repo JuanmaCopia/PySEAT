@@ -131,15 +131,16 @@ class SEEngine:
         return structures
 
     def _explore_repok(self, instance):
+        result = None
         try:
             with RepokExplorationMode(self):
                 result = instance.repok()
                 if sym.is_symbolic_bool(result):
                     result = result.__bool__()
         except excp.MaxDepthException:
-            pass
+            self._stats.builds_pruned += 1
         except excp.TimeOutException:
-            pass
+            self._stats.builds_pruned += 1
         except Exception as e:
             raise e
         else:
@@ -203,6 +204,7 @@ class SEEngine:
         returnv = None
         exception = None
         timeout = False
+        pruned = False
 
         end_self = copy.deepcopy(input_self)
         method = getattr(end_self, method_name)
@@ -218,6 +220,7 @@ class SEEngine:
                         returnv = returnv.__bool__()
 
         except excp.MaxDepthException:
+            pruned = True
             self._stats.pruned_by_depth += 1
         except excp.TimeOutException:
             timeout = True
@@ -226,14 +229,17 @@ class SEEngine:
         finally:
             # if exception:
             #     raise exception
+            pathdata = PathExecutionData()
+
+            if pruned:
+                pathdata.status = data.PRUNED
+                return pathdata
 
             model = self.smt.get_model(self._path_condition)
             conc_args = inst.concretize(args, model)
             conc_end_self = inst.concretize(end_self, model)
             conc_input_self = inst.concretize(input_self, model)
 
-            self._stats.total_paths += 1
-            pathdata = PathExecutionData(self._stats.total_paths)
             pathdata.self_end_state = conc_end_self
             pathdata.input_self = conc_input_self
             pathdata.input_args = conc_args
@@ -250,20 +256,6 @@ class SEEngine:
                 pathdata.status = data.FAIL
 
             return pathdata
-
-    def execute_method_concretely(self, obj, args, method_name):
-        assert self.mode == CONCRETE_EXECUTION
-        try:
-            method = getattr(obj, method_name)
-            with Timeout(self.method_timeout), HiddenPrints():
-                if args:
-                    returnv = method(*args)
-                else:
-                    returnv = method()
-        except Exception as e:
-            returnv = e
-        finally:
-            return returnv
 
     def execute_repok_concretely(self, obj):
         assert self.mode == CONCRETE_EXECUTION
@@ -512,7 +504,7 @@ class MethodExplorationMode:
 
 
 class PathExecutionData:
-    def __init__(self, exec_number: int):
+    def __init__(self, exec_number: int = 0):
         self.self_end_state = None
         self.input_self = None
         self.input_args = ()
