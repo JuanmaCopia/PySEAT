@@ -70,8 +70,7 @@ class SEEngine:
         self._sut = sut_data
         self._max_depth = cfg_args["max_depth"]
         self._max_nodes = cfg_args["max_nodes"]
-        self.build_timeout = cfg_args["build_timeout"]
-        self.method_timeout = cfg_args["method_timeout"]
+        self.timeout = cfg_args["timeout"]
 
         self.smt = SMT((SMTInt, SMTBool), SMTSolver)
         self._branch_points = []
@@ -207,7 +206,7 @@ class SEEngine:
         method = getattr(end_self, method_name)
 
         try:
-            with Timeout(self.method_timeout), HiddenPrints():
+            with Timeout(self.timeout), HiddenPrints():
                 with MethodExplorationMode(self):
                     if args:
                         returnv = method(*args)
@@ -254,7 +253,7 @@ class SEEngine:
     def execute_repok_concretely(self, obj):
         assert self.mode == CONCRETE_EXECUTION
         try:
-            with Timeout(self.build_timeout):
+            with Timeout(self.timeout):
                 result = obj.repok()
         except AttributeError as e:
             raise e

@@ -3,7 +3,7 @@
 """
 import subprocess
 import time
-
+import os
 import sut_parser
 import cli_print as cli
 from data import Statistics
@@ -22,8 +22,11 @@ for args in runs:
     class_name = args["class_name"]
     methods_names = args["methods"]
 
+    quiet = args["quiet"]
+
     sut = sut_parser.parse(module_name, class_name, methods_names)
     testfile, mod, folder, filepath = create_testfile(module_name, class_name)
+    path = os.path.abspath(os.path.join(filepath))
 
     engine = SEEngine(sut, args)
 
@@ -31,7 +34,10 @@ for args in runs:
 
     cli.print_blue(" Generating {}...".format(class_name))
     input_structures = engine.generate_structures()
-    cli.print_white(" Done!")
+    if not quiet:
+        cli.print_white(" Done!")
+    else:
+        cli.print_white(" DONE!\n Performing exploration...")
 
     build_time = time.time() - start_time
 
@@ -41,21 +47,23 @@ for args in runs:
     for method in methods_names:
         test_num = 0
         sut.current_method = sut.methods_map[method]
-        cli.print_method_data(method)
+        if not quiet:
+            cli.print_method_data(method)
         for i, conditions in input_structures:
             for run in engine.explore(method, i, conditions):
                 amount_tests += 1
                 stats.status_count(run)
                 test_num += 1
                 run.number = test_num
-                cli.print_result(run, args["quiet"])
+                if not quiet:
+                    cli.print_result(run)
                 test = TestCode(
-                    sut, run, test_num, args["method_timeout"], args["test_comments"],
+                    sut, run, test_num, args["timeout"], args["test_comments"],
                 )
                 append_to_testfile(filepath, test.code + "\n\n")
 
     stats.total_time = time.time() - start_time
-    cli.print_statistics(stats, amount_tests)
+    cli.print_statistics(stats, amount_tests, path)
 
     if args["run_tests"]:
         coverage = args["coverage"]

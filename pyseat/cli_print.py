@@ -8,12 +8,9 @@ import data
 from termcolor import colored
 
 
-def print_result(run_data, quiet):
+def print_result(run_data):
     exec_num = run_data.number
-    if run_data.status == data.PRUNED:
-        if not quiet:
-            print_white("   #{} PRUNED".format(exec_num))
-    elif run_data.status == data.OK:
+    if run_data.status == data.OK:
         print_green("   #{} OK".format(exec_num))
     elif run_data.status == data.FAIL:
         print_red("   #{} FAIL".format(exec_num))
@@ -23,14 +20,15 @@ def print_result(run_data, quiet):
         print_yellow("   #{} TIMEOUT".format(exec_num))
 
 
-def print_statistics(stats, test_num):
-    print_white("\n Done! {} Tests were generated".format(test_num))
-    print_green("   {} passed".format(stats.successes))
-    print_red("   {} failed".format(stats.failures))
-    print_magenta("   {} exceptions".format(stats.exceptions))
-    print_yellow("   {} timeouts".format(stats.timeouts))
+def print_statistics(stats, test_num, filepath):
+    print_cyan("\n{} {} Tests generated {}\n".format("-" * 23, test_num, "-" * 23))
+    print_green(" {} passed".format(stats.successes))
+    print_red(" {} failed".format(stats.failures))
+    print_magenta(" {} exceptions".format(stats.exceptions))
+    print_yellow(" {} timeouts".format(stats.timeouts))
     print_blue("\n Build time: {:.2f}s".format(stats.build_time))
-    print_cyan("\n{} {:.2f}s {}\n\n".format("-" * 30, stats.total_time, "-" * 30))
+    print_white("\n File: {}".format(filepath))
+    print_cyan("\n{} {:.2f}s {}\n".format("-" * 30, stats.total_time, "-" * 30))
 
 
 def print_welcome():
