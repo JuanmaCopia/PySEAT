@@ -127,33 +127,3 @@ def _concretize(symbolic, model, visited):
                 setattr(symbolic, pref_name, _concretize(value, model, visited))
         return symbolic
     return symbolic
-
-
-def fill_class_vectors(structure):
-    if not im.is_user_defined(structure):
-        return
-    visited = set()
-    visited.add(structure)
-    worklist = []
-    worklist.append(structure)
-    while worklist:
-        current = worklist.pop(0)
-        current._vector.append(current)
-        for value in im.get_dict_of_prefixed(current).values():
-            if im.is_user_defined(value) and do_add(visited, value):
-                worklist.append(value)
-
-
-def search_obj(obj, structure):
-    visited = set()
-    visited.add(structure)
-    worklist = []
-    worklist.append(structure)
-    while worklist:
-        current = worklist.pop(0)
-        if obj._objid == current._objid:
-            return current
-        for value in im.get_dict_of_prefixed(current).values():
-            if im.is_user_defined(value) and do_add(visited, value):
-                worklist.append(value)
-    return None

@@ -13,7 +13,6 @@ import signal
 import exceptions as excp
 import instances as inst
 import instance_management as im
-import helpers
 import symbolics as sym
 import data
 
@@ -85,7 +84,6 @@ class SEEngine:
         self._current_depth = 0
         self._current_bp = 0
         self._current_nodes = 0
-        self.time = 0
         self._ids = 0
         self.mode = CONCRETE_EXECUTION
 
@@ -101,8 +99,7 @@ class SEEngine:
         unexplored_paths = True
 
         while unexplored_paths:
-            self._reset_exploration()
-            self._path_condition = copy.deepcopy(conditions)
+            self._reset_exploration(conditions)
 
             args = self._instantiate_args(method_name)
 
@@ -113,10 +110,10 @@ class SEEngine:
             if not self._branch_points:
                 unexplored_paths = False
 
-    def generate_inputs(self):
+    def generate_structures(self):
         """ comment here
         """
-        generated_structures = []
+        structures = []
         unexplored_paths = True
 
         while unexplored_paths:
@@ -125,15 +122,13 @@ class SEEngine:
 
             end_self = self._explore_repok(partial_self)
             if end_self is not None:
-                generated_structures.append(
-                    (end_self, copy.deepcopy(self._path_condition))
-                )
+                structures.append((end_self, copy.deepcopy(self._path_condition)))
 
             self._remove_explored_branch()
             if not self._branch_points:
                 unexplored_paths = False
 
-        return generated_structures
+        return structures
 
     def _explore_repok(self, instance):
         try:
@@ -145,10 +140,6 @@ class SEEngine:
             pass
         except excp.TimeOutException:
             pass
-        except excp.MaxRecursionException:
-            pass
-        except AttributeError as e:
-            raise e
         except Exception as e:
             raise e
         else:
@@ -156,10 +147,10 @@ class SEEngine:
                 return instance
             return None
 
-    def _reset_exploration(self):
+    def _reset_exploration(self, conditions=[]):
         """Resets the exploration variables to its initial values.
         """
-        self._path_condition = []
+        self._path_condition = copy.deepcopy(conditions)
         self._current_bp = 0
         self._current_nodes = 0
         self._current_depth = 0
@@ -235,14 +226,9 @@ class SEEngine:
         finally:
             # if exception:
             #     raise exception
-            path = self._path_condition
 
-            model = self.smt.get_model(path)
-            concrete_args = []
-            for arg in args:
-                concrete_args.append(inst.concretize(arg, model))
-
-            conc_tuple_args = tuple(concrete_args)
+            model = self.smt.get_model(self._path_condition)
+            conc_args = inst.concretize(args, model)
             conc_end_self = inst.concretize(end_self, model)
             conc_input_self = inst.concretize(input_self, model)
 
@@ -250,7 +236,7 @@ class SEEngine:
             pathdata = PathExecutionData(self._stats.total_paths)
             pathdata.self_end_state = conc_end_self
             pathdata.input_self = conc_input_self
-            pathdata.input_args = conc_tuple_args
+            pathdata.input_args = conc_args
             pathdata.returnv = inst.concretize(returnv, model)
             pathdata.exception = exception
 
@@ -307,7 +293,7 @@ class SEEngine:
         """
         pref_name = im.SYMBOLIC_PREFIX + attr_name
         attr = getattr(owner, pref_name)
-        if self.mode == CONCRETE_EXECUTION or self.mode == METHOD_EXPLORATION:
+        if self.mode != REPOK_EXPLORATION:
             return attr
 
         is_init = im.is_initialized(owner, attr_name)
@@ -371,19 +357,13 @@ class SEEngine:
         new_bp = LazyBranchPoint(len(lazy_class._vector) + 1)
         self._branch_points.append(new_bp)
         self._current_bp += 1
-        if self.node_limit():
+        if self._current_nodes >= self._max_nodes:
             new_bp.advance_branch()
             return None
         self._current_nodes += 1
         n = inst.symbolize_partially(self, lazy_class)
         lazy_class._vector.append(n)
         return n
-
-    def node_limit(self):
-        if self.mode == REPOK_EXPLORATION:
-            return self._current_nodes >= self._max_nodes
-        else:
-            assert False
 
     def lazy_set_attr(self, owner, attr_name, value):
         """Sets the attribute and mark it as initialized.
@@ -426,7 +406,7 @@ class SEEngine:
             condition_value = self._branch_points[self._current_bp].get_branch()
         else:
             if self._max_depth < self._current_depth:
-                raise excp.MaxDepthException
+                raise excp.MaxDepthException()
             self._current_depth += 1
 
             condition_value = self.conditioned_value(expression)
@@ -440,17 +420,17 @@ class SEEngine:
 
         if condition_value:
             self._path_condition.append(expression)
-            assert self.path_condition_sat()
         else:
             self._path_condition.append(self.smt.Not(expression))
-            assert self.path_condition_sat()
+
+        assert self.path_condition_sat()
         return condition_value
 
     def path_condition_sat(self):
         conditions = True
         for c in self._path_condition:
             conditions = self.smt.And(conditions, c)
-        return self.smt.check(self.smt.And(conditions, True))
+        return self.smt.check(conditions)
 
     def conditioned_value(self, expression):
         """Checks if a constraint's value is conditioned by the path.
@@ -487,10 +467,6 @@ def raise_timeout(signum, frame):
     raise excp.TimeOutException()
 
 
-def raise_build_timeout(signum, frame):
-    raise excp.BuildTimeOutException()
-
-
 class Timeout:
     def __init__(self, max_time):
         self.time = max_time
@@ -501,23 +477,6 @@ class Timeout:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         signal.signal(signal.SIGALRM, signal.SIG_IGN)
-
-
-class BuildStructure:
-    def __init__(self, engine):
-        self.pc_len = 0
-        self.orig_bp = []
-        self.engine = engine
-
-    def __enter__(self):
-        self.pc_len = len(self.engine._path_condition)
-        self.orig_bp = copy.deepcopy(self.engine._branch_points)
-        self.engine._branch_points = []
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.engine._branch_points = self.orig_bp
-        orig_pathc = helpers.keep_first_n(self.engine._path_condition, self.pc_len)
-        self.engine._path_condition = orig_pathc
 
 
 class HiddenPrints:

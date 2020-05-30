@@ -26,7 +26,7 @@ for args in runs:
 
     engine = SEEngine(sut, args)
     test_num = 0
-    input_structures = engine.generate_inputs()
+    input_structures = engine.generate_structures()
     for method in methods_names:
         sut.current_method = sut.methods_map[method]
         cli.print_method_data(method, class_name)
