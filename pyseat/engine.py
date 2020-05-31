@@ -240,7 +240,13 @@ class SEEngine:
             pathdata.exception = exception
 
             if timeout:
-                pathdata.status = data.TIMEOUT
+                iself = copy.deepcopy(conc_input_self)
+                args = copy.deepcopy(conc_args)
+                ret = self.execute_method_concretely(iself, args, method_name)
+                if isinstance(ret, excp.TimeOutException):
+                    pathdata.status = data.TIMEOUT
+                else:
+                    return None
             elif exception:
                 pathdata.status = data.EXCEPTION
             elif self.execute_repok_concretely(conc_end_self):
@@ -261,6 +267,20 @@ class SEEngine:
             raise e
         finally:
             return result
+
+    def execute_method_concretely(self, iself, args, method_name):
+        assert self.mode == CONCRETE_EXECUTION
+        try:
+            method = getattr(iself, method_name)
+            with Timeout(self.timeout), HiddenPrints():
+                if args:
+                    returnv = method(*args)
+                else:
+                    returnv = method()
+        except Exception as e:
+            returnv = e
+        finally:
+            return returnv
 
     def lazy_initialization(self, owner, attr_name):
         """Performs the lazy initialization of the attribute.
