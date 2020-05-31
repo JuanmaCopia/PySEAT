@@ -257,7 +257,6 @@ class SEEngine:
             return pathdata
 
     def execute_repok_concretely(self, obj):
-        assert self.mode == CONCRETE_EXECUTION
         try:
             with Timeout(self.timeout):
                 result = obj.repok()
@@ -269,7 +268,6 @@ class SEEngine:
             return result
 
     def execute_method_concretely(self, iself, args, method_name):
-        assert self.mode == CONCRETE_EXECUTION
         try:
             method = getattr(iself, method_name)
             with Timeout(self.timeout), HiddenPrints():
@@ -311,9 +309,6 @@ class SEEngine:
             setattr(owner, pref_name, new_value)
             return new_value
 
-        assert sym.Symbolic.is_supported_builtin(attr_type)
-        assert attr is not None
-
         setattr(owner, im.ISINIT_PREFIX + attr_name, True)
         if sym.is_symbolic(attr):
             return attr
@@ -339,11 +334,8 @@ class SEEngine:
         Returns:
             An instance of lazy_class or None.
         """
-        if self.mode == METHOD_EXPLORATION:
-            assert False
         if self._current_bp < len(self._branch_points):
             branch_point = self._branch_points[self._current_bp]
-            assert isinstance(branch_point, LazyBranchPoint)
             index = branch_point.get_branch()
             self._current_bp += 1
 
@@ -355,8 +347,6 @@ class SEEngine:
             elif index == 1:
                 return None
             else:
-                assert index - 2 >= 0
-                assert index - 2 < len(lazy_class._vector)
                 return lazy_class._vector[index - 2]
 
         new_bp = LazyBranchPoint(len(lazy_class._vector) + 1)
@@ -403,11 +393,7 @@ class SEEngine:
         Returns:
             True or False, depending on the evaluation.
         """
-        assert self.mode != CONCRETE_EXECUTION
         if self._current_bp < len(self._branch_points):
-            assert isinstance(
-                self._branch_points[self._current_bp], ConditionalBranchPoint
-            )
             condition_value = self._branch_points[self._current_bp].get_branch()
         else:
             if self._max_depth < self._current_depth:
@@ -422,20 +408,11 @@ class SEEngine:
                 condition_value = True
 
         self._current_bp += 1
-
         if condition_value:
             self._path_condition.append(expression)
         else:
             self._path_condition.append(self.smt.Not(expression))
-
-        assert self.path_condition_sat()
         return condition_value
-
-    def path_condition_sat(self):
-        conditions = True
-        for c in self._path_condition:
-            conditions = self.smt.And(conditions, c)
-        return self.smt.check(conditions)
 
     def conditioned_value(self, expression):
         """Checks if a constraint's value is conditioned by the path.

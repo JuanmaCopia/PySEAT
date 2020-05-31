@@ -49,7 +49,6 @@ def get_dict_of_prefixed(instance):
 def var_name(obj):
     if hasattr(obj, "_objid"):
         return type(obj).__name__.lower() + str(obj._objid)
-    assert False
 
 
 def is_tracked(obj):
