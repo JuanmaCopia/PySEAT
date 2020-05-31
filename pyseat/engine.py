@@ -298,29 +298,29 @@ class SEEngine:
         """
         pref_name = im.SYMBOLIC_PREFIX + attr_name
         attr = getattr(owner, pref_name)
-        if self.mode != REPOK_EXPLORATION:
+        if self.mode != REPOK_EXPLORATION or im.is_initialized(owner, attr_name):
             return attr
 
-        is_init = im.is_initialized(owner, attr_name)
         attr_type = self._sut.get_attr_type(type(owner), attr_name)
         if im.is_user_defined(attr_type):
-            if is_init or not im.is_tracked(owner):
+            setattr(owner, im.ISINIT_PREFIX + attr_name, True)
+            if not im.is_tracked(owner) or attr is not None:
                 return attr
 
-            setattr(owner, im.ISINIT_PREFIX + attr_name, True)
-            if attr is None:
-                new_value = self.get_next_lazy_step(attr_type)
-                setattr(owner, pref_name, new_value)
-        else:
-            assert sym.Symbolic.is_supported_builtin(attr_type)
-            assert attr is not None
-            if not is_init:
-                setattr(owner, im.ISINIT_PREFIX + attr_name, True)
-                if not sym.is_symbolic(attr):
-                    new_sym = sym.symbolic_factory(self, attr_type)
-                    setattr(owner, pref_name, new_sym)
+            new_value = self.get_next_lazy_step(attr_type)
+            setattr(owner, pref_name, new_value)
+            return new_value
 
-        return getattr(owner, pref_name)
+        assert sym.Symbolic.is_supported_builtin(attr_type)
+        assert attr is not None
+
+        setattr(owner, im.ISINIT_PREFIX + attr_name, True)
+        if sym.is_symbolic(attr):
+            return attr
+
+        new_sym = sym.symbolic_factory(self, attr_type)
+        setattr(owner, pref_name, new_sym)
+        return new_sym
 
     def get_next_lazy_step(self, lazy_class):
         """Returns the corresponding initialization for the current branch point.
