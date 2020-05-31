@@ -5,6 +5,188 @@ import pytest
 def test_swap_node1():
     '''
     Self:
+        1 -> 0 -> 0 -> 0 -> 0 -> None
+    Return:
+        0 -> 1 -> 0 -> 0 -> 0 -> None
+    End Self:
+        0 -> 1 -> 0 -> 0 -> 0 -> None
+    '''
+    # Input Creation
+    linkedlist0 = LinkedList()
+    node1 = Node(0)
+    node1.elem = 1
+    node2 = Node(0)
+    node2.elem = 0
+    node3 = Node(0)
+    node3.elem = 0
+    node4 = Node(0)
+    node4.elem = 0
+    node5 = Node(0)
+    node5.elem = 0
+    node5.next = None
+    node4.next = node5
+    node3.next = node4
+    node2.next = node3
+    node1.next = node2
+    linkedlist0.head = node1
+    # Repok check
+    assert linkedlist0.repok()
+    # Method call
+    returnv = linkedlist0.swap_node()
+    # Repok check
+    assert linkedlist0.repok()
+    # Assertions
+    assert returnv.elem == 0
+    assert returnv.next.elem == 1
+    assert returnv.next.next.elem == 0
+    assert returnv.next.next.next.elem == 0
+    assert returnv.next.next.next.next.elem == 0
+    assert returnv.next.next.next.next.next is None
+    assert linkedlist0.head.elem == 0
+    assert linkedlist0.head.next.elem == 1
+    assert linkedlist0.head.next.next.elem == 0
+    assert linkedlist0.head.next.next.next.elem == 0
+    assert linkedlist0.head.next.next.next.next.elem == 0
+    assert linkedlist0.head.next.next.next.next.next is None
+
+
+def test_swap_node2():
+    '''
+    Self:
+        0 -> 0 -> 0 -> 0 -> 0 -> None
+    Return:
+        0 -> 0 -> 0 -> 0 -> 0 -> None
+    End Self:
+        0 -> 0 -> 0 -> 0 -> 0 -> None
+    '''
+    # Input Creation
+    linkedlist0 = LinkedList()
+    node1 = Node(0)
+    node1.elem = 0
+    node2 = Node(0)
+    node2.elem = 0
+    node3 = Node(0)
+    node3.elem = 0
+    node4 = Node(0)
+    node4.elem = 0
+    node5 = Node(0)
+    node5.elem = 0
+    node5.next = None
+    node4.next = node5
+    node3.next = node4
+    node2.next = node3
+    node1.next = node2
+    linkedlist0.head = node1
+    # Repok check
+    assert linkedlist0.repok()
+    # Method call
+    returnv = linkedlist0.swap_node()
+    # Repok check
+    assert linkedlist0.repok()
+    # Assertions
+    assert returnv.elem == 0
+    assert returnv.next.elem == 0
+    assert returnv.next.next.elem == 0
+    assert returnv.next.next.next.elem == 0
+    assert returnv.next.next.next.next.elem == 0
+    assert returnv.next.next.next.next.next is None
+    assert linkedlist0.head.elem == 0
+    assert linkedlist0.head.next.elem == 0
+    assert linkedlist0.head.next.next.elem == 0
+    assert linkedlist0.head.next.next.next.elem == 0
+    assert linkedlist0.head.next.next.next.next.elem == 0
+    assert linkedlist0.head.next.next.next.next.next is None
+
+
+def test_swap_node3():
+    '''
+    Self:
+        1 -> 0 -> 0 -> 0 -> None
+    Return:
+        0 -> 1 -> 0 -> 0 -> None
+    End Self:
+        0 -> 1 -> 0 -> 0 -> None
+    '''
+    # Input Creation
+    linkedlist0 = LinkedList()
+    node1 = Node(0)
+    node1.elem = 1
+    node2 = Node(0)
+    node2.elem = 0
+    node3 = Node(0)
+    node3.elem = 0
+    node4 = Node(0)
+    node4.elem = 0
+    node4.next = None
+    node3.next = node4
+    node2.next = node3
+    node1.next = node2
+    linkedlist0.head = node1
+    # Repok check
+    assert linkedlist0.repok()
+    # Method call
+    returnv = linkedlist0.swap_node()
+    # Repok check
+    assert linkedlist0.repok()
+    # Assertions
+    assert returnv.elem == 0
+    assert returnv.next.elem == 1
+    assert returnv.next.next.elem == 0
+    assert returnv.next.next.next.elem == 0
+    assert returnv.next.next.next.next is None
+    assert linkedlist0.head.elem == 0
+    assert linkedlist0.head.next.elem == 1
+    assert linkedlist0.head.next.next.elem == 0
+    assert linkedlist0.head.next.next.next.elem == 0
+    assert linkedlist0.head.next.next.next.next is None
+
+
+def test_swap_node4():
+    '''
+    Self:
+        0 -> 0 -> 0 -> 0 -> None
+    Return:
+        0 -> 0 -> 0 -> 0 -> None
+    End Self:
+        0 -> 0 -> 0 -> 0 -> None
+    '''
+    # Input Creation
+    linkedlist0 = LinkedList()
+    node1 = Node(0)
+    node1.elem = 0
+    node2 = Node(0)
+    node2.elem = 0
+    node3 = Node(0)
+    node3.elem = 0
+    node4 = Node(0)
+    node4.elem = 0
+    node4.next = None
+    node3.next = node4
+    node2.next = node3
+    node1.next = node2
+    linkedlist0.head = node1
+    # Repok check
+    assert linkedlist0.repok()
+    # Method call
+    returnv = linkedlist0.swap_node()
+    # Repok check
+    assert linkedlist0.repok()
+    # Assertions
+    assert returnv.elem == 0
+    assert returnv.next.elem == 0
+    assert returnv.next.next.elem == 0
+    assert returnv.next.next.next.elem == 0
+    assert returnv.next.next.next.next is None
+    assert linkedlist0.head.elem == 0
+    assert linkedlist0.head.next.elem == 0
+    assert linkedlist0.head.next.next.elem == 0
+    assert linkedlist0.head.next.next.next.elem == 0
+    assert linkedlist0.head.next.next.next.next is None
+
+
+def test_swap_node5():
+    '''
+    Self:
         1 -> 0 -> 0 -> None
     Return:
         0 -> 1 -> 0 -> None
@@ -40,7 +222,45 @@ def test_swap_node1():
     assert linkedlist0.head.next.next.next is None
 
 
-def test_swap_node2():
+def test_swap_node6():
+    '''
+    Self:
+        0 -> 0 -> 0 -> None
+    Return:
+        0 -> 0 -> 0 -> None
+    End Self:
+        0 -> 0 -> 0 -> None
+    '''
+    # Input Creation
+    linkedlist0 = LinkedList()
+    node1 = Node(0)
+    node1.elem = 0
+    node2 = Node(0)
+    node2.elem = 0
+    node3 = Node(0)
+    node3.elem = 0
+    node3.next = None
+    node2.next = node3
+    node1.next = node2
+    linkedlist0.head = node1
+    # Repok check
+    assert linkedlist0.repok()
+    # Method call
+    returnv = linkedlist0.swap_node()
+    # Repok check
+    assert linkedlist0.repok()
+    # Assertions
+    assert returnv.elem == 0
+    assert returnv.next.elem == 0
+    assert returnv.next.next.elem == 0
+    assert returnv.next.next.next is None
+    assert linkedlist0.head.elem == 0
+    assert linkedlist0.head.next.elem == 0
+    assert linkedlist0.head.next.next.elem == 0
+    assert linkedlist0.head.next.next.next is None
+
+
+def test_swap_node7():
     '''
     Self:
         1 -> 0 -> None
@@ -73,7 +293,7 @@ def test_swap_node2():
     assert linkedlist0.head.next.next is None
 
 
-def test_swap_node3():
+def test_swap_node8():
     '''
     Self:
         0 -> 0 -> None
@@ -106,7 +326,7 @@ def test_swap_node3():
     assert linkedlist0.head.next.next is None
 
 
-def test_swap_node4():
+def test_swap_node9():
     '''
     Self:
         0 -> None
@@ -134,7 +354,7 @@ def test_swap_node4():
     assert linkedlist0.head.next is None
 
 
-def test_swap_node5():
+def test_swap_node10():
     '''
     Self:
         EmptyList
