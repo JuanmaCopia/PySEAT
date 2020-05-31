@@ -21,14 +21,18 @@ def print_result(run_data):
 
 
 def print_statistics(stats, test_num, filepath):
-    print_cyan("\n{} {} Tests generated {}\n".format("-" * 23, test_num, "-" * 23))
+    print_cyan(
+        "\n{} {} Tests generated in {:.2f}s {}\n".format(
+            "-" * 18, test_num, stats.total_time, "-" * 18
+        )
+    )
     print_green(" {} passed".format(stats.successes))
     print_red(" {} failed".format(stats.failures))
     print_magenta(" {} exceptions".format(stats.exceptions))
     print_yellow(" {} timeouts".format(stats.timeouts))
     print_blue("\n Build time: {:.2f}s".format(stats.build_time))
-    print_white("\n File: {}".format(filepath))
-    print_cyan("\n{} {:.2f}s {}\n".format("-" * 30, stats.total_time, "-" * 30))
+    print(" File: {}".format(filepath))
+    print_cyan("\n{}\n".format("-" * 65))
 
 
 def print_welcome():
@@ -36,7 +40,7 @@ def print_welcome():
 
 
 def print_method_data(method_name):
-    print_white("\n Performing Exploration of {}... \n".format(method_name))
+    print_white("\n Exploring {}... \n".format(method_name))
 
 
 def print_running_tests():

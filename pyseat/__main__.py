@@ -32,12 +32,12 @@ for args in runs:
 
     start_time = time.time()
 
-    cli.print_blue(" Generating {}...".format(class_name))
+    cli.print_blue(" Generating instances of {}...".format(class_name))
     input_structures = engine.generate_structures()
     if not quiet:
         cli.print_white(" Done!")
     else:
-        cli.print_white(" DONE!\n Performing exploration...")
+        cli.print_white(" DONE!\n Exploring...")
 
     build_time = time.time() - start_time
 
