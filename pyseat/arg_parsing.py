@@ -4,7 +4,7 @@ import sys
 import optparse
 
 
-DEFAULT_CFG_PATH = os.path.abspath(os.path.join("PySEAT/config.ini"))
+DEFAULT_CFG_PATH = "config.ini"
 
 
 def parse_error(msg):
@@ -16,20 +16,20 @@ def method_list(method_str):
     return [m.strip() for m in method_str.split(",")]
 
 
-def parse_config_file(cfg_file_path=DEFAULT_CFG_PATH):
-    cfg_dir = os.path.dirname(cfg_file_path)
-    sys.path = [os.path.abspath(os.path.join(cfg_dir))] + sys.path
-    cfg_basename = os.path.basename(cfg_file_path)
+def parse_config_file(cfg_path=None):
+    if not cfg_path:
+        folder = os.path.dirname(os.path.dirname(__file__))
+        cfg_path = os.path.abspath(os.path.join(folder, DEFAULT_CFG_PATH))
 
-    if not os.path.exists(cfg_basename):
-        parse_error("File '{}' Not Found".format(cfg_basename))
+    if not os.path.exists(cfg_path):
+        parse_error("File '{}' Not Found".format(cfg_path))
 
     config = configparser.ConfigParser()
-    config.read(cfg_basename)
+    config.read(cfg_path)
     runs = []
     sections = config.sections()
     if not sections:
-        parse_error("No arguments provided in {}".format(cfg_file_path))
+        parse_error("No arguments provided in {}".format(cfg_path))
     for r in sections:
         args = {}
         args["filepath"] = config.get(r, "filepath")
