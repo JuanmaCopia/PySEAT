@@ -51,9 +51,5 @@ def var_name(obj):
         return type(obj).__name__.lower() + str(obj._objid)
 
 
-def is_same(obj1, obj2):
-    return obj1._objid == obj2._objid
-
-
 def is_tracked(obj):
     return hasattr(obj, "_objid")

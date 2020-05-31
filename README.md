@@ -63,94 +63,109 @@ We can run it using the run_test.py script, by simply adding the ```-f``` option
 python run_tests.py -f
 ```
 
-The program output for the first three methods looks as follows:
+The program output looks as follows:
 ```
- Method: insert_after
- Class:  DoublyLinkedList
+ Generating instances of DoublyLinkedList...
+ Done!
 
- Performing Exploration...
+ Exploring insert_after...
+
    #1 OK
+   #2 OK
+   #3 OK
+   #4 OK
+   #5 OK
+   #6 OK
    #7 OK
+   #8 OK
+   #9 OK
+   #10 OK
+   #11 OK
+   #12 OK
    #13 OK
-   #18 OK
+   #14 OK
+   #15 OK
+   #16 OK
+   #17 TIMEOUT
+   #18 TIMEOUT
    #19 OK
-   #24 OK
-   #28 OK
-   #29 OK
-   #33 OK
-   #36 OK
-   #37 TIMEOUT
-   #40 OK
-   #42 OK
-   #43 TIMEOUT
-   #46 OK
-   #48 OK
+   #20 OK
+   #21 OK
 
- Done! 16 Tests were generated
+ Exploring find...
 
- Valid executions: 16 of 48
-   14 passed
-   0 failed
-   0 exceptions
-   2 timeouts
-   32 pruned
-
- ------------------------------ 15.52 seconds ------------------------------
-
-
- Method: find
- Class:  DoublyLinkedList
-
- Performing Exploration...
    #1 EXCEPTION
-   #7 OK
-   #8 EXCEPTION
+   #2 OK
+   #3 OK
+   #4 OK
+   #5 OK
+   #6 OK
+   #7 EXCEPTION
+   #8 OK
+   #9 OK
+   #10 OK
+   #11 OK
+   #12 EXCEPTION
    #13 OK
-   #14 EXCEPTION
+   #14 OK
+   #15 OK
+   #16 EXCEPTION
+   #17 OK
    #18 OK
    #19 EXCEPTION
-   #22 OK
-   #23 EXCEPTION
-   #25 OK
-   #26 OK
+   #20 OK
+   #21 OK
 
- Done! 11 Tests were generated
+ Exploring insert_at_front...
 
- Valid executions: 11 of 26
-   6 passed
-   0 failed
-   5 exceptions
-   0 timeouts
-   15 pruned
-
- ------------------------------ 6.81 seconds ------------------------------
-
-
- Method: insert_at_front
- Class:  DoublyLinkedList
-
- Performing Exploration...
    #1 OK
+   #2 OK
+   #3 OK
+   #4 OK
+   #5 OK
+   #6 FAIL
+
+ Exploring insert_at_back...
+
+   #1 FAIL
    #2 FAIL
+   #3 FAIL
+   #4 FAIL
+   #5 OK
+   #6 OK
 
- Done! 2 Tests were generated
+ Exploring pop_front...
 
- Valid executions: 2 of 2
-   1 passed
-   1 failed
-   0 exceptions
-   0 timeouts
-   0 pruned
+   #1 FAIL
+   #2 FAIL
+   #3 FAIL
+   #4 FAIL
+   #5 OK
+   #6 OK
 
- ------------------------------ 0.06 seconds ------------------------------
+ Exploring pop_back...
+
+   #1 OK
+   #2 OK
+   #3 OK
+   #4 OK
+   #5 FAIL
+   #6 OK
+
+------------------ 66 Tests generated in 10.71s ------------------
+
+ 49 passed
+ 10 failed
+ 5 exceptions
+ 2 timeouts
+
+ Build time: 0.02s
+ File: /home/juan/Documents/PySEAT/tests/should_fail/doublylinkedlist/test_dll_bugged.py
+
+-----------------------------------------------------------------
 ```
+As seen above, there are four possible states of an execution:
 
-A valid execution is an execution that was not pruned. Pruned executions are
-mostly due to generated inputs that do not satisfy the repok method (see below for details on what a repok represents).
-
-As seen above, there are five possible states of an execution:
-
-* PRUNED or invalid executions. No test are generated for this executions.
 * OK: No errors were found. The test is generated.
 * FAIL: An error was found. The test that produces the error is generated
 * EXCEPTION: An exception was raised. the test that produces the exception is generated.
@@ -218,23 +233,8 @@ Running generated tests...
 
 ## How the tool works
 
-PySEAT tries to explore every possible (bounded) path of the method under test, by executing the method on a symbolic input, and concretizing it as different branches are traversed. Whenever a branching point is reached, both branches are explored by taking into account the corresponding condition, and incorporating it into the path condition, i.e., the joint accumulated conditions that need to be satisfied to explore a currently traversed path.
-### Lazy Initialization:
-
-Every execution of the program starts with a fully symbolic input, i.e., an input with uninitialized fields. Whenever a field
- is accessed for the first time, it is initialized as follows:
-
-If it is a reference field (e.g. user-defined class) the possibilities to initialize it are:
-
-* A new instance.
-* None.
-* A previously created instance.
-
-As you can see, due to the third initialization option, cyclic structures are created.
-
-As lazy initialization would explore all structural possibilities, certain invalid
-structures may be created too. For instance, when executing a method over a singly linked list, cyclic lists would be considered even when acyclicity is an assumed property of the structure. This is why a repok method is needed: repok is a method that captures the assumed properties of the structure(s) before the execution of the method of interest.
-If the field is a supported builtin field it will be initialized to its corresponding Symbolic type instance.
+PySEAT uses the repok() method to generate all partially symbolic valid structures (with a limit in the amount of nodes). After, It performs symbolic execution on each method under test
+with these structures, exploring every program path and generating the corresponding test case that exercises that path.
 
 ### Repok method:
 
@@ -250,7 +250,7 @@ Two things are required by PySEAT to work:
 
 In order to perform symbolic execution, the target method should have the types annotated with python annotations. Also, all the classes involved in that method execution should have its __init__ method arguments and instance attributes annotated.
 
-The repok method is needed to prune invalid executions, in the sense that are executions where the associated precondition does not hold. On every initialization, the program will check the repok method for the self class and for the initialized class.
+A method called "repok" is needed to generate the inputs.
 
 ### Instrumentation example
 
@@ -348,7 +348,7 @@ if this is an assumption on the structured, as a precondition of the analyzed me
   * int
   * bool
 
-Currently, PySEAT supports test generation only for class methods that take as arguments the "self" (i.e. the user defined structure) as well as types int and bool. Other complex structures apart from self and other builtin data types are not supported yet.
+Currently, PySEAT supports test generation only for instance methods that take as arguments the "self" (i.e. the user defined structure) as well as types int and bool. Other complex structures apart from self and other builtin data types are not supported yet.
 
 ## Running the program
 
@@ -361,16 +361,12 @@ as argument to the program.
 The configuration file looks as follows:
 ```
 [DEFAULT]
-max_repok_nodes = 0
 max_nodes = 5
 max_depth = 10
-max_get = 30
-method_timeout = 2
-build_timeout = 5
+timeout = 5
 coverage = false
 mutation = false
-verbose = false
-quiet = true
+quiet = false
 run_tests = true
 test_comments = false
 ```
@@ -384,18 +380,14 @@ You can add as many runs as you want. For example, with the following config fil
 will run for DoublyLinkedList and CDLinkedList. They are inside the ```/tests``` folder:
 ```
 [DEFAULT]
-max_repok_nodes = 0
 max_nodes = 5
 max_depth = 10
-max_get = 30
-method_timeout = 2
-build_timeout = 5
+timeout = 2
 coverage = false
 mutation = false
-verbose = false
-quiet = true
+quiet = false
 run_tests = true
-test_comments = false
+test_comments = true
 
 [Doubly Linked List]
 filepath = tests/doublylinkedlist/dll.py
@@ -415,7 +407,6 @@ filepath = tests/circulardoublylinkedlist/cdll.py
 class_name = CDLinkedList
 methods = insert_after,insert_before,delete,append,prepend
 max_nodes = 4
-max_repok_nodes = 1
 ```
 
 ### Arguments:
@@ -425,16 +416,12 @@ max_repok_nodes = 1
 ; class_name:     Name of the class that contains the methods to test.
 ; methods         Methods to test.
 
-; Optional (has default values):
-; max_repok_nodes: Max amount of nodes that repok can add while building a structure.
+; Optional (has default values in DEFAULT section):
 ; max_nodes:       Max amount of nodes that can create the method exploration.
 ; max_depth:       Max depth of the exploration tree made by conditions evalutation.
-; max_get:         Helps to avoid wasting on time of infinite loops caused by cyclic structures
-; method_timeout:  Max time to execute method exloration.
-; build_timeout:   Max time to build the structure.
+; timeout:         Max time to execute method exloration.
 ; coverage:        Measure coverage of generated test suite.
 ; mutation:        Measure mutation score of generated test suite.
-; verbose:         Show statistics of explorations.
 ; quiet:           Quiet mode, less output
 ; run_tests:       Run test with pytest after generation.
 ; test_comments:   Make a comment with the structure representation on each test.

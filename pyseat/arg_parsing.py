@@ -3,45 +3,43 @@ import os
 import sys
 import optparse
 
-DEFAULT_CFG_PATH = "PySEAT/config.ini"
+
+DEFAULT_CFG_PATH = "config.ini"
 
 
 def parse_error(msg):
     print("\narg_parsing.py: {}".format(msg))
     sys.exit(1)
 
+
 def method_list(method_str):
     return [m.strip() for m in method_str.split(",")]
 
 
-def parse_config_file(cfg_file_path=DEFAULT_CFG_PATH):
-    cfg_dir = os.path.dirname(cfg_file_path)
-    sys.path = [os.path.abspath(os.path.join(cfg_dir))] + sys.path
-    cfg_basename = os.path.basename(cfg_file_path)
+def parse_config_file(cfg_path=None):
+    if not cfg_path:
+        folder = os.path.dirname(os.path.dirname(__file__))
+        cfg_path = os.path.abspath(os.path.join(folder, DEFAULT_CFG_PATH))
 
-    if not os.path.exists(cfg_basename):
-        parse_error("File '{}' Not Found".format(cfg_basename))
+    if not os.path.exists(cfg_path):
+        parse_error("File '{}' Not Found".format(cfg_path))
 
     config = configparser.ConfigParser()
-    config.read(cfg_basename)
+    config.read(cfg_path)
     runs = []
     sections = config.sections()
     if not sections:
-        parse_error("No arguments provided in {}".format(cfg_file_path))
+        parse_error("No arguments provided in {}".format(cfg_path))
     for r in sections:
         args = {}
         args["filepath"] = config.get(r, "filepath")
         args["class_name"] = config.get(r, "class_name")
         args["methods"] = method_list(config.get(r, "methods"))
         args["max_nodes"] = config.getint(r, "max_nodes")
-        args["max_repok_nodes"] = config.getint(r, "max_repok_nodes")
         args["max_depth"] = config.getint(r, "max_depth")
-        args["max_get"] = config.getint(r, "max_get")
-        args["method_timeout"] = config.getint(r, "method_timeout")
-        args["build_timeout"] = config.getint(r, "build_timeout")
+        args["timeout"] = config.getint(r, "timeout")
         args["coverage"] = config.getboolean(r, "coverage")
         args["mutation"] = config.getboolean(r, "mutation")
-        args["verbose"] = config.getboolean(r, "verbose")
         args["quiet"] = config.getboolean(r, "quiet")
         args["run_tests"] = config.getboolean(r, "run_tests")
         args["test_comments"] = config.getboolean(r, "test_comments")
@@ -87,42 +85,12 @@ def parse_command_line():
         help="Maximum amount of nodes per structure",
     )
     parser.add_option(
-        "-r",
-        dest="max_repok_nodes",
-        type="int",
-        default=2,
-        help="Max nodes that repok can add",
-    )
-    parser.add_option(
-        "-g",
-        dest="max_get",
-        type="int",
-        default=30,
-        help="Max amount of gets whitout initializations",
-    )
-    parser.add_option(
-        "-b",
-        "--build-timeout",
-        dest="build_timeout",
+        "-t",
+        "--timeout",
+        dest="timeout",
         type="int",
         default=5,
-        help="Max time to build a structure",
-    )
-    parser.add_option(
-        "-t",
-        "--method-timeout",
-        dest="method_timeout",
-        type="int",
-        default=2,
         help="Max execution time for each exploration",
-    )
-    parser.add_option(
-        "-v",
-        "--verbose",
-        dest="verbose",
-        action="store_true",
-        default=False,
-        help="Show statsistics of executions",
     )
     parser.add_option(
         "--no-comments",
@@ -176,14 +144,10 @@ def parse_command_line():
         pargs["class_name"] = args[1]
         pargs["methods"] = method_list(options.methods_names)
         pargs["max_nodes"] = options.max_nodes
-        pargs["max_repok_nodes"] = options.max_repok_nodes
         pargs["max_depth"] = options.max_depth
-        pargs["max_get"] = options.max_get
-        pargs["method_timeout"] = options.method_timeout
-        pargs["build_timeout"] = options.build_timeout
+        pargs["timeout"] = options.timeout
         pargs["coverage"] = options.coverage
         pargs["mutation"] = options.mutation
-        pargs["verbose"] = options.verbose
         pargs["quiet"] = options.quiet
         pargs["run_tests"] = not options.no_test_run
         pargs["test_comments"] = not options.no_comments
