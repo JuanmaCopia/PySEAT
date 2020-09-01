@@ -102,9 +102,8 @@ class SEEngine:
             if result is not None:
                 yield (result)
 
-            self._remove_explored_branch()
-            if not self._branch_points:
-                unexplored_paths = False
+            unexplored_paths = self._set_next_path()
+
 
     def generate_structures(self):
         """ comment here
@@ -120,9 +119,7 @@ class SEEngine:
             if end_self is not None:
                 structures.append((end_self, copy.deepcopy(self._path_condition)))
 
-            self._remove_explored_branch()
-            if not self._branch_points:
-                unexplored_paths = False
+            unexplored_paths = self._set_next_path()
 
         return structures
 
@@ -164,7 +161,7 @@ class SEEngine:
         types = self._sut.methods_map[method_name].types_list[1:]
         return [inst.symbolic_instantiation(self, typ) for typ in types]
 
-    def _remove_explored_branch(self):
+    def _set_next_path(self):
         """Removes the last explored branch.
 
         Advance the last branching point and removes it if it
@@ -181,6 +178,12 @@ class SEEngine:
             if self._branch_points:
                 last_bp = self._branch_points[-1]
                 last_bp.advance_branch()
+
+        if not self._branch_points:
+            # All paths in symbolic execution tree were explored.
+            return False
+        # There are still paths to explore.    
+        return True
 
     def _execute_method_exploration(self, method_name, input_self, args):
         """Performs the method exploration.

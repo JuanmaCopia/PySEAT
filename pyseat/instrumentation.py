@@ -1,4 +1,4 @@
-def instrument(clss, attr_names):
+def instrument_class(clss, attr_names):
     for attr_name in attr_names:
         add_property(clss, attr_name)
 
