@@ -168,21 +168,16 @@ class SEEngine:
         has been fully explored.
         """
         if not self._branch_points:
-            return None
+            # All paths in symbolic execution tree were explored.
+            return False
 
         last_bp = self._branch_points[-1]
         last_bp.advance_branch()
 
-        while self._branch_points and last_bp.all_branches_covered():
+        if last_bp.all_branches_covered():
             del self._branch_points[-1]
-            if self._branch_points:
-                last_bp = self._branch_points[-1]
-                last_bp.advance_branch()
+            return self._set_next_path()
 
-        if not self._branch_points:
-            # All paths in symbolic execution tree were explored.
-            return False
-        # There are still paths to explore.    
         return True
 
     def _execute_method_exploration(self, method_name, input_self, args):
