@@ -9,6 +9,7 @@ import copy
 import sys
 import os
 import signal
+import functools
 
 import exceptions as excp
 import instances as inst
@@ -425,9 +426,8 @@ class SEEngine:
             True or False if the value it's conditioned by the path_condition,
             None otherwise.
         """
-        conditions = True
-        for c in self._path_condition:
-            conditions = self.smt.And(conditions, c)
+        # functios.reduce is a fold left function
+        conditions = functools.reduce(self.smt.And, self._path_condition, True)
         true_cond = self.smt.check(self.smt.And(conditions, expression))
         false_cond = self.smt.check(self.smt.And(conditions, self.smt.Not(expression)))
 
