@@ -25,9 +25,8 @@ from smt.solver_z3 import SMTSolver
 
 
 # Engine modes of execution
-METHOD_EXPLORATION = 1
-REPOK_EXPLORATION = 2
-CONCRETE_EXECUTION = 3
+NO_MODE = 0
+GENERATION_MODE = 1
 
 
 class SEEngine:
@@ -81,7 +80,7 @@ class SEEngine:
         self._current_bp = 0
         self._current_nodes = 0
         self._ids = 0
-        self.mode = CONCRETE_EXECUTION
+        self.mode = NO_MODE
 
         for k in self._sut.class_map.keys():
             setattr(k, "_engine", self)
@@ -206,13 +205,12 @@ class SEEngine:
 
         try:
             with Timeout(self.timeout), HiddenPrints():
-                with MethodExplorationMode(self):
-                    if args:
-                        returnv = method(*args)
-                    else:
-                        returnv = method()
-                    if sym.is_symbolic_bool(returnv):
-                        returnv = returnv.__bool__()
+                if args:
+                    returnv = method(*args)
+                else:
+                    returnv = method()
+                if sym.is_symbolic_bool(returnv):
+                    returnv = returnv.__bool__()
 
         except excp.MaxDepthException:
             pruned = True
@@ -295,7 +293,7 @@ class SEEngine:
         """
         pref_name = im.SYMBOLIC_PREFIX + attr_name
         attr = getattr(owner, pref_name)
-        if self.mode != REPOK_EXPLORATION or im.is_initialized(owner, attr_name):
+        if self.mode != GENERATION_MODE or im.is_initialized(owner, attr_name):
             return attr
 
         attr_type = self._sut.get_attr_type(type(owner), attr_name)
@@ -469,21 +467,10 @@ class RepokExplorationMode:
         self.engine = engine
 
     def __enter__(self):
-        self.engine.mode = REPOK_EXPLORATION
+        self.engine.mode = GENERATION_MODE
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.engine.mode = CONCRETE_EXECUTION
-
-
-class MethodExplorationMode:
-    def __init__(self, engine):
-        self.engine = engine
-
-    def __enter__(self):
-        self.engine.mode = METHOD_EXPLORATION
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.engine.mode = CONCRETE_EXECUTION
+        self.engine.mode = NO_MODE
 
 
 class PathExecutionData:
