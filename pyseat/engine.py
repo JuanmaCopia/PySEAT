@@ -277,12 +277,12 @@ class SEEngine:
         finally:
             return returnv
 
-    def lazy_initialization(self, owner, attr_name):
-        """Performs the lazy initialization of the attribute.
+    def _get_attr(self, owner, attr_name):
+        """Performs the initialization of the attribute.
 
-        It hooks every get over a symbolic or partially symbolic attribute
-        of the class, depending of the current engine mode it will behave
-        differently.
+        It is called whenever the target method performs a get over a field
+        of a partially symbolic structure. It returns or sets and returns the
+        new value depending on the case.
 
         Args:
             owner: The object that contains the attribute to be initialized.
@@ -302,7 +302,7 @@ class SEEngine:
             if not im.is_tracked(owner) or attr is not None:
                 return attr
 
-            new_value = self.get_next_lazy_step(attr_type)
+            new_value = self._lazy_initialization(attr_type)
             setattr(owner, pref_name, new_value)
             return new_value
 
@@ -314,7 +314,7 @@ class SEEngine:
         setattr(owner, pref_name, new_sym)
         return new_sym
 
-    def get_next_lazy_step(self, lazy_class):
+    def _lazy_initialization(self, lazy_class):
         """Returns the corresponding initialization for the current branch point.
 
         If it's a new initialization step creates the branching point and
@@ -357,7 +357,7 @@ class SEEngine:
         lazy_class._vector.append(n)
         return n
 
-    def lazy_set_attr(self, owner, attr_name, value):
+    def _set_attr(self, owner, attr_name, value):
         """Sets the attribute and mark it as initialized.
 
         It hooks every set over a symbolic or partially symbolic attribute

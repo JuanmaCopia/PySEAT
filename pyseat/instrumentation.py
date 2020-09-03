@@ -17,11 +17,11 @@ def format_property_code(prop_name):
     code = """
 @property
 def {n}(self):
-    return self._engine.lazy_initialization(self, "{n}")
+    return self._engine._get_attr(self, "{n}")
 
 @{n}.setter
 def {n}(self, value):
-    return self._engine.lazy_set_attr(self, "{n}", value)
+    return self._engine._set_attr(self, "{n}", value)
     """.format(
         **{"n": prop_name}
     )
