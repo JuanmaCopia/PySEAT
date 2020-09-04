@@ -98,7 +98,7 @@ class SEEngine:
 
             args = self._instantiate_args(method_name)
 
-            result = self._execute_method_exploration(method_name, input_self, args)
+            result = self._explore_path(method_name, input_self, args)
             if result is not None:
                 yield (result)
 
@@ -180,7 +180,7 @@ class SEEngine:
 
         return True
 
-    def _execute_method_exploration(self, method_name, input_self, args):
+    def _explore_path(self, method_name, input_self, args):
         """Performs the method exploration.
 
         Executes method and returns all the execution data, like the returned
