@@ -51,10 +51,7 @@ def symbolize_partially(engine, user_def_class):
     for attr_name, typ in attributes.items():
         value = make_symbolic(engine, typ)
         setattr(partial_ins, im.SYMBOLIC_PREFIX + attr_name, value)
-        if isinstance(value, Symbolic):
-            setattr(partial_ins, im.ISINIT_PREFIX + attr_name, True)
-        else:
-            setattr(partial_ins, im.ISINIT_PREFIX + attr_name, False)
+        setattr(partial_ins, im.ISINIT_PREFIX + attr_name, False)
     setattr(partial_ins, "_objid", engine._ids)
     engine._ids += 1
 
