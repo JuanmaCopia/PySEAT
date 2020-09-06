@@ -1,7 +1,6 @@
 def instrument_class(clss, attributes, classes):
     for attr_name, typ in attributes.items():
         if typ in classes:
-            print("\ninstrumentando {} de tipo {}\n".format(attr_name, typ))
             add_property(clss, attr_name)
 
     setattr(clss, "_engine", None)
