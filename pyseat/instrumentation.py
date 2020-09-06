@@ -1,6 +1,8 @@
-def instrument_class(clss, attr_names):
-    for attr_name in attr_names:
-        add_property(clss, attr_name)
+def instrument_class(clss, attributes, classes):
+    for attr_name, typ in attributes.items():
+        if typ in classes:
+            print("\ninstrumentando {} de tipo {}\n".format(attr_name, typ))
+            add_property(clss, attr_name)
 
     setattr(clss, "_engine", None)
     setattr(clss, "_vector", [])

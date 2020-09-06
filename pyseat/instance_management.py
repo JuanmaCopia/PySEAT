@@ -34,7 +34,7 @@ def is_initialized(obj, attr_name):
         return False
 
 
-def get_dict(instance):
+def get_dict_without_prefix(instance):
     return {
         remove_prefix(key): value
         for (key, value) in instance.__dict__.items()
@@ -42,8 +42,12 @@ def get_dict(instance):
     }
 
 
-def get_dict_of_prefixed(instance):
-    return {key: value for (key, value) in instance.__dict__.items() if has_prefix(key)}
+def get_dict2(instance):
+    return {
+        key: value
+        for (key, value) in instance.__dict__.items()
+        if not is_special_attr(key)
+    }
 
 
 def var_name(obj):

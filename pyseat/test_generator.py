@@ -3,7 +3,7 @@
 """
 
 from helpers import do_add
-from instance_management import get_dict, var_name, is_user_defined
+from instance_management import get_dict_without_prefix, var_name, is_user_defined
 import data
 import os
 
@@ -123,7 +123,7 @@ class TestCode:
             current = worklist.pop(0)
             curstruct = current[0]
             curident = current[1]
-            structdict = get_dict(curstruct)
+            structdict = get_dict_without_prefix(curstruct)
             for attr_name, value in structdict.items():
                 if is_user_defined(value):
                     if do_add(visited, value):
@@ -146,10 +146,12 @@ class TestCode:
         identifier = var_name(instance)
 
         self.create_constructor_call(
-            identifier, type(instance), self._sut.get_params_type_dict(type(instance)),
+            identifier,
+            type(instance),
+            self._sut.get_params_type_dict(type(instance)),
         )
         userdef = []
-        for field, value in get_dict(instance).items():
+        for field, value in get_dict_without_prefix(instance).items():
             if not is_user_defined(value):
                 if value is None or isinstance(value, (bool, int, float, str)):
                     self.create_assign_code(identifier, field, value)
@@ -189,4 +191,3 @@ class TestCode:
         else:
             code_line = identifier + " = " + typ.__name__ + "()"
         self._add_line(code_line)
-

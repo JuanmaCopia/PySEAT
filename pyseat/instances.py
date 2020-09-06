@@ -50,10 +50,11 @@ def symbolize_partially(engine, user_def_class):
     # Adding some instrumentation fields
     for attr_name, typ in attributes.items():
         value = make_symbolic(engine, typ)
-        setattr(partial_ins, im.SYMBOLIC_PREFIX + attr_name, value)
         if isinstance(value, Symbolic):
-            setattr(partial_ins, im.ISINIT_PREFIX + attr_name, True)
+            setattr(partial_ins, attr_name, value)
+            # setattr(partial_ins, im.ISINIT_PREFIX + attr_name, True)
         else:
+            setattr(partial_ins, im.SYMBOLIC_PREFIX + attr_name, value)
             setattr(partial_ins, im.ISINIT_PREFIX + attr_name, False)
     setattr(partial_ins, "_objid", engine._ids)
     engine._ids += 1
@@ -115,7 +116,7 @@ def _concretize(symbolic, model, visited):
             symbolic[i] = _concretize(x, model, visited)
         return symbolic
     elif im.is_user_defined(symbolic):
-        for pref_name, value in im.get_dict_of_prefixed(symbolic).items():
+        for pref_name, value in im.get_dict2(symbolic).items():
             if not callable(value) and do_add(visited, value):
                 setattr(symbolic, pref_name, _concretize(value, model, visited))
         return symbolic

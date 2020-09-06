@@ -182,7 +182,9 @@ class SUT:
             types_list += md.types_list
         self.class_map = map_all_classes(types_list)
         for clss, class_data in self.class_map.items():
-            instrument_class(clss, class_data.instance_attr_types.keys())
+            instrument_class(
+                clss, class_data.instance_attr_types, self.class_map.keys()
+            )
 
     def get_method_name(self):
         return self.current_method.name
