@@ -62,12 +62,6 @@ def symbolize_partially(engine, user_def_class):
     return partial_ins
 
 
-def instrument_instance(instance, user_def_class, attr_names, ins_id):
-    for attr_name in attr_names:
-        setattr(instance, im.ISINIT_PREFIX + attr_name, False)
-    setattr(instance, "_objid", ins_id)
-
-
 def make_symbolic(engine, typ):
     """Creates a symbolic instance.
 

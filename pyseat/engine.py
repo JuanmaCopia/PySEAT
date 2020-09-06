@@ -96,26 +96,21 @@ class SEEngine:
         while unexplored_paths:
             self._reset_exploration(conditions)
 
-            args = self._instantiate_args(method_name)
-
-            result = self._explore_path(method_name, input_self, args)
+            result = self._explore_path(method_name, input_self)
             if result is not None:
                 yield (result)
 
             unexplored_paths = self._set_next_path()
 
-
     def generate_structures(self):
-        """ comment here
-        """
+        """comment here"""
         structures = []
         unexplored_paths = True
 
         while unexplored_paths:
             self._reset_exploration()
-            partial_self = inst.symbolic_instantiation(self, self._sut.sclass)
 
-            end_self = self._explore_repok(partial_self)
+            end_self = self._explore_repok()
             if end_self is not None:
                 structures.append((end_self, copy.deepcopy(self._path_condition)))
 
@@ -123,10 +118,11 @@ class SEEngine:
 
         return structures
 
-    def _explore_repok(self, instance):
+    def _explore_repok(self):
         result = None
         try:
             with RepokExplorationMode(self):
+                instance = inst.symbolic_instantiation(self, self._sut.sclass)
                 result = instance.repok()
                 if sym.is_symbolic_bool(result):
                     result = result.__bool__()
@@ -142,8 +138,7 @@ class SEEngine:
             return None
 
     def _reset_exploration(self, conditions=[]):
-        """Resets the exploration variables to its initial values.
-        """
+        """Resets the exploration variables to its initial values."""
         self._path_condition = copy.deepcopy(conditions)
         self._current_bp = 0
         self._current_nodes = 0
@@ -180,7 +175,7 @@ class SEEngine:
 
         return True
 
-    def _explore_path(self, method_name, input_self, args):
+    def _explore_path(self, method_name, input_self):
         """Performs the method exploration.
 
         Executes method and returns all the execution data, like the returned
@@ -195,8 +190,7 @@ class SEEngine:
             PathExecutionData: The result of the exploration (input builded, arguments,
             path_condition, etc).
         """
-        returnv = None
-        exception = None
+        returnv = exception = args = None
         timeout = False
         pruned = False
 
@@ -205,6 +199,7 @@ class SEEngine:
 
         try:
             with Timeout(self.timeout), HiddenPrints():
+                args = self._instantiate_args(method_name)
                 if args:
                     returnv = method(*args)
                 else:
@@ -299,7 +294,7 @@ class SEEngine:
         attr_type = self._sut.get_attr_type(type(owner), attr_name)
         if im.is_user_defined(attr_type):
             setattr(owner, im.ISINIT_PREFIX + attr_name, True)
-            if not im.is_tracked(owner) or attr is not None:
+            if not im.is_tracked(owner):
                 return attr
 
             new_value = self._lazy_initialization(attr_type)
