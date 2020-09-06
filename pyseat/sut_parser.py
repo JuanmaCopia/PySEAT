@@ -187,9 +187,6 @@ class SUT:
     def get_method_name(self):
         return self.current_method.name
 
-    def get_cls_init_types(self, clss):
-        return copy.deepcopy(self.class_map[clss].init_data.types_list)
-
     def get_params_type_dict(self, clss):
         return copy.deepcopy(self.class_map[clss].init_data.types_dict)
 

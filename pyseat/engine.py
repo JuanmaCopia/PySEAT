@@ -291,19 +291,16 @@ class SEEngine:
         if self.mode != GENERATION_MODE or im.is_initialized(owner, attr_name):
             return attr
 
+        setattr(owner, im.ISINIT_PREFIX + attr_name, True)
         attr_type = self._sut.get_attr_type(type(owner), attr_name)
+
         if im.is_user_defined(attr_type):
-            setattr(owner, im.ISINIT_PREFIX + attr_name, True)
             if not im.is_tracked(owner):
                 return attr
 
             new_value = self._lazy_initialization(attr_type)
             setattr(owner, pref_name, new_value)
             return new_value
-
-        setattr(owner, im.ISINIT_PREFIX + attr_name, True)
-        if sym.is_symbolic(attr):
-            return attr
 
         new_sym = sym.symbolic_factory(self, attr_type)
         setattr(owner, pref_name, new_sym)

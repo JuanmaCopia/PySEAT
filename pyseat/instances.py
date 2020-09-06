@@ -1,4 +1,4 @@
-from symbolics import is_symbolic
+from symbolics import Symbolic
 from helpers import do_add
 
 import instance_management as im
@@ -45,17 +45,16 @@ def symbolize_partially(engine, user_def_class):
     Returns:
         A partially symbolic instance of user_def_class.
     """
-    init_types = engine._sut.get_cls_init_types(user_def_class)[1:]
-
-    init_args = [make_symbolic(engine, a) for a in init_types]
-    if init_args:
-        partial_ins = user_def_class(*init_args)
-    else:
-        partial_ins = user_def_class()
-    attr_names = engine._sut.get_instance_attr_dict(user_def_class).keys()
+    partial_ins = object.__new__(user_def_class)
+    attributes = engine._sut.get_instance_attr_dict(user_def_class)
     # Adding some instrumentation fields
-    for attr_name in attr_names:
-        setattr(partial_ins, im.ISINIT_PREFIX + attr_name, False)
+    for attr_name, typ in attributes.items():
+        value = make_symbolic(engine, typ)
+        setattr(partial_ins, im.SYMBOLIC_PREFIX + attr_name, value)
+        if isinstance(value, Symbolic):
+            setattr(partial_ins, im.ISINIT_PREFIX + attr_name, True)
+        else:
+            setattr(partial_ins, im.ISINIT_PREFIX + attr_name, False)
     setattr(partial_ins, "_objid", engine._ids)
     engine._ids += 1
 
@@ -109,7 +108,7 @@ def _concretize(symbolic, model, visited):
     """
     if symbolic is None:
         return None
-    elif is_symbolic(symbolic):
+    elif isinstance(symbolic, Symbolic):
         return symbolic.concretize(model)
     elif isinstance(symbolic, list):
         for i, x in enumerate(symbolic):
