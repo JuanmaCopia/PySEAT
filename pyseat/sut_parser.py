@@ -11,7 +11,7 @@ import typing
 import copy
 from inspect import signature
 
-from instrumentation import instrument
+from instrumentation import instrument_class
 from helpers import do_add
 from symbolics import Symbolic
 
@@ -182,7 +182,7 @@ class SUT:
             types_list += md.types_list
         self.class_map = map_all_classes(types_list)
         for clss, class_data in self.class_map.items():
-            instrument(clss, class_data.instance_attr_types.keys())
+            instrument_class(clss, class_data.instance_attr_types.keys())
 
     def get_method_name(self):
         return self.current_method.name
