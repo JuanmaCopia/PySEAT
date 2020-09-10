@@ -1,5 +1,4 @@
-INT_MAX = 4294967296
-INT_MIN = -4294967296
+import sys
 
 
 def do_add(s, x):
@@ -57,7 +56,7 @@ class BST:
         return True
 
     def is_ordered(self):
-        return self.is_ordered2(self.root, INT_MIN, INT_MAX)
+        return self.is_ordered2(self.root, -sys.maxsize, sys.maxsize)
 
     def is_ordered2(self, node, min, max):
         if node.data <= min or node.data >= max:

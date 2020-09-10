@@ -43,6 +43,7 @@ def parse_config_file(cfg_path=None):
         args["quiet"] = config.getboolean(r, "quiet")
         args["run_tests"] = config.getboolean(r, "run_tests")
         args["test_comments"] = config.getboolean(r, "test_comments")
+        args["blackbox"] = config.getboolean(r, "blackbox")
         runs.append(args)
     return runs
 
@@ -128,6 +129,13 @@ def parse_command_line():
         default=False,
         help="Run generated test after the exploration",
     )
+    parser.add_option(
+        "--blackbox",
+        dest="blackbox",
+        action="store_true",
+        default=False,
+        help="Use black box strategy",
+    )
 
     (options, args) = parser.parse_args()
 
@@ -151,6 +159,7 @@ def parse_command_line():
         pargs["quiet"] = options.quiet
         pargs["run_tests"] = not options.no_test_run
         pargs["test_comments"] = not options.no_comments
+        pargs["blackbox"] = options.blackbox
         return [pargs]
 
     if len(args) == 0:

@@ -1,11 +1,10 @@
+import sys
+
+
 def do_add(s, x):
     length = len(s)
     s.add(x)
     return len(s) != length
-
-
-INT_MAX = 4294967296
-INT_MIN = -4294967296
 
 
 class node:
@@ -22,6 +21,9 @@ class node:
         self.right_child = None
         self.parent = None  # pointer to parent node in tree
         self.height = 1  # height of node in tree (max dist. to leaf) NEW FOR AVL
+
+    def __repr__(self):
+        return "node: " + str(self.value)
 
 
 class AVLTree:
@@ -405,7 +407,7 @@ class AVLTree:
         return True
 
     def is_ordered(self):
-        return self.is_ordered2(self.root, INT_MIN, INT_MAX)
+        return self.is_ordered2(self.root, -sys.maxsize, sys.maxsize)
 
     def is_ordered2(self, node, min, max):
         if node.value <= min or node.value >= max:
