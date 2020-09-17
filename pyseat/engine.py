@@ -120,8 +120,7 @@ class SEEngine:
                 unexplored_paths = False
 
     def _reset_exploration(self):
-        """Resets the exploration variables to its initial values.
-        """
+        """Resets the exploration variables to its initial values."""
         self._path_condition = []
         self._current_bp = 0
         self._current_nodes = 0
@@ -199,21 +198,24 @@ class SEEngine:
         except excp.RepOkFailException:
             self._stats.pruned_by_repok += 1
         except excp.MaxRecursionException:
-            if not self._build_stats(pathdata):
-                self._stats.pruned_by_rec_limit += 1
-            else:
-                self._stats.builded_after_rec_limit += 1
+            pass
         except excp.TimeOutException:
             if not self._build_stats(pathdata):
                 self._stats.pruned_by_timeout += 1
             else:
-                self._stats.builded_after_timeout += 1
+                if pathdata.status != data.TIMEOUT:
+                    pathdata.status = data.PRUNED
+                else:
+                    self._stats.builded_after_timeout += 1
         except Exception as e:
             exception = e
             if not self._build_stats(pathdata):
                 self._stats.pruned_by_exception += 1
             else:
-                self._stats.builded_after_exception += 1
+                if pathdata.status != data.EXCEPTION:
+                    pathdata.status = data.PRUNED
+                else:
+                    self._stats.builded_after_exception += 1
         else:
             self._build_stats(pathdata)
             if pathdata.status == data.PRUNED:
@@ -576,9 +578,7 @@ class SEEngine:
         for c in self._path_condition:
             conditions = self.smt.And(conditions, c)
         true_cond = self.smt.check(self.smt.And(conditions, expression))
-        false_cond = self.smt.check(
-            self.smt.And(conditions, self.smt.Not(expression))
-        )
+        false_cond = self.smt.check(self.smt.And(conditions, self.smt.Not(expression)))
         if true_cond and not false_cond:
             return True
         if false_cond and not true_cond:
@@ -586,8 +586,7 @@ class SEEngine:
         return None
 
     def statistics(self):
-        """Returns the collected statistics of all executions.
-        """
+        """Returns the collected statistics of all executions."""
         return self._stats
 
 
