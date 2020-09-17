@@ -1,5 +1,4 @@
-INT_MAX = 4294967296
-INT_MIN = -4294967296
+import sys
 
 
 def do_add(s, x):
@@ -8,273 +7,382 @@ def do_add(s, x):
     return len(s) != length
 
 
-class Node:
+class node:
     # Instance attributes annotations (will be treated as symbolic)
-    data: int
-    right: "Node"
-    left: "Node"
-    parent: "Node"
+    value: int
+    height: int
+    right_child: "node"
+    left_child: "node"
+    parent: "node"
 
-    # Init params should be annotated also
-    def __init__(self, parent: "Node", data: int):
-        self.data = data
-        self.right = None
-        self.left = None
-        self.parent = parent
-        self.height = 0
-
-    def repok(self):
-        visited = set()
-        visited.add(self)
-
-        if self.left is not None:
-            if not do_add(visited, self.left):
-                return False
-
-        if self.right is not None:
-            if not do_add(visited, self.right):
-                return False
-
-        if self.parent is not None:
-            if not do_add(visited, self.parent):
-                return False
-
-        if self.left is not None:
-            if self.left.data > self.data:
-                return False
-            if self.left.parent is not self:
-                return False
-        if self.right is not None:
-            if self.right.data < self.data:
-                return False
-            if self.right.parent is not self:
-                return False
-
-        if self.parent is not None:
-            isleft = self is self.parent.left
-            isright = self is self.parent.right
-
-            if not isleft and not isright:
-                return False
-
-            if isleft and self.data > self.parent.data:
-                return False
-            if isright and self.data < self.parent.data:
-                return False
-        return True
-
-    def find(self, k: int):
-        """Finds and returns the node with key k from the subtree rooted at this
-        node.
-
-        Args:
-            k: The key of the node we want to find.
-
-        Returns:
-            The node with key k.
-        """
-        if k == self.data:
-            return self
-        elif k < self.data:
-            if self.left is None:
-                return None
-            else:
-                return self.left.find(k)
-        else:
-            if self.right is None:
-                return None
-            else:
-                return self.right.find(k)
-
-    def find_min(self):
-        """Finds the node with the minimum key in the subtree rooted at this
-        node.
-
-        Returns:
-            The node with the minimum key.
-        """
-        current = self
-        while current.left is not None:
-            current = current.left
-        return current
-
-    def next_larger(self):
-        """Returns the node with the next larger key (the successor) in the BST.
-        """
-        if self.right is not None:
-            return self.right.find_min()
-        current = self
-        while current.parent is not None and current is current.parent.right:
-            current = current.parent
-        return current.parent
-
-    def insert(self, node):
-        """Inserts a node into the subtree rooted at this node.
-
-        Args:
-            node: The node to be inserted.
-        """
-        if node is None:
-            return
-        if node.data < self.data:
-            if self.left is None:
-                node.parent = self
-                self.left = node
-            else:
-                self.left.insert(node)
-        else:
-            if self.right is None:
-                node.parent = self
-                self.right = node
-            else:
-                self.right.insert(node)
-
-    def delete(self):
-        """Deletes and returns this node from the tree."""
-        if self.left is None or self.right is None:
-            if self is self.parent.left:
-                self.parent.left = self.left or self.right
-                if self.parent.left is not None:
-                    self.parent.left.parent = self.parent
-            else:
-                self.parent.right = self.left or self.right
-                if self.parent.right is not None:
-                    self.parent.right.parent = self.parent
-            return self
-        else:
-            s = self.next_larger()
-            self.data, s.data = s.data, self.data
-            return s.delete()
+    def __init__(self, value: int = None):
+        self.value = value
+        self.left_child = None
+        self.right_child = None
+        self.parent = None  # pointer to parent node in tree
+        self.height = 1  # height of node in tree (max dist. to leaf) NEW FOR AVL
 
     def __repr__(self):
-        return "node: " + str(self.data)
+        return "node: " + str(self.value)
 
 
-def height(node):
-    if node is None:
-        return -1
-    else:
-        return node.height
-
-
-def update_height(node):
-    node.height = max(height(node.left), height(node.right)) + 1
-
-
-class AVL():
+class AVLTree:
     # Instance attributes annotations (will be treated as symbolic)
-    root: "Node"
+    root: "node"
 
-    # Init params should be annotated also
     def __init__(self):
         self.root = None
 
-    def find(self, k: int):
-        """Finds and returns the node with key k from the subtree rooted at this
-        node.
+    def __repr__(self):
+        if self.root == None:
+            return ""
+        content = "\n"  # to hold final string
+        cur_nodes = [self.root]  # all nodes at current level
+        cur_height = self.root.height  # height of nodes at current level
+        sep = " " * (2 ** (cur_height - 1))  # variable sized separator between elements
+        while True:
+            cur_height += -1  # decrement current height
+            if len(cur_nodes) == 0:
+                break
+            cur_row = " "
+            next_row = ""
+            next_nodes = []
 
-        Args:
-            k: The key of the node we want to find.
+            if all(n is None for n in cur_nodes):
+                break
 
-        Returns:
-            The node with key k or None if the tree is empty.
-        """
-        return self.root and self.root.find(k)
+            for n in cur_nodes:
 
-    def find_min(self):
-        """Returns the minimum node of this BST."""
+                if n == None:
+                    cur_row += "   " + sep
+                    next_row += "   " + sep
+                    next_nodes.extend([None, None])
+                    continue
 
-        return self.root and self.root.find_min()
+                if n.value != None:
+                    buf = " " * int((5 - len(str(n.value))) / 2)
+                    cur_row += "%s%s%s" % (buf, str(n.value), buf) + sep
+                else:
+                    cur_row += " " * 5 + sep
 
-    def next_larger(self, k: int):
-        """Returns the node that contains the next larger (the successor) key in
-        the BST in relation to the node with key k.
+                if n.left_child != None:
+                    next_nodes.append(n.left_child)
+                    next_row += " /" + sep
+                else:
+                    next_row += "  " + sep
+                    next_nodes.append(None)
 
-        Args:
-            k: The key of the node of which the successor is to be found.
+                if n.right_child != None:
+                    next_nodes.append(n.right_child)
+                    next_row += "\ " + sep
+                else:
+                    next_row += "  " + sep
+                    next_nodes.append(None)
 
-        Returns:
-            The successor node.
-        """
-        node = self.find(k)
-        return node and node.next_larger()
+            content += (
+                cur_height * "   "
+                + cur_row
+                + "\n"
+                + cur_height * "   "
+                + next_row
+                + "\n"
+            )
+            cur_nodes = next_nodes
+            sep = " " * int(len(sep) / 2)  # cut separator size in half
+        return content
 
-    def left_rotate(self, x):
-        y = x.right
-        y.parent = x.parent
-        if y.parent is None:
+    def insert(self, value: int):
+        if self.root == None:
+            self.root = node(value)
+        else:
+            self._insert(value, self.root)
+
+    def _insert(self, value, cur_node):
+        if value < cur_node.value:
+            if cur_node.left_child == None:
+                cur_node.left_child = node(value)
+                cur_node.left_child.parent = cur_node  # set parent
+                self._inspect_insertion(cur_node.left_child)
+            else:
+                self._insert(value, cur_node.left_child)
+        elif value > cur_node.value:
+            if cur_node.right_child == None:
+                cur_node.right_child = node(value)
+                cur_node.right_child.parent = cur_node  # set parent
+                self._inspect_insertion(cur_node.right_child)
+            else:
+                self._insert(value, cur_node.right_child)
+        else:
+            print("Value already in tree!")
+
+    def print_tree(self):
+        if self.root != None:
+            self._print_tree(self.root)
+
+    def _print_tree(self, cur_node):
+        if cur_node != None:
+            self._print_tree(cur_node.left_child)
+            print("%s, h=%d" % (str(cur_node.value), cur_node.height))
+            self._print_tree(cur_node.right_child)
+
+    def height(self):
+        if self.root != None:
+            return self._height(self.root, 0)
+        else:
+            return 0
+
+    def _height(self, cur_node, cur_height):
+        if cur_node == None:
+            return cur_height
+        left_height = self._height(cur_node.left_child, cur_height + 1)
+        right_height = self._height(cur_node.right_child, cur_height + 1)
+        return max(left_height, right_height)
+
+    def find(self, value: int):
+        if self.root != None:
+            return self._find(value, self.root)
+        else:
+            return None
+
+    def _find(self, value, cur_node):
+        if value == cur_node.value:
+            return cur_node
+        elif value < cur_node.value and cur_node.left_child != None:
+            return self._find(value, cur_node.left_child)
+        elif value > cur_node.value and cur_node.right_child != None:
+            return self._find(value, cur_node.right_child)
+
+    def delete_value(self, value: int):
+        return self.delete_node(self.find(value))
+
+    def delete_node(self, node):
+
+        ## -----
+        # Improvements since prior lesson
+
+        # Protect against deleting a node not found in the tree
+        if node == None or self.find(node.value) == None:
+            print("Node to be deleted not found in the tree!")
+            return None
+        ## -----
+
+        # returns the node with min value in tree rooted at input node
+        def min_value_node(n):
+            current = n
+            while current.left_child != None:
+                current = current.left_child
+            return current
+
+        # returns the number of children for the specified node
+        def num_children(n):
+            num_children = 0
+            if n.left_child != None:
+                num_children += 1
+            if n.right_child != None:
+                num_children += 1
+            return num_children
+
+        # get the parent of the node to be deleted
+        node_parent = node.parent
+
+        # get the number of children of the node to be deleted
+        node_children = num_children(node)
+
+        # break operation into different cases based on the
+        # structure of the tree & node to be deleted
+
+        # CASE 1 (node has no children)
+        if node_children == 0:
+
+            if node_parent != None:
+                # remove reference to the node from the parent
+                if node_parent.left_child == node:
+                    node_parent.left_child = None
+                else:
+                    node_parent.right_child = None
+            else:
+                self.root = None
+
+        # CASE 2 (node has a single child)
+        if node_children == 1:
+
+            # get the single child node
+            if node.left_child != None:
+                child = node.left_child
+            else:
+                child = node.right_child
+
+            if node_parent != None:
+                # replace the node to be deleted with its child
+                if node_parent.left_child == node:
+                    node_parent.left_child = child
+                else:
+                    node_parent.right_child = child
+            else:
+                self.root = child
+
+            # correct the parent pointer in node
+            child.parent = node_parent
+
+        # CASE 3 (node has two children)
+        if node_children == 2:
+
+            # get the inorder successor of the deleted node
+            successor = min_value_node(node.right_child)
+
+            # copy the inorder successor's value to the node formerly
+            # holding the value we wished to delete
+            node.value = successor.value
+
+            # delete the inorder successor now that it's value was
+            # copied into the other node
+            self.delete_node(successor)
+
+            # exit function so we don't call the _inspect_deletion twice
+            return
+
+        if node_parent != None:
+            # fix the height of the parent of current node
+            node_parent.height = 1 + max(
+                self.get_height(node_parent.left_child),
+                self.get_height(node_parent.right_child),
+            )
+
+            # begin to traverse back up the tree checking if there are
+            # any sections which now invalidate the AVL balance rules
+            self._inspect_deletion(node_parent)
+
+    def search(self, value: int):
+        if self.root != None:
+            return self._search(value, self.root)
+        else:
+            return False
+
+    def _search(self, value, cur_node):
+        if value == cur_node.value:
+            return True
+        elif value < cur_node.value and cur_node.left_child != None:
+            return self._search(value, cur_node.left_child)
+        elif value > cur_node.value and cur_node.right_child != None:
+            return self._search(value, cur_node.right_child)
+        return False
+
+    # Functions added for AVL...
+
+    def _inspect_insertion(self, cur_node, path=[]):
+        if cur_node.parent == None:
+            return
+        path = [cur_node] + path
+
+        left_height = self.get_height(cur_node.parent.left_child)
+        right_height = self.get_height(cur_node.parent.right_child)
+
+        if abs(left_height - right_height) > 1:
+            path = [cur_node.parent] + path
+            self._rebalance_node(path[0], path[1], path[2])
+            return
+
+        new_height = 1 + cur_node.height
+        if new_height > cur_node.parent.height:
+            cur_node.parent.height = new_height
+
+        self._inspect_insertion(cur_node.parent, path)
+
+    def _inspect_deletion(self, cur_node):
+        if cur_node == None:
+            return
+
+        left_height = self.get_height(cur_node.left_child)
+        right_height = self.get_height(cur_node.right_child)
+
+        if abs(left_height - right_height) > 1:
+            y = self.taller_child(cur_node)
+            x = self.taller_child(y)
+            self._rebalance_node(cur_node, y, x)
+
+        self._inspect_deletion(cur_node.parent)
+
+    def _rebalance_node(self, z, y, x):
+        if y == z.left_child and x == y.left_child:
+            self._right_rotate(z)
+        elif y == z.left_child and x == y.right_child:
+            self._left_rotate(y)
+            self._right_rotate(z)
+        elif y == z.right_child and x == y.right_child:
+            self._left_rotate(z)
+        elif y == z.right_child and x == y.left_child:
+            self._right_rotate(y)
+            self._left_rotate(z)
+        else:
+            raise Exception("_rebalance_node: z,y,x node configuration not recognized!")
+
+    def _right_rotate(self, z):
+        sub_root = z.parent
+        y = z.left_child
+        t3 = y.right_child
+        y.right_child = z
+        z.parent = y
+        z.left_child = t3
+        if t3 != None:
+            t3.parent = z
+        y.parent = sub_root
+        if y.parent == None:
             self.root = y
         else:
-            if y.parent.left is x:
-                y.parent.left = y
-            elif y.parent.right is x:
-                y.parent.right = y
-        x.right = y.left
-        if x.right is not None:
-            x.right.parent = x
-        y.left = x
-        x.parent = y
-        update_height(x)
-        update_height(y)
+            if y.parent.left_child == z:
+                y.parent.left_child = y
+            else:
+                y.parent.right_child = y
+        z.height = 1 + max(
+            self.get_height(z.left_child), self.get_height(z.right_child)
+        )
+        y.height = 1 + max(
+            self.get_height(y.left_child), self.get_height(y.right_child)
+        )
 
-    def right_rotate(self, x):
-        y = x.left
-        y.parent = x.parent
-        if y.parent is None:
+    def _left_rotate(self, z):
+        sub_root = z.parent
+        y = z.right_child
+        t2 = y.left_child
+        y.left_child = z
+        z.parent = y
+        z.right_child = t2
+        if t2 != None:
+            t2.parent = z
+        y.parent = sub_root
+        if y.parent == None:
             self.root = y
         else:
-            if y.parent.left is x:
-                y.parent.left = y
-            elif y.parent.right is x:
-                y.parent.right = y
-        x.left = y.right
-        if x.left is not None:
-            x.left.parent = x
-        y.right = x
-        x.parent = y
-        update_height(x)
-        update_height(y)
+            if y.parent.left_child == z:
+                y.parent.left_child = y
+            else:
+                y.parent.right_child = y
+        z.height = 1 + max(
+            self.get_height(z.left_child), self.get_height(z.right_child)
+        )
+        y.height = 1 + max(
+            self.get_height(y.left_child), self.get_height(y.right_child)
+        )
 
-    def rebalance(self, node):
-        while node is not None:
-            update_height(node)
-            if height(node.left) >= 2 + height(node.right):
-                if height(node.left.left) >= height(node.left.right):
-                    self.right_rotate(node)
-                else:
-                    self.left_rotate(node.left)
-                    self.right_rotate(node)
-            elif height(node.right) >= 2 + height(node.left):
-                if height(node.right.right) >= height(node.right.left):
-                    self.left_rotate(node)
-                else:
-                    self.right_rotate(node.right)
-                    self.left_rotate(node)
-            node = node.parent
+    def get_height(self, cur_node):
+        if cur_node == None:
+            return 0
+        return cur_node.height
 
-    def insert(self, k: int):
-        """Inserts a node with key k into the subtree rooted at this node.
-        This AVL version guarantees the balance property: h = O(lg n).
-
-        Args:
-            k: The key of the node to be inserted.
-        """
-        node = Node(None, k)
-        if self.root is None:
-            # The root's parent is None.
-            self.root = node
-        else:
-            self.root.insert(node)
-        self.rebalance(node)
+    def taller_child(self, cur_node):
+        left = self.get_height(cur_node.left_child)
+        right = self.get_height(cur_node.right_child)
+        return cur_node.left_child if left >= right else cur_node.right_child
 
     def repok(self):
         if not self.root:
             return True
         if not (
-            self.is_acyclic() and
-            self.is_ordered() and
-            self.is_balanced() and
-            self.parents_ok(self.root)
+            self.is_acyclic()
+            and self.is_ordered()
+            and self.is_balanced()
+            and self.parents_ok(self.root)
+            and self.heights_ok(self.root)
         ):
             return False
         if self.root.parent is not None:
@@ -288,27 +396,27 @@ class AVL():
         worklist.append(self.root)
         while worklist:
             current = worklist.pop(0)
-            if current.left:
-                if not do_add(visited, current.left):
+            if current.left_child:
+                if not do_add(visited, current.left_child):
                     return False
-                worklist.append(current.left)
-            if current.right:
-                if not do_add(visited, current.right):
+                worklist.append(current.left_child)
+            if current.right_child:
+                if not do_add(visited, current.right_child):
                     return False
-                worklist.append(current.right)
+                worklist.append(current.right_child)
         return True
 
     def is_ordered(self):
-        return self.is_ordered2(self.root, INT_MIN, INT_MAX)
+        return self.is_ordered2(self.root, -sys.maxsize, sys.maxsize)
 
     def is_ordered2(self, node, min, max):
-        if node.data < min or node.data > max:
+        if node.value <= min or node.value >= max:
             return False
-        if node.left:
-            if not self.is_ordered2(node.left, min, node.data):
+        if node.left_child:
+            if not self.is_ordered2(node.left_child, min, node.value):
                 return False
-        if node.right:
-            if not self.is_ordered2(node.right, node.data, max):
+        if node.right_child:
+            if not self.is_ordered2(node.right_child, node.value, max):
                 return False
         return True
 
@@ -316,23 +424,23 @@ class AVL():
         if node is None:
             return True
 
-        if node.left is not None:
-            if node.left.parent is not node:
+        if node.left_child is not None:
+            if node.left_child.parent is not node:
                 return False
 
-        if node.right is not None:
-            if node.right.parent is not node:
+        if node.right_child is not None:
+            if node.right_child.parent is not node:
                 return False
 
-        return self.parents_ok(node.left) and self.parents_ok(node.right)
+        return self.parents_ok(node.left_child) and self.parents_ok(node.right_child)
 
     def is_balanced_helper(self, root):
         if root is None:
             return 0
-        left_height = self.is_balanced_helper(root.left)
+        left_height = self.is_balanced_helper(root.left_child)
         if left_height == -1:
             return -1
-        right_height = self.is_balanced_helper(root.right)
+        right_height = self.is_balanced_helper(root.right_child)
         if right_height == -1:
             return -1
         if abs(left_height - right_height) > 1:
@@ -342,67 +450,20 @@ class AVL():
     def is_balanced(self):
         return self.is_balanced_helper(self.root) > -1
 
-    def to_str(self, node, visited):
-        """Returns list of strings, width, height, and horizontal coord of root."""
-        # No child.
-
-        if not do_add(visited, node):
-            line = "%s" % node.data + "*"
-            width = len(line)
-            height = 1
-            middle = width // 2
-            return [line], width, height, middle
-
-        if node.right is None and node.left is None:
-            line = "%s" % node.data
-            width = len(line)
-            height = 1
-            middle = width // 2
-            return [line], width, height, middle
-
-        # Only left child.
-        if node.right is None:
-            lines, n, p, x = self.to_str(node.left, visited)
-            s = "%s" % node.data
-            u = len(s)
-            first_line = (x + 1) * " " + (n - x - 1) * "_" + s
-            second_line = x * " " + "/" + (n - x - 1 + u) * " "
-            shifted_lines = [line + u * " " for line in lines]
-            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
-
-        # Only right child.
-        if node.left is None:
-            lines, n, p, x = self.to_str(node.right, visited)
-            s = "%s" % node.data
-            u = len(s)
-            first_line = s + x * "_" + (n - x) * " "
-            second_line = (u + x) * " " + "\\" + (n - x - 1) * " "
-            shifted_lines = [u * " " + line for line in lines]
-            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
-
-        # Two children.
-        left, n, p, x = self.to_str(node.left, visited)
-        right, m, q, y = self.to_str(node.right, visited)
-        s = "%s" % node.data
-        u = len(s)
-        first_line = (x + 1) * " " + (n - x - 1) * "_" + s + y * "_" + (m - y) * " "
-        second_line = (
-            x * " " + "/" + (n - x - 1 + u + y) * " " + "\\" + (m - y - 1) * " "
+    @staticmethod
+    def calc_height(node):
+        if node is None:
+            return 0
+        return 1 + max(
+            AVLTree.calc_height(node.left_child), AVLTree.calc_height(node.right_child)
         )
-        if p < q:
-            left += [n * " "] * (q - p)
-        elif q < p:
-            right += [m * " "] * (p - q)
-        zipped_lines = zip(left, right)
-        lines = [first_line, second_line] + [a + u * " " + b for a, b in zipped_lines]
-        return lines, n + m + u, max(p, q) + 2, n + u // 2
 
-    def __repr__(self):
-        if self.root is None:
-            return "<empty tree>"
-        visited = set()
-        lines, _, _, _ = self.to_str(self.root, visited)
-        result = ""
-        for line in lines:
-            result += "        " + line + "\n"
-        return "\n" + result
+    @staticmethod
+    def heights_ok(node):
+        if node is None:
+            return True
+        if AVLTree.calc_height(node) != node.height:
+            return False
+        return AVLTree.heights_ok(node.left_child) and AVLTree.heights_ok(
+            node.right_child
+        )
