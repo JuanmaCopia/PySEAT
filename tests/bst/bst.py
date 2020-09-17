@@ -1,13 +1,13 @@
 import sys
 
 
-def do_add(s, x):
+def do_add(s, x):  # pragma: no cover
     length = len(s)
     s.add(x)
     return len(s) != length
 
 
-class Node:
+class Node:  # pragma: no cover
     # Instance attributes annotations (will be treated as symbolic)
     data: int
     right: "Node"
@@ -31,14 +31,14 @@ class BST:
     def __init__(self):
         self.root = None
 
-    def repok(self):
+    def repok(self):  # pragma: no cover
         if not self.root:
             return True
         if not (self.is_acyclic() and self.is_ordered()):
             return False
         return True
 
-    def is_acyclic(self):
+    def is_acyclic(self):  # pragma: no cover
         visited = set()
         visited.add(self.root)
         worklist = []
@@ -55,10 +55,10 @@ class BST:
                 worklist.append(current.right)
         return True
 
-    def is_ordered(self):
+    def is_ordered(self):  # pragma: no cover
         return self.is_ordered2(self.root, -sys.maxsize, sys.maxsize)
 
-    def is_ordered2(self, node, min, max):
+    def is_ordered2(self, node, min, max):  # pragma: no cover
         if node.data <= min or node.data >= max:
             return False
         if node.left:
@@ -116,7 +116,7 @@ class BST:
         right_height = self._height(cur_node.right, cur_height + 1)
         return max(left_height, right_height)
 
-    def to_str(self, node, visited):
+    def to_str(self, node, visited):  # pragma: no cover
         """Returns list of strings, width, height, and horizontal coord of root."""
         # No child.
 
@@ -171,7 +171,7 @@ class BST:
         lines = [first_line, second_line] + [a + u * " " + b for a, b in zipped_lines]
         return lines, n + m + u, max(p, q) + 2, n + u // 2
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         if self.root is None:
             return "<empty tree>"
         visited = set()

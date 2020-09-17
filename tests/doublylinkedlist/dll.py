@@ -1,4 +1,4 @@
-class Node:
+class Node:  # pragma: no cover
     # Instance attributes annotations (will be treated as symbolic)
     data: int
     next: "Node"
@@ -194,12 +194,12 @@ class DoublyLinkedList:
         return self.head is None
 
     @staticmethod
-    def do_add(s, x):
+    def do_add(s, x):  # pragma: no cover
         length = len(s)
         s.add(x)
         return len(s) != length
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         if not self.head:
             return "<Empty list>"
         str_rep = ""
@@ -217,7 +217,7 @@ class DoublyLinkedList:
                     worklist.append(current.next)
         return str_rep
 
-    def repok(self):
+    def repok(self):  # pragma: no cover
         if self.head is None and self.tail is None:
             return True
         if self.head is None or self.tail is None:

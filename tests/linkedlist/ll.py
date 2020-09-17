@@ -1,4 +1,4 @@
-class Node:
+class Node:  # pragma: no cover
     # Instance attributes annotations (will be treated as symbolic)
     elem: int
     next: "Node"
@@ -38,7 +38,7 @@ class LinkedList:
             current = current.next
         return True
 
-    def repok(self):
+    def repok(self):  # pragma: no cover
         # acyclic
         visited = set()
         current = self.head
@@ -49,7 +49,7 @@ class LinkedList:
             current = current.next
         return True
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         if not self.head:
             return "EmptyList"
 

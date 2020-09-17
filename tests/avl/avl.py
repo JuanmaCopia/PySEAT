@@ -1,13 +1,13 @@
 import sys
 
 
-def do_add(s, x):
+def do_add(s, x):  # pragma: no cover
     length = len(s)
     s.add(x)
     return len(s) != length
 
 
-class node:
+class node:  # pragma: no cover
     # Instance attributes annotations (will be treated as symbolic)
     value: int
     height: int
@@ -33,7 +33,7 @@ class AVLTree:
     def __init__(self):
         self.root = None
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         if self.root == None:
             return ""
         content = "\n"  # to hold final string
@@ -115,23 +115,23 @@ class AVLTree:
         else:
             print("Value already in tree!")
 
-    def print_tree(self):
+    def print_tree(self):  # pragma: no cover
         if self.root != None:
             self._print_tree(self.root)
 
-    def _print_tree(self, cur_node):
+    def _print_tree(self, cur_node):  # pragma: no cover
         if cur_node != None:
             self._print_tree(cur_node.left_child)
             print("%s, h=%d" % (str(cur_node.value), cur_node.height))
             self._print_tree(cur_node.right_child)
 
-    def height(self):
+    def height(self):  # pragma: no cover
         if self.root != None:
             return self._height(self.root, 0)
         else:
             return 0
 
-    def _height(self, cur_node, cur_height):
+    def _height(self, cur_node, cur_height):  # pragma: no cover
         if cur_node == None:
             return cur_height
         left_height = self._height(cur_node.left_child, cur_height + 1)
@@ -374,7 +374,7 @@ class AVLTree:
         right = self.get_height(cur_node.right_child)
         return cur_node.left_child if left >= right else cur_node.right_child
 
-    def repok(self):
+    def repok(self):  # pragma: no cover
         if not self.root:
             return True
         if not (
@@ -389,7 +389,7 @@ class AVLTree:
             return False
         return True
 
-    def is_acyclic(self):
+    def is_acyclic(self):  # pragma: no cover
         visited = set()
         visited.add(self.root)
         worklist = []
@@ -406,10 +406,10 @@ class AVLTree:
                 worklist.append(current.right_child)
         return True
 
-    def is_ordered(self):
+    def is_ordered(self):  # pragma: no cover
         return self.is_ordered2(self.root, -sys.maxsize, sys.maxsize)
 
-    def is_ordered2(self, node, min, max):
+    def is_ordered2(self, node, min, max):  # pragma: no cover
         if node.value <= min or node.value >= max:
             return False
         if node.left_child:
@@ -420,7 +420,7 @@ class AVLTree:
                 return False
         return True
 
-    def parents_ok(self, node):
+    def parents_ok(self, node):  # pragma: no cover
         if node is None:
             return True
 
@@ -434,7 +434,7 @@ class AVLTree:
 
         return self.parents_ok(node.left_child) and self.parents_ok(node.right_child)
 
-    def is_balanced_helper(self, root):
+    def is_balanced_helper(self, root):  # pragma: no cover
         if root is None:
             return 0
         left_height = self.is_balanced_helper(root.left_child)
@@ -447,11 +447,11 @@ class AVLTree:
             return -1
         return max(left_height, right_height) + 1
 
-    def is_balanced(self):
+    def is_balanced(self):  # pragma: no cover
         return self.is_balanced_helper(self.root) > -1
 
     @staticmethod
-    def calc_height(node):
+    def calc_height(node):  # pragma: no cover
         if node is None:
             return 0
         return 1 + max(
@@ -459,7 +459,7 @@ class AVLTree:
         )
 
     @staticmethod
-    def heights_ok(node):
+    def heights_ok(node):  # pragma: no cover
         if node is None:
             return True
         if AVLTree.calc_height(node) != node.height:

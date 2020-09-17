@@ -6,6 +6,7 @@ import time
 import os
 import sut_parser
 import cli_print as cli
+import utils
 from data import Statistics
 from engine import SEEngine
 from test_generator import TestCode, append_to_testfile, create_testfile
@@ -80,42 +81,9 @@ for args in runs:
             subprocess.call(["pytest", "--disable-warnings", "-q", filepath])
 
         if coverage:
-            subprocess.call(
-                [
-                    "coverage",
-                    "run",
-                    "--source=" + folder,
-                    "--omit=" + filepath,
-                    "--branch",
-                    "-m",
-                    "pytest",
-                    "-q",
-                    "--disable-warnings",
-                    filepath,
-                ]
-            )
-            cli.print_coverage_title()
-            subprocess.call(["coverage", "report"])
-            subprocess.call(["coverage", "html", "-d", folder + "htmlcov"])
+            utils.measure_branch_coverage(folder, filepath)
 
         if mutation:
-            subprocess.call(
-                [
-                    "mut.py",
-                    "--target",
-                    mod,
-                    "--unit-test",
-                    testfile,
-                    "--report-html",
-                    folder + "mutscore",
-                    "--runner",
-                    "pytest",
-                    "-c",
-                    "--coverage",
-                    "-p",
-                    folder,
-                    "-m",
-                ]
-            )
+            utils.measure_mutation_score(mod, testfile, folder)
 
     cli.print_bottom()
