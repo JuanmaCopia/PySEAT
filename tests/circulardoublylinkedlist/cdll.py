@@ -1,4 +1,4 @@
-class Node:
+class Node:  # pragma: no cover
     # Instance attributes annotations (will be treated as symbolic)
     key: int
     next: "Node"
@@ -27,7 +27,7 @@ class Node:
         else:
             ns = " -> None"
 
-        return (ps + self.key.__repr__() + ns)
+        return ps + self.key.__repr__() + ns
 
 
 class CDLinkedList:
@@ -38,7 +38,7 @@ class CDLinkedList:
     def __init__(self):
         self.head = None
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         if not self.head:
             return "<Empty list>"
         str_rep = ""
@@ -207,12 +207,12 @@ class CDLinkedList:
             current_node = current_node.next
 
     @staticmethod
-    def do_add(s, x):
+    def do_add(s, x):  # pragma: no cover
         length = len(s)
         s.add(x)
         return len(s) != length
 
-    def repok(self):
+    def repok(self):  # pragma: no cover
         if self.head is None:
             return True
         if not self.head.prev or not self.head.next:
