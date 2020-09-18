@@ -40,7 +40,9 @@ for args in runs:
         for i, (instance, constraints) in enumerate(input_structures):
             model = engine.smt.get_model(constraints)
             input_structures[i] = (concretize(instance, model), [])
-    cli.print_white(" DONE!\n Exploring...")
+    cli.print_white(
+        " DONE! {} structures generated\n Exploring...".format(len(input_structures))
+    )
 
     build_time = time.time() - start_time
 
