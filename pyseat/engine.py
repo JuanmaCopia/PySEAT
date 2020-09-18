@@ -224,7 +224,6 @@ class SEEngine:
             # if exception:
             #     raise exception
             pathdata.time = time.time() - self.time
-            self._stats.status_count(pathdata.status, pathdata.time)
             return pathdata
 
     def _build_stats(self, pathdata):
@@ -287,7 +286,6 @@ class SEEngine:
             self._current_repok_max = 0
             concretei = inst.concretize(symbolic, model)
             if self.execute_repok_concretely(concretei):
-                self._stats.builded_at[self._current_repok_max] += 1
                 return concretei
 
             build = None
@@ -299,7 +297,6 @@ class SEEngine:
 
             if build is None:
                 raise excp.CouldNotBuildError()
-            self._stats.builded_at[self._current_repok_max - 1] += 1
             return build
 
     def build_partial_structure(self, input_self, model):

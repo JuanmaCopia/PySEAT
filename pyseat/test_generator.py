@@ -37,14 +37,17 @@ class TestCode:
         self.run_data = run_stats
         self.status = run_stats.status
         self.test_number = number
+        self.input_code = ""
         self.code = ""
         self.name = "test_" + sut.get_method_name() + str(number) + "()"
         self.timeout = timeout
         self.comments = comments
         self.generate_test_code()
 
-    def _add_line(self, line):
+    def _add_line(self, line, isinput=False):
         self.code += "\n    " + line
+        if isinput:
+            self.input_code += line
 
     def generate_arguments_code(self, instance):
         args_ids = ""
@@ -92,16 +95,16 @@ class TestCode:
 
     def create_return_assert_code(self, value):
         if value is None:
-            self._add_line("assert returnv is None")
+            self._add_line("assert returnv is None", True)
         else:
-            self._add_line("assert returnv == " + str(value))
+            self._add_line("assert returnv == " + str(value), True)
 
     def create_assert_code(self, identifier, field, value):
         if value is not None:
             comp = " == "
         else:
             comp = " is "
-        self._add_line("assert " + identifier + "." + field + comp + str(value))
+        self._add_line("assert " + identifier + "." + field + comp + str(value), True)
 
     def gen_returnv_assert(self, returnv):
         if is_user_defined(returnv):
@@ -134,7 +137,7 @@ class TestCode:
     def generate_method_call(self, self_id, method_name, returnv=None):
         args_ids = self.generate_arguments_code(self.run_data.input_args)
         self._add_line(
-            "returnv = " + self_id + "." + method_name + "(" + args_ids + ")"
+            "returnv = " + self_id + "." + method_name + "(" + args_ids + ")", True
         )
 
     def generate_structure_code(self, instance, visited=set()):
@@ -146,7 +149,9 @@ class TestCode:
         identifier = var_name(instance)
 
         self.create_constructor_call(
-            identifier, type(instance), self._sut.get_params_type_dict(type(instance)),
+            identifier,
+            type(instance),
+            self._sut.get_params_type_dict(type(instance)),
         )
         userdef = []
         for field, value in get_dict(instance).items():
@@ -162,7 +167,7 @@ class TestCode:
         return identifier
 
     def create_assign_code(self, identifier, field, value):
-        self._add_line(identifier + "." + field + " = " + str(value) + "")
+        self._add_line(identifier + "." + field + " = " + str(value) + "", True)
 
     def create_constructor_call(self, identifier, typ, params_dict):
         if "self" in params_dict:
@@ -188,5 +193,4 @@ class TestCode:
             code_line = code_line[:-2] + ")"
         else:
             code_line = identifier + " = " + typ.__name__ + "()"
-        self._add_line(code_line)
-
+        self._add_line(code_line, True)

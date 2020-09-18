@@ -5,6 +5,7 @@ import subprocess
 import time
 
 import sut_parser
+import helpers
 import cli_print as cli
 from engine import SEEngine
 from test_generator import TestCode, append_to_testfile, create_testfile
@@ -26,25 +27,32 @@ for args in runs:
     testfile, mod, folder, filepath = create_testfile(module_name, class_name)
 
     for method_data in sut.methods_map.values():
+        visited = set()
         sut.current_method = method_data
         engine = SEEngine(sut, args)
 
-        test_num = 0
+        test_num = 1
         start_time = time.time()
 
         cli.print_method_data(sut.current_method.name, class_name)
 
         for run in engine.explore():
-            cli.print_result(sut.get_method(), run, args["quiet"])
             if run.status != data.PRUNED:
-                test_num += 1
                 test = TestCode(
-                    sut, run, test_num, args["method_timeout"], args["test_comments"],
+                    sut,
+                    run,
+                    test_num,
+                    args["method_timeout"],
+                    args["test_comments"],
                 )
-                append_to_testfile(filepath, test.code + "\n\n")
+                if helpers.do_add(visited, test.input_code):
+                    engine._stats.status_count(run.status, run.time)
+                    test_num += 1
+                    append_to_testfile(filepath, test.code + "\n\n")
+                    cli.print_result(sut.get_method(), run, args["quiet"])
 
         cli.print_statistics(
-            engine.statistics(), test_num, time.time() - start_time, args["verbose"]
+            engine.statistics(), test_num - 1, time.time() - start_time, args["verbose"]
         )
 
     if args["run_tests"]:
