@@ -2,9 +2,9 @@ import sys
 
 
 def do_add(s, x):  # pragma: no cover
-    length = len(s)
-    s.add(x)
-    return len(s) != length
+    length = len(s)  # pragma: no mutate
+    s.add(x)  # pragma: no mutate
+    return len(s) != length  # pragma: no mutate
 
 
 class node:
@@ -19,9 +19,6 @@ class node:
         self.left_child = None
         self.right_child = None
         self.parent = None  # pointer to parent node in tree
-
-    def __repr__(self):
-        return "node: " + str(self.value)
 
 
 class BST:
@@ -51,17 +48,7 @@ class BST:
             else:
                 self._insert(value, cur_node.right_child)
         else:
-            print("Value already in tree!")
-
-    # def print_tree(self):
-    #     if self.root != None:
-    #         self._print_tree(self.root)
-
-    # def _print_tree(self, cur_node):
-    #     if cur_node != None:
-    #         self._print_tree(cur_node.left_child)
-    #         print(str(cur_node.value))
-    #         self._print_tree(cur_node.right_child)
+            print("Value already in tree!")  # pragma: no mutate
 
     def height(self):
         if self.root != None:
@@ -100,7 +87,7 @@ class BST:
 
         # Protect against deleting a node not found in the tree
         if node == None or self.find(node.value) == None:
-            print("Node to be deleted not found in the tree!")
+            print("Node to be deleted not found in the tree!")  # pragma: no mutate
             return None
         ## -----
 
@@ -181,112 +168,69 @@ class BST:
             self.delete_node(successor)
 
     def repok(self):  # pragma: no cover
-        if not self.root:
-            return True
-        if not (self.is_acyclic() and self.is_ordered() and self.parents_ok(self.root)):
-            return False
-        if self.root.parent is not None:
-            return False
-        return True
+        if not self.root:  # pragma: no mutate
+            return True  # pragma: no mutate
+        if not (  # pragma: no mutate
+            self.is_acyclic()  # pragma: no mutate
+            and self.is_ordered()  # pragma: no mutate
+            and self.parents_ok(self.root)  # pragma: no mutate
+        ):  # pragma: no mutate
+            return False  # pragma: no mutate
+        if self.root.parent is not None:  # pragma: no mutate
+            return False  # pragma: no mutate
+        return True  # pragma: no mutate
 
     def is_acyclic(self):  # pragma: no cover
-        visited = set()
-        visited.add(self.root)
-        worklist = []
-        worklist.append(self.root)
-        while worklist:
-            current = worklist.pop(0)
-            if current.left_child:
-                if not do_add(visited, current.left_child):
-                    return False
-                worklist.append(current.left_child)
-            if current.right_child:
-                if not do_add(visited, current.right_child):
-                    return False
-                worklist.append(current.right_child)
-        return True
+        visited = set()  # pragma: no mutate
+        visited.add(self.root)  # pragma: no mutate
+        worklist = []  # pragma: no mutate
+        worklist.append(self.root)  # pragma: no mutate
+        while worklist:  # pragma: no mutate
+            current = worklist.pop(0)  # pragma: no mutate
+            if current.left_child:  # pragma: no mutate
+                if not do_add(visited, current.left_child):  # pragma: no mutate
+                    return False  # pragma: no mutate
+                worklist.append(current.left_child)  # pragma: no mutate
+            if current.right_child:  # pragma: no mutate
+                if not do_add(visited, current.right_child):  # pragma: no mutate
+                    return False  # pragma: no mutate
+                worklist.append(current.right_child)  # pragma: no mutate
+        return True  # pragma: no mutate
 
     def is_ordered(self):  # pragma: no cover
-        return self.is_ordered2(self.root, -sys.maxsize, sys.maxsize)
+        return self.is_ordered2(  # pragma: no mutate
+            self.root, -sys.maxsize, sys.maxsize  # pragma: no mutate
+        )  # pragma: no mutate
 
     def is_ordered2(self, node, min, max):  # pragma: no cover
-        if node.value <= min or node.value >= max:
-            return False
-        if node.left_child:
-            if not self.is_ordered2(node.left_child, min, node.value):
-                return False
-        if node.right_child:
-            if not self.is_ordered2(node.right_child, node.value, max):
-                return False
-        return True
+        if node.value <= min or node.value >= max:  # pragma: no mutate
+            return False  # pragma: no mutate
+        if node.left_child:  # pragma: no mutate
+            if not self.is_ordered2(  # pragma: no mutate
+                node.left_child, min, node.value  # pragma: no mutate
+            ):  # pragma: no mutate
+                return False  # pragma: no mutate
+        if node.right_child:  # pragma: no mutate
+            if not self.is_ordered2(  # pragma: no mutate
+                node.right_child, node.value, max  # pragma: no mutate
+            ):  # pragma: no mutate
+                return False  # pragma: no mutate
+        return True  # pragma: no mutate
 
     def parents_ok(self, node):  # pragma: no cover
-        if node is None:
-            return True
+        if node is None:  # pragma: no mutate
+            return True  # pragma: no mutate
 
-        if node.left_child is not None:
-            if node.left_child.parent is not node:
-                return False
+        if node.left_child is not None:  # pragma: no mutate
+            if node.left_child.parent is not node:  # pragma: no mutate
+                return False  # pragma: no mutate
 
-        if node.right_child is not None:
-            if node.right_child.parent is not node:
-                return False
+        if node.right_child is not None:  # pragma: no mutate
+            if node.right_child.parent is not node:  # pragma: no mutate
+                return False  # pragma: no mutate
 
-        return self.parents_ok(node.left_child) and self.parents_ok(node.right_child)
-
-    def to_str(self, node):  # pragma: no cover
-        """Returns list of strings, width, height, and horizontal coord of root."""
-        # No child.
-
-        if node.right_child is None and node.left_child is None:
-            line = "%s" % node.value
-            width = len(line)
-            height = 1
-            middle = width // 2
-            return [line], width, height, middle
-
-        # Only left child.
-        if node.right_child is None:
-            lines, n, p, x = self.to_str(node.left_child)
-            s = "%s" % node.value
-            u = len(s)
-            first_line = (x + 1) * " " + (n - x - 1) * "_" + s
-            second_line = x * " " + "/" + (n - x - 1 + u) * " "
-            shifted_lines = [line + u * " " for line in lines]
-            return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
-
-        # Only right child.
-        if node.left_child is None:
-            lines, n, p, x = self.to_str(node.right_child)
-            s = "%s" % node.value
-            u = len(s)
-            first_line = s + x * "_" + (n - x) * " "
-            second_line = (u + x) * " " + "\\" + (n - x - 1) * " "
-            shifted_lines = [u * " " + line for line in lines]
-            return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
-
-        # Two children.
-        left, n, p, x = self.to_str(node.left_child)
-        right, m, q, y = self.to_str(node.right_child)
-        s = "%s" % node.value
-        u = len(s)
-        first_line = (x + 1) * " " + (n - x - 1) * "_" + s + y * "_" + (m - y) * " "
-        second_line = (
-            x * " " + "/" + (n - x - 1 + u + y) * " " + "\\" + (m - y - 1) * " "
-        )
-        if p < q:
-            left += [n * " "] * (q - p)
-        elif q < p:
-            right += [m * " "] * (p - q)
-        zipped_lines = zip(left, right)
-        lines = [first_line, second_line] + [a + u * " " + b for a, b in zipped_lines]
-        return lines, n + m + u, max(p, q) + 2, n + u // 2
-
-    def __repr__(self):  # pragma: no cover
-        if self.root is None:
-            return "<empty tree>"
-        lines, _, _, _ = self.to_str(self.root)
-        result = ""
-        for line in lines:
-            result += "        " + line + "\n"
-        return "\n" + result
+        return self.parents_ok(  # pragma: no mutate
+            node.left_child  # pragma: no mutate
+        ) and self.parents_ok(  # pragma: no mutate
+            node.right_child  # pragma: no mutate
+        )  # pragma: no mutate

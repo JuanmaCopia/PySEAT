@@ -1,4 +1,4 @@
-class Node:  # pragma: no cover
+class Node:
     # Instance attributes annotations (will be treated as symbolic)
     key: int
     next: "Node"
@@ -10,25 +10,6 @@ class Node:  # pragma: no cover
         self.next = None
         self.prev = None
 
-    def __str__(self):
-        return self.__repr__()
-
-    def __repr__(self):
-        ps = None
-
-        if self.prev:
-            ps = " <- "
-        else:
-            ps = "None <- "
-
-        ns = None
-        if self.next:
-            ns = " -> "
-        else:
-            ns = " -> None"
-
-        return ps + self.key.__repr__() + ns
-
 
 class CDLinkedList:
     # Instance attributes annotations (will be treated as symbolic)
@@ -37,24 +18,6 @@ class CDLinkedList:
     # Init params should be annotated also
     def __init__(self):
         self.head = None
-
-    def __repr__(self):  # pragma: no cover
-        if not self.head:
-            return "<Empty list>"
-        str_rep = ""
-        visited = set()
-        visited.add(self.head)
-        worklist = []
-        worklist.append(self.head)
-        while worklist:
-            current = worklist.pop(0)
-            str_rep += current.__repr__()
-            if current.next:
-                if not self.do_add(visited, current.next):
-                    str_rep += "**"
-                else:
-                    worklist.append(current.next)
-        return str_rep
 
     # Insert node at the end of the circular doubly linked list
     def append(self, key: int):
@@ -208,39 +171,51 @@ class CDLinkedList:
 
     @staticmethod
     def do_add(s, x):  # pragma: no cover
-        length = len(s)
-        s.add(x)
-        return len(s) != length
+        length = len(s)  # pragma: no mutate
+        s.add(x)  # pragma: no mutate
+        return len(s) != length  # pragma: no mutate
 
     def repok(self):  # pragma: no cover
-        if self.head is None:
-            return True
-        if not self.head.prev or not self.head.next:
-            return False
-        if self.head.next is self.head and self.head.prev is self.head:
-            return True
-        if self.head.next is self.head and self.head.prev is not self.head:
-            return False
-        if self.head.prev is self.head and self.head.next is not self.head:
-            return False
+        if self.head is None:  # pragma: no mutate
+            return True  # pragma: no mutate
+        if not self.head.prev or not self.head.next:  # pragma: no mutate
+            return False  # pragma: no mutate
+        if (  # pragma: no mutate
+            self.head.next is self.head  # pragma: no mutate
+            and self.head.prev is self.head  # pragma: no mutate
+        ):  # pragma: no mutate
+            return True  # pragma: no mutate
+        if (  # pragma: no mutate
+            self.head.next is self.head  # pragma: no mutate
+            and self.head.prev is not self.head  # pragma: no mutate
+        ):  # pragma: no mutate
+            return False  # pragma: no mutate
+        if (  # pragma: no mutate
+            self.head.prev is self.head  # pragma: no mutate
+            and self.head.next is not self.head  # pragma: no mutate
+        ):  # pragma: no mutate
+            return False  # pragma: no mutate
 
-        visited = set()
-        current = self.head
-        next_node = current.next
-        visited.add(current)
+        visited = set()  # pragma: no mutate
+        current = self.head  # pragma: no mutate
+        next_node = current.next  # pragma: no mutate
+        visited.add(current)  # pragma: no mutate
 
-        while next_node is not self.head:
-            if next_node.next is None or next_node.prev is None:
-                return False
-            if next_node.next is next_node:
-                return False
-            if next_node.prev is not current or current.next is not next_node:
-                return False
-            current = next_node
-            if not CDLinkedList.do_add(visited, next_node):
-                return False
-            next_node = current.next
-            if next_node is self.head:
-                if current is not self.head.prev:
-                    return False
-        return True
+        while next_node is not self.head:  # pragma: no mutate
+            if next_node.next is None or next_node.prev is None:  # pragma: no mutate
+                return False  # pragma: no mutate
+            if next_node.next is next_node:  # pragma: no mutate
+                return False  # pragma: no mutate
+            if (  # pragma: no mutate
+                next_node.prev is not current  # pragma: no mutate
+                or current.next is not next_node  # pragma: no mutate
+            ):  # pragma: no mutate
+                return False  # pragma: no mutate
+            current = next_node  # pragma: no mutate
+            if not CDLinkedList.do_add(visited, next_node):  # pragma: no mutate
+                return False  # pragma: no mutate
+            next_node = current.next  # pragma: no mutate
+            if next_node is self.head:  # pragma: no mutate
+                if current is not self.head.prev:  # pragma: no mutate
+                    return False  # pragma: no mutate
+        return True  # pragma: no mutate
