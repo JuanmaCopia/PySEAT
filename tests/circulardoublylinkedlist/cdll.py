@@ -169,7 +169,7 @@ class CDLinkedList:
 
             current_node = current_node.next
 
-    @staticmethod
+    @staticmethod  # pragma: no mutate
     def do_add(s, x):  # pragma: no cover
         length = len(s)  # pragma: no mutate
         s.add(x)  # pragma: no mutate
