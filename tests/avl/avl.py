@@ -81,108 +81,6 @@ class AVLTree:
         elif value > cur_node.value and cur_node.right_child != None:
             return self._find(value, cur_node.right_child)
 
-    def delete_value(self, value: int):
-        return self.delete_node(self.find(value))
-
-    def delete_node(self, node):
-
-        ## -----
-        # Improvements since prior lesson
-
-        # Protect against deleting a node not found in the tree
-        if node == None or self.find(node.value) == None:
-            print("Node to be deleted not found in the tree!")  # pragma: no mutate
-            return None
-        ## -----
-
-        # returns the node with min value in tree rooted at input node
-        def min_value_node(n):
-            current = n
-            while current.left_child != None:
-                current = current.left_child
-            return current
-
-        # returns the number of children for the specified node
-        def num_children(n):
-            num_children = 0
-            if n.left_child != None:
-                num_children += 1
-            if n.right_child != None:
-                num_children += 1
-            return num_children
-
-        # get the parent of the node to be deleted
-        node_parent = node.parent
-
-        # get the number of children of the node to be deleted
-        node_children = num_children(node)
-
-        # break operation into different cases based on the
-        # structure of the tree & node to be deleted
-
-        # CASE 1 (node has no children)
-        if node_children == 0:
-
-            if node_parent != None:
-                # remove reference to the node from the parent
-                if node_parent.left_child == node:
-                    node_parent.left_child = None
-                else:
-                    node_parent.right_child = None
-            else:
-                self.root = None
-
-        # CASE 2 (node has a single child)
-        if node_children == 1:
-
-            # get the single child node
-            if node.left_child != None:
-                child = node.left_child
-            else:
-                child = node.right_child
-
-            if node_parent != None:
-                # replace the node to be deleted with its child
-                if node_parent.left_child == node:
-                    node_parent.left_child = child
-                else:
-                    node_parent.right_child = child
-            else:
-                self.root = child
-
-            # correct the parent pointer in node
-            child.parent = node_parent
-
-        # CASE 3 (node has two children)
-        if node_children == 2:
-
-            # get the inorder successor of the deleted node
-            successor = min_value_node(node.right_child)
-
-            # copy the inorder successor's value to the node formerly
-            # holding the value we wished to delete
-            node.value = successor.value
-
-            # delete the inorder successor now that it's value was
-            # copied into the other node
-            self.delete_node(successor)
-
-            # exit function so we don't call the _inspect_deletion twice
-            return
-
-        if node_parent != None:
-            # fix the height of the parent of current node
-            node_parent.height = 1 + max(
-                self.get_height(node_parent.left_child),
-                self.get_height(node_parent.right_child),
-            )
-
-            # begin to traverse back up the tree checking if there are
-            # any sections which now invalidate the AVL balance rules
-            self._inspect_deletion(node_parent)
-
-    # Functions added for AVL...
-
     def _inspect_insertion(self, cur_node, path=[]):
         if cur_node.parent == None:
             return
@@ -201,20 +99,6 @@ class AVLTree:
             cur_node.parent.height = new_height
 
         self._inspect_insertion(cur_node.parent, path)
-
-    def _inspect_deletion(self, cur_node):
-        if cur_node == None:
-            return
-
-        left_height = self.get_height(cur_node.left_child)
-        right_height = self.get_height(cur_node.right_child)
-
-        if abs(left_height - right_height) > 1:
-            y = self.taller_child(cur_node)
-            x = self.taller_child(y)
-            self._rebalance_node(cur_node, y, x)
-
-        self._inspect_deletion(cur_node.parent)
 
     def _rebalance_node(self, z, y, x):
         if y == z.left_child and x == y.left_child:
@@ -282,11 +166,6 @@ class AVLTree:
         if cur_node == None:
             return 0
         return cur_node.height
-
-    def taller_child(self, cur_node):
-        left = self.get_height(cur_node.left_child)
-        right = self.get_height(cur_node.right_child)
-        return cur_node.left_child if left >= right else cur_node.right_child
 
     def repok(self):  # pragma: no cover
         if not self.root:  # pragma: no mutate
@@ -374,7 +253,7 @@ class AVLTree:
     def is_balanced(self):  # pragma: no cover
         return self.is_balanced_helper(self.root) > -1  # pragma: no mutate
 
-    @staticmethod
+    @staticmethod  # pragma: no mutate
     def calc_height(node):  # pragma: no cover
         if node is None:  # pragma: no mutate
             return 0  # pragma: no mutate
@@ -383,7 +262,7 @@ class AVLTree:
             AVLTree.calc_height(node.right_child),  # pragma: no mutate
         )  # pragma: no mutate
 
-    @staticmethod
+    @staticmethod  # pragma: no mutate
     def heights_ok(node):  # pragma: no cover
         if node is None:  # pragma: no mutate
             return True  # pragma: no mutate
