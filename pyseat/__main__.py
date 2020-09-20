@@ -26,6 +26,9 @@ for args in runs:
     sut = sut_parser.parse(module_name, class_name, methods_names)
     testfile, mod, folder, filepath = create_testfile(module_name, class_name)
 
+    total_tests = 0
+    total_time = time.time()
+
     for method_data in sut.methods_map.values():
         visited = set()
         sut.current_method = method_data
@@ -51,10 +54,15 @@ for args in runs:
                     append_to_testfile(filepath, test.code + "\n\n")
                     cli.print_result(sut.get_method(), run, args["quiet"])
 
+        total_tests += test_num - 1
         cli.print_statistics(
             engine.statistics(), test_num - 1, time.time() - start_time, args["verbose"]
         )
 
+    print("\nIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII\n")
+    print("cantidad de tests: {}".format(total_tests))
+    print("tiempo total: {}".format(time.time() - total_time))
+    print("\nIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
     if args["run_tests"]:
         coverage = args["coverage"]
         mutation = args["mutation"]
