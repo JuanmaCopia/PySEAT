@@ -72,7 +72,7 @@ class TestCode:
         self._add_line("# Repok check")
         self.add_repok_check(self.run_data.input_self)
         if self.status == data.OK or self.status == data.FAIL:
-            self._add_line("# Assertions")
+            self._add_line("# Regression assertions (Captures the current behavior)")
             self.gen_returnv_assert(self.run_data.returnv)
             self.gen_structure_assertions(self.run_data.self_end_state)
 
