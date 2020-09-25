@@ -20,6 +20,32 @@ class LinkedList:
     def __init__(self):
         self.head = None
 
+    def prepend(self, elem: int):
+        new_node = Node(elem)
+        new_node.next = self.head
+        self.head = new_node
+
+    def append(self, elem: int):
+        new_node = Node(elem)
+        if not self.head:
+            self.head = new_node
+            return
+        current = self.head
+        while current.next:
+            current = current.next
+        current.next = new_node
+
+    def delete(self, elem: int):
+        if self.head:
+            if self.head.elem == elem:
+                self.head = self.head.next
+            else:
+                current = self.head
+                while current.next and current.next.elem != elem:
+                    current = current.next
+                if current.next:
+                    current.next = current.next.next
+
     def swap_node(self):
         head = self.head
         if head and head.next is not None:
