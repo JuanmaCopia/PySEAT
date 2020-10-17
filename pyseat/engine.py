@@ -112,7 +112,7 @@ class SEEngine:
 
             end_self = self._explore_repok_path()
             if end_self is not None:
-                structures.append((end_self, copy.deepcopy(self._path_condition)))
+                structures.append((end_self, self._path_condition))
 
             unexplored_paths = self._set_next_path()
 

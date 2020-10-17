@@ -6,379 +6,379 @@ def test_insert1():
     '''
     Self:
         
-         0      
+         1      
        /    \     
-     -1     1    
+      0      2    
     /              
-  -2              
+  -1              
                   
 
     Return:
         None
     End Self:
         
-         0      
+         1      
        /    \     
-     -2     1    
+     -1     2    
     /  \           
-  -3   -1          
+  -2    0           
                     
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 0
-    node1.parent = None
+    node1.value = 1
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 2
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
-    node2.value = -1
-    node2.right_child = None
+    node2.value = 0
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
-    node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
+    node4.value = -1
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.insert(-3)
+    returnv = avltree0.insert(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
-    assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
+    assert avltree0.root.value == 1
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 2
     assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -3
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child.value == 0
+    assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
+    assert avltree0.root.left_child.left_child.value == -2
     assert avltree0.root.left_child.left_child.left_child is None
     assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
-    assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
-    assert avltree0.root.left_child.right_child.height == 1
 
 
 def test_insert2():
     '''
     Self:
         
-         0      
+         1      
        /    \     
-     -1     1    
+      0      2    
     /              
-  -3              
+  -2              
                   
 
     Return:
         None
     End Self:
         
-         0      
+         1      
        /    \     
-     -2     1    
+     -1     2    
     /  \           
-  -3   -1          
+  -2    0           
                     
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 0
-    node1.parent = None
+    node1.value = 1
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 2
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
-    node2.value = -1
-    node2.right_child = None
+    node2.value = 0
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
-    node4.value = -3
-    node4.left_child = None
-    node4.right_child = None
+    node4.value = -2
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.insert(-2)
+    returnv = avltree0.insert(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
-    assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
+    assert avltree0.root.value == 1
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 2
     assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -3
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child.value == -2
     assert avltree0.root.left_child.left_child.height == 1
-    assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
+    assert avltree0.root.left_child.right_child.value == 0
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_insert3():
     '''
     Self:
         
-         0      
+         1      
        /    \     
-     -1     1    
+      0      2    
     /              
-  -2              
+  -1              
                   
 
     Return:
         None
     End Self:
         
-         0      
+         1      
        /    \     
-     -1     1    
+      0      2    
     /              
-  -2              
+  -1              
                   
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 0
-    node1.parent = None
+    node1.value = 1
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 2
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
-    node2.value = -1
-    node2.right_child = None
+    node2.value = 0
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
-    node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
+    node4.value = -1
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.insert(-2)
+    returnv = avltree0.insert(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
-    assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
+    assert avltree0.root.value == 1
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 2
     assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == 0
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.value == -1
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_insert4():
     '''
     Self:
         
-         0      
+         2      
        /    \     
-     -2     1    
+      0      3    
     /              
-  -3              
+  -1              
                   
 
     Return:
         None
     End Self:
         
-         0      
+         2      
        /    \     
-     -2     1    
+      0      3    
     /  \           
-  -3   -1          
+  -1    1           
                     
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 0
-    node1.parent = None
+    node1.value = 2
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 3
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
-    node2.value = -2
-    node2.right_child = None
+    node2.value = 0
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
-    node4.value = -3
-    node4.left_child = None
-    node4.right_child = None
+    node4.value = -1
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.insert(-1)
+    returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
-    assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
+    assert avltree0.root.value == 2
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 3
     assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -3
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
-    assert avltree0.root.left_child.left_child.height == 1
-    assert avltree0.root.left_child.right_child.value == -1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == 0
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child.value == 1
     assert avltree0.root.left_child.right_child.left_child is None
     assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.left_child.value == -1
+    assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_insert5():
     '''
     Self:
         
-         0      
+         1      
        /    \     
-     -1     1    
+      0      2    
     /              
-  -2              
+  -1              
                   
 
     Return:
         None
     End Self:
         
-         0      
+         1      
        /    \     
-     -1     1    
+      0      2    
     /              
-  -2              
+  -1              
                   
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 0
-    node1.parent = None
+    node1.value = 1
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 2
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
-    node2.value = -1
-    node2.right_child = None
+    node2.value = 0
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
-    node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
+    node4.value = -1
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.insert(-1)
+    returnv = avltree0.insert(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
-    assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
+    assert avltree0.root.value == 1
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 2
     assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == 0
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.value == -1
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_insert6():
@@ -408,28 +408,28 @@ def test_insert6():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 2
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -1
-    node2.right_child = None
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
     node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -437,25 +437,25 @@ def test_insert6():
     returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
-    assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
-    assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.right_child.left_child.value == 1
     assert avltree0.root.right_child.left_child.left_child is None
     assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.value == -2
+    assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_insert7():
@@ -485,28 +485,28 @@ def test_insert7():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -1
-    node2.right_child = None
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
     node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -514,25 +514,25 @@ def test_insert7():
     returnv = avltree0.insert(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
-    assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
-    assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.right_child.right_child.value == 2
     assert avltree0.root.right_child.right_child.left_child is None
     assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.left_child.left_child.value == -2
+    assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_insert8():
@@ -562,28 +562,28 @@ def test_insert8():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -1
-    node2.right_child = None
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
     node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -591,22 +591,22 @@ def test_insert8():
     returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_insert9():
@@ -636,28 +636,28 @@ def test_insert9():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -1
-    node2.right_child = None
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
     node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -665,22 +665,22 @@ def test_insert9():
     returnv = avltree0.insert(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_insert10():
@@ -710,28 +710,28 @@ def test_insert10():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -739,25 +739,25 @@ def test_insert10():
     returnv = avltree0.insert(-3)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
+    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.left_child.value == -2
     assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
-    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.left_child.right_child.value == -1
+    assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
     assert avltree0.root.left_child.left_child.value == -3
     assert avltree0.root.left_child.left_child.left_child is None
     assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
-    assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
-    assert avltree0.root.left_child.right_child.height == 1
 
 
 def test_insert11():
@@ -787,28 +787,28 @@ def test_insert11():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -3
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -816,25 +816,25 @@ def test_insert11():
     returnv = avltree0.insert(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
+    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.left_child.value == -2
     assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
-    assert avltree0.root.right_child.height == 1
     assert avltree0.root.left_child.left_child.value == -3
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_insert12():
@@ -864,28 +864,28 @@ def test_insert12():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -3
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -893,25 +893,25 @@ def test_insert12():
     returnv = avltree0.insert(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
+    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.left_child.value == -2
     assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
-    assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -3
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
-    assert avltree0.root.left_child.left_child.height == 1
     assert avltree0.root.left_child.right_child.value == -1
     assert avltree0.root.left_child.right_child.left_child is None
     assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.left_child.value == -3
+    assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_insert13():
@@ -941,28 +941,28 @@ def test_insert13():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -970,22 +970,22 @@ def test_insert13():
     returnv = avltree0.insert(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_insert14():
@@ -1015,28 +1015,28 @@ def test_insert14():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -1044,22 +1044,22 @@ def test_insert14():
     returnv = avltree0.insert(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_insert15():
@@ -1089,28 +1089,28 @@ def test_insert15():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 2
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -1118,25 +1118,25 @@ def test_insert15():
     returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
-    assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
-    assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
     assert avltree0.root.right_child.left_child.left_child is None
     assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.left_child.right_child.value == -1
+    assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_insert16():
@@ -1166,28 +1166,28 @@ def test_insert16():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -1195,25 +1195,25 @@ def test_insert16():
     returnv = avltree0.insert(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
-    assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
-    assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
     assert avltree0.root.right_child.right_child.left_child is None
     assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.value == -1
+    assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_insert17():
@@ -1243,28 +1243,28 @@ def test_insert17():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -1272,22 +1272,22 @@ def test_insert17():
     returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_insert18():
@@ -1317,28 +1317,28 @@ def test_insert18():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -1346,22 +1346,22 @@ def test_insert18():
     returnv = avltree0.insert(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_insert19():
@@ -1391,28 +1391,28 @@ def test_insert19():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -1420,25 +1420,25 @@ def test_insert19():
     returnv = avltree0.insert(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.value == 1
+    assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
     assert avltree0.root.left_child.left_child.value == -2
     assert avltree0.root.left_child.left_child.left_child is None
     assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
-    assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
-    assert avltree0.root.right_child.left_child.height == 1
 
 
 def test_insert20():
@@ -1468,28 +1468,28 @@ def test_insert20():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -1497,25 +1497,25 @@ def test_insert20():
     returnv = avltree0.insert(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
+    assert avltree0.root.right_child.left_child.value == 1
+    assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
     assert avltree0.root.left_child.right_child.left_child is None
     assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
-    assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
-    assert avltree0.root.right_child.left_child.height == 1
 
 
 def test_insert21():
@@ -1545,28 +1545,28 @@ def test_insert21():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -1574,22 +1574,22 @@ def test_insert21():
     returnv = avltree0.insert(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_insert22():
@@ -1619,28 +1619,28 @@ def test_insert22():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 3
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -1648,25 +1648,25 @@ def test_insert22():
     returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
+    assert avltree0.root.right_child.right_child.value == 3
+    assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
     assert avltree0.root.right_child.left_child.left_child is None
     assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
-    assert avltree0.root.right_child.right_child.value == 3
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
-    assert avltree0.root.right_child.right_child.height == 1
 
 
 def test_insert23():
@@ -1696,28 +1696,28 @@ def test_insert23():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 3
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -1725,25 +1725,25 @@ def test_insert23():
     returnv = avltree0.insert(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 3
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_insert24():
@@ -1773,28 +1773,28 @@ def test_insert24():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -1802,22 +1802,22 @@ def test_insert24():
     returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_insert25():
@@ -1847,28 +1847,28 @@ def test_insert25():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -1876,25 +1876,25 @@ def test_insert25():
     returnv = avltree0.insert(3)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
     assert avltree0.root.right_child.height == 2
-    assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
-    assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 3
     assert avltree0.root.right_child.right_child.left_child is None
     assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.left_child.value == 1
+    assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_insert26():
@@ -1924,28 +1924,28 @@ def test_insert26():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -1953,22 +1953,22 @@ def test_insert26():
     returnv = avltree0.insert(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_insert27():
@@ -1998,28 +1998,28 @@ def test_insert27():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2027,22 +2027,22 @@ def test_insert27():
     returnv = avltree0.insert(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_insert28():
@@ -2072,28 +2072,28 @@ def test_insert28():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2101,25 +2101,25 @@ def test_insert28():
     returnv = avltree0.insert(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.right_child.right_child.value == 2
+    assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
     assert avltree0.root.left_child.left_child.value == -2
     assert avltree0.root.left_child.left_child.left_child is None
     assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
-    assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
-    assert avltree0.root.right_child.right_child.height == 1
 
 
 def test_insert29():
@@ -2149,28 +2149,28 @@ def test_insert29():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2178,25 +2178,25 @@ def test_insert29():
     returnv = avltree0.insert(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
+    assert avltree0.root.right_child.right_child.value == 2
+    assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
     assert avltree0.root.left_child.right_child.left_child is None
     assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
-    assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
-    assert avltree0.root.right_child.right_child.height == 1
 
 
 def test_insert30():
@@ -2226,28 +2226,28 @@ def test_insert30():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2255,22 +2255,22 @@ def test_insert30():
     returnv = avltree0.insert(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_insert31():
@@ -2300,28 +2300,28 @@ def test_insert31():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = -2
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -3
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 0
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -3
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2329,25 +2329,25 @@ def test_insert31():
     returnv = avltree0.insert(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == -2
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -3
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 0
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.left_child.value == -3
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
+    assert avltree0.root.right_child.right_child.value == 1
+    assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
     assert avltree0.root.right_child.left_child.value == -1
     assert avltree0.root.right_child.left_child.left_child is None
     assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
-    assert avltree0.root.right_child.right_child.value == 1
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
-    assert avltree0.root.right_child.right_child.height == 1
 
 
 def test_insert32():
@@ -2377,28 +2377,28 @@ def test_insert32():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = -1
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 0
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2406,25 +2406,25 @@ def test_insert32():
     returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == -1
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 0
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_insert33():
@@ -2454,28 +2454,28 @@ def test_insert33():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = -1
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 0
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2483,25 +2483,25 @@ def test_insert33():
     returnv = avltree0.insert(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == -1
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
     assert avltree0.root.right_child.height == 2
-    assert avltree0.root.right_child.left_child.value == 0
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
-    assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
     assert avltree0.root.right_child.right_child.left_child is None
     assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.left_child.value == 0
+    assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_insert34():
@@ -2531,28 +2531,28 @@ def test_insert34():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = -1
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 0
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2560,22 +2560,22 @@ def test_insert34():
     returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == -1
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 0
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 1
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_insert35():
@@ -2605,28 +2605,28 @@ def test_insert35():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = -1
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 0
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2634,22 +2634,22 @@ def test_insert35():
     returnv = avltree0.insert(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == -1
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 0
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 1
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_insert36():
@@ -2679,28 +2679,28 @@ def test_insert36():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2708,22 +2708,22 @@ def test_insert36():
     returnv = avltree0.insert(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_insert37():
@@ -2751,22 +2751,22 @@ def test_insert37():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2774,18 +2774,18 @@ def test_insert37():
     returnv = avltree0.insert(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.left_child.value == -2
     assert avltree0.root.left_child.left_child.left_child is None
     assert avltree0.root.left_child.left_child.right_child is None
@@ -2817,22 +2817,22 @@ def test_insert38():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2840,18 +2840,18 @@ def test_insert38():
     returnv = avltree0.insert(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
     assert avltree0.root.left_child.right_child.left_child is None
     assert avltree0.root.left_child.right_child.right_child is None
@@ -2881,22 +2881,22 @@ def test_insert39():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2904,19 +2904,19 @@ def test_insert39():
     returnv = avltree0.insert(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_insert40():
@@ -2944,22 +2944,22 @@ def test_insert40():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -2967,18 +2967,18 @@ def test_insert40():
     returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
     assert avltree0.root.right_child.left_child.left_child is None
     assert avltree0.root.right_child.left_child.right_child is None
@@ -3010,22 +3010,22 @@ def test_insert41():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -3033,18 +3033,18 @@ def test_insert41():
     returnv = avltree0.insert(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
     assert avltree0.root.right_child.right_child.left_child is None
     assert avltree0.root.right_child.right_child.right_child is None
@@ -3074,22 +3074,22 @@ def test_insert42():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -3097,19 +3097,19 @@ def test_insert42():
     returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_insert43():
@@ -3135,22 +3135,22 @@ def test_insert43():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -3158,19 +3158,19 @@ def test_insert43():
     returnv = avltree0.insert(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_insert44():
@@ -3196,14 +3196,14 @@ def test_insert44():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -3213,19 +3213,19 @@ def test_insert44():
     returnv = avltree0.insert(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == -1
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 0
+    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.left_child.value == -2
     assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
-    assert avltree0.root.right_child.value == 0
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
-    assert avltree0.root.right_child.height == 1
 
 
 def test_insert45():
@@ -3251,14 +3251,14 @@ def test_insert45():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -3268,19 +3268,19 @@ def test_insert45():
     returnv = avltree0.insert(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == -1
     assert avltree0.root.parent is None
     assert avltree0.root.height == 2
     assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.value == 0
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
 
 
 def test_insert46():
@@ -3306,14 +3306,14 @@ def test_insert46():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -3323,16 +3323,16 @@ def test_insert46():
     returnv = avltree0.insert(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
+    assert avltree0.root.height == 2
     assert avltree0.root.right_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_insert47():
@@ -3358,14 +3358,14 @@ def test_insert47():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -3375,19 +3375,19 @@ def test_insert47():
     returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
     assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_insert48():
@@ -3413,14 +3413,14 @@ def test_insert48():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -3430,78 +3430,23 @@ def test_insert48():
     returnv = avltree0.insert(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
+    assert avltree0.root.height == 2
     assert avltree0.root.right_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_insert49():
     '''
     Self:
         
-      0    
-       \   
-       1   
-          
-
-    Return:
-        None
-    End Self:
-        
-      0    
-    /  \   
-  -1    1   
-            
-
-    '''
-    # Input Creation
-    avltree0 = AVLTree()
-    node1 = node(0)
-    node1.value = 0
-    node1.left_child = None
-    node1.parent = None
-    node1.height = 2
-    node2 = node(0)
-    node2.value = 1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.right_child = node2
-    avltree0.root = node1
-    # Repok check
-    assert avltree0.repok()
-    # Method call
-    returnv = avltree0.insert(-1)
-    # Repok check
-    assert avltree0.repok()
-    # Assertions
-    assert returnv is None
-    assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
-    assert avltree0.root.right_child.height == 1
-
-
-def test_insert50():
-    '''
-    Self:
-        
-     -2   
+     -1   
        \   
        0   
           
@@ -3519,70 +3464,70 @@ def test_insert50():
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = -2
+    node1.value = -1
+    node1.height = 2
     node1.left_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = 0
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.right_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.insert(-1)
+    returnv = avltree0.insert(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == -1
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 0
+    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.left_child.value == -2
     assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
-    assert avltree0.root.right_child.value == 0
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
-    assert avltree0.root.right_child.height == 1
 
 
-def test_insert51():
+def test_insert50():
     '''
     Self:
         
-     -1   
+      0    
        \   
-       0   
+       2   
           
 
     Return:
         None
     End Self:
         
-      0    
+      1    
     /  \   
-  -1    1   
+   0     2   
             
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = -1
+    node1.value = 0
+    node1.height = 2
     node1.left_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
-    node2.value = 0
-    node2.left_child = None
-    node2.right_child = None
+    node2.value = 2
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.right_child = node2
     avltree0.root = node1
@@ -3592,71 +3537,126 @@ def test_insert51():
     returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
-    assert avltree0.root.value == 0
+    assert avltree0.root.value == 1
     assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.value == 0
     assert avltree0.root.left_child.height == 1
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
+    assert avltree0.root.right_child.value == 2
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
 
 
-def test_insert52():
+def test_insert51():
     '''
     Self:
         
-     -1   
+      0    
        \   
-       0   
+       1   
           
 
     Return:
         None
     End Self:
         
-     -1   
-       \   
-       0   
-          
+      1    
+    /  \   
+   0     2   
+            
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = -1
+    node1.value = 0
+    node1.height = 2
     node1.left_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
-    node2.value = 0
-    node2.left_child = None
-    node2.right_child = None
+    node2.value = 1
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.right_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.insert(0)
+    returnv = avltree0.insert(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
-    assert avltree0.root.value == -1
-    assert avltree0.root.left_child is None
-    assert avltree0.root.parent is None
+    assert avltree0.root.value == 1
     assert avltree0.root.height == 2
-    assert avltree0.root.right_child.value == 0
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 2
     assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.left_child.value == 0
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
+
+
+def test_insert52():
+    '''
+    Self:
+        
+      0    
+       \   
+       1   
+          
+
+    Return:
+        None
+    End Self:
+        
+      0    
+       \   
+       1   
+          
+
+    '''
+    # Input Creation
+    avltree0 = AVLTree()
+    node1 = node(0)
+    node1.value = 0
+    node1.height = 2
+    node1.left_child = None
+    node1.parent = None
+    node2 = node(0)
+    node2.value = 1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.right_child = node2
+    avltree0.root = node1
+    # Repok check
+    assert avltree0.repok()
+    # Method call
+    returnv = avltree0.insert(1)
+    # Repok check
+    assert avltree0.repok()
+    # Regression assertions (Captures the current behavior)
+    assert returnv is None
+    assert avltree0.root.value == 0
+    assert avltree0.root.height == 2
+    assert avltree0.root.left_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
+    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
 
 
 def test_insert53():
@@ -3682,14 +3682,14 @@ def test_insert53():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
+    node1.height = 2
     node1.left_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = 1
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.right_child = node2
     avltree0.root = node1
@@ -3699,57 +3699,57 @@ def test_insert53():
     returnv = avltree0.insert(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
+    assert avltree0.root.height == 2
     assert avltree0.root.left_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
 
 
 def test_insert54():
     '''
     Self:
         
- 4294967295 
+ -4611123068473966574 
       
 
     Return:
         None
     End Self:
         
-    4294967295  
+    -4611123068473966574  
     /      
- 4294967294     
+ -4611123068473966575     
           
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 4294967295
-    node1.left_child = None
-    node1.right_child = None
-    node1.parent = None
+    node1.value = -4611123068473966574
     node1.height = 1
+    node1.right_child = None
+    node1.left_child = None
+    node1.parent = None
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.insert(4294967294)
+    returnv = avltree0.insert(-4611123068473966575)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
-    assert avltree0.root.value == 4294967295
+    assert avltree0.root.value == -4611123068473966574
+    assert avltree0.root.height == 2
     assert avltree0.root.right_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == 4294967294
+    assert avltree0.root.left_child.value == -4611123068473966575
     assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
@@ -3759,41 +3759,41 @@ def test_insert55():
     '''
     Self:
         
-  -1  
+   0   
       
 
     Return:
         None
     End Self:
         
-     -1   
+      0    
        \   
-       0   
+       1   
           
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = -1
-    node1.left_child = None
-    node1.right_child = None
-    node1.parent = None
+    node1.value = 0
     node1.height = 1
+    node1.right_child = None
+    node1.left_child = None
+    node1.parent = None
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.insert(0)
+    returnv = avltree0.insert(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
-    assert avltree0.root.value == -1
+    assert avltree0.root.value == 0
+    assert avltree0.root.height == 2
     assert avltree0.root.left_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
-    assert avltree0.root.right_child.value == 0
+    assert avltree0.root.right_child.value == 1
     assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
@@ -3818,10 +3818,10 @@ def test_insert56():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.left_child = None
-    node1.right_child = None
-    node1.parent = None
     node1.height = 1
+    node1.right_child = None
+    node1.left_child = None
+    node1.parent = None
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -3829,13 +3829,13 @@ def test_insert56():
     returnv = avltree0.insert(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.left_child is None
-    assert avltree0.root.right_child is None
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 1
+    assert avltree0.root.right_child is None
+    assert avltree0.root.left_child is None
+    assert avltree0.root.parent is None
 
 
 def test_insert57():
@@ -3859,7 +3859,7 @@ def test_insert57():
     returnv = avltree0.insert(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
     assert avltree0.root.left_child is None
@@ -3872,93 +3872,6 @@ def test_find1():
     '''
     Self:
         
-         0      
-       /    \     
-     -1     1    
-    /              
-  -2              
-                  
-
-    Return:
-        <avl.node object at 0x7fd3ccc17850>
-    End Self:
-        
-         0      
-       /    \     
-     -1     1    
-    /              
-  -2              
-                  
-
-    '''
-    # Input Creation
-    avltree0 = AVLTree()
-    node1 = node(0)
-    node1.value = 0
-    node1.parent = None
-    node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.right_child = None
-    node2.height = 2
-    node4 = node(0)
-    node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
-    node4.height = 1
-    node4.parent = node2
-    node2.left_child = node4
-    node2.parent = node1
-    node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
-    avltree0.root = node1
-    # Repok check
-    assert avltree0.repok()
-    # Method call
-    returnv = avltree0.find(0)
-    # Repok check
-    assert avltree0.repok()
-    # Assertions
-    assert returnv.value == 0
-    assert returnv.parent is None
-    assert returnv.height == 3
-    assert returnv.left_child.value == -1
-    assert returnv.left_child.right_child is None
-    assert returnv.left_child.height == 2
-    assert returnv.right_child.value == 1
-    assert returnv.right_child.left_child is None
-    assert returnv.right_child.right_child is None
-    assert returnv.right_child.height == 1
-    assert returnv.left_child.left_child.value == -2
-    assert returnv.left_child.left_child.left_child is None
-    assert returnv.left_child.left_child.right_child is None
-    assert returnv.left_child.left_child.height == 1
-    assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
-    assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
-    assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
-    assert avltree0.root.left_child.left_child.height == 1
-
-
-def test_find2():
-    '''
-    Self:
-        
          1      
        /    \     
       0      2    
@@ -3967,7 +3880,7 @@ def test_find2():
                   
 
     Return:
-        <avl.node object at 0x7fd3cc33b4f0>
+        node: 1
     End Self:
         
          1      
@@ -3982,64 +3895,157 @@ def test_find2():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 1
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 2
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = 0
-    node2.right_child = None
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.find(0)
+    returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
-    assert returnv.value == 0
-    assert returnv.right_child is None
-    assert returnv.height == 2
-    assert returnv.left_child.value == -1
-    assert returnv.left_child.left_child is None
+    # Regression assertions (Captures the current behavior)
+    assert returnv.value == 1
+    assert returnv.height == 3
+    assert returnv.parent is None
+    assert returnv.right_child.value == 2
+    assert returnv.right_child.height == 1
+    assert returnv.right_child.right_child is None
+    assert returnv.right_child.left_child is None
+    assert returnv.left_child.value == 0
+    assert returnv.left_child.height == 2
     assert returnv.left_child.right_child is None
-    assert returnv.left_child.height == 1
-    assert returnv.parent.value == 1
-    assert returnv.parent.parent is None
-    assert returnv.parent.height == 3
-    assert returnv.parent.right_child.value == 2
-    assert returnv.parent.right_child.left_child is None
-    assert returnv.parent.right_child.right_child is None
-    assert returnv.parent.right_child.height == 1
+    assert returnv.right_child.parent.value == 1
+    assert returnv.right_child.parent.height == 3
+    assert returnv.right_child.parent.parent is None
+    assert returnv.left_child.left_child.value == -1
+    assert returnv.left_child.left_child.height == 1
+    assert returnv.left_child.left_child.right_child is None
+    assert returnv.left_child.left_child.left_child is None
     assert avltree0.root.value == 1
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == 0
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.left_child.value == -1
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
+
+
+def test_find2():
+    '''
+    Self:
+        
+         0      
+       /    \     
+     -1     1    
+    /              
+  -2              
+                  
+
+    Return:
+        node: -1
+    End Self:
+        
+         0      
+       /    \     
+     -1     1    
+    /              
+  -2              
+                  
+
+    '''
+    # Input Creation
+    avltree0 = AVLTree()
+    node1 = node(0)
+    node1.value = 0
+    node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 2
+    node2.right_child = None
+    node4 = node(0)
+    node4.value = -2
+    node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
+    node4.parent = node2
+    node2.left_child = node4
+    node2.parent = node1
+    node1.left_child = node2
+    avltree0.root = node1
+    # Repok check
+    assert avltree0.repok()
+    # Method call
+    returnv = avltree0.find(-1)
+    # Repok check
+    assert avltree0.repok()
+    # Regression assertions (Captures the current behavior)
+    assert returnv.value == -1
+    assert returnv.height == 2
+    assert returnv.right_child is None
+    assert returnv.left_child.value == -2
+    assert returnv.left_child.height == 1
+    assert returnv.left_child.right_child is None
+    assert returnv.left_child.left_child is None
+    assert returnv.parent.value == 0
+    assert returnv.parent.height == 3
+    assert returnv.parent.parent is None
+    assert returnv.left_child.parent.value == -1
+    assert returnv.left_child.parent.height == 2
+    assert returnv.left_child.parent.right_child is None
+    assert returnv.parent.right_child.value == 1
+    assert returnv.parent.right_child.height == 1
+    assert returnv.parent.right_child.right_child is None
+    assert returnv.parent.right_child.left_child is None
+    assert avltree0.root.value == 0
+    assert avltree0.root.height == 3
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
+    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.value == -2
+    assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_find3():
@@ -4054,7 +4060,7 @@ def test_find3():
                   
 
     Return:
-        <avl.node object at 0x7fd3ccba7430>
+        node: -2
     End Self:
         
          0      
@@ -4069,28 +4075,28 @@ def test_find3():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -1
-    node2.right_child = None
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
     node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -4098,86 +4104,164 @@ def test_find3():
     returnv = avltree0.find(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == -2
-    assert returnv.left_child is None
-    assert returnv.right_child is None
     assert returnv.height == 1
+    assert returnv.right_child is None
+    assert returnv.left_child is None
     assert returnv.parent.value == -1
-    assert returnv.parent.right_child is None
     assert returnv.parent.height == 2
+    assert returnv.parent.right_child is None
+    assert returnv.parent.left_child.value == -2
+    assert returnv.parent.left_child.height == 1
+    assert returnv.parent.left_child.right_child is None
+    assert returnv.parent.left_child.left_child is None
     assert returnv.parent.parent.value == 0
-    assert returnv.parent.parent.parent is None
     assert returnv.parent.parent.height == 3
+    assert returnv.parent.parent.parent is None
     assert returnv.parent.parent.right_child.value == 1
-    assert returnv.parent.parent.right_child.left_child is None
-    assert returnv.parent.parent.right_child.right_child is None
     assert returnv.parent.parent.right_child.height == 1
+    assert returnv.parent.parent.right_child.right_child is None
+    assert returnv.parent.parent.right_child.left_child is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_find4():
     '''
     Self:
         
-         1      
+         0      
        /    \     
-      0      2    
+     -1     1    
     /              
-  -1              
+  -2              
                   
 
     Return:
         None
     End Self:
         
-         1      
+         0      
        /    \     
-      0      2    
+     -1     1    
     /              
-  -1              
+  -2              
                   
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 1
-    node1.parent = None
+    node1.value = 0
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
-    node2.value = 0
-    node2.right_child = None
+    node2.value = -1
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
-    node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
+    node4.value = -2
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
+    avltree0.root = node1
+    # Repok check
+    assert avltree0.repok()
+    # Method call
+    returnv = avltree0.find(-3)
+    # Repok check
+    assert avltree0.repok()
+    # Regression assertions (Captures the current behavior)
+    assert returnv is None
+    assert avltree0.root.value == 0
+    assert avltree0.root.height == 3
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
+    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.value == -2
+    assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
+
+
+def test_find5():
+    '''
+    Self:
+        
+         0      
+       /    \     
+     -1     1    
+    /              
+  -3              
+                  
+
+    Return:
+        None
+    End Self:
+        
+         0      
+       /    \     
+     -1     1    
+    /              
+  -3              
+                  
+
+    '''
+    # Input Creation
+    avltree0 = AVLTree()
+    node1 = node(0)
+    node1.value = 0
+    node1.height = 3
+    node1.parent = None
     node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
+    node3.value = 1
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 2
+    node2.right_child = None
+    node4 = node(0)
+    node4.value = -3
+    node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
+    node4.parent = node2
+    node2.left_child = node4
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -4185,73 +4269,73 @@ def test_find4():
     returnv = avltree0.find(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
-    assert avltree0.root.value == 1
-    assert avltree0.root.parent is None
+    assert avltree0.root.value == 0
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
     assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -1
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.value == -3
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
-def test_find5():
+def test_find6():
     '''
     Self:
         
-         1      
+         0      
        /    \     
-      0      2    
+     -2     1    
     /              
-  -2              
+  -3              
                   
 
     Return:
         None
     End Self:
         
-         1      
+         0      
        /    \     
-      0      2    
+     -2     1    
     /              
-  -2              
+  -3              
                   
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 1
-    node1.parent = None
+    node1.value = 0
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
-    node2.value = 0
-    node2.right_child = None
+    node2.value = -2
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
-    node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
+    node4.value = -3
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -4259,73 +4343,73 @@ def test_find5():
     returnv = avltree0.find(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
-    assert avltree0.root.value == 1
-    assert avltree0.root.parent is None
+    assert avltree0.root.value == 0
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
     assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.value == -3
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
-def test_find6():
+def test_find7():
     '''
     Self:
         
-         2      
+         0      
        /    \     
-      0      3    
+     -1     1    
     /              
-  -1              
+  -2              
                   
 
     Return:
-        None
+        node: 1
     End Self:
         
-         2      
+         0      
        /    \     
-      0      3    
+     -1     1    
     /              
-  -1              
+  -2              
                   
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 2
-    node1.parent = None
+    node1.value = 0
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
-    node2.value = 0
-    node2.right_child = None
+    node2.value = -1
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
-    node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
+    node4.value = -2
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 3
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -4333,109 +4417,39 @@ def test_find6():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
-    assert returnv is None
-    assert avltree0.root.value == 2
-    assert avltree0.root.parent is None
-    assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 3
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
-    assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -1
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
-    assert avltree0.root.left_child.left_child.height == 1
-
-
-def test_find7():
-    '''
-    Self:
-        
-         1      
-       /    \     
-      0      2    
-    /              
-  -1              
-                  
-
-    Return:
-        <avl.node object at 0x7fd3ccb87640>
-    End Self:
-        
-         1      
-       /    \     
-      0      2    
-    /              
-  -1              
-                  
-
-    '''
-    # Input Creation
-    avltree0 = AVLTree()
-    node1 = node(0)
-    node1.value = 1
-    node1.parent = None
-    node1.height = 3
-    node2 = node(0)
-    node2.value = 0
-    node2.right_child = None
-    node2.height = 2
-    node4 = node(0)
-    node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
-    node4.height = 1
-    node4.parent = node2
-    node2.left_child = node4
-    node2.parent = node1
-    node1.left_child = node2
-    node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
-    avltree0.root = node1
-    # Repok check
-    assert avltree0.repok()
-    # Method call
-    returnv = avltree0.find(2)
-    # Repok check
-    assert avltree0.repok()
-    # Assertions
-    assert returnv.value == 2
-    assert returnv.left_child is None
-    assert returnv.right_child is None
+    # Regression assertions (Captures the current behavior)
+    assert returnv.value == 1
     assert returnv.height == 1
-    assert returnv.parent.value == 1
-    assert returnv.parent.parent is None
+    assert returnv.right_child is None
+    assert returnv.left_child is None
+    assert returnv.parent.value == 0
     assert returnv.parent.height == 3
-    assert returnv.parent.left_child.value == 0
-    assert returnv.parent.left_child.right_child is None
+    assert returnv.parent.parent is None
+    assert returnv.parent.right_child.value == 1
+    assert returnv.parent.right_child.height == 1
+    assert returnv.parent.right_child.right_child is None
+    assert returnv.parent.right_child.left_child is None
+    assert returnv.parent.left_child.value == -1
     assert returnv.parent.left_child.height == 2
-    assert returnv.parent.left_child.left_child.value == -1
-    assert returnv.parent.left_child.left_child.left_child is None
-    assert returnv.parent.left_child.left_child.right_child is None
+    assert returnv.parent.left_child.right_child is None
+    assert returnv.parent.left_child.left_child.value == -2
     assert returnv.parent.left_child.left_child.height == 1
-    assert avltree0.root.value == 1
-    assert avltree0.root.parent is None
+    assert returnv.parent.left_child.left_child.right_child is None
+    assert returnv.parent.left_child.left_child.left_child is None
+    assert avltree0.root.value == 0
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
     assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -1
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.value == -2
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_find8():
@@ -4465,28 +4479,28 @@ def test_find8():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 2
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -1
-    node2.right_child = None
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
     node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -4494,22 +4508,22 @@ def test_find8():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_find9():
@@ -4539,28 +4553,28 @@ def test_find9():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -1
-    node2.right_child = None
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
     node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -4568,22 +4582,22 @@ def test_find9():
     returnv = avltree0.find(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_find10():
@@ -4598,7 +4612,7 @@ def test_find10():
                   
 
     Return:
-        <avl.node object at 0x7fd3cc33edf0>
+        node: 0
     End Self:
         
          0      
@@ -4613,28 +4627,28 @@ def test_find10():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -4642,35 +4656,38 @@ def test_find10():
     returnv = avltree0.find(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == 0
-    assert returnv.parent is None
     assert returnv.height == 3
-    assert returnv.left_child.value == -2
-    assert returnv.left_child.left_child is None
-    assert returnv.left_child.height == 2
+    assert returnv.parent is None
     assert returnv.right_child.value == 1
-    assert returnv.right_child.left_child is None
-    assert returnv.right_child.right_child is None
     assert returnv.right_child.height == 1
+    assert returnv.right_child.right_child is None
+    assert returnv.right_child.left_child is None
+    assert returnv.left_child.value == -2
+    assert returnv.left_child.height == 2
+    assert returnv.left_child.left_child is None
+    assert returnv.right_child.parent.value == 0
+    assert returnv.right_child.parent.height == 3
+    assert returnv.right_child.parent.parent is None
     assert returnv.left_child.right_child.value == -1
-    assert returnv.left_child.right_child.left_child is None
-    assert returnv.left_child.right_child.right_child is None
     assert returnv.left_child.right_child.height == 1
+    assert returnv.left_child.right_child.right_child is None
+    assert returnv.left_child.right_child.left_child is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_find11():
@@ -4685,7 +4702,7 @@ def test_find11():
                   
 
     Return:
-        <avl.node object at 0x7fd3cc33a130>
+        node: -2
     End Self:
         
          0      
@@ -4700,28 +4717,28 @@ def test_find11():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -4729,35 +4746,38 @@ def test_find11():
     returnv = avltree0.find(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == -2
-    assert returnv.left_child is None
     assert returnv.height == 2
+    assert returnv.left_child is None
     assert returnv.right_child.value == -1
-    assert returnv.right_child.left_child is None
-    assert returnv.right_child.right_child is None
     assert returnv.right_child.height == 1
+    assert returnv.right_child.right_child is None
+    assert returnv.right_child.left_child is None
     assert returnv.parent.value == 0
-    assert returnv.parent.parent is None
     assert returnv.parent.height == 3
+    assert returnv.parent.parent is None
+    assert returnv.right_child.parent.value == -2
+    assert returnv.right_child.parent.height == 2
+    assert returnv.right_child.parent.left_child is None
     assert returnv.parent.right_child.value == 1
-    assert returnv.parent.right_child.left_child is None
-    assert returnv.parent.right_child.right_child is None
     assert returnv.parent.right_child.height == 1
+    assert returnv.parent.right_child.right_child is None
+    assert returnv.parent.right_child.left_child is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_find12():
@@ -4787,28 +4807,28 @@ def test_find12():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -4816,22 +4836,22 @@ def test_find12():
     returnv = avltree0.find(-3)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_find13():
@@ -4846,7 +4866,7 @@ def test_find13():
                   
 
     Return:
-        <avl.node object at 0x7fd3cc33b760>
+        node: -1
     End Self:
         
          0      
@@ -4861,28 +4881,28 @@ def test_find13():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -4890,35 +4910,39 @@ def test_find13():
     returnv = avltree0.find(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == -1
-    assert returnv.left_child is None
-    assert returnv.right_child is None
     assert returnv.height == 1
+    assert returnv.right_child is None
+    assert returnv.left_child is None
     assert returnv.parent.value == -2
-    assert returnv.parent.left_child is None
     assert returnv.parent.height == 2
+    assert returnv.parent.left_child is None
+    assert returnv.parent.right_child.value == -1
+    assert returnv.parent.right_child.height == 1
+    assert returnv.parent.right_child.right_child is None
+    assert returnv.parent.right_child.left_child is None
     assert returnv.parent.parent.value == 0
-    assert returnv.parent.parent.parent is None
     assert returnv.parent.parent.height == 3
+    assert returnv.parent.parent.parent is None
     assert returnv.parent.parent.right_child.value == 1
-    assert returnv.parent.parent.right_child.left_child is None
-    assert returnv.parent.parent.right_child.right_child is None
     assert returnv.parent.parent.right_child.height == 1
+    assert returnv.parent.parent.right_child.right_child is None
+    assert returnv.parent.parent.right_child.left_child is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_find14():
@@ -4948,28 +4972,28 @@ def test_find14():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -3
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -4977,22 +5001,22 @@ def test_find14():
     returnv = avltree0.find(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -3
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -3
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_find15():
@@ -5022,28 +5046,28 @@ def test_find15():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -3
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -5051,22 +5075,22 @@ def test_find15():
     returnv = avltree0.find(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -3
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -3
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -2
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_find16():
@@ -5081,7 +5105,7 @@ def test_find16():
                   
 
     Return:
-        <avl.node object at 0x7fd3ccbb4b50>
+        node: 1
     End Self:
         
          0      
@@ -5096,28 +5120,28 @@ def test_find16():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -5125,35 +5149,39 @@ def test_find16():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == 1
-    assert returnv.left_child is None
-    assert returnv.right_child is None
     assert returnv.height == 1
+    assert returnv.right_child is None
+    assert returnv.left_child is None
     assert returnv.parent.value == 0
-    assert returnv.parent.parent is None
     assert returnv.parent.height == 3
+    assert returnv.parent.parent is None
+    assert returnv.parent.right_child.value == 1
+    assert returnv.parent.right_child.height == 1
+    assert returnv.parent.right_child.right_child is None
+    assert returnv.parent.right_child.left_child is None
     assert returnv.parent.left_child.value == -2
-    assert returnv.parent.left_child.left_child is None
     assert returnv.parent.left_child.height == 2
+    assert returnv.parent.left_child.left_child is None
     assert returnv.parent.left_child.right_child.value == -1
-    assert returnv.parent.left_child.right_child.left_child is None
-    assert returnv.parent.left_child.right_child.right_child is None
     assert returnv.parent.left_child.right_child.height == 1
+    assert returnv.parent.left_child.right_child.right_child is None
+    assert returnv.parent.left_child.right_child.left_child is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_find17():
@@ -5183,28 +5211,28 @@ def test_find17():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 2
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -5212,22 +5240,22 @@ def test_find17():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_find18():
@@ -5257,28 +5285,28 @@ def test_find18():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -5286,22 +5314,22 @@ def test_find18():
     returnv = avltree0.find(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_find19():
@@ -5316,7 +5344,7 @@ def test_find19():
                   
 
     Return:
-        <avl.node object at 0x7fd3cc33eb20>
+        node: 0
     End Self:
         
          0      
@@ -5331,28 +5359,28 @@ def test_find19():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -5360,35 +5388,38 @@ def test_find19():
     returnv = avltree0.find(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == 0
-    assert returnv.parent is None
     assert returnv.height == 3
-    assert returnv.left_child.value == -1
-    assert returnv.left_child.left_child is None
-    assert returnv.left_child.right_child is None
-    assert returnv.left_child.height == 1
+    assert returnv.parent is None
     assert returnv.right_child.value == 2
-    assert returnv.right_child.right_child is None
     assert returnv.right_child.height == 2
+    assert returnv.right_child.right_child is None
+    assert returnv.left_child.value == -1
+    assert returnv.left_child.height == 1
+    assert returnv.left_child.right_child is None
+    assert returnv.left_child.left_child is None
     assert returnv.right_child.left_child.value == 1
-    assert returnv.right_child.left_child.left_child is None
-    assert returnv.right_child.left_child.right_child is None
     assert returnv.right_child.left_child.height == 1
+    assert returnv.right_child.left_child.right_child is None
+    assert returnv.right_child.left_child.left_child is None
+    assert returnv.right_child.parent.value == 0
+    assert returnv.right_child.parent.height == 3
+    assert returnv.right_child.parent.parent is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_find20():
@@ -5403,7 +5434,7 @@ def test_find20():
                   
 
     Return:
-        <avl.node object at 0x7fd3cc353820>
+        node: -1
     End Self:
         
          0      
@@ -5418,28 +5449,28 @@ def test_find20():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -5447,35 +5478,39 @@ def test_find20():
     returnv = avltree0.find(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == -1
-    assert returnv.left_child is None
-    assert returnv.right_child is None
     assert returnv.height == 1
+    assert returnv.right_child is None
+    assert returnv.left_child is None
     assert returnv.parent.value == 0
-    assert returnv.parent.parent is None
     assert returnv.parent.height == 3
+    assert returnv.parent.parent is None
     assert returnv.parent.right_child.value == 2
-    assert returnv.parent.right_child.right_child is None
     assert returnv.parent.right_child.height == 2
+    assert returnv.parent.right_child.right_child is None
+    assert returnv.parent.left_child.value == -1
+    assert returnv.parent.left_child.height == 1
+    assert returnv.parent.left_child.right_child is None
+    assert returnv.parent.left_child.left_child is None
     assert returnv.parent.right_child.left_child.value == 1
-    assert returnv.parent.right_child.left_child.left_child is None
-    assert returnv.parent.right_child.left_child.right_child is None
     assert returnv.parent.right_child.left_child.height == 1
+    assert returnv.parent.right_child.left_child.right_child is None
+    assert returnv.parent.right_child.left_child.left_child is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_find21():
@@ -5505,28 +5540,28 @@ def test_find21():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -5534,22 +5569,22 @@ def test_find21():
     returnv = avltree0.find(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_find22():
@@ -5579,28 +5614,28 @@ def test_find22():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -5608,22 +5643,22 @@ def test_find22():
     returnv = avltree0.find(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_find23():
@@ -5638,7 +5673,7 @@ def test_find23():
                   
 
     Return:
-        <avl.node object at 0x7fd3cc33e430>
+        node: 2
     End Self:
         
          0      
@@ -5653,28 +5688,28 @@ def test_find23():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -5682,35 +5717,38 @@ def test_find23():
     returnv = avltree0.find(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == 2
-    assert returnv.right_child is None
     assert returnv.height == 2
+    assert returnv.right_child is None
     assert returnv.left_child.value == 1
-    assert returnv.left_child.left_child is None
-    assert returnv.left_child.right_child is None
     assert returnv.left_child.height == 1
+    assert returnv.left_child.right_child is None
+    assert returnv.left_child.left_child is None
     assert returnv.parent.value == 0
-    assert returnv.parent.parent is None
     assert returnv.parent.height == 3
+    assert returnv.parent.parent is None
+    assert returnv.left_child.parent.value == 2
+    assert returnv.left_child.parent.height == 2
+    assert returnv.left_child.parent.right_child is None
     assert returnv.parent.left_child.value == -1
-    assert returnv.parent.left_child.left_child is None
-    assert returnv.parent.left_child.right_child is None
     assert returnv.parent.left_child.height == 1
+    assert returnv.parent.left_child.right_child is None
+    assert returnv.parent.left_child.left_child is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_find24():
@@ -5725,7 +5763,7 @@ def test_find24():
                   
 
     Return:
-        <avl.node object at 0x7fd3ccb9aaf0>
+        node: 1
     End Self:
         
          0      
@@ -5740,28 +5778,28 @@ def test_find24():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -5769,35 +5807,39 @@ def test_find24():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == 1
-    assert returnv.left_child is None
-    assert returnv.right_child is None
     assert returnv.height == 1
+    assert returnv.right_child is None
+    assert returnv.left_child is None
     assert returnv.parent.value == 2
-    assert returnv.parent.right_child is None
     assert returnv.parent.height == 2
+    assert returnv.parent.right_child is None
+    assert returnv.parent.left_child.value == 1
+    assert returnv.parent.left_child.height == 1
+    assert returnv.parent.left_child.right_child is None
+    assert returnv.parent.left_child.left_child is None
     assert returnv.parent.parent.value == 0
-    assert returnv.parent.parent.parent is None
     assert returnv.parent.parent.height == 3
+    assert returnv.parent.parent.parent is None
     assert returnv.parent.parent.left_child.value == -1
-    assert returnv.parent.parent.left_child.left_child is None
-    assert returnv.parent.parent.left_child.right_child is None
     assert returnv.parent.parent.left_child.height == 1
+    assert returnv.parent.parent.left_child.right_child is None
+    assert returnv.parent.parent.left_child.left_child is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_find25():
@@ -5827,28 +5869,28 @@ def test_find25():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 3
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -5856,22 +5898,22 @@ def test_find25():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 3
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 2
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_find26():
@@ -5901,28 +5943,28 @@ def test_find26():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 3
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -5930,22 +5972,22 @@ def test_find26():
     returnv = avltree0.find(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 3
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_find27():
@@ -5975,28 +6017,28 @@ def test_find27():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6004,22 +6046,22 @@ def test_find27():
     returnv = avltree0.find(3)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_find28():
@@ -6034,7 +6076,7 @@ def test_find28():
                   
 
     Return:
-        <avl.node object at 0x7fd3ccbb0e20>
+        node: -1
     End Self:
         
         -1     
@@ -6049,28 +6091,28 @@ def test_find28():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = -1
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 0
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6078,35 +6120,38 @@ def test_find28():
     returnv = avltree0.find(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == -1
-    assert returnv.parent is None
     assert returnv.height == 3
-    assert returnv.left_child.value == -2
-    assert returnv.left_child.left_child is None
-    assert returnv.left_child.right_child is None
-    assert returnv.left_child.height == 1
+    assert returnv.parent is None
     assert returnv.right_child.value == 0
-    assert returnv.right_child.left_child is None
     assert returnv.right_child.height == 2
+    assert returnv.right_child.left_child is None
+    assert returnv.left_child.value == -2
+    assert returnv.left_child.height == 1
+    assert returnv.left_child.right_child is None
+    assert returnv.left_child.left_child is None
     assert returnv.right_child.right_child.value == 1
-    assert returnv.right_child.right_child.left_child is None
-    assert returnv.right_child.right_child.right_child is None
     assert returnv.right_child.right_child.height == 1
+    assert returnv.right_child.right_child.right_child is None
+    assert returnv.right_child.right_child.left_child is None
+    assert returnv.right_child.parent.value == -1
+    assert returnv.right_child.parent.height == 3
+    assert returnv.right_child.parent.parent is None
     assert avltree0.root.value == -1
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 0
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 1
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_find29():
@@ -6121,7 +6166,7 @@ def test_find29():
                   
 
     Return:
-        <avl.node object at 0x7fd3cc33a400>
+        node: -1
     End Self:
         
          0      
@@ -6136,28 +6181,28 @@ def test_find29():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6165,35 +6210,39 @@ def test_find29():
     returnv = avltree0.find(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == -1
-    assert returnv.left_child is None
-    assert returnv.right_child is None
     assert returnv.height == 1
+    assert returnv.right_child is None
+    assert returnv.left_child is None
     assert returnv.parent.value == 0
-    assert returnv.parent.parent is None
     assert returnv.parent.height == 3
+    assert returnv.parent.parent is None
     assert returnv.parent.right_child.value == 1
-    assert returnv.parent.right_child.left_child is None
     assert returnv.parent.right_child.height == 2
+    assert returnv.parent.right_child.left_child is None
+    assert returnv.parent.left_child.value == -1
+    assert returnv.parent.left_child.height == 1
+    assert returnv.parent.left_child.right_child is None
+    assert returnv.parent.left_child.left_child is None
     assert returnv.parent.right_child.right_child.value == 2
-    assert returnv.parent.right_child.right_child.left_child is None
-    assert returnv.parent.right_child.right_child.right_child is None
     assert returnv.parent.right_child.right_child.height == 1
+    assert returnv.parent.right_child.right_child.right_child is None
+    assert returnv.parent.right_child.right_child.left_child is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_find30():
@@ -6223,28 +6272,28 @@ def test_find30():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6252,22 +6301,22 @@ def test_find30():
     returnv = avltree0.find(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_find31():
@@ -6297,28 +6346,28 @@ def test_find31():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6326,22 +6375,22 @@ def test_find31():
     returnv = avltree0.find(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_find32():
@@ -6356,7 +6405,7 @@ def test_find32():
                   
 
     Return:
-        <avl.node object at 0x7fd3cc359640>
+        node: 1
     End Self:
         
          0      
@@ -6371,28 +6420,28 @@ def test_find32():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6400,35 +6449,38 @@ def test_find32():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == 1
-    assert returnv.left_child is None
     assert returnv.height == 2
+    assert returnv.left_child is None
     assert returnv.right_child.value == 2
-    assert returnv.right_child.left_child is None
-    assert returnv.right_child.right_child is None
     assert returnv.right_child.height == 1
+    assert returnv.right_child.right_child is None
+    assert returnv.right_child.left_child is None
     assert returnv.parent.value == 0
-    assert returnv.parent.parent is None
     assert returnv.parent.height == 3
+    assert returnv.parent.parent is None
+    assert returnv.right_child.parent.value == 1
+    assert returnv.right_child.parent.height == 2
+    assert returnv.right_child.parent.left_child is None
     assert returnv.parent.left_child.value == -1
-    assert returnv.parent.left_child.left_child is None
-    assert returnv.parent.left_child.right_child is None
     assert returnv.parent.left_child.height == 1
+    assert returnv.parent.left_child.right_child is None
+    assert returnv.parent.left_child.left_child is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_find33():
@@ -6458,28 +6510,28 @@ def test_find33():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 3
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6487,22 +6539,22 @@ def test_find33():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 3
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_find34():
@@ -6517,7 +6569,7 @@ def test_find34():
                   
 
     Return:
-        <avl.node object at 0x7fd3ccbb46d0>
+        node: 2
     End Self:
         
          0      
@@ -6532,28 +6584,28 @@ def test_find34():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6561,35 +6613,39 @@ def test_find34():
     returnv = avltree0.find(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == 2
-    assert returnv.left_child is None
-    assert returnv.right_child is None
     assert returnv.height == 1
+    assert returnv.right_child is None
+    assert returnv.left_child is None
     assert returnv.parent.value == 1
-    assert returnv.parent.left_child is None
     assert returnv.parent.height == 2
+    assert returnv.parent.left_child is None
+    assert returnv.parent.right_child.value == 2
+    assert returnv.parent.right_child.height == 1
+    assert returnv.parent.right_child.right_child is None
+    assert returnv.parent.right_child.left_child is None
     assert returnv.parent.parent.value == 0
-    assert returnv.parent.parent.parent is None
     assert returnv.parent.parent.height == 3
+    assert returnv.parent.parent.parent is None
     assert returnv.parent.parent.left_child.value == -1
-    assert returnv.parent.parent.left_child.left_child is None
-    assert returnv.parent.parent.left_child.right_child is None
     assert returnv.parent.parent.left_child.height == 1
+    assert returnv.parent.parent.left_child.right_child is None
+    assert returnv.parent.parent.left_child.left_child is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_find35():
@@ -6619,28 +6675,28 @@ def test_find35():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 3
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6648,22 +6704,22 @@ def test_find35():
     returnv = avltree0.find(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 3
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_find36():
@@ -6693,28 +6749,28 @@ def test_find36():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6722,22 +6778,22 @@ def test_find36():
     returnv = avltree0.find(3)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_find37():
@@ -6750,7 +6806,7 @@ def test_find37():
             
 
     Return:
-        <avl.node object at 0x7fd3cc33be20>
+        node: 0
     End Self:
         
       0    
@@ -6763,22 +6819,22 @@ def test_find37():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6786,29 +6842,32 @@ def test_find37():
     returnv = avltree0.find(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == 0
-    assert returnv.parent is None
     assert returnv.height == 2
-    assert returnv.left_child.value == -1
-    assert returnv.left_child.left_child is None
-    assert returnv.left_child.right_child is None
-    assert returnv.left_child.height == 1
+    assert returnv.parent is None
     assert returnv.right_child.value == 1
-    assert returnv.right_child.left_child is None
-    assert returnv.right_child.right_child is None
     assert returnv.right_child.height == 1
+    assert returnv.right_child.right_child is None
+    assert returnv.right_child.left_child is None
+    assert returnv.left_child.value == -1
+    assert returnv.left_child.height == 1
+    assert returnv.left_child.right_child is None
+    assert returnv.left_child.left_child is None
+    assert returnv.right_child.parent.value == 0
+    assert returnv.right_child.parent.height == 2
+    assert returnv.right_child.parent.parent is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_find38():
@@ -6821,7 +6880,7 @@ def test_find38():
             
 
     Return:
-        <avl.node object at 0x7fd3cc33ecd0>
+        node: -1
     End Self:
         
       0    
@@ -6834,22 +6893,22 @@ def test_find38():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6857,29 +6916,33 @@ def test_find38():
     returnv = avltree0.find(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == -1
-    assert returnv.left_child is None
-    assert returnv.right_child is None
     assert returnv.height == 1
+    assert returnv.right_child is None
+    assert returnv.left_child is None
     assert returnv.parent.value == 0
-    assert returnv.parent.parent is None
     assert returnv.parent.height == 2
+    assert returnv.parent.parent is None
     assert returnv.parent.right_child.value == 1
-    assert returnv.parent.right_child.left_child is None
-    assert returnv.parent.right_child.right_child is None
     assert returnv.parent.right_child.height == 1
+    assert returnv.parent.right_child.right_child is None
+    assert returnv.parent.right_child.left_child is None
+    assert returnv.parent.left_child.value == -1
+    assert returnv.parent.left_child.height == 1
+    assert returnv.parent.left_child.right_child is None
+    assert returnv.parent.left_child.left_child is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_find39():
@@ -6905,22 +6968,22 @@ def test_find39():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6928,19 +6991,19 @@ def test_find39():
     returnv = avltree0.find(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_find40():
@@ -6966,22 +7029,22 @@ def test_find40():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -6989,19 +7052,19 @@ def test_find40():
     returnv = avltree0.find(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_find41():
@@ -7014,7 +7077,7 @@ def test_find41():
             
 
     Return:
-        <avl.node object at 0x7fd3cc353790>
+        node: 1
     End Self:
         
       0    
@@ -7027,22 +7090,22 @@ def test_find41():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -7050,29 +7113,33 @@ def test_find41():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == 1
-    assert returnv.left_child is None
-    assert returnv.right_child is None
     assert returnv.height == 1
+    assert returnv.right_child is None
+    assert returnv.left_child is None
     assert returnv.parent.value == 0
-    assert returnv.parent.parent is None
     assert returnv.parent.height == 2
+    assert returnv.parent.parent is None
+    assert returnv.parent.right_child.value == 1
+    assert returnv.parent.right_child.height == 1
+    assert returnv.parent.right_child.right_child is None
+    assert returnv.parent.right_child.left_child is None
     assert returnv.parent.left_child.value == -1
-    assert returnv.parent.left_child.left_child is None
-    assert returnv.parent.left_child.right_child is None
     assert returnv.parent.left_child.height == 1
+    assert returnv.parent.left_child.right_child is None
+    assert returnv.parent.left_child.left_child is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_find42():
@@ -7098,22 +7165,22 @@ def test_find42():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -7121,19 +7188,19 @@ def test_find42():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_find43():
@@ -7159,22 +7226,22 @@ def test_find43():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -7182,19 +7249,19 @@ def test_find43():
     returnv = avltree0.find(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_find44():
@@ -7207,7 +7274,7 @@ def test_find44():
           
 
     Return:
-        <avl.node object at 0x7fd3cc35c4c0>
+        node: 0
     End Self:
         
       0    
@@ -7220,14 +7287,14 @@ def test_find44():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -7237,23 +7304,27 @@ def test_find44():
     returnv = avltree0.find(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == 0
+    assert returnv.height == 2
     assert returnv.right_child is None
     assert returnv.parent is None
-    assert returnv.height == 2
     assert returnv.left_child.value == -1
-    assert returnv.left_child.left_child is None
-    assert returnv.left_child.right_child is None
     assert returnv.left_child.height == 1
+    assert returnv.left_child.right_child is None
+    assert returnv.left_child.left_child is None
+    assert returnv.left_child.parent.value == 0
+    assert returnv.left_child.parent.height == 2
+    assert returnv.left_child.parent.right_child is None
+    assert returnv.left_child.parent.parent is None
     assert avltree0.root.value == 0
+    assert avltree0.root.height == 2
     assert avltree0.root.right_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_find45():
@@ -7266,7 +7337,7 @@ def test_find45():
           
 
     Return:
-        <avl.node object at 0x7fd3cc33e940>
+        node: 0
     End Self:
         
       1    
@@ -7279,14 +7350,14 @@ def test_find45():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 1
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = 0
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -7296,23 +7367,27 @@ def test_find45():
     returnv = avltree0.find(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv.value == 0
-    assert returnv.left_child is None
-    assert returnv.right_child is None
     assert returnv.height == 1
+    assert returnv.right_child is None
+    assert returnv.left_child is None
     assert returnv.parent.value == 1
+    assert returnv.parent.height == 2
     assert returnv.parent.right_child is None
     assert returnv.parent.parent is None
-    assert returnv.parent.height == 2
+    assert returnv.parent.left_child.value == 0
+    assert returnv.parent.left_child.height == 1
+    assert returnv.parent.left_child.right_child is None
+    assert returnv.parent.left_child.left_child is None
     assert avltree0.root.value == 1
+    assert avltree0.root.height == 2
     assert avltree0.root.right_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_find46():
@@ -7338,14 +7413,14 @@ def test_find46():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 1
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = 0
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -7355,16 +7430,16 @@ def test_find46():
     returnv = avltree0.find(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 1
+    assert avltree0.root.height == 2
     assert avltree0.root.right_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_find47():
@@ -7390,14 +7465,14 @@ def test_find47():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 2
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = 0
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -7407,16 +7482,16 @@ def test_find47():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 2
+    assert avltree0.root.height == 2
     assert avltree0.root.right_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_find48():
@@ -7442,14 +7517,14 @@ def test_find48():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -7459,75 +7534,79 @@ def test_find48():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
+    assert avltree0.root.height == 2
     assert avltree0.root.right_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_find49():
     '''
     Self:
         
-     -1   
+      0    
        \   
-       0   
+       1   
           
 
     Return:
-        <avl.node object at 0x7fd3ccbb2eb0>
+        node: 0
     End Self:
         
-     -1   
+      0    
        \   
-       0   
+       1   
           
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = -1
+    node1.value = 0
+    node1.height = 2
     node1.left_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
-    node2.value = 0
-    node2.left_child = None
-    node2.right_child = None
+    node2.value = 1
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.right_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.find(-1)
+    returnv = avltree0.find(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
-    assert returnv.value == -1
+    # Regression assertions (Captures the current behavior)
+    assert returnv.value == 0
+    assert returnv.height == 2
     assert returnv.left_child is None
     assert returnv.parent is None
-    assert returnv.height == 2
-    assert returnv.right_child.value == 0
-    assert returnv.right_child.left_child is None
-    assert returnv.right_child.right_child is None
+    assert returnv.right_child.value == 1
     assert returnv.right_child.height == 1
-    assert avltree0.root.value == -1
+    assert returnv.right_child.right_child is None
+    assert returnv.right_child.left_child is None
+    assert returnv.right_child.parent.value == 0
+    assert returnv.right_child.parent.height == 2
+    assert returnv.right_child.parent.left_child is None
+    assert returnv.right_child.parent.parent is None
+    assert avltree0.root.value == 0
+    assert avltree0.root.height == 2
     assert avltree0.root.left_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
-    assert avltree0.root.right_child.value == 0
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.value == 1
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
 
 
 def test_find50():
@@ -7553,14 +7632,14 @@ def test_find50():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
+    node1.height = 2
     node1.left_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = 1
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.right_child = node2
     avltree0.root = node1
@@ -7570,108 +7649,164 @@ def test_find50():
     returnv = avltree0.find(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
+    assert avltree0.root.height == 2
     assert avltree0.root.left_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
 
 
 def test_find51():
     '''
     Self:
         
-      0    
+     -1   
        \   
-       1   
+       0   
           
 
     Return:
-        <avl.node object at 0x7fd3cc33a400>
+        node: 0
     End Self:
         
-      0    
+     -1   
        \   
-       1   
+       0   
           
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 0
+    node1.value = -1
+    node1.height = 2
     node1.left_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
-    node2.value = 1
-    node2.left_child = None
-    node2.right_child = None
+    node2.value = 0
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.right_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.find(1)
+    returnv = avltree0.find(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
-    assert returnv.value == 1
-    assert returnv.left_child is None
-    assert returnv.right_child is None
+    # Regression assertions (Captures the current behavior)
+    assert returnv.value == 0
     assert returnv.height == 1
-    assert returnv.parent.value == 0
+    assert returnv.right_child is None
+    assert returnv.left_child is None
+    assert returnv.parent.value == -1
+    assert returnv.parent.height == 2
     assert returnv.parent.left_child is None
     assert returnv.parent.parent is None
-    assert returnv.parent.height == 2
-    assert avltree0.root.value == 0
+    assert returnv.parent.right_child.value == 0
+    assert returnv.parent.right_child.height == 1
+    assert returnv.parent.right_child.right_child is None
+    assert returnv.parent.right_child.left_child is None
+    assert avltree0.root.value == -1
+    assert avltree0.root.height == 2
     assert avltree0.root.left_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.value == 0
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
 
 
 def test_find52():
     '''
     Self:
         
-      0    
+     -2   
        \   
-       2   
+       0   
           
 
     Return:
         None
     End Self:
         
-      0    
+     -2   
        \   
-       2   
+       0   
           
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 0
+    node1.value = -2
+    node1.height = 2
     node1.left_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
-    node2.value = 2
-    node2.left_child = None
-    node2.right_child = None
+    node2.value = 0
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.right_child = node2
+    avltree0.root = node1
+    # Repok check
+    assert avltree0.repok()
+    # Method call
+    returnv = avltree0.find(-1)
+    # Repok check
+    assert avltree0.repok()
+    # Regression assertions (Captures the current behavior)
+    assert returnv is None
+    assert avltree0.root.value == -2
+    assert avltree0.root.height == 2
+    assert avltree0.root.left_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 0
+    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+
+
+def test_find53():
+    '''
+    Self:
+        
+     -1   
+       \   
+       0   
+          
+
+    Return:
+        None
+    End Self:
+        
+     -1   
+       \   
+       0   
+          
+
+    '''
+    # Input Creation
+    avltree0 = AVLTree()
+    node1 = node(0)
+    node1.value = -1
+    node1.height = 2
+    node1.left_child = None
+    node1.parent = None
+    node2 = node(0)
+    node2.value = 0
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.right_child = node2
     avltree0.root = node1
@@ -7681,111 +7816,59 @@ def test_find52():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
-    assert avltree0.root.value == 0
+    assert avltree0.root.value == -1
+    assert avltree0.root.height == 2
     assert avltree0.root.left_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
-    assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.value == 0
     assert avltree0.root.right_child.height == 1
-
-
-def test_find53():
-    '''
-    Self:
-        
-      0    
-       \   
-       1   
-          
-
-    Return:
-        None
-    End Self:
-        
-      0    
-       \   
-       1   
-          
-
-    '''
-    # Input Creation
-    avltree0 = AVLTree()
-    node1 = node(0)
-    node1.value = 0
-    node1.left_child = None
-    node1.parent = None
-    node1.height = 2
-    node2 = node(0)
-    node2.value = 1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.right_child = node2
-    avltree0.root = node1
-    # Repok check
-    assert avltree0.repok()
-    # Method call
-    returnv = avltree0.find(2)
-    # Repok check
-    assert avltree0.repok()
-    # Assertions
-    assert returnv is None
-    assert avltree0.root.value == 0
-    assert avltree0.root.left_child is None
-    assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.right_child is None
-    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.left_child is None
 
 
 def test_find54():
     '''
     Self:
         
- 4294967295 
+ -8876254865904950898 
       
 
     Return:
-        <avl.node object at 0x7fd3cc35ccd0>
+        node: -8876254865904950898
     End Self:
         
- 4294967295 
+ -8876254865904950898 
       
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 4294967295
-    node1.left_child = None
-    node1.right_child = None
-    node1.parent = None
+    node1.value = -8876254865904950898
     node1.height = 1
+    node1.right_child = None
+    node1.left_child = None
+    node1.parent = None
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.find(4294967295)
+    returnv = avltree0.find(-8876254865904950898)
     # Repok check
     assert avltree0.repok()
-    # Assertions
-    assert returnv.value == 4294967295
-    assert returnv.left_child is None
-    assert returnv.right_child is None
-    assert returnv.parent is None
+    # Regression assertions (Captures the current behavior)
+    assert returnv.value == -8876254865904950898
     assert returnv.height == 1
-    assert avltree0.root.value == 4294967295
-    assert avltree0.root.left_child is None
-    assert avltree0.root.right_child is None
-    assert avltree0.root.parent is None
+    assert returnv.right_child is None
+    assert returnv.left_child is None
+    assert returnv.parent is None
+    assert avltree0.root.value == -8876254865904950898
     assert avltree0.root.height == 1
+    assert avltree0.root.right_child is None
+    assert avltree0.root.left_child is None
+    assert avltree0.root.parent is None
 
 
 def test_find55():
@@ -7807,10 +7890,10 @@ def test_find55():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.left_child = None
-    node1.right_child = None
-    node1.parent = None
     node1.height = 1
+    node1.right_child = None
+    node1.left_child = None
+    node1.parent = None
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -7818,13 +7901,13 @@ def test_find55():
     returnv = avltree0.find(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.left_child is None
-    assert avltree0.root.right_child is None
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 1
+    assert avltree0.root.right_child is None
+    assert avltree0.root.left_child is None
+    assert avltree0.root.parent is None
 
 
 def test_find56():
@@ -7846,10 +7929,10 @@ def test_find56():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.left_child = None
-    node1.right_child = None
-    node1.parent = None
     node1.height = 1
+    node1.right_child = None
+    node1.left_child = None
+    node1.parent = None
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -7857,13 +7940,13 @@ def test_find56():
     returnv = avltree0.find(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root.value == 0
-    assert avltree0.root.left_child is None
-    assert avltree0.root.right_child is None
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 1
+    assert avltree0.root.right_child is None
+    assert avltree0.root.left_child is None
+    assert avltree0.root.parent is None
 
 
 def test_find57():
@@ -7884,86 +7967,12 @@ def test_find57():
     returnv = avltree0.find(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert avltree0.root is None
 
 
 def test_search1():
-    '''
-    Self:
-        
-         0      
-       /    \     
-     -1     1    
-    /              
-  -2              
-                  
-
-    Return:
-        True
-    End Self:
-        
-         0      
-       /    \     
-     -1     1    
-    /              
-  -2              
-                  
-
-    '''
-    # Input Creation
-    avltree0 = AVLTree()
-    node1 = node(0)
-    node1.value = 0
-    node1.parent = None
-    node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.right_child = None
-    node2.height = 2
-    node4 = node(0)
-    node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
-    node4.height = 1
-    node4.parent = node2
-    node2.left_child = node4
-    node2.parent = node1
-    node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
-    avltree0.root = node1
-    # Repok check
-    assert avltree0.repok()
-    # Method call
-    returnv = avltree0.search(0)
-    # Repok check
-    assert avltree0.repok()
-    # Assertions
-    assert returnv == True
-    assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
-    assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
-    assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
-    assert avltree0.root.left_child.left_child.height == 1
-
-
-def test_search2():
     '''
     Self:
         
@@ -7990,51 +7999,125 @@ def test_search2():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 1
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 2
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = 0
-    node2.right_child = None
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.search(0)
+    returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 1
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == 0
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.left_child.value == -1
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
+
+
+def test_search2():
+    '''
+    Self:
+        
+         0      
+       /    \     
+     -1     1    
+    /              
+  -2              
+                  
+
+    Return:
+        True
+    End Self:
+        
+         0      
+       /    \     
+     -1     1    
+    /              
+  -2              
+                  
+
+    '''
+    # Input Creation
+    avltree0 = AVLTree()
+    node1 = node(0)
+    node1.value = 0
+    node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 2
+    node2.right_child = None
+    node4 = node(0)
+    node4.value = -2
+    node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
+    node4.parent = node2
+    node2.left_child = node4
+    node2.parent = node1
+    node1.left_child = node2
+    avltree0.root = node1
+    # Repok check
+    assert avltree0.repok()
+    # Method call
+    returnv = avltree0.search(-1)
+    # Repok check
+    assert avltree0.repok()
+    # Regression assertions (Captures the current behavior)
+    assert returnv == True
+    assert avltree0.root.value == 0
+    assert avltree0.root.height == 3
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
+    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.value == -2
+    assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_search3():
@@ -8064,28 +8147,28 @@ def test_search3():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -1
-    node2.right_child = None
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
     node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -8093,73 +8176,147 @@ def test_search3():
     returnv = avltree0.search(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_search4():
     '''
     Self:
         
-         1      
+         0      
        /    \     
-      0      2    
+     -1     1    
     /              
-  -1              
+  -2              
                   
 
     Return:
         False
     End Self:
         
-         1      
+         0      
        /    \     
-      0      2    
+     -1     1    
     /              
-  -1              
+  -2              
                   
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 1
-    node1.parent = None
+    node1.value = 0
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
-    node2.value = 0
-    node2.right_child = None
+    node2.value = -1
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
-    node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
+    node4.value = -2
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
+    avltree0.root = node1
+    # Repok check
+    assert avltree0.repok()
+    # Method call
+    returnv = avltree0.search(-3)
+    # Repok check
+    assert avltree0.repok()
+    # Regression assertions (Captures the current behavior)
+    assert returnv == False
+    assert avltree0.root.value == 0
+    assert avltree0.root.height == 3
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
+    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.value == -2
+    assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
+
+
+def test_search5():
+    '''
+    Self:
+        
+         0      
+       /    \     
+     -1     1    
+    /              
+  -3              
+                  
+
+    Return:
+        False
+    End Self:
+        
+         0      
+       /    \     
+     -1     1    
+    /              
+  -3              
+                  
+
+    '''
+    # Input Creation
+    avltree0 = AVLTree()
+    node1 = node(0)
+    node1.value = 0
+    node1.height = 3
+    node1.parent = None
     node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
+    node3.value = 1
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 2
+    node2.right_child = None
+    node4 = node(0)
+    node4.value = -3
+    node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
+    node4.parent = node2
+    node2.left_child = node4
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -8167,73 +8324,73 @@ def test_search4():
     returnv = avltree0.search(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
-    assert avltree0.root.value == 1
-    assert avltree0.root.parent is None
+    assert avltree0.root.value == 0
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
     assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -1
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.value == -3
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
-def test_search5():
+def test_search6():
     '''
     Self:
         
-         1      
+         0      
        /    \     
-      0      2    
+     -2     1    
     /              
-  -2              
+  -3              
                   
 
     Return:
         False
     End Self:
         
-         1      
+         0      
        /    \     
-      0      2    
+     -2     1    
     /              
-  -2              
+  -3              
                   
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 1
-    node1.parent = None
+    node1.value = 0
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
-    node2.value = 0
-    node2.right_child = None
+    node2.value = -2
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
-    node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
+    node4.value = -3
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -8241,73 +8398,73 @@ def test_search5():
     returnv = avltree0.search(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
-    assert avltree0.root.value == 1
-    assert avltree0.root.parent is None
+    assert avltree0.root.value == 0
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
     assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.value == -3
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
-def test_search6():
+def test_search7():
     '''
     Self:
         
-         2      
+         0      
        /    \     
-      0      3    
+     -1     1    
     /              
-  -1              
+  -2              
                   
 
     Return:
-        False
+        True
     End Self:
         
-         2      
+         0      
        /    \     
-      0      3    
+     -1     1    
     /              
-  -1              
+  -2              
                   
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 2
-    node1.parent = None
+    node1.value = 0
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
-    node2.value = 0
-    node2.right_child = None
+    node2.value = -1
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
-    node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
+    node4.value = -2
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 3
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -8315,96 +8472,22 @@ def test_search6():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
-    assert returnv == False
-    assert avltree0.root.value == 2
-    assert avltree0.root.parent is None
-    assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 3
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
-    assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -1
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
-    assert avltree0.root.left_child.left_child.height == 1
-
-
-def test_search7():
-    '''
-    Self:
-        
-         1      
-       /    \     
-      0      2    
-    /              
-  -1              
-                  
-
-    Return:
-        True
-    End Self:
-        
-         1      
-       /    \     
-      0      2    
-    /              
-  -1              
-                  
-
-    '''
-    # Input Creation
-    avltree0 = AVLTree()
-    node1 = node(0)
-    node1.value = 1
-    node1.parent = None
-    node1.height = 3
-    node2 = node(0)
-    node2.value = 0
-    node2.right_child = None
-    node2.height = 2
-    node4 = node(0)
-    node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
-    node4.height = 1
-    node4.parent = node2
-    node2.left_child = node4
-    node2.parent = node1
-    node1.left_child = node2
-    node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
-    avltree0.root = node1
-    # Repok check
-    assert avltree0.repok()
-    # Method call
-    returnv = avltree0.search(2)
-    # Repok check
-    assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
-    assert avltree0.root.value == 1
-    assert avltree0.root.parent is None
+    assert avltree0.root.value == 0
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
-    assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 1
     assert avltree0.root.right_child.height == 1
-    assert avltree0.root.left_child.left_child.value == -1
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.value == -2
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_search8():
@@ -8434,28 +8517,28 @@ def test_search8():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 2
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -1
-    node2.right_child = None
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
     node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -8463,22 +8546,22 @@ def test_search8():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_search9():
@@ -8508,28 +8591,28 @@ def test_search9():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -1
-    node2.right_child = None
     node2.height = 2
+    node2.right_child = None
     node4 = node(0)
     node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.left_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -8537,22 +8620,22 @@ def test_search9():
     returnv = avltree0.search(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.left_child.value == -2
-    assert avltree0.root.left_child.left_child.left_child is None
-    assert avltree0.root.left_child.left_child.right_child is None
     assert avltree0.root.left_child.left_child.height == 1
+    assert avltree0.root.left_child.left_child.right_child is None
+    assert avltree0.root.left_child.left_child.left_child is None
 
 
 def test_search10():
@@ -8582,28 +8665,28 @@ def test_search10():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -8611,22 +8694,22 @@ def test_search10():
     returnv = avltree0.search(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_search11():
@@ -8656,28 +8739,28 @@ def test_search11():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -8685,22 +8768,22 @@ def test_search11():
     returnv = avltree0.search(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_search12():
@@ -8730,28 +8813,28 @@ def test_search12():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -8759,22 +8842,22 @@ def test_search12():
     returnv = avltree0.search(-3)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_search13():
@@ -8804,28 +8887,28 @@ def test_search13():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -8833,22 +8916,22 @@ def test_search13():
     returnv = avltree0.search(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_search14():
@@ -8878,28 +8961,28 @@ def test_search14():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -3
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -8907,22 +8990,22 @@ def test_search14():
     returnv = avltree0.search(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -3
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -3
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_search15():
@@ -8952,28 +9035,28 @@ def test_search15():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -3
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -8981,22 +9064,22 @@ def test_search15():
     returnv = avltree0.search(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -3
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -3
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -2
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_search16():
@@ -9026,28 +9109,28 @@ def test_search16():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -9055,22 +9138,22 @@ def test_search16():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_search17():
@@ -9100,28 +9183,28 @@ def test_search17():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 2
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -9129,22 +9212,22 @@ def test_search17():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_search18():
@@ -9174,28 +9257,28 @@ def test_search18():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
+    node1.parent = None
+    node3 = node(0)
+    node3.value = 1
+    node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
+    node3.parent = node1
+    node1.right_child = node3
     node2 = node(0)
     node2.value = -2
-    node2.left_child = None
     node2.height = 2
+    node2.left_child = None
     node4 = node(0)
     node4.value = -1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node2
     node2.right_child = node4
     node2.parent = node1
     node1.left_child = node2
-    node3 = node(0)
-    node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
-    node3.height = 1
-    node3.parent = node1
-    node1.right_child = node3
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -9203,22 +9286,22 @@ def test_search18():
     returnv = avltree0.search(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 2
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.left_child.right_child.value == -1
-    assert avltree0.root.left_child.right_child.left_child is None
-    assert avltree0.root.left_child.right_child.right_child is None
     assert avltree0.root.left_child.right_child.height == 1
+    assert avltree0.root.left_child.right_child.right_child is None
+    assert avltree0.root.left_child.right_child.left_child is None
 
 
 def test_search19():
@@ -9248,28 +9331,28 @@ def test_search19():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -9277,22 +9360,22 @@ def test_search19():
     returnv = avltree0.search(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_search20():
@@ -9322,28 +9405,28 @@ def test_search20():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -9351,22 +9434,22 @@ def test_search20():
     returnv = avltree0.search(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_search21():
@@ -9396,28 +9479,28 @@ def test_search21():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -9425,22 +9508,22 @@ def test_search21():
     returnv = avltree0.search(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_search22():
@@ -9470,28 +9553,28 @@ def test_search22():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -9499,22 +9582,22 @@ def test_search22():
     returnv = avltree0.search(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_search23():
@@ -9544,28 +9627,28 @@ def test_search23():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -9573,22 +9656,22 @@ def test_search23():
     returnv = avltree0.search(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_search24():
@@ -9618,28 +9701,28 @@ def test_search24():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -9647,22 +9730,22 @@ def test_search24():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_search25():
@@ -9692,28 +9775,28 @@ def test_search25():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 3
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -9721,22 +9804,22 @@ def test_search25():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 3
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 2
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_search26():
@@ -9766,28 +9849,28 @@ def test_search26():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 3
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -9795,22 +9878,22 @@ def test_search26():
     returnv = avltree0.search(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 3
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_search27():
@@ -9840,28 +9923,28 @@ def test_search27():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.right_child = None
     node3.height = 2
+    node3.right_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.left_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -9869,22 +9952,22 @@ def test_search27():
     returnv = avltree0.search(3)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.left_child.value == 1
-    assert avltree0.root.right_child.left_child.left_child is None
-    assert avltree0.root.right_child.left_child.right_child is None
     assert avltree0.root.right_child.left_child.height == 1
+    assert avltree0.root.right_child.left_child.right_child is None
+    assert avltree0.root.right_child.left_child.left_child is None
 
 
 def test_search28():
@@ -9914,28 +9997,28 @@ def test_search28():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = -1
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 0
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 1
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -9943,22 +10026,22 @@ def test_search28():
     returnv = avltree0.search(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == -1
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 0
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 1
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_search29():
@@ -9988,28 +10071,28 @@ def test_search29():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10017,22 +10100,22 @@ def test_search29():
     returnv = avltree0.search(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_search30():
@@ -10062,28 +10145,28 @@ def test_search30():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10091,22 +10174,22 @@ def test_search30():
     returnv = avltree0.search(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_search31():
@@ -10136,28 +10219,28 @@ def test_search31():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10165,22 +10248,22 @@ def test_search31():
     returnv = avltree0.search(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_search32():
@@ -10210,28 +10293,28 @@ def test_search32():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10239,22 +10322,22 @@ def test_search32():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_search33():
@@ -10284,28 +10367,28 @@ def test_search33():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 3
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10313,22 +10396,22 @@ def test_search33():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 3
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_search34():
@@ -10358,28 +10441,28 @@ def test_search34():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10387,22 +10470,22 @@ def test_search34():
     returnv = avltree0.search(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_search35():
@@ -10432,28 +10515,28 @@ def test_search35():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 3
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10461,22 +10544,22 @@ def test_search35():
     returnv = avltree0.search(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 3
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_search36():
@@ -10506,28 +10589,28 @@ def test_search36():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 3
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
     node3.height = 2
+    node3.left_child = None
     node4 = node(0)
     node4.value = 2
-    node4.left_child = None
-    node4.right_child = None
     node4.height = 1
+    node4.right_child = None
+    node4.left_child = None
     node4.parent = node3
     node3.right_child = node4
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10535,22 +10618,22 @@ def test_search36():
     returnv = avltree0.search(3)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 3
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.height == 2
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
     assert avltree0.root.right_child.right_child.value == 2
-    assert avltree0.root.right_child.right_child.left_child is None
-    assert avltree0.root.right_child.right_child.right_child is None
     assert avltree0.root.right_child.right_child.height == 1
+    assert avltree0.root.right_child.right_child.right_child is None
+    assert avltree0.root.right_child.right_child.left_child is None
 
 
 def test_search37():
@@ -10576,22 +10659,22 @@ def test_search37():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10599,19 +10682,19 @@ def test_search37():
     returnv = avltree0.search(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_search38():
@@ -10637,22 +10720,22 @@ def test_search38():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10660,19 +10743,19 @@ def test_search38():
     returnv = avltree0.search(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_search39():
@@ -10698,22 +10781,22 @@ def test_search39():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10721,19 +10804,19 @@ def test_search39():
     returnv = avltree0.search(-2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_search40():
@@ -10759,22 +10842,22 @@ def test_search40():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -2
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -2
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10782,19 +10865,19 @@ def test_search40():
     returnv = avltree0.search(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -2
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -2
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_search41():
@@ -10820,22 +10903,22 @@ def test_search41():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10843,19 +10926,19 @@ def test_search41():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_search42():
@@ -10881,22 +10964,22 @@ def test_search42():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 2
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10904,19 +10987,19 @@ def test_search42():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_search43():
@@ -10942,22 +11025,22 @@ def test_search43():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.parent = None
     node1.height = 2
-    node2 = node(0)
-    node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.left_child = node2
+    node1.parent = None
     node3 = node(0)
     node3.value = 1
-    node3.left_child = None
-    node3.right_child = None
     node3.height = 1
+    node3.right_child = None
+    node3.left_child = None
     node3.parent = node1
     node1.right_child = node3
+    node2 = node(0)
+    node2.value = -1
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.left_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -10965,19 +11048,19 @@ def test_search43():
     returnv = avltree0.search(2)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 2
-    assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
-    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.parent is None
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+    assert avltree0.root.left_child.value == -1
+    assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_search44():
@@ -11003,14 +11086,14 @@ def test_search44():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -11020,16 +11103,16 @@ def test_search44():
     returnv = avltree0.search(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 0
+    assert avltree0.root.height == 2
     assert avltree0.root.right_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_search45():
@@ -11055,14 +11138,14 @@ def test_search45():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 1
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = 0
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -11072,16 +11155,16 @@ def test_search45():
     returnv = avltree0.search(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert avltree0.root.value == 1
+    assert avltree0.root.height == 2
     assert avltree0.root.right_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_search46():
@@ -11107,14 +11190,14 @@ def test_search46():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 1
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = 0
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -11124,16 +11207,16 @@ def test_search46():
     returnv = avltree0.search(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 1
+    assert avltree0.root.height == 2
     assert avltree0.root.right_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_search47():
@@ -11159,14 +11242,14 @@ def test_search47():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 2
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = 0
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -11176,16 +11259,16 @@ def test_search47():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 2
+    assert avltree0.root.height == 2
     assert avltree0.root.right_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.left_child.value == 0
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_search48():
@@ -11211,14 +11294,14 @@ def test_search48():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
+    node1.height = 2
     node1.right_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = -1
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.left_child = node2
     avltree0.root = node1
@@ -11228,68 +11311,68 @@ def test_search48():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
+    assert avltree0.root.height == 2
     assert avltree0.root.right_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.left_child.value == -1
-    assert avltree0.root.left_child.left_child is None
-    assert avltree0.root.left_child.right_child is None
     assert avltree0.root.left_child.height == 1
+    assert avltree0.root.left_child.right_child is None
+    assert avltree0.root.left_child.left_child is None
 
 
 def test_search49():
     '''
     Self:
         
-     -1   
+      0    
        \   
-       0   
+       1   
           
 
     Return:
         True
     End Self:
         
-     -1   
+      0    
        \   
-       0   
+       1   
           
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = -1
+    node1.value = 0
+    node1.height = 2
     node1.left_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
-    node2.value = 0
-    node2.left_child = None
-    node2.right_child = None
+    node2.value = 1
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.right_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.search(-1)
+    returnv = avltree0.search(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
-    assert avltree0.root.value == -1
+    assert avltree0.root.value == 0
+    assert avltree0.root.height == 2
     assert avltree0.root.left_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
-    assert avltree0.root.right_child.value == 0
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.value == 1
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
 
 
 def test_search50():
@@ -11315,14 +11398,14 @@ def test_search50():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
+    node1.height = 2
     node1.left_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
     node2.value = 1
-    node2.left_child = None
-    node2.right_child = None
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.right_child = node2
     avltree0.root = node1
@@ -11332,101 +11415,153 @@ def test_search50():
     returnv = avltree0.search(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
+    assert avltree0.root.height == 2
     assert avltree0.root.left_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
     assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
 
 
 def test_search51():
     '''
     Self:
         
-      0    
+     -1   
        \   
-       1   
+       0   
           
 
     Return:
         True
     End Self:
         
-      0    
+     -1   
        \   
-       1   
+       0   
           
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 0
+    node1.value = -1
+    node1.height = 2
     node1.left_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
-    node2.value = 1
-    node2.left_child = None
-    node2.right_child = None
+    node2.value = 0
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.right_child = node2
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.search(1)
+    returnv = avltree0.search(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
-    assert avltree0.root.value == 0
+    assert avltree0.root.value == -1
+    assert avltree0.root.height == 2
     assert avltree0.root.left_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.value == 0
     assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
 
 
 def test_search52():
     '''
     Self:
         
-      0    
+     -2   
        \   
-       2   
+       0   
           
 
     Return:
         False
     End Self:
         
-      0    
+     -2   
        \   
-       2   
+       0   
           
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 0
+    node1.value = -2
+    node1.height = 2
     node1.left_child = None
     node1.parent = None
-    node1.height = 2
     node2 = node(0)
-    node2.value = 2
-    node2.left_child = None
-    node2.right_child = None
+    node2.value = 0
     node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
+    node2.parent = node1
+    node1.right_child = node2
+    avltree0.root = node1
+    # Repok check
+    assert avltree0.repok()
+    # Method call
+    returnv = avltree0.search(-1)
+    # Repok check
+    assert avltree0.repok()
+    # Regression assertions (Captures the current behavior)
+    assert returnv == False
+    assert avltree0.root.value == -2
+    assert avltree0.root.height == 2
+    assert avltree0.root.left_child is None
+    assert avltree0.root.parent is None
+    assert avltree0.root.right_child.value == 0
+    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.left_child is None
+
+
+def test_search53():
+    '''
+    Self:
+        
+     -1   
+       \   
+       0   
+          
+
+    Return:
+        False
+    End Self:
+        
+     -1   
+       \   
+       0   
+          
+
+    '''
+    # Input Creation
+    avltree0 = AVLTree()
+    node1 = node(0)
+    node1.value = -1
+    node1.height = 2
+    node1.left_child = None
+    node1.parent = None
+    node2 = node(0)
+    node2.value = 0
+    node2.height = 1
+    node2.right_child = None
+    node2.left_child = None
     node2.parent = node1
     node1.right_child = node2
     avltree0.root = node1
@@ -11436,107 +11571,55 @@ def test_search52():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
-    assert avltree0.root.value == 0
+    assert avltree0.root.value == -1
+    assert avltree0.root.height == 2
     assert avltree0.root.left_child is None
     assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
-    assert avltree0.root.right_child.value == 2
-    assert avltree0.root.right_child.left_child is None
-    assert avltree0.root.right_child.right_child is None
+    assert avltree0.root.right_child.value == 0
     assert avltree0.root.right_child.height == 1
-
-
-def test_search53():
-    '''
-    Self:
-        
-      0    
-       \   
-       1   
-          
-
-    Return:
-        False
-    End Self:
-        
-      0    
-       \   
-       1   
-          
-
-    '''
-    # Input Creation
-    avltree0 = AVLTree()
-    node1 = node(0)
-    node1.value = 0
-    node1.left_child = None
-    node1.parent = None
-    node1.height = 2
-    node2 = node(0)
-    node2.value = 1
-    node2.left_child = None
-    node2.right_child = None
-    node2.height = 1
-    node2.parent = node1
-    node1.right_child = node2
-    avltree0.root = node1
-    # Repok check
-    assert avltree0.repok()
-    # Method call
-    returnv = avltree0.search(2)
-    # Repok check
-    assert avltree0.repok()
-    # Assertions
-    assert returnv == False
-    assert avltree0.root.value == 0
-    assert avltree0.root.left_child is None
-    assert avltree0.root.parent is None
-    assert avltree0.root.height == 2
-    assert avltree0.root.right_child.value == 1
-    assert avltree0.root.right_child.left_child is None
     assert avltree0.root.right_child.right_child is None
-    assert avltree0.root.right_child.height == 1
+    assert avltree0.root.right_child.left_child is None
 
 
 def test_search54():
     '''
     Self:
         
- 4294967295 
+ -9223370937208930302 
       
 
     Return:
         True
     End Self:
         
- 4294967295 
+ -9223370937208930302 
       
 
     '''
     # Input Creation
     avltree0 = AVLTree()
     node1 = node(0)
-    node1.value = 4294967295
-    node1.left_child = None
-    node1.right_child = None
-    node1.parent = None
+    node1.value = -9223370937208930302
     node1.height = 1
+    node1.right_child = None
+    node1.left_child = None
+    node1.parent = None
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
     # Method call
-    returnv = avltree0.search(4294967295)
+    returnv = avltree0.search(-9223370937208930302)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
-    assert avltree0.root.value == 4294967295
-    assert avltree0.root.left_child is None
-    assert avltree0.root.right_child is None
-    assert avltree0.root.parent is None
+    assert avltree0.root.value == -9223370937208930302
     assert avltree0.root.height == 1
+    assert avltree0.root.right_child is None
+    assert avltree0.root.left_child is None
+    assert avltree0.root.parent is None
 
 
 def test_search55():
@@ -11558,10 +11641,10 @@ def test_search55():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.left_child = None
-    node1.right_child = None
-    node1.parent = None
     node1.height = 1
+    node1.right_child = None
+    node1.left_child = None
+    node1.parent = None
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -11569,13 +11652,13 @@ def test_search55():
     returnv = avltree0.search(-1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.left_child is None
-    assert avltree0.root.right_child is None
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 1
+    assert avltree0.root.right_child is None
+    assert avltree0.root.left_child is None
+    assert avltree0.root.parent is None
 
 
 def test_search56():
@@ -11597,10 +11680,10 @@ def test_search56():
     avltree0 = AVLTree()
     node1 = node(0)
     node1.value = 0
-    node1.left_child = None
-    node1.right_child = None
-    node1.parent = None
     node1.height = 1
+    node1.right_child = None
+    node1.left_child = None
+    node1.parent = None
     avltree0.root = node1
     # Repok check
     assert avltree0.repok()
@@ -11608,13 +11691,13 @@ def test_search56():
     returnv = avltree0.search(1)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root.value == 0
-    assert avltree0.root.left_child is None
-    assert avltree0.root.right_child is None
-    assert avltree0.root.parent is None
     assert avltree0.root.height == 1
+    assert avltree0.root.right_child is None
+    assert avltree0.root.left_child is None
+    assert avltree0.root.parent is None
 
 
 def test_search57():
@@ -11635,7 +11718,7 @@ def test_search57():
     returnv = avltree0.search(0)
     # Repok check
     assert avltree0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert avltree0.root is None
 
