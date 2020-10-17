@@ -85,7 +85,7 @@ class SEEngine:
         for k in self._sut.class_map.keys():
             setattr(k, "_engine", self)
 
-    def explore(self, method_name, input_self, conditions):
+    def explore(self, method_name, input_self, constraints):
         """Main method, explores al feasible possibilities.
 
         Yields:
@@ -94,7 +94,7 @@ class SEEngine:
         unexplored_paths = True
 
         while unexplored_paths:
-            self._reset_exploration(conditions)
+            self._reset_exploration(constraints)
 
             result = self._explore_method_path(method_name, input_self)
             if result is not None:
@@ -137,9 +137,9 @@ class SEEngine:
                 return instance
             return None
 
-    def _reset_exploration(self, conditions=[]):
+    def _reset_exploration(self, constraints=[]):
         """Resets the exploration variables to its initial values."""
-        self._path_condition = copy.deepcopy(conditions)
+        self._path_condition = copy.deepcopy(constraints)
         self._current_bp = 0
         self._current_nodes = 0
         self._current_depth = 0
