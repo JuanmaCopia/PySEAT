@@ -96,7 +96,7 @@ class SEEngine:
         while unexplored_paths:
             self._reset_exploration(conditions)
 
-            result = self._explore_path(method_name, input_self)
+            result = self._explore_method_path(method_name, input_self)
             if result is not None:
                 yield (result)
 
@@ -110,7 +110,7 @@ class SEEngine:
         while unexplored_paths:
             self._reset_exploration()
 
-            end_self = self._explore_repok()
+            end_self = self._explore_repok_path()
             if end_self is not None:
                 structures.append((end_self, copy.deepcopy(self._path_condition)))
 
@@ -118,7 +118,7 @@ class SEEngine:
 
         return structures
 
-    def _explore_repok(self):
+    def _explore_repok_path(self):
         result = None
         try:
             with RepokExplorationMode(self):
@@ -175,7 +175,7 @@ class SEEngine:
 
         return True
 
-    def _explore_path(self, method_name, input_self):
+    def _explore_method_path(self, method_name, input_self):
         """Performs the method exploration.
 
         Executes method and returns all the execution data, like the returned

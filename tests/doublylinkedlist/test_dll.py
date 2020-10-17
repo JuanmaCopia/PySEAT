@@ -41,7 +41,7 @@ def test_insert_after1():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -91,7 +91,7 @@ def test_insert_after2():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -142,7 +142,7 @@ def test_insert_after3():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -193,7 +193,7 @@ def test_insert_after4():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -244,7 +244,7 @@ def test_insert_after5():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -295,7 +295,7 @@ def test_insert_after6():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -342,7 +342,7 @@ def test_insert_after7():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -387,7 +387,7 @@ def test_insert_after8():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -433,7 +433,7 @@ def test_insert_after9():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -479,7 +479,7 @@ def test_insert_after10():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -525,7 +525,7 @@ def test_insert_after11():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -567,7 +567,7 @@ def test_insert_after12():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -607,7 +607,7 @@ def test_insert_after13():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -648,7 +648,7 @@ def test_insert_after14():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -689,7 +689,7 @@ def test_insert_after15():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -726,7 +726,7 @@ def test_insert_after16():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -761,7 +761,7 @@ def test_insert_after17():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -797,7 +797,7 @@ def test_insert_after18():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -829,7 +829,7 @@ def test_insert_after19():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.next is None
@@ -859,7 +859,7 @@ def test_insert_after20():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -886,7 +886,7 @@ def test_insert_after21():
     returnv = doublylinkedlist0.insert_after(0, 0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head is None
     assert doublylinkedlist0.tail is None
@@ -931,7 +931,7 @@ def test_remove1():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -981,7 +981,7 @@ def test_remove2():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1030,7 +1030,7 @@ def test_remove3():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1079,7 +1079,7 @@ def test_remove4():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1128,7 +1128,7 @@ def test_remove5():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1177,7 +1177,7 @@ def test_remove6():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -1222,7 +1222,7 @@ def test_remove7():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1267,7 +1267,7 @@ def test_remove8():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1311,7 +1311,7 @@ def test_remove9():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1355,7 +1355,7 @@ def test_remove10():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1399,7 +1399,7 @@ def test_remove11():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -1439,7 +1439,7 @@ def test_remove12():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1479,7 +1479,7 @@ def test_remove13():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1518,7 +1518,7 @@ def test_remove14():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1557,7 +1557,7 @@ def test_remove15():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -1592,7 +1592,7 @@ def test_remove16():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1627,7 +1627,7 @@ def test_remove17():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.next is None
@@ -1661,7 +1661,7 @@ def test_remove18():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.next is None
@@ -1691,7 +1691,7 @@ def test_remove19():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.next is None
@@ -1721,7 +1721,7 @@ def test_remove20():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head is None
     assert doublylinkedlist0.tail is None
@@ -1746,7 +1746,7 @@ def test_remove21():
     returnv = doublylinkedlist0.remove(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head is None
     assert doublylinkedlist0.tail is None
@@ -1791,7 +1791,7 @@ def test_find1():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1841,7 +1841,7 @@ def test_find2():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1891,7 +1891,7 @@ def test_find3():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1941,7 +1941,7 @@ def test_find4():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -1991,7 +1991,7 @@ def test_find5():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -2041,7 +2041,7 @@ def test_find6():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -2087,7 +2087,7 @@ def test_find7():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -2132,7 +2132,7 @@ def test_find8():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -2177,7 +2177,7 @@ def test_find9():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -2222,7 +2222,7 @@ def test_find10():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -2267,7 +2267,7 @@ def test_find11():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -2308,7 +2308,7 @@ def test_find12():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -2348,7 +2348,7 @@ def test_find13():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -2388,7 +2388,7 @@ def test_find14():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -2428,7 +2428,7 @@ def test_find15():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -2464,7 +2464,7 @@ def test_find16():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -2499,7 +2499,7 @@ def test_find17():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.prev is None
@@ -2534,7 +2534,7 @@ def test_find18():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -2565,7 +2565,7 @@ def test_find19():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert doublylinkedlist0.head.data == 1
     assert doublylinkedlist0.head.next is None
@@ -2595,7 +2595,7 @@ def test_find20():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == True
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.next is None
@@ -2621,7 +2621,7 @@ def test_find21():
     returnv = doublylinkedlist0.find(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == False
     assert doublylinkedlist0.head is None
     assert doublylinkedlist0.tail is None
@@ -2666,7 +2666,7 @@ def test_insert_at_back1():
     returnv = doublylinkedlist0.insert_at_back(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -2713,7 +2713,7 @@ def test_insert_at_back2():
     returnv = doublylinkedlist0.insert_at_back(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -2755,7 +2755,7 @@ def test_insert_at_back3():
     returnv = doublylinkedlist0.insert_at_back(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -2792,7 +2792,7 @@ def test_insert_at_back4():
     returnv = doublylinkedlist0.insert_at_back(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -2824,7 +2824,7 @@ def test_insert_at_back5():
     returnv = doublylinkedlist0.insert_at_back(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -2851,7 +2851,7 @@ def test_insert_at_back6():
     returnv = doublylinkedlist0.insert_at_back(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.next is None
@@ -2897,7 +2897,7 @@ def test_insert_at_front1():
     returnv = doublylinkedlist0.insert_at_front(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -2944,7 +2944,7 @@ def test_insert_at_front2():
     returnv = doublylinkedlist0.insert_at_front(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -2986,7 +2986,7 @@ def test_insert_at_front3():
     returnv = doublylinkedlist0.insert_at_front(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3023,7 +3023,7 @@ def test_insert_at_front4():
     returnv = doublylinkedlist0.insert_at_front(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3055,7 +3055,7 @@ def test_insert_at_front5():
     returnv = doublylinkedlist0.insert_at_front(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3082,7 +3082,7 @@ def test_insert_at_front6():
     returnv = doublylinkedlist0.insert_at_front(0)
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.next is None
@@ -3128,7 +3128,7 @@ def test_top_front1():
     returnv = doublylinkedlist0.top_front()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3174,7 +3174,7 @@ def test_top_front2():
     returnv = doublylinkedlist0.top_front()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3215,7 +3215,7 @@ def test_top_front3():
     returnv = doublylinkedlist0.top_front()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3251,7 +3251,7 @@ def test_top_front4():
     returnv = doublylinkedlist0.top_front()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3282,7 +3282,7 @@ def test_top_front5():
     returnv = doublylinkedlist0.top_front()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.next is None
@@ -3308,7 +3308,7 @@ def test_top_front6():
     returnv = doublylinkedlist0.top_front()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head is None
     assert doublylinkedlist0.tail is None
@@ -3353,7 +3353,7 @@ def test_top_back1():
     returnv = doublylinkedlist0.top_back()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3399,7 +3399,7 @@ def test_top_back2():
     returnv = doublylinkedlist0.top_back()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3440,7 +3440,7 @@ def test_top_back3():
     returnv = doublylinkedlist0.top_back()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3476,7 +3476,7 @@ def test_top_back4():
     returnv = doublylinkedlist0.top_back()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3507,7 +3507,7 @@ def test_top_back5():
     returnv = doublylinkedlist0.top_back()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.next is None
@@ -3533,7 +3533,7 @@ def test_top_back6():
     returnv = doublylinkedlist0.top_back()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head is None
     assert doublylinkedlist0.tail is None
@@ -3578,7 +3578,7 @@ def test_pop_front1():
     returnv = doublylinkedlist0.pop_front()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3623,7 +3623,7 @@ def test_pop_front2():
     returnv = doublylinkedlist0.pop_front()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3663,7 +3663,7 @@ def test_pop_front3():
     returnv = doublylinkedlist0.pop_front()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3698,7 +3698,7 @@ def test_pop_front4():
     returnv = doublylinkedlist0.pop_front()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.next is None
@@ -3728,7 +3728,7 @@ def test_pop_front5():
     returnv = doublylinkedlist0.pop_front()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head is None
     assert doublylinkedlist0.tail is None
@@ -3753,7 +3753,7 @@ def test_pop_front6():
     returnv = doublylinkedlist0.pop_front()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head is None
     assert doublylinkedlist0.tail is None
@@ -3798,7 +3798,7 @@ def test_pop_back1():
     returnv = doublylinkedlist0.pop_back()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3843,7 +3843,7 @@ def test_pop_back2():
     returnv = doublylinkedlist0.pop_back()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3883,7 +3883,7 @@ def test_pop_back3():
     returnv = doublylinkedlist0.pop_back()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.prev is None
@@ -3918,7 +3918,7 @@ def test_pop_back4():
     returnv = doublylinkedlist0.pop_back()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head.data == 0
     assert doublylinkedlist0.head.next is None
@@ -3948,7 +3948,7 @@ def test_pop_back5():
     returnv = doublylinkedlist0.pop_back()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv == 0
     assert doublylinkedlist0.head is None
     assert doublylinkedlist0.tail is None
@@ -3973,7 +3973,7 @@ def test_pop_back6():
     returnv = doublylinkedlist0.pop_back()
     # Repok check
     assert doublylinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert doublylinkedlist0.head is None
     assert doublylinkedlist0.tail is None

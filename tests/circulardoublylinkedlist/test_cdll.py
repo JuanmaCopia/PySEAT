@@ -40,7 +40,7 @@ def test_insert_after1():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -88,7 +88,7 @@ def test_insert_after2():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 0
@@ -136,7 +136,7 @@ def test_insert_after3():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -184,7 +184,7 @@ def test_insert_after4():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -232,7 +232,7 @@ def test_insert_after5():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -280,7 +280,7 @@ def test_insert_after6():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -323,7 +323,7 @@ def test_insert_after7():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -366,7 +366,7 @@ def test_insert_after8():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 0
@@ -409,7 +409,7 @@ def test_insert_after9():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -452,7 +452,7 @@ def test_insert_after10():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -495,7 +495,7 @@ def test_insert_after11():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -533,7 +533,7 @@ def test_insert_after12():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -571,7 +571,7 @@ def test_insert_after13():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 0
@@ -609,7 +609,7 @@ def test_insert_after14():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -647,7 +647,7 @@ def test_insert_after15():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -680,7 +680,7 @@ def test_insert_after16():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -713,7 +713,7 @@ def test_insert_after17():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 0
@@ -746,7 +746,7 @@ def test_insert_after18():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -774,7 +774,7 @@ def test_insert_after19():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -802,7 +802,7 @@ def test_insert_after20():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
 
@@ -825,7 +825,7 @@ def test_insert_after21():
     returnv = cdlinkedlist0.insert_after(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head is None
 
@@ -868,7 +868,7 @@ def test_insert_before1():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -916,7 +916,7 @@ def test_insert_before2():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 0
@@ -964,7 +964,7 @@ def test_insert_before3():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1012,7 +1012,7 @@ def test_insert_before4():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1060,7 +1060,7 @@ def test_insert_before5():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1108,7 +1108,7 @@ def test_insert_before6():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1151,7 +1151,7 @@ def test_insert_before7():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -1194,7 +1194,7 @@ def test_insert_before8():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 0
@@ -1237,7 +1237,7 @@ def test_insert_before9():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1280,7 +1280,7 @@ def test_insert_before10():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1323,7 +1323,7 @@ def test_insert_before11():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1361,7 +1361,7 @@ def test_insert_before12():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -1399,7 +1399,7 @@ def test_insert_before13():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 0
@@ -1437,7 +1437,7 @@ def test_insert_before14():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1475,7 +1475,7 @@ def test_insert_before15():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1508,7 +1508,7 @@ def test_insert_before16():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -1541,7 +1541,7 @@ def test_insert_before17():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 0
@@ -1574,7 +1574,7 @@ def test_insert_before18():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1602,7 +1602,7 @@ def test_insert_before19():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -1630,7 +1630,7 @@ def test_insert_before20():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
 
@@ -1653,7 +1653,7 @@ def test_insert_before21():
     returnv = cdlinkedlist0.insert_before(0, 0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head is None
 
@@ -1696,7 +1696,7 @@ def test_delete1():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -1742,7 +1742,7 @@ def test_delete2():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 0
@@ -1788,7 +1788,7 @@ def test_delete3():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1834,7 +1834,7 @@ def test_delete4():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1880,7 +1880,7 @@ def test_delete5():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1926,7 +1926,7 @@ def test_delete6():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -1969,7 +1969,7 @@ def test_delete7():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -2010,7 +2010,7 @@ def test_delete8():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 0
@@ -2051,7 +2051,7 @@ def test_delete9():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -2092,7 +2092,7 @@ def test_delete10():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -2133,7 +2133,7 @@ def test_delete11():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -2171,7 +2171,7 @@ def test_delete12():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -2207,7 +2207,7 @@ def test_delete13():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 0
@@ -2243,7 +2243,7 @@ def test_delete14():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -2279,7 +2279,7 @@ def test_delete15():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -2312,7 +2312,7 @@ def test_delete16():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
 
@@ -2343,7 +2343,7 @@ def test_delete17():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
 
@@ -2374,7 +2374,7 @@ def test_delete18():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
     assert cdlinkedlist0.head.next.key == 1
@@ -2402,7 +2402,7 @@ def test_delete19():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head is None
 
@@ -2429,7 +2429,7 @@ def test_delete20():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 1
 
@@ -2452,7 +2452,7 @@ def test_delete21():
     returnv = cdlinkedlist0.delete(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head is None
 
@@ -2495,7 +2495,7 @@ def test_append1():
     returnv = cdlinkedlist0.append(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -2539,7 +2539,7 @@ def test_append2():
     returnv = cdlinkedlist0.append(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -2578,7 +2578,7 @@ def test_append3():
     returnv = cdlinkedlist0.append(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -2612,7 +2612,7 @@ def test_append4():
     returnv = cdlinkedlist0.append(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -2641,7 +2641,7 @@ def test_append5():
     returnv = cdlinkedlist0.append(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -2665,7 +2665,7 @@ def test_append6():
     returnv = cdlinkedlist0.append(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
 
@@ -2708,7 +2708,7 @@ def test_prepend1():
     returnv = cdlinkedlist0.prepend(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -2752,7 +2752,7 @@ def test_prepend2():
     returnv = cdlinkedlist0.prepend(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -2791,7 +2791,7 @@ def test_prepend3():
     returnv = cdlinkedlist0.prepend(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -2825,7 +2825,7 @@ def test_prepend4():
     returnv = cdlinkedlist0.prepend(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -2854,7 +2854,7 @@ def test_prepend5():
     returnv = cdlinkedlist0.prepend(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
     assert cdlinkedlist0.head.next.key == 0
@@ -2878,7 +2878,7 @@ def test_prepend6():
     returnv = cdlinkedlist0.prepend(0)
     # Repok check
     assert cdlinkedlist0.repok()
-    # Assertions
+    # Regression assertions (Captures the current behavior)
     assert returnv is None
     assert cdlinkedlist0.head.key == 0
 
