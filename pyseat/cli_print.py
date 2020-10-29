@@ -30,7 +30,6 @@ def print_statistics(stats, test_num, filepath):
     print_red(" {} failed".format(stats.failures))
     print_magenta(" {} exceptions".format(stats.exceptions))
     print_yellow(" {} timeouts".format(stats.timeouts))
-    print_blue("\n Build time: {:.2f}s".format(stats.build_time))
     print(" File: {}".format(filepath))
     print_cyan("\n{}\n".format("-" * 65))
 

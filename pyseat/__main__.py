@@ -34,42 +34,33 @@ for args in runs:
 
     start_time = time.time()
 
-    cli.print_blue(" Generating instances of {}...".format(class_name))
-    input_structures = engine.generate_structures()
-    if blackbox:
-        for i, (instance, constraints) in enumerate(input_structures):
-            model = engine.smt.get_model(constraints)
-            input_structures[i] = (concretize(instance, model), [])
-    cli.print_white(
-        " DONE! {} structures generated\n Exploring...".format(len(input_structures))
-    )
 
-    build_time = time.time() - start_time
 
-    stats = Statistics(build_time)
+
+
+    stats = Statistics()
     amount_tests = 0
 
     for method in methods_names:
         test_num = 0
         sut.current_method = sut.methods_map[method]
-        if not quiet:
-            cli.print_method_data(method)
-        for i, conditions in input_structures:
-            for run in engine.explore(method, i, conditions):
-                amount_tests += 1
-                stats.status_count(run)
-                test_num += 1
-                run.number = test_num
-                if not quiet:
-                    cli.print_result(run)
-                test = TestCode(
-                    sut,
-                    run,
-                    test_num,
-                    args["timeout"],
-                    args["test_comments"],
-                )
-                append_to_testfile(filepath, test.code + "\n\n")
+        cli.print_method_data(method)
+
+        for run in engine.explore2(method):
+            amount_tests += 1
+            stats.status_count(run)
+            test_num += 1
+            run.number = test_num
+
+            cli.print_result(run)
+            test = TestCode(
+                sut,
+                run,
+                test_num,
+                args["timeout"],
+                args["test_comments"],
+            )
+            append_to_testfile(filepath, test.code + "\n\n")
 
     stats.total_time = time.time() - start_time
     cli.print_statistics(stats, amount_tests, path)

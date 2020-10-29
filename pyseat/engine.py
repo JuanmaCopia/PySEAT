@@ -85,7 +85,7 @@ class SEEngine:
         for k in self._sut.class_map.keys():
             setattr(k, "_engine", self)
 
-    def explore(self, method_name, input_self, constraints):
+    def explore2(self, method_name):
         """Main method, explores al feasible possibilities.
 
         Yields:
@@ -94,29 +94,47 @@ class SEEngine:
         unexplored_paths = True
 
         while unexplored_paths:
-            self._reset_exploration(constraints)
+            self._reset_exploration()
 
-            result = self._explore_method_path(method_name, input_self)
+            result = self._explore_method_path(method_name)
             if result is not None:
                 yield (result)
 
             unexplored_paths = self._set_next_path()
 
-    def generate_structures(self):
-        """comment here"""
-        structures = []
-        unexplored_paths = True
 
-        while unexplored_paths:
-            self._reset_exploration()
+    # def explore(self, method_name, input_self, constraints):
+    #     """Main method, explores al feasible possibilities.
 
-            end_self = self._explore_repok_path()
-            if end_self is not None:
-                structures.append((end_self, self._path_condition))
+    #     Yields:
+    #         PathExecutionData: The result of the execution of the method under test
+    #     """
+    #     unexplored_paths = True
 
-            unexplored_paths = self._set_next_path()
+    #     while unexplored_paths:
+    #         self._reset_exploration(constraints)
 
-        return structures
+    #         result = self._explore_method_path(method_name, input_self)
+    #         if result is not None:
+    #             yield (result)
+
+    #         unexplored_paths = self._set_next_path()
+
+    # def generate_structures(self):
+    #     """comment here"""
+    #     structures = []
+    #     unexplored_paths = True
+
+    #     while unexplored_paths:
+    #         self._reset_exploration()
+
+    #         end_self = self._explore_repok_path()
+    #         if end_self is not None:
+    #             structures.append((end_self, self._path_condition))
+
+    #         unexplored_paths = self._set_next_path()
+
+    #     return structures
 
     def _explore_repok_path(self):
         result = None
@@ -175,7 +193,7 @@ class SEEngine:
 
         return True
 
-    def _explore_method_path(self, method_name, input_self):
+    def _explore_method_path(self, method_name):
         """Performs the method exploration.
 
         Executes method and returns all the execution data, like the returned
@@ -193,12 +211,17 @@ class SEEngine:
         returnv = exception = args = None
         timeout = False
         pruned = False
+        input_self = None
 
-        end_self = copy.deepcopy(input_self)
+        end_self = inst.symbolize_partially(self, self._sut.sclass)
         method = getattr(end_self, method_name)
 
         try:
-            with Timeout(self.timeout), HiddenPrints():
+            with Timeout(self.timeout), HiddenPrints(), RepokExplorationMode(self):
+                if not end_self.repok():
+                    pruned = True
+                    return None
+                input_self = copy.deepcopy(end_self)
                 args = self._instantiate_args(method_name)
                 if args:
                     returnv = method(*args)

@@ -14,8 +14,7 @@ TIMEOUT = 4
 
 
 class Statistics:
-    def __init__(self, build_time):
-        self.build_time = build_time
+    def __init__(self):
         self.successes = 0
         self.failures = 0
         self.exceptions = 0
