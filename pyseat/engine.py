@@ -186,6 +186,8 @@ class SEEngine:
         try:
             with Timeout(self.method_timeout), HiddenPrints():
                 with MethodExplorationMode(self):
+                    if not self.curr_self.repok():
+                        return pathdata
                     if args:
                         returnv = method(*args)
                     else:
