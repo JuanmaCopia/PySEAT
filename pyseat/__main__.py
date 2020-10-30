@@ -52,7 +52,7 @@ for args in runs:
             test_num += 1
             run.number = test_num
 
-            cli.print_result(run)
+            # cli.print_result(run)
             test = TestCode(
                 sut,
                 run,

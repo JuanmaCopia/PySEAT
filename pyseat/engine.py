@@ -297,37 +297,30 @@ class SEEngine:
 
     def _get_attr(self, owner, attr_name):
         """Performs the initialization of the attribute.
-
         It is called whenever the target method performs a get over a field
         of a partially symbolic structure. It returns or sets and returns the
         new value depending on the case.
-
         Args:
             owner: The object that contains the attribute to be initialized.
             attr_name (str): The name of the attribute.
-
         Returns:
             The requested attribute of the object
         """
         pref_name = im.SYMBOLIC_PREFIX + attr_name
-        attr = getattr(owner, pref_name)
-        if self.mode != GENERATION_MODE or im.is_initialized(owner, attr_name):
-            return attr
+        if self.mode != GENERATION_MODE or im.is_initialized(owner, attr_name) or not im.is_tracked(owner):
+            return getattr(owner, pref_name)
 
         setattr(owner, im.ISINIT_PREFIX + attr_name, True)
         attr_type = self._sut.get_attr_type(type(owner), attr_name)
 
         if im.is_user_defined(attr_type):
-            if not im.is_tracked(owner):
-                return attr
-
             new_value = self._lazy_initialization(attr_type)
             setattr(owner, pref_name, new_value)
-            return new_value
+        else:
+            new_value = sym.symbolic_factory(self, attr_type)
+            setattr(owner, pref_name, new_value)
 
-        new_sym = sym.symbolic_factory(self, attr_type)
-        setattr(owner, pref_name, new_sym)
-        return new_sym
+        return new_value
 
     def _lazy_initialization(self, lazy_class):
         """Returns the corresponding initialization for the current branch point.
