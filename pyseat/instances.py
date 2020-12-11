@@ -49,34 +49,22 @@ def symbolize_partially(engine, user_def_class):
     attributes = engine._sut.get_instance_attr_dict(user_def_class)
     # Adding some instrumentation fields
     for attr_name, typ in attributes.items():
-        value = make_symbolic(engine, typ)
+        if sym.Symbolic.is_supported_builtin(typ):
+            value = sym.symbolic_factory(engine, typ)
+            setattr(partial_ins, im.ISINIT_PREFIX + attr_name, True)
+        elif isinstance(typ, type(None)) or im.is_user_defined(typ):
+            value = None
+            setattr(partial_ins, im.ISINIT_PREFIX + attr_name, False)
+        else:
+            value = typ()
+            setattr(partial_ins, im.ISINIT_PREFIX + attr_name, True)
+
         setattr(partial_ins, im.SYMBOLIC_PREFIX + attr_name, value)
-        setattr(partial_ins, im.ISINIT_PREFIX + attr_name, False)
+
     setattr(partial_ins, "_objid", engine._ids)
     engine._ids += 1
 
     return partial_ins
-
-
-def make_symbolic(engine, typ):
-    """Creates a symbolic instance.
-
-    If it's a supported builtin type it returns the appropiate
-    symbolic instance.
-    If it's an user-defined class returns None
-
-    Args:
-        typ: The type to be instantiated. Could be builtin or
-        user defined.
-
-    Returns:
-        A symbolic instance of a builtin type or None.
-    """
-    if sym.Symbolic.is_supported_builtin(typ):
-        return sym.symbolic_factory(engine, typ)
-    elif isinstance(typ, type(None)) or im.is_user_defined(typ):
-        return None
-    return typ()
 
 
 def concretize(symbolic, model):
