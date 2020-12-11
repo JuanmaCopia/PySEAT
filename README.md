@@ -1,6 +1,6 @@
 # PySEAT
 
-## PYSEAT: Python Symbolic Execution Engine and Automated Testing Tool.
+### Python Symbolic Execution Engine and Automated Testing Tool.
 
 PySEAT is a testing automation tool. It automatically generates test cases for Python programs that use complex heap-allocated data structures.
 
