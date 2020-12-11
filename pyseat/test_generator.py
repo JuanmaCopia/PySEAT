@@ -72,7 +72,7 @@ class TestCode:
         self._add_line("# Repok check")
         self.add_repok_check(self.run_data.input_self)
         if self.status == data.OK or self.status == data.FAIL:
-            self._add_line("# Assertions")
+            self._add_line("# Regression assertions (Captures the current behavior)")
             self.gen_returnv_assert(self.run_data.returnv)
             self.gen_structure_assertions(self.run_data.self_end_state)
 
@@ -137,7 +137,10 @@ class TestCode:
             "returnv = " + self_id + "." + method_name + "(" + args_ids + ")"
         )
 
-    def generate_structure_code(self, instance, visited=set()):
+    def generate_structure_code(self, instance):
+        return self._generate_structure_code(instance, set())
+
+    def _generate_structure_code(self, instance, visited):
         if not instance:
             return
         if not do_add(visited, instance):
@@ -146,7 +149,9 @@ class TestCode:
         identifier = var_name(instance)
 
         self.create_constructor_call(
-            identifier, type(instance), self._sut.get_params_type_dict(type(instance)),
+            identifier,
+            type(instance),
+            self._sut.get_params_type_dict(type(instance)),
         )
         userdef = []
         for field, value in get_dict(instance).items():
@@ -157,7 +162,7 @@ class TestCode:
                 userdef.append((field, value))
         field_id = ""
         for field, value in userdef:
-            field_id = self.generate_structure_code(value, visited)
+            field_id = self._generate_structure_code(value, visited)
             self.create_assign_code(identifier, field, field_id)
         return identifier
 
@@ -189,4 +194,3 @@ class TestCode:
         else:
             code_line = identifier + " = " + typ.__name__ + "()"
         self._add_line(code_line)
-

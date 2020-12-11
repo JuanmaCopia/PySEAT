@@ -1,10 +1,4 @@
-def do_add(s, x):
-    length = len(s)
-    s.add(x)
-    return len(s) != length
-
-
-class Node:
+class Node:  # pragma: no cover
     # Instance attributes annotations (will be treated as symbolic)
     elem: int
     next: "Node"
@@ -14,30 +8,8 @@ class Node:
         self.elem = elem
         self.next = None
 
-    def to_str(self, visited=False):
-        if visited:
-            return " **" + str(self.elem)
-
-        if self.next is None:
-            return str(self.elem) + " -> None"
-        return str(self.elem) + " -> "
-
     def __repr__(self):
-        str_rep = ""
-        visited = set()
-        visited.add(self)
-        worklist = []
-        worklist.append(self)
-        while worklist:
-            current = worklist.pop(0)
-            str_rep += current.to_str()
-
-            if current.next:
-                if not do_add(visited, current.next):
-                    str_rep += current.next.to_str(True)
-                else:
-                    worklist.append(current.next)
-        return str_rep
+        return "node(" + str(self.elem) + ")"
 
 
 class LinkedList:
@@ -48,20 +20,31 @@ class LinkedList:
     def __init__(self):
         self.head = None
 
-    def repok(self):
-        return self.acyclic()
+    def prepend(self, elem: int):
+        new_node = Node(elem)
+        new_node.next = self.head
+        self.head = new_node
 
-    def acyclic(self):
-        if self.head is None:
-            return True
-        visited = set()
-        visited.add(self.head)
+    def append(self, elem: int):
+        new_node = Node(elem)
+        if not self.head:
+            self.head = new_node
+            return
         current = self.head
         while current.next:
-            if not do_add(visited, current.next):
-                return False
             current = current.next
-        return True
+        current.next = new_node
+
+    def delete(self, elem: int):
+        if self.head:
+            if self.head.elem == elem:
+                self.head = self.head.next
+            else:
+                current = self.head
+                while current.next and current.next.elem != elem:
+                    current = current.next
+                if current.next:
+                    current.next = current.next.next
 
     def swap_node(self):
         head = self.head
@@ -73,7 +56,33 @@ class LinkedList:
                 self.head = t
         return self.head
 
-    def __repr__(self):
+    def is_ordered(self):
+        current = self.head
+        while current and current.next:
+            if current.elem >= current.next.elem:
+                return False
+            current = current.next
+        return True
+
+    def repok(self):  # pragma: no cover
+        # acyclic
+        visited = set()
+        current = self.head
+        while current:
+            if current in visited:
+                return False
+            visited.add(current)
+            current = current.next
+        return True
+
+    def __repr__(self):  # pragma: no cover
         if not self.head:
             return "EmptyList"
-        return self.head.__repr__()
+
+        str_repr = str(self.head.elem)
+        current = self.head
+        while current:
+            current = current.next
+            if current:
+                str_repr += " -> {}".format(current.elem)
+        return str_repr

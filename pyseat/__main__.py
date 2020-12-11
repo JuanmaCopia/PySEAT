@@ -6,9 +6,11 @@ import time
 import os
 import sut_parser
 import cli_print as cli
+import utils
 from data import Statistics
 from engine import SEEngine
 from test_generator import TestCode, append_to_testfile, create_testfile
+from instances import concretize
 import arg_parsing
 
 
@@ -21,7 +23,7 @@ for args in runs:
     module_name = args["filepath"]
     class_name = args["class_name"]
     methods_names = args["methods"]
-
+    blackbox = args["blackbox"]
     quiet = args["quiet"]
 
     sut = sut_parser.parse(module_name, class_name, methods_names)
@@ -34,10 +36,13 @@ for args in runs:
 
     cli.print_blue(" Generating instances of {}...".format(class_name))
     input_structures = engine.generate_structures()
-    if not quiet:
-        cli.print_white(" Done!")
-    else:
-        cli.print_white(" DONE!\n Exploring...")
+    if blackbox:
+        for i, (instance, constraints) in enumerate(input_structures):
+            model = engine.smt.get_model(constraints)
+            input_structures[i] = (concretize(instance, model), [])
+    cli.print_white(
+        " DONE! {} structures generated\n Exploring...".format(len(input_structures))
+    )
 
     build_time = time.time() - start_time
 
@@ -58,7 +63,11 @@ for args in runs:
                 if not quiet:
                     cli.print_result(run)
                 test = TestCode(
-                    sut, run, test_num, args["timeout"], args["test_comments"],
+                    sut,
+                    run,
+                    test_num,
+                    args["timeout"],
+                    args["test_comments"],
                 )
                 append_to_testfile(filepath, test.code + "\n\n")
 
@@ -74,42 +83,9 @@ for args in runs:
             subprocess.call(["pytest", "--disable-warnings", "-q", filepath])
 
         if coverage:
-            subprocess.call(
-                [
-                    "coverage",
-                    "run",
-                    "--source=" + folder,
-                    "--omit=" + filepath,
-                    "--branch",
-                    "-m",
-                    "pytest",
-                    "-q",
-                    "--disable-warnings",
-                    filepath,
-                ]
-            )
-            cli.print_coverage_title()
-            subprocess.call(["coverage", "report"])
-            subprocess.call(["coverage", "html", "-d", folder + "htmlcov"])
+            utils.measure_branch_coverage(folder, filepath)
 
         if mutation:
-            subprocess.call(
-                [
-                    "mut.py",
-                    "--target",
-                    mod,
-                    "--unit-test",
-                    testfile,
-                    "--report-html",
-                    folder + "mutscore",
-                    "--runner",
-                    "pytest",
-                    "-c",
-                    "--coverage",
-                    "-p",
-                    folder,
-                    "-m",
-                ]
-            )
+            utils.measure_mutation_score(mod, testfile, folder)
 
     cli.print_bottom()

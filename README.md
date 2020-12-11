@@ -1,7 +1,9 @@
 # PySEAT
 
-Python Symbolic Execution and Automated Tester. PySEAT is a python module which automates
-test case generation for programs manipulating complex structures (e.g., Binary Search Trees or AVLs) using symbolic execution with lazy initialization.
+### Python Symbolic Execution Engine and Automated Testing Tool.
+
+PySEAT is a testing automation tool. It automatically generates test cases for Python programs that use complex heap-allocated data structures.
+
 
 This project reuses part of the interface with the Z3 SMT solver of an existing python symbolic execution engine called [PEF: Python Error Finder](https://reader.elsevier.com/reader/sd/pii/S1571066118300471?token=FB4433EA85BB1AA956108AB28C94F659FFB4CED02141D87A019D533BEDCF7538C0C78574841E5B3BB27323DBE11E6B9B)
 
@@ -17,16 +19,15 @@ This tool is based on the following papers:
 ## Getting Started
 
 ### Prerequisites
-Tested for python 3.8.1
 
 Clone this repository to your local machine:
 ```
 git clone https://github.com/JuanmaCopia/PySEAT
 ```
 
-### Installing on Linux using python venv
+### Installing on Linux or Mac using python venv
 
-Create virtual environment on the project folder:
+Create the virtual environment on the project folder:
 ```
 cd PySEAT/
 python3 -m venv env
@@ -39,7 +40,7 @@ source env/bin/activate
 
 Install the requirements:
 ```
-sudo pip install -r requirements
+pip install -r requirements
 ```
 
 Done! If everything went well you are ready to use the tool.
@@ -166,8 +167,8 @@ The program output looks as follows:
 ```
 As seen above, there are four possible states of an execution:
 
-* OK: No errors were found. The test is generated.
-* FAIL: An error was found. The test that produces the error is generated
+* OK: No errors were found. The test case is generated.
+* FAIL: An error was found. The test case that produces the error is generated
 * EXCEPTION: An exception was raised. the test that produces the exception is generated.
 * TIMEOUT: The execution exceeded the allotted time. The test that produces the timeout is generated.
 
@@ -217,10 +218,7 @@ def test_insert_after8():
 And we can find all the tests on the same folder of our source code.
 In this case: ```/tests/should_fail/test_dll_bugged.py ```
 
-The test comment is created calling to the ```__repr__``` method of the class
-and helps to see what the input, the return value, and the final state of self are. We can avoid the generation of this comment through specific arguments
-when running the module or by setting the argument in the config file as false (later on
-we will see how the config file works).
+The test comment is created calling to the ```__repr__``` method of the class and helps to see what the input, the return value, and the final state of self are. We can avoid the generation of this comment through specific arguments when running the module or by setting the argument in the config file as false (later on we will see how the config file works).
 
 After the exploration, the program will call pytest to run the generated test suite
 and the test report will be shown:
@@ -238,7 +236,8 @@ with these structures, exploring every program path and generating the correspon
 
 ### Repok method:
 
-Captures the representation invariant of the datatype. That is, it takes an instance of the structure, and checks that the assumed representation holds, returning true in such a case, and false if the representation invariant is broken. This method will be called to check whether a partially symbolic structure would satisfy the representation invariant, pruning the cases where this invariant does not hold.
+Captures the representation invariant of the datatype. That is, it takes an instance of the structure, and checks that the assumed representation holds, returning true in such a case, and false if the representation invariant is broken.
+
 For a deeper understanding of lazy initialization: [Generalized Symbolic Execution for Model Checking and Testing](http://users.ece.utexas.edu/~khurshid/testera/GSE.pdf)
 
 ## Instrumentation
@@ -248,14 +247,13 @@ Two things are required by PySEAT to work:
 1. Annotated types.
 2. A repok method for the class (class invariant).
 
-In order to perform symbolic execution, the target method should have the types annotated with python annotations. Also, all the classes involved in that method execution should have its __init__ method arguments and instance attributes annotated.
+In order to perform symbolic execution, the target method should have the types of the arguments annotated with python annotations. Also, all the classes involved in that method execution should have its __init__ method arguments and instance attributes annotated.
 
 A method called "repok" is needed to generate the inputs.
 
 ### Instrumentation example
 
-Let us see an instrumentation example of a DoublyLinkedList and its "insert_after" method that inserts a new node, with a certain key, after a given key on the doubly
-linked list.
+Let us see an instrumentation example of a DoublyLinkedList and its "insert_after" method that inserts a new node, with a certain key, after a given key on the doubly linked list.
 
 ```
 class Node:
@@ -341,8 +339,7 @@ class DoublyLinkedList:
 With this instrumentation, the method "insert_after" can be successfully explored and tests will be generated.
 If inside of the method there were other function calls, there is no need to annotate them.
 
-As it can be seen, the repok method checks that the structure is acyclic. This is a very important property to check
-if this is an assumption on the structured, as a precondition of the analyzed method. The repok is specific to each datatype. Acyclicity may be a constraint in some cases, and not in other, or sometimes a requirement only on certain fields (e.g., acyclicity in trees with respect to left and right, but not parent).
+As it can be seen, the class invariant ("repOk" method) checks that the structure is acyclic. This is a very important property to check if this is an assumption on the structure, as a precondition of the analyzed method.
 
 ## Currently supported symbolic types:
   * int
@@ -369,6 +366,7 @@ mutation = false
 quiet = false
 run_tests = true
 test_comments = false
+blackbox = false
 ```
 
 To add a program run, the user has to add a new section, and provide the following arguments:
@@ -388,6 +386,7 @@ mutation = false
 quiet = false
 run_tests = true
 test_comments = true
+blackbox = false
 
 [Doubly Linked List]
 filepath = tests/doublylinkedlist/dll.py
@@ -425,11 +424,12 @@ max_nodes = 4
 ; quiet:           Quiet mode, less output
 ; run_tests:       Run test with pytest after generation.
 ; test_comments:   Make a comment with the structure representation on each test.
+; blackbox         Generates test inputs using the black-box strategy
 ```
 
 ### How to run:
 
-To instruct PySEAT to run and read the configuration file, add the -c option:
+To instruct PySEAT to run and read the configuration file located in ```/config.ini```, add the -c option:
 ```
 python <path-to pyseat/__main__.py> -c
 ```
@@ -461,7 +461,7 @@ python <path-to pyseat/__main__.py> -h
 
 ## Coverage measurement and mutation score
 
-You can measure the coverage and the mutation score of the generated test suite by the arguments coverage and mutation respectively.
+You can measure the coverage and the mutation score of the generated test suite by the arguments "coverage" and "mutation" respectively.
 A command line report will be shown and a html-report will be be created on the same
 folder as the source file. For coverage ```source-folder/htmlcov/index.html```. For mutation ```source-folder/mutscore/index.html```.
 

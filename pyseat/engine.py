@@ -9,6 +9,7 @@ import copy
 import sys
 import os
 import signal
+import functools
 
 import exceptions as excp
 import instances as inst
@@ -24,9 +25,8 @@ from smt.solver_z3 import SMTSolver
 
 
 # Engine modes of execution
-METHOD_EXPLORATION = 1
-REPOK_EXPLORATION = 2
-CONCRETE_EXECUTION = 3
+NO_MODE = 0
+GENERATION_MODE = 1
 
 
 class SEEngine:
@@ -80,12 +80,12 @@ class SEEngine:
         self._current_bp = 0
         self._current_nodes = 0
         self._ids = 0
-        self.mode = CONCRETE_EXECUTION
+        self.mode = NO_MODE
 
         for k in self._sut.class_map.keys():
             setattr(k, "_engine", self)
 
-    def explore(self, method_name, input_self, conditions):
+    def explore(self, method_name, input_self, constraints):
         """Main method, explores al feasible possibilities.
 
         Yields:
@@ -94,42 +94,35 @@ class SEEngine:
         unexplored_paths = True
 
         while unexplored_paths:
-            self._reset_exploration(conditions)
+            self._reset_exploration(constraints)
 
-            args = self._instantiate_args(method_name)
-
-            result = self._execute_method_exploration(method_name, input_self, args)
+            result = self._explore_method_path(method_name, input_self)
             if result is not None:
                 yield (result)
 
-            self._remove_explored_branch()
-            if not self._branch_points:
-                unexplored_paths = False
+            unexplored_paths = self._set_next_path()
 
     def generate_structures(self):
-        """ comment here
-        """
+        """comment here"""
         structures = []
         unexplored_paths = True
 
         while unexplored_paths:
             self._reset_exploration()
-            partial_self = inst.symbolic_instantiation(self, self._sut.sclass)
 
-            end_self = self._explore_repok(partial_self)
+            end_self = self._explore_repok_path()
             if end_self is not None:
-                structures.append((end_self, copy.deepcopy(self._path_condition)))
+                structures.append((end_self, self._path_condition))
 
-            self._remove_explored_branch()
-            if not self._branch_points:
-                unexplored_paths = False
+            unexplored_paths = self._set_next_path()
 
         return structures
 
-    def _explore_repok(self, instance):
+    def _explore_repok_path(self):
         result = None
         try:
             with RepokExplorationMode(self):
+                instance = inst.symbolic_instantiation(self, self._sut.sclass)
                 result = instance.repok()
                 if sym.is_symbolic_bool(result):
                     result = result.__bool__()
@@ -144,10 +137,9 @@ class SEEngine:
                 return instance
             return None
 
-    def _reset_exploration(self, conditions=[]):
-        """Resets the exploration variables to its initial values.
-        """
-        self._path_condition = copy.deepcopy(conditions)
+    def _reset_exploration(self, constraints=[]):
+        """Resets the exploration variables to its initial values."""
+        self._path_condition = copy.deepcopy(constraints)
         self._current_bp = 0
         self._current_nodes = 0
         self._current_depth = 0
@@ -164,25 +156,26 @@ class SEEngine:
         types = self._sut.methods_map[method_name].types_list[1:]
         return [inst.symbolic_instantiation(self, typ) for typ in types]
 
-    def _remove_explored_branch(self):
+    def _set_next_path(self):
         """Removes the last explored branch.
 
         Advance the last branching point and removes it if it
         has been fully explored.
         """
         if not self._branch_points:
-            return None
+            # All paths in symbolic execution tree were explored.
+            return False
 
         last_bp = self._branch_points[-1]
         last_bp.advance_branch()
 
-        while self._branch_points and last_bp.all_branches_covered():
+        if last_bp.all_branches_covered():
             del self._branch_points[-1]
-            if self._branch_points:
-                last_bp = self._branch_points[-1]
-                last_bp.advance_branch()
+            return self._set_next_path()
 
-    def _execute_method_exploration(self, method_name, input_self, args):
+        return True
+
+    def _explore_method_path(self, method_name, input_self):
         """Performs the method exploration.
 
         Executes method and returns all the execution data, like the returned
@@ -197,8 +190,7 @@ class SEEngine:
             PathExecutionData: The result of the exploration (input builded, arguments,
             path_condition, etc).
         """
-        returnv = None
-        exception = None
+        returnv = exception = args = None
         timeout = False
         pruned = False
 
@@ -207,13 +199,13 @@ class SEEngine:
 
         try:
             with Timeout(self.timeout), HiddenPrints():
-                with MethodExplorationMode(self):
-                    if args:
-                        returnv = method(*args)
-                    else:
-                        returnv = method()
-                    if sym.is_symbolic_bool(returnv):
-                        returnv = returnv.__bool__()
+                args = self._instantiate_args(method_name)
+                if args:
+                    returnv = method(*args)
+                else:
+                    returnv = method()
+                if sym.is_symbolic_bool(returnv):
+                    returnv = returnv.__bool__()
 
         except excp.MaxDepthException:
             pruned = True
@@ -280,12 +272,12 @@ class SEEngine:
         finally:
             return returnv
 
-    def lazy_initialization(self, owner, attr_name):
-        """Performs the lazy initialization of the attribute.
+    def _get_attr(self, owner, attr_name):
+        """Performs the initialization of the attribute.
 
-        It hooks every get over a symbolic or partially symbolic attribute
-        of the class, depending of the current engine mode it will behave
-        differently.
+        It is called whenever the target method performs a get over a field
+        of a partially symbolic structure. It returns or sets and returns the
+        new value depending on the case.
 
         Args:
             owner: The object that contains the attribute to be initialized.
@@ -295,29 +287,23 @@ class SEEngine:
             The requested attribute of the object
         """
         pref_name = im.SYMBOLIC_PREFIX + attr_name
-        attr = getattr(owner, pref_name)
-        if self.mode != REPOK_EXPLORATION or im.is_initialized(owner, attr_name):
-            return attr
-
-        attr_type = self._sut.get_attr_type(type(owner), attr_name)
-        if im.is_user_defined(attr_type):
-            setattr(owner, im.ISINIT_PREFIX + attr_name, True)
-            if not im.is_tracked(owner) or attr is not None:
-                return attr
-
-            new_value = self.get_next_lazy_step(attr_type)
-            setattr(owner, pref_name, new_value)
-            return new_value
+        if self.mode != GENERATION_MODE or im.is_initialized(owner, attr_name) or not im.is_tracked(owner):
+            return getattr(owner, pref_name)
 
         setattr(owner, im.ISINIT_PREFIX + attr_name, True)
-        if sym.is_symbolic(attr):
-            return attr
+        attr_type = self._sut.get_attr_type(type(owner), attr_name)
 
-        new_sym = sym.symbolic_factory(self, attr_type)
-        setattr(owner, pref_name, new_sym)
-        return new_sym
+        if im.is_user_defined(attr_type):
+            new_value = self._lazy_initialization(attr_type)
+            setattr(owner, pref_name, new_value)
+        else:
+            new_value = sym.symbolic_factory(self, attr_type)
+            setattr(owner, pref_name, new_value)
 
-    def get_next_lazy_step(self, lazy_class):
+        return new_value
+
+
+    def _lazy_initialization(self, lazy_class):
         """Returns the corresponding initialization for the current branch point.
 
         If it's a new initialization step creates the branching point and
@@ -360,7 +346,7 @@ class SEEngine:
         lazy_class._vector.append(n)
         return n
 
-    def lazy_set_attr(self, owner, attr_name, value):
+    def _set_attr(self, owner, attr_name, value):
         """Sets the attribute and mark it as initialized.
 
         It hooks every set over a symbolic or partially symbolic attribute
@@ -427,9 +413,8 @@ class SEEngine:
             True or False if the value it's conditioned by the path_condition,
             None otherwise.
         """
-        conditions = True
-        for c in self._path_condition:
-            conditions = self.smt.And(conditions, c)
+        # functios.reduce is a fold left function
+        conditions = functools.reduce(self.smt.And, self._path_condition, True)
         true_cond = self.smt.check(self.smt.And(conditions, expression))
         false_cond = self.smt.check(self.smt.And(conditions, self.smt.Not(expression)))
 
@@ -471,21 +456,10 @@ class RepokExplorationMode:
         self.engine = engine
 
     def __enter__(self):
-        self.engine.mode = REPOK_EXPLORATION
+        self.engine.mode = GENERATION_MODE
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.engine.mode = CONCRETE_EXECUTION
-
-
-class MethodExplorationMode:
-    def __init__(self, engine):
-        self.engine = engine
-
-    def __enter__(self):
-        self.engine.mode = METHOD_EXPLORATION
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.engine.mode = CONCRETE_EXECUTION
+        self.engine.mode = NO_MODE
 
 
 class PathExecutionData:

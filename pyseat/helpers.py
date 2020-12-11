@@ -1,6 +1,6 @@
 def do_add(s, x):
     length = len(s)
-    s.add(x)
+    s.add(id(x))
     return len(s) != length
 
 

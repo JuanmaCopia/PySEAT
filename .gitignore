@@ -61,3 +61,7 @@ generated_tests/*_tests.py
 .vscode/
 venv/
 mutscore/
+
+.mutmut-cache
+setup.cfg
+*.bak
