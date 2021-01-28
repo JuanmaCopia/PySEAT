@@ -59,8 +59,8 @@ def create_symbolic_instance(engine, user_def_class):
 
         setattr(partial_ins, im.SYMBOLIC_PREFIX + attr_name, value)
 
-    setattr(partial_ins, "_objid", engine.classes_ids[user_def_class])
-    engine.classes_ids[user_def_class] += 1
+    setattr(partial_ins, "_objid", engine.classes_instances[user_def_class].number)
+    engine.classes_instances[user_def_class].number += 1
     user_def_class._vector.append(partial_ins)
 
     return partial_ins
