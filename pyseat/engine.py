@@ -72,6 +72,9 @@ class SEEngine:
         self._max_nodes = cfg_args["max_nodes"]
         self.timeout = cfg_args["timeout"]
 
+        self.initializations_map = {}
+        self.classes_ids = {}
+
         self.smt = SMT((SMTInt, SMTBool), SMTSolver)
         self._branch_points = []
         self._path_condition = []
@@ -84,6 +87,7 @@ class SEEngine:
 
         for k in self._sut.class_map.keys():
             setattr(k, "_engine", self)
+            self.classes_ids[k] = 0
 
     def explore(self, method_name, input_self, constraints):
         """Main method, explores al feasible possibilities.
@@ -143,9 +147,9 @@ class SEEngine:
         self._current_bp = 0
         self._current_nodes = 0
         self._current_depth = 0
-        self._ids = 0
         for k in self._sut.class_map.keys():
             k._vector = []
+            self.classes_ids[k] = 0
 
     def _instantiate_args(self, method_name):
         """Instantiates the arguments for the method under test.

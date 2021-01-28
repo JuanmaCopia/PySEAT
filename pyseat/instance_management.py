@@ -53,3 +53,8 @@ def var_name(obj):
 
 def is_tracked(obj):
     return hasattr(obj, "_objid")
+
+def same_id(obj1, obj2):
+    if not is_tracked(obj1) or not is_tracked(obj2):
+        raise Exception("Missing _objid field for object")
+    return type(obj1) is type(obj2) and obj1._objid == obj2._objid

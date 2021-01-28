@@ -61,8 +61,9 @@ def symbolize_partially(engine, user_def_class):
 
         setattr(partial_ins, im.SYMBOLIC_PREFIX + attr_name, value)
 
-    setattr(partial_ins, "_objid", engine._ids)
-    engine._ids += 1
+    setattr(partial_ins, "_objid", engine.classes_ids[user_def_class])
+    #engine._ids += 1
+    engine.classes_ids[user_def_class] += 1
 
     return partial_ins
 
