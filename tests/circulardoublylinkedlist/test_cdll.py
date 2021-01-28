@@ -13,27 +13,27 @@ def test_insert_after1():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
+    node0 = Node(0)
+    node0.key = 0
+    node2 = Node(0)
+    node2.key = 0
     node3 = Node(0)
     node3.key = 0
     node4 = Node(0)
     node4.key = 0
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -61,27 +61,27 @@ def test_insert_after2():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 0
     node3 = Node(0)
     node3.key = 0
     node4 = Node(0)
     node4.key = 0
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -109,27 +109,27 @@ def test_insert_after3():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
-    node3.key = 1
+    node3.key = 0
     node4 = Node(0)
     node4.key = 0
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -157,27 +157,27 @@ def test_insert_after4():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
-    node4.key = 1
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node4.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -205,27 +205,27 @@ def test_insert_after5():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
     node4.key = 1
-    node5 = Node(0)
-    node5.key = 1
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -253,27 +253,27 @@ def test_insert_after6():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
     node4.key = 1
-    node5 = Node(0)
-    node5.key = 1
-    node2 = Node(0)
-    node2.key = 1
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 1
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -300,23 +300,23 @@ def test_insert_after7():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node3 = Node(0)
-    node3.key = 0
-    node4 = Node(0)
-    node4.key = 0
+    node0 = Node(0)
+    node0.key = 0
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3 = Node(0)
+    node3.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -343,23 +343,23 @@ def test_insert_after8():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 0
-    node4 = Node(0)
-    node4.key = 0
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3 = Node(0)
+    node3.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -386,23 +386,23 @@ def test_insert_after9():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 1
-    node4 = Node(0)
-    node4.key = 0
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -429,23 +429,23 @@ def test_insert_after10():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
     node3.key = 1
-    node4 = Node(0)
-    node4.key = 1
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -472,23 +472,23 @@ def test_insert_after11():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 1
-    node4 = Node(0)
-    node4.key = 1
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
     node2.key = 1
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3 = Node(0)
+    node3.key = 1
+    node1 = Node(0)
+    node1.key = 1
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -514,19 +514,19 @@ def test_insert_after12():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node3 = Node(0)
-    node3.key = 0
+    node0 = Node(0)
+    node0.key = 0
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -552,19 +552,19 @@ def test_insert_after13():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 0
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -590,19 +590,19 @@ def test_insert_after14():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 1
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node2.key = 1
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -628,19 +628,19 @@ def test_insert_after15():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 1
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
     node2.key = 1
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node1 = Node(0)
+    node1.key = 1
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -665,15 +665,15 @@ def test_insert_after16():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
+    node0 = Node(0)
+    node0.key = 0
     node1 = Node(0)
     node1.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node1
-    node1.next = node2
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1.next = node0
+    node1.prev = node0
+    node0.next = node1
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -698,15 +698,15 @@ def test_insert_after17():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
+    node0 = Node(0)
+    node0.key = 1
     node1 = Node(0)
-    node1.key = 1
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node1
-    node1.next = node2
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node0
+    node0.next = node1
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -731,15 +731,15 @@ def test_insert_after18():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
+    node0 = Node(0)
+    node0.key = 1
     node1 = Node(0)
     node1.key = 1
-    node2 = Node(0)
-    node2.key = 1
-    node2.next = node1
-    node2.prev = node1
-    node1.next = node2
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1.next = node0
+    node1.prev = node0
+    node0.next = node1
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -763,11 +763,11 @@ def test_insert_after19():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node1.next = node1
-    node1.prev = node1
-    cdlinkedlist0.head = node1
+    node0 = Node(0)
+    node0.key = 0
+    node0.next = node0
+    node0.prev = node0
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -791,11 +791,11 @@ def test_insert_after20():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node1.next = node1
-    node1.prev = node1
-    cdlinkedlist0.head = node1
+    node0 = Node(0)
+    node0.key = 1
+    node0.next = node0
+    node0.prev = node0
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -841,27 +841,27 @@ def test_insert_before1():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
+    node0 = Node(0)
+    node0.key = 0
+    node2 = Node(0)
+    node2.key = 0
     node3 = Node(0)
     node3.key = 0
     node4 = Node(0)
     node4.key = 0
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -889,27 +889,27 @@ def test_insert_before2():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 0
     node3 = Node(0)
     node3.key = 0
     node4 = Node(0)
     node4.key = 0
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -937,27 +937,27 @@ def test_insert_before3():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
-    node3.key = 1
+    node3.key = 0
     node4 = Node(0)
     node4.key = 0
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -985,27 +985,27 @@ def test_insert_before4():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
-    node4.key = 1
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node4.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1033,27 +1033,27 @@ def test_insert_before5():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
     node4.key = 1
-    node5 = Node(0)
-    node5.key = 1
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1081,27 +1081,27 @@ def test_insert_before6():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
     node4.key = 1
-    node5 = Node(0)
-    node5.key = 1
-    node2 = Node(0)
-    node2.key = 1
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 1
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1128,23 +1128,23 @@ def test_insert_before7():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node3 = Node(0)
-    node3.key = 0
-    node4 = Node(0)
-    node4.key = 0
+    node0 = Node(0)
+    node0.key = 0
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3 = Node(0)
+    node3.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1171,23 +1171,23 @@ def test_insert_before8():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 0
-    node4 = Node(0)
-    node4.key = 0
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3 = Node(0)
+    node3.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1214,23 +1214,23 @@ def test_insert_before9():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 1
-    node4 = Node(0)
-    node4.key = 0
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1257,23 +1257,23 @@ def test_insert_before10():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
     node3.key = 1
-    node4 = Node(0)
-    node4.key = 1
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1300,23 +1300,23 @@ def test_insert_before11():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 1
-    node4 = Node(0)
-    node4.key = 1
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
     node2.key = 1
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3 = Node(0)
+    node3.key = 1
+    node1 = Node(0)
+    node1.key = 1
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1342,19 +1342,19 @@ def test_insert_before12():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node3 = Node(0)
-    node3.key = 0
+    node0 = Node(0)
+    node0.key = 0
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1380,19 +1380,19 @@ def test_insert_before13():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 0
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1418,19 +1418,19 @@ def test_insert_before14():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 1
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node2.key = 1
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1456,19 +1456,19 @@ def test_insert_before15():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 1
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
     node2.key = 1
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node1 = Node(0)
+    node1.key = 1
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1493,15 +1493,15 @@ def test_insert_before16():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
+    node0 = Node(0)
+    node0.key = 0
     node1 = Node(0)
     node1.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node1
-    node1.next = node2
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1.next = node0
+    node1.prev = node0
+    node0.next = node1
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1526,15 +1526,15 @@ def test_insert_before17():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
+    node0 = Node(0)
+    node0.key = 1
     node1 = Node(0)
-    node1.key = 1
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node1
-    node1.next = node2
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node0
+    node0.next = node1
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1559,15 +1559,15 @@ def test_insert_before18():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
+    node0 = Node(0)
+    node0.key = 1
     node1 = Node(0)
     node1.key = 1
-    node2 = Node(0)
-    node2.key = 1
-    node2.next = node1
-    node2.prev = node1
-    node1.next = node2
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1.next = node0
+    node1.prev = node0
+    node0.next = node1
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1591,11 +1591,11 @@ def test_insert_before19():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node1.next = node1
-    node1.prev = node1
-    cdlinkedlist0.head = node1
+    node0 = Node(0)
+    node0.key = 0
+    node0.next = node0
+    node0.prev = node0
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1619,11 +1619,11 @@ def test_insert_before20():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node1.next = node1
-    node1.prev = node1
-    cdlinkedlist0.head = node1
+    node0 = Node(0)
+    node0.key = 1
+    node0.next = node0
+    node0.prev = node0
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1669,27 +1669,27 @@ def test_delete1():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
+    node0 = Node(0)
+    node0.key = 0
+    node2 = Node(0)
+    node2.key = 0
     node3 = Node(0)
     node3.key = 0
     node4 = Node(0)
     node4.key = 0
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1715,27 +1715,27 @@ def test_delete2():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 0
     node3 = Node(0)
     node3.key = 0
     node4 = Node(0)
     node4.key = 0
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1761,27 +1761,27 @@ def test_delete3():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
-    node3.key = 1
+    node3.key = 0
     node4 = Node(0)
     node4.key = 0
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1807,27 +1807,27 @@ def test_delete4():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
-    node4.key = 1
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node4.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1853,27 +1853,27 @@ def test_delete5():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
     node4.key = 1
-    node5 = Node(0)
-    node5.key = 1
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1899,27 +1899,27 @@ def test_delete6():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
     node3.key = 1
     node4 = Node(0)
     node4.key = 1
-    node5 = Node(0)
-    node5.key = 1
-    node2 = Node(0)
-    node2.key = 1
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 1
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1946,23 +1946,23 @@ def test_delete7():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node3 = Node(0)
-    node3.key = 0
-    node4 = Node(0)
-    node4.key = 0
+    node0 = Node(0)
+    node0.key = 0
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3 = Node(0)
+    node3.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -1987,23 +1987,23 @@ def test_delete8():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 0
-    node4 = Node(0)
-    node4.key = 0
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3 = Node(0)
+    node3.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2028,23 +2028,23 @@ def test_delete9():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 1
-    node4 = Node(0)
-    node4.key = 0
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.key = 1
+    node3 = Node(0)
+    node3.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2069,23 +2069,23 @@ def test_delete10():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
+    node0 = Node(0)
+    node0.key = 1
+    node2 = Node(0)
+    node2.key = 1
     node3 = Node(0)
     node3.key = 1
-    node4 = Node(0)
-    node4.key = 1
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2110,23 +2110,23 @@ def test_delete11():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 1
-    node4 = Node(0)
-    node4.key = 1
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
     node2.key = 1
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3 = Node(0)
+    node3.key = 1
+    node1 = Node(0)
+    node1.key = 1
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2152,19 +2152,19 @@ def test_delete12():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node3 = Node(0)
-    node3.key = 0
+    node0 = Node(0)
+    node0.key = 0
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2188,19 +2188,19 @@ def test_delete13():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 0
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2224,19 +2224,19 @@ def test_delete14():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 1
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node2.key = 1
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2260,19 +2260,19 @@ def test_delete15():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node3 = Node(0)
-    node3.key = 1
+    node0 = Node(0)
+    node0.key = 1
     node2 = Node(0)
     node2.key = 1
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node1 = Node(0)
+    node1.key = 1
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2297,15 +2297,15 @@ def test_delete16():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
+    node0 = Node(0)
+    node0.key = 0
     node1 = Node(0)
     node1.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node1
-    node1.next = node2
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1.next = node0
+    node1.prev = node0
+    node0.next = node1
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2328,15 +2328,15 @@ def test_delete17():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
+    node0 = Node(0)
+    node0.key = 1
     node1 = Node(0)
-    node1.key = 1
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node1
-    node1.next = node2
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node0
+    node0.next = node1
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2359,15 +2359,15 @@ def test_delete18():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
+    node0 = Node(0)
+    node0.key = 1
     node1 = Node(0)
     node1.key = 1
-    node2 = Node(0)
-    node2.key = 1
-    node2.next = node1
-    node2.prev = node1
-    node1.next = node2
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1.next = node0
+    node1.prev = node0
+    node0.next = node1
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2391,11 +2391,11 @@ def test_delete19():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node1.next = node1
-    node1.prev = node1
-    cdlinkedlist0.head = node1
+    node0 = Node(0)
+    node0.key = 0
+    node0.next = node0
+    node0.prev = node0
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2418,11 +2418,11 @@ def test_delete20():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 1
-    node1.next = node1
-    node1.prev = node1
-    cdlinkedlist0.head = node1
+    node0 = Node(0)
+    node0.key = 1
+    node0.next = node0
+    node0.prev = node0
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2468,27 +2468,27 @@ def test_append1():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
+    node0 = Node(0)
+    node0.key = 0
+    node2 = Node(0)
+    node2.key = 0
     node3 = Node(0)
     node3.key = 0
     node4 = Node(0)
     node4.key = 0
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2516,23 +2516,23 @@ def test_append2():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node3 = Node(0)
-    node3.key = 0
-    node4 = Node(0)
-    node4.key = 0
+    node0 = Node(0)
+    node0.key = 0
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3 = Node(0)
+    node3.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2559,19 +2559,19 @@ def test_append3():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node3 = Node(0)
-    node3.key = 0
+    node0 = Node(0)
+    node0.key = 0
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2597,15 +2597,15 @@ def test_append4():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
+    node0 = Node(0)
+    node0.key = 0
     node1 = Node(0)
     node1.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node1
-    node1.next = node2
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1.next = node0
+    node1.prev = node0
+    node0.next = node1
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2630,11 +2630,11 @@ def test_append5():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node1.next = node1
-    node1.prev = node1
-    cdlinkedlist0.head = node1
+    node0 = Node(0)
+    node0.key = 0
+    node0.next = node0
+    node0.prev = node0
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2681,27 +2681,27 @@ def test_prepend1():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
+    node0 = Node(0)
+    node0.key = 0
+    node2 = Node(0)
+    node2.key = 0
     node3 = Node(0)
     node3.key = 0
     node4 = Node(0)
     node4.key = 0
-    node5 = Node(0)
-    node5.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node5
-    node5.next = node2
-    node5.prev = node4
-    node4.next = node5
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node4
+    node4.next = node1
     node4.prev = node3
     node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2729,23 +2729,23 @@ def test_prepend2():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node3 = Node(0)
-    node3.key = 0
-    node4 = Node(0)
-    node4.key = 0
+    node0 = Node(0)
+    node0.key = 0
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node4
-    node4.next = node2
-    node4.prev = node3
-    node3.next = node4
-    node3.prev = node1
-    node1.next = node3
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node3 = Node(0)
+    node3.key = 0
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
+    node1.prev = node3
+    node3.next = node1
+    node3.prev = node2
+    node2.next = node3
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2772,19 +2772,19 @@ def test_prepend3():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node3 = Node(0)
-    node3.key = 0
+    node0 = Node(0)
+    node0.key = 0
     node2 = Node(0)
     node2.key = 0
-    node2.next = node1
-    node2.prev = node3
-    node3.next = node2
-    node3.prev = node1
-    node1.next = node3
+    node1 = Node(0)
+    node1.key = 0
+    node1.next = node0
     node1.prev = node2
-    cdlinkedlist0.head = node1
+    node2.next = node1
+    node2.prev = node0
+    node0.next = node2
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2810,15 +2810,15 @@ def test_prepend4():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
+    node0 = Node(0)
+    node0.key = 0
     node1 = Node(0)
     node1.key = 0
-    node2 = Node(0)
-    node2.key = 0
-    node2.next = node1
-    node2.prev = node1
-    node1.next = node2
-    node1.prev = node2
-    cdlinkedlist0.head = node1
+    node1.next = node0
+    node1.prev = node0
+    node0.next = node1
+    node0.prev = node1
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call
@@ -2843,11 +2843,11 @@ def test_prepend5():
     '''
     # Input Creation
     cdlinkedlist0 = CDLinkedList()
-    node1 = Node(0)
-    node1.key = 0
-    node1.next = node1
-    node1.prev = node1
-    cdlinkedlist0.head = node1
+    node0 = Node(0)
+    node0.key = 0
+    node0.next = node0
+    node0.prev = node0
+    cdlinkedlist0.head = node0
     # Repok check
     assert cdlinkedlist0.repok()
     # Method call

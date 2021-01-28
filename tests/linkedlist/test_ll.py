@@ -13,6 +13,8 @@ def test_is_ordered1():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
@@ -21,14 +23,12 @@ def test_is_ordered1():
     node3.elem = 0
     node4 = Node(0)
     node4.elem = 0
-    node5 = Node(0)
-    node5.elem = 0
-    node5.next = None
-    node4.next = node5
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -56,22 +56,22 @@ def test_is_ordered2():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = -1
     node1 = Node(0)
-    node1.elem = -1
+    node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
     node4 = Node(0)
     node4.elem = 0
-    node5 = Node(0)
-    node5.elem = 0
-    node5.next = None
-    node4.next = node5
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -99,22 +99,22 @@ def test_is_ordered3():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = -2
     node1 = Node(0)
-    node1.elem = -2
+    node1.elem = -1
     node2 = Node(0)
-    node2.elem = -1
+    node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
     node4 = Node(0)
     node4.elem = 0
-    node5 = Node(0)
-    node5.elem = 0
-    node5.next = None
-    node4.next = node5
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -142,22 +142,22 @@ def test_is_ordered4():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = -2
     node1 = Node(0)
-    node1.elem = -2
+    node1.elem = -1
     node2 = Node(0)
-    node2.elem = -1
+    node2.elem = 0
     node3 = Node(0)
-    node3.elem = 0
+    node3.elem = 1
     node4 = Node(0)
     node4.elem = 1
-    node5 = Node(0)
-    node5.elem = 1
-    node5.next = None
-    node4.next = node5
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -185,22 +185,22 @@ def test_is_ordered5():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = -2
     node1 = Node(0)
-    node1.elem = -2
+    node1.elem = -1
     node2 = Node(0)
-    node2.elem = -1
+    node2.elem = 0
     node3 = Node(0)
-    node3.elem = 0
+    node3.elem = 1
     node4 = Node(0)
-    node4.elem = 1
-    node5 = Node(0)
-    node5.elem = 2
-    node5.next = None
-    node4.next = node5
+    node4.elem = 2
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -228,19 +228,19 @@ def test_is_ordered6():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
-    node4 = Node(0)
-    node4.elem = 0
-    node4.next = None
-    node3.next = node4
+    node3.next = None
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -267,19 +267,19 @@ def test_is_ordered7():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = -1
     node1 = Node(0)
-    node1.elem = -1
+    node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
-    node4 = Node(0)
-    node4.elem = 0
-    node4.next = None
-    node3.next = node4
+    node3.next = None
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -306,19 +306,19 @@ def test_is_ordered8():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = -2
     node1 = Node(0)
-    node1.elem = -2
+    node1.elem = -1
     node2 = Node(0)
-    node2.elem = -1
+    node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
-    node4 = Node(0)
-    node4.elem = 0
-    node4.next = None
-    node3.next = node4
+    node3.next = None
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -345,19 +345,19 @@ def test_is_ordered9():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = -2
     node1 = Node(0)
-    node1.elem = -2
+    node1.elem = -1
     node2 = Node(0)
-    node2.elem = -1
+    node2.elem = 0
     node3 = Node(0)
-    node3.elem = 0
-    node4 = Node(0)
-    node4.elem = 1
-    node4.next = None
-    node3.next = node4
+    node3.elem = 1
+    node3.next = None
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -384,16 +384,16 @@ def test_is_ordered10():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
-    node3 = Node(0)
-    node3.elem = 0
-    node3.next = None
-    node2.next = node3
+    node2.next = None
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -419,16 +419,16 @@ def test_is_ordered11():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = -1
     node1 = Node(0)
-    node1.elem = -1
+    node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
-    node3 = Node(0)
-    node3.elem = 0
-    node3.next = None
-    node2.next = node3
+    node2.next = None
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -454,16 +454,16 @@ def test_is_ordered12():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = -1
     node1 = Node(0)
-    node1.elem = -1
+    node1.elem = 0
     node2 = Node(0)
-    node2.elem = 0
-    node3 = Node(0)
-    node3.elem = 1
-    node3.next = None
-    node2.next = node3
+    node2.elem = 1
+    node2.next = None
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -489,13 +489,13 @@ def test_is_ordered13():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
-    node2 = Node(0)
-    node2.elem = 0
-    node2.next = None
-    node1.next = node2
-    linkedlist0.head = node1
+    node1.next = None
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -520,13 +520,13 @@ def test_is_ordered14():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = -1
     node1 = Node(0)
-    node1.elem = -1
-    node2 = Node(0)
-    node2.elem = 0
-    node2.next = None
-    node1.next = node2
-    linkedlist0.head = node1
+    node1.elem = 0
+    node1.next = None
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -551,10 +551,10 @@ def test_is_ordered15():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
-    node1 = Node(0)
-    node1.elem = 0
-    node1.next = None
-    linkedlist0.head = node1
+    node0 = Node(0)
+    node0.elem = 0
+    node0.next = None
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -601,22 +601,22 @@ def test_swap_node1():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
-    node1.elem = 1
+    node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
     node4 = Node(0)
     node4.elem = 0
-    node5 = Node(0)
-    node5.elem = 0
-    node5.next = None
-    node4.next = node5
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -649,6 +649,8 @@ def test_swap_node2():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
@@ -657,14 +659,12 @@ def test_swap_node2():
     node3.elem = 0
     node4 = Node(0)
     node4.elem = 0
-    node5 = Node(0)
-    node5.elem = 0
-    node5.next = None
-    node4.next = node5
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -697,19 +697,19 @@ def test_swap_node3():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
-    node1.elem = 1
+    node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
-    node4 = Node(0)
-    node4.elem = 0
-    node4.next = None
-    node3.next = node4
+    node3.next = None
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -740,19 +740,19 @@ def test_swap_node4():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
-    node4 = Node(0)
-    node4.elem = 0
-    node4.next = None
-    node3.next = node4
+    node3.next = None
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -783,16 +783,16 @@ def test_swap_node5():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
-    node1.elem = 1
+    node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
-    node3 = Node(0)
-    node3.elem = 0
-    node3.next = None
-    node2.next = node3
+    node2.next = None
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -821,16 +821,16 @@ def test_swap_node6():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
-    node3 = Node(0)
-    node3.elem = 0
-    node3.next = None
-    node2.next = node3
+    node2.next = None
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -859,13 +859,13 @@ def test_swap_node7():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
-    node1.elem = 1
-    node2 = Node(0)
-    node2.elem = 0
-    node2.next = None
-    node1.next = node2
-    linkedlist0.head = node1
+    node1.elem = 0
+    node1.next = None
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -892,13 +892,13 @@ def test_swap_node8():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
-    node2 = Node(0)
-    node2.elem = 0
-    node2.next = None
-    node1.next = node2
-    linkedlist0.head = node1
+    node1.next = None
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -925,10 +925,10 @@ def test_swap_node9():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
-    node1 = Node(0)
-    node1.elem = 0
-    node1.next = None
-    linkedlist0.head = node1
+    node0 = Node(0)
+    node0.elem = 0
+    node0.next = None
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -976,6 +976,8 @@ def test_append1():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
@@ -984,14 +986,12 @@ def test_append1():
     node3.elem = 0
     node4 = Node(0)
     node4.elem = 0
-    node5 = Node(0)
-    node5.elem = 0
-    node5.next = None
-    node4.next = node5
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1020,19 +1020,19 @@ def test_append2():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
-    node4 = Node(0)
-    node4.elem = 0
-    node4.next = None
-    node3.next = node4
+    node3.next = None
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1060,16 +1060,16 @@ def test_append3():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
-    node3 = Node(0)
-    node3.elem = 0
-    node3.next = None
-    node2.next = node3
+    node2.next = None
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1096,13 +1096,13 @@ def test_append4():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
-    node2 = Node(0)
-    node2.elem = 0
-    node2.next = None
-    node1.next = node2
-    linkedlist0.head = node1
+    node1.next = None
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1128,10 +1128,10 @@ def test_append5():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
-    node1 = Node(0)
-    node1.elem = 0
-    node1.next = None
-    linkedlist0.head = node1
+    node0 = Node(0)
+    node0.elem = 0
+    node0.next = None
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1180,6 +1180,8 @@ def test_prepend1():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
@@ -1188,14 +1190,12 @@ def test_prepend1():
     node3.elem = 0
     node4 = Node(0)
     node4.elem = 0
-    node5 = Node(0)
-    node5.elem = 0
-    node5.next = None
-    node4.next = node5
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1224,19 +1224,19 @@ def test_prepend2():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
-    node4 = Node(0)
-    node4.elem = 0
-    node4.next = None
-    node3.next = node4
+    node3.next = None
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1264,16 +1264,16 @@ def test_prepend3():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
-    node3 = Node(0)
-    node3.elem = 0
-    node3.next = None
-    node2.next = node3
+    node2.next = None
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1300,13 +1300,13 @@ def test_prepend4():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
-    node2 = Node(0)
-    node2.elem = 0
-    node2.next = None
-    node1.next = node2
-    linkedlist0.head = node1
+    node1.next = None
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1332,10 +1332,10 @@ def test_prepend5():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
-    node1 = Node(0)
-    node1.elem = 0
-    node1.next = None
-    linkedlist0.head = node1
+    node0 = Node(0)
+    node0.elem = 0
+    node0.next = None
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1384,6 +1384,8 @@ def test_delete1():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
@@ -1392,14 +1394,12 @@ def test_delete1():
     node3.elem = 0
     node4 = Node(0)
     node4.elem = 0
-    node5 = Node(0)
-    node5.elem = 0
-    node5.next = None
-    node4.next = node5
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1426,6 +1426,8 @@ def test_delete2():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
     node1.elem = 1
     node2 = Node(0)
@@ -1434,14 +1436,12 @@ def test_delete2():
     node3.elem = 1
     node4 = Node(0)
     node4.elem = 1
-    node5 = Node(0)
-    node5.elem = 1
-    node5.next = None
-    node4.next = node5
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1469,6 +1469,8 @@ def test_delete3():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
     node1.elem = 1
     node2 = Node(0)
@@ -1476,15 +1478,13 @@ def test_delete3():
     node3 = Node(0)
     node3.elem = 1
     node4 = Node(0)
-    node4.elem = 1
-    node5 = Node(0)
-    node5.elem = 0
-    node5.next = None
-    node4.next = node5
+    node4.elem = 0
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1511,22 +1511,22 @@ def test_delete4():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
     node1.elem = 1
     node2 = Node(0)
     node2.elem = 1
     node3 = Node(0)
-    node3.elem = 1
+    node3.elem = 0
     node4 = Node(0)
     node4.elem = 0
-    node5 = Node(0)
-    node5.elem = 0
-    node5.next = None
-    node4.next = node5
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1553,22 +1553,22 @@ def test_delete5():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
     node1.elem = 1
     node2 = Node(0)
-    node2.elem = 1
+    node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
     node4 = Node(0)
     node4.elem = 0
-    node5 = Node(0)
-    node5.elem = 0
-    node5.next = None
-    node4.next = node5
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1595,22 +1595,22 @@ def test_delete6():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
-    node1.elem = 1
+    node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
     node4 = Node(0)
     node4.elem = 0
-    node5 = Node(0)
-    node5.elem = 0
-    node5.next = None
-    node4.next = node5
+    node4.next = None
     node3.next = node4
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1637,19 +1637,19 @@ def test_delete7():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
-    node4 = Node(0)
-    node4.elem = 0
-    node4.next = None
-    node3.next = node4
+    node3.next = None
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1675,19 +1675,19 @@ def test_delete8():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
     node1.elem = 1
     node2 = Node(0)
     node2.elem = 1
     node3 = Node(0)
     node3.elem = 1
-    node4 = Node(0)
-    node4.elem = 1
-    node4.next = None
-    node3.next = node4
+    node3.next = None
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1714,19 +1714,19 @@ def test_delete9():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
     node1.elem = 1
     node2 = Node(0)
     node2.elem = 1
     node3 = Node(0)
-    node3.elem = 1
-    node4 = Node(0)
-    node4.elem = 0
-    node4.next = None
-    node3.next = node4
+    node3.elem = 0
+    node3.next = None
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1752,19 +1752,19 @@ def test_delete10():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
     node1.elem = 1
     node2 = Node(0)
-    node2.elem = 1
+    node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
-    node4 = Node(0)
-    node4.elem = 0
-    node4.next = None
-    node3.next = node4
+    node3.next = None
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1790,19 +1790,19 @@ def test_delete11():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
-    node1.elem = 1
+    node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
     node3 = Node(0)
     node3.elem = 0
-    node4 = Node(0)
-    node4.elem = 0
-    node4.next = None
-    node3.next = node4
+    node3.next = None
     node2.next = node3
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1828,16 +1828,16 @@ def test_delete12():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
-    node3 = Node(0)
-    node3.elem = 0
-    node3.next = None
-    node2.next = node3
+    node2.next = None
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1862,16 +1862,16 @@ def test_delete13():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
     node1.elem = 1
     node2 = Node(0)
     node2.elem = 1
-    node3 = Node(0)
-    node3.elem = 1
-    node3.next = None
-    node2.next = node3
+    node2.next = None
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1897,16 +1897,16 @@ def test_delete14():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
     node1.elem = 1
     node2 = Node(0)
-    node2.elem = 1
-    node3 = Node(0)
-    node3.elem = 0
-    node3.next = None
-    node2.next = node3
+    node2.elem = 0
+    node2.next = None
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1931,16 +1931,16 @@ def test_delete15():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
-    node1.elem = 1
+    node1.elem = 0
     node2 = Node(0)
     node2.elem = 0
-    node3 = Node(0)
-    node3.elem = 0
-    node3.next = None
-    node2.next = node3
+    node2.next = None
     node1.next = node2
-    linkedlist0.head = node1
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1965,13 +1965,13 @@ def test_delete16():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 0
     node1 = Node(0)
     node1.elem = 0
-    node2 = Node(0)
-    node2.elem = 0
-    node2.next = None
-    node1.next = node2
-    linkedlist0.head = node1
+    node1.next = None
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -1995,13 +1995,13 @@ def test_delete17():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
     node1.elem = 1
-    node2 = Node(0)
-    node2.elem = 1
-    node2.next = None
-    node1.next = node2
-    linkedlist0.head = node1
+    node1.next = None
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -2026,13 +2026,13 @@ def test_delete18():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
+    node0 = Node(0)
+    node0.elem = 1
     node1 = Node(0)
-    node1.elem = 1
-    node2 = Node(0)
-    node2.elem = 0
-    node2.next = None
-    node1.next = node2
-    linkedlist0.head = node1
+    node1.elem = 0
+    node1.next = None
+    node0.next = node1
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -2056,10 +2056,10 @@ def test_delete19():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
-    node1 = Node(0)
-    node1.elem = 0
-    node1.next = None
-    linkedlist0.head = node1
+    node0 = Node(0)
+    node0.elem = 0
+    node0.next = None
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
@@ -2082,10 +2082,10 @@ def test_delete20():
     '''
     # Input Creation
     linkedlist0 = LinkedList()
-    node1 = Node(0)
-    node1.elem = 1
-    node1.next = None
-    linkedlist0.head = node1
+    node0 = Node(0)
+    node0.elem = 1
+    node0.next = None
+    linkedlist0.head = node0
     # Repok check
     assert linkedlist0.repok()
     # Method call
