@@ -296,11 +296,7 @@ class SEEngine:
         setattr(owner, im.ISINIT_PREFIX + attr_name, True)
         attr_type = self._sut.get_attr_type(type(owner), attr_name)
 
-        if im.is_user_defined(attr_type):
-            new_value = self._lazy_initialization(attr_type)
-        else:
-            new_value = sym.symbolic_factory(self, attr_type)
-
+        new_value = self._lazy_initialization(attr_type)
         setattr(owner, pref_name, new_value)
         return new_value
 
