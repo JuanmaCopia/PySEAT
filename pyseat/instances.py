@@ -3,7 +3,7 @@ from helpers import do_add
 
 import instance_management as im
 import symbolics as sym
-import copy
+from copy import deepcopy
 
 
 def symbolic_instantiation(engine, typ):
@@ -59,16 +59,21 @@ def create_symbolic_instance(engine, user_def_class):
 
         setattr(partial_ins, im.SYMBOLIC_PREFIX + attr_name, value)
 
-    setattr(partial_ins, "_objid", engine.classes_instances[user_def_class].number)
-    engine.classes_instances[user_def_class].number += 1
+    class_rt_data = engine.classes_instances[user_def_class]
+
+    setattr(partial_ins, "_objid", class_rt_data.number)
+    
     user_def_class._vector.append(partial_ins)
+
+    class_rt_data.instances.append(deepcopy(partial_ins))
+    class_rt_data.number += 1
 
     return partial_ins
 
 
 def concretize(symbolic, model):
     visited = set()
-    sym_copy = copy.deepcopy(symbolic)
+    sym_copy = deepcopy(symbolic)
     if im.is_user_defined(sym_copy):
         visited.add(sym_copy)
     return _concretize(sym_copy, model, visited)

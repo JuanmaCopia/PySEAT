@@ -137,7 +137,8 @@ class SEEngine:
             raise e
         else:
             if result:
-                return instance
+                # return instance
+                return self.classes_instances[self._sut.sclass].instances[0]
             return None
 
     def _reset_exploration(self, constraints=[]):
@@ -298,6 +299,10 @@ class SEEngine:
 
         new_value = self._lazy_initialization(attr_type)
         setattr(owner, pref_name, new_value)
+
+        owner_clone = self.classes_instances[type(owner)].instances[owner._objid]
+        setattr(owner_clone, pref_name, new_value)
+
         return new_value
 
 
