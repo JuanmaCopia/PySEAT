@@ -26,13 +26,11 @@ def symbolic_instantiation(engine, typ):
     elif isinstance(typ, type(None)):
         return None
     elif im.is_user_defined(typ):
-        instance = symbolize_partially(engine, typ)
-        typ._vector.append(instance)
-        return instance
+        return create_symbolic_instance(engine, typ)
     return typ()
 
 
-def symbolize_partially(engine, user_def_class):
+def create_symbolic_instance(engine, user_def_class):
     """Creates partially symbolic instance of a class.
 
     Returns an instance of user_def_class with all it's builtin
@@ -62,8 +60,8 @@ def symbolize_partially(engine, user_def_class):
         setattr(partial_ins, im.SYMBOLIC_PREFIX + attr_name, value)
 
     setattr(partial_ins, "_objid", engine.classes_ids[user_def_class])
-    #engine._ids += 1
     engine.classes_ids[user_def_class] += 1
+    user_def_class._vector.append(partial_ins)
 
     return partial_ins
 

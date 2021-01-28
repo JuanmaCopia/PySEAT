@@ -126,7 +126,7 @@ class SEEngine:
         result = None
         try:
             with RepokExplorationMode(self):
-                instance = inst.symbolic_instantiation(self, self._sut.sclass)
+                instance = inst.create_symbolic_instance(self, self._sut.sclass)
                 result = instance.repok()
                 if sym.is_symbolic_bool(result):
                     result = result.__bool__()
@@ -299,11 +299,10 @@ class SEEngine:
 
         if im.is_user_defined(attr_type):
             new_value = self._lazy_initialization(attr_type)
-            setattr(owner, pref_name, new_value)
         else:
             new_value = sym.symbolic_factory(self, attr_type)
-            setattr(owner, pref_name, new_value)
 
+        setattr(owner, pref_name, new_value)
         return new_value
 
 
@@ -331,9 +330,7 @@ class SEEngine:
 
             if index == 0:
                 self._current_nodes += 1
-                n = inst.symbolize_partially(self, lazy_class)
-                lazy_class._vector.append(n)
-                return n
+                return inst.create_symbolic_instance(self, lazy_class)
             elif index == 1:
                 return None
             else:
@@ -346,9 +343,7 @@ class SEEngine:
             new_bp.advance_branch()
             return None
         self._current_nodes += 1
-        n = inst.symbolize_partially(self, lazy_class)
-        lazy_class._vector.append(n)
-        return n
+        return inst.create_symbolic_instance(self, lazy_class)
 
     def _set_attr(self, owner, attr_name, value):
         """Sets the attribute and mark it as initialized.
